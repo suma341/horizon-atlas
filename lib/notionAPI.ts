@@ -53,7 +53,7 @@ export const getAllPosts = async () => {
 
 const getPageMetaData = (post: PageObjectResponse) => {
 
-    const getTags = (tags:Array<Object>)=>{
+    const getTags = (tags:Array<object>)=>{
         const allTags = tags.map((tag)=>{
             return 'name' in tag && typeof tag.name == 'string' ? tag.name : '';
         });

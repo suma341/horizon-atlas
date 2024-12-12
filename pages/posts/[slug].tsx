@@ -36,12 +36,8 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 const Post =({ post }: PostPageData) => {
   const handleCopy = async (code: string) => {
-    try {
       await navigator.clipboard.writeText(code);
       alert('コードをコピーしました！');
-    } catch (err) {
-      alert('コピーに失敗しました。');
-    }
   };
   return (
     <section className='container lg;px-2 px-5 h-screen lg:w-2/5 mx-auto mt-20'>

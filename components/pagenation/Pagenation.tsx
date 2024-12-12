@@ -13,7 +13,7 @@ const Pagenation =(props:Props)=> {
 
     const currentPageNum = parseInt(currentPage);
 
-    let pages:number[]=[];
+    const pages:number[]=[];
     for(let i=0;i<numberOfPage;i++){
         pages.push(i + 1);
     }

@@ -1,18 +1,5 @@
 import Link from 'next/link'
 import React from 'react'
-import clsx from "clsx";
-
-const tag_span_component = ( color:string) => {
-  const tagClass = clsx(
-    "text-white rounded-xl px-2 pb-1 mr-2 font-thin",
-    {
-      "bg-blue-600": color === NotionColorList.Blue,
-      "bg-gray-600": color === NotionColorList.Gray,
-    }
-  );
-
-  return <span className={tagClass}>Button</span>;
-};
 
 type Props = {
     allTags:string[];
