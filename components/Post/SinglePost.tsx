@@ -8,8 +8,8 @@ const SinglePost = (props:PostMetaData) => {
     <Link href={`/posts/${slug}`}>
         {isPagenationPage ? (
             <section className=' bg-sky-900 mb-8 mx-auto rounded-md p-5 shadow-2xl hover:shadow-none hover:translate-y-1 transition-all duration-300'>
-                <div className='lg:flex items-center'>
-                    <h2 className='text-gray-100 text-2xl font-medium mb-2'>
+                <div className='lg:flex lg:flex-wrap items-center'>
+                    <h2 className='text-gray-100 text-2xl font-medium mb-2 mr-1'>
                         {title}
                     </h2>
                     <div className='text-gray-100 mr-2'>{date}</div>
@@ -26,7 +26,7 @@ const SinglePost = (props:PostMetaData) => {
         ) : (
             <section className='lg:w-1/2 bg-sky-900 mb-8 mx-auto rounded-md p-5 shadow-2xl hover:shadow-none hover:translate-y-1 transition-all duration-300'>
                 <div className='flex items-center gap-3'>
-                    <h2 className='text-gray-100 text-2xl font-medium mb-2'>
+                    <h2 className='text-gray-100 text-2xl font-medium mb-2 mr-1'>
                         {title}
                     </h2>
                     <div className='text-gray-100'>{date}</div>
