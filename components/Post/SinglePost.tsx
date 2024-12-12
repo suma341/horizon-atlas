@@ -15,11 +15,13 @@ const SinglePost = (props:PostMetaData) => {
                     </h2>
                     <div className='text-gray-100 mr-2'>{date}</div>
                 </div>
-                {tags.map((tag, i:number)=>(
-                        <span className='text-white bg-gray-500 rounded-xl px-2 pb-1 mr-2 font-thin' key={i}>
+                <div className='flex flex-wrap'>
+                    {tags.map((tag, i:number)=>(
+                        <span className='text-white bg-gray-500 rounded-xl px-2 pb-1/2 mr-2 mb-1 font-thin' key={i}>
                             {tag}
                         </span>
                     ))}
+                </div>
                 <p className='text-gray-100'>{description}</p>
             </section>
         ) : (

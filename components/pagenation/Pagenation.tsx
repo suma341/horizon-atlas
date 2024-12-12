@@ -21,15 +21,15 @@ const Pagenation =(props:Props)=> {
     return (
         <section className='md-8 lg:w-1/2 mx-auto rounded-md p-5'>
             <ul className='flex items-center justify-center gap-4'>
-                {pages.map((page)=> currentPageNum == page ? (
-                    <li className='bg-sky-900 rounded-lg w-6 h-8 relative'>
+                {pages.map((page, i:number)=> currentPageNum == page ? (
+                    <li className='bg-sky-900 rounded-lg w-6 h-8 relative' key={i}>
                         <Link href={`/posts/page/${page}`} className='absolute top-2/4  left-1/4 -translate-y-2/4 text-gray-100'>
                             {page}
                         </Link>
                     </li>
                 ):
                 (
-                    <li className='rounded-lg w-6 h-8 relative'>
+                    <li className='rounded-lg w-6 h-8 relative' key={i}>
                         <Link href={getPageLink(tag, page)} className='absolute top-2/4  left-1/4 -translate-y-2/4'>
                             {page}
                         </Link>

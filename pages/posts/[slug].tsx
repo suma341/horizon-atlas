@@ -57,7 +57,7 @@ const Post =({ post }: PostPageData) => {
         <div className='mt-10 font-medium'>
         <ReactMarkDown
           components={{
-            code({ node, inlist, className, children }) {
+            code({ inlist, className, children }) {
               const match = /language-(\w+)/.exec(className || '');
               const codeContent = String(children).replace(/\n$/, '');
               return !inlist && match ? (
@@ -69,11 +69,11 @@ const Post =({ post }: PostPageData) => {
                     {String(children).replace(/\n$/, '')}
                   </SyntaxHighlighter>
                   <button
-                  onClick={() => handleCopy(codeContent)}
-                  className="absolute top-2 right-2 bg-gray-700 text-white text-sm px-2 py-1 rounded">
-                  Copy
-                </button>
-              </div>
+                    onClick={() => handleCopy(codeContent)}
+                    className="absolute top-2 right-2 bg-gray-700 text-white text-sm px-2 py-1 rounded">
+                    Copy
+                  </button>
+                </div>
               ) : (
                 <code>
                   {children}

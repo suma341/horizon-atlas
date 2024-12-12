@@ -50,19 +50,19 @@ const blogPageList = ({ postsByPage,numberOfPages,currentPage,allTags }: InferGe
       <main className="container w-full mt-16">
         <h1 className="text-5xl font-medium text-center mb-16">NotionBlog</h1>
         <section className="sm:grid grid-cols-2 gap-3 mx-auto">
-            {postsByPage.map((post:PostMetaData,i:number)=>(
-            <div key={i}>
-                <SinglePost
-                id={post.id}
-                title={post.title} 
-                description={post.description}
-                date={post.date}
-                tags={post.tags}
-                slug={post.slug}
-                isPagenationPage={true}
-                />
-            </div>
-            ))}
+          {postsByPage.map((post:PostMetaData,i:number)=>(
+          <div key={i}>
+              <SinglePost
+              id={post.id}
+              title={post.title} 
+              description={post.description}
+              date={post.date}
+              tags={post.tags}
+              slug={post.slug}
+              isPagenationPage={true}
+              />
+          </div>
+          ))}
         </section>
       </main>
       <Pagenation numberOfPage={numberOfPages} currentPage={currentPage} tag={""} />
