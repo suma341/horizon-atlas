@@ -1,4 +1,3 @@
-import Head from "next/head";
 import { getAllTags, getNumberOfPages,  getPostsByTagAndPage } from "@/lib/notionAPI";
 import type { GetStaticProps, InferGetStaticPropsType } from "next";
 import SinglePost from "@/components/Post/SinglePost";
@@ -53,11 +52,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
 const blogTagPageList = ({ posts,numberOfPages,currentPage, currentTag, allTags }: InferGetStaticPropsType<typeof getStaticProps>)=> {
     return (
         <div className="container h-full w-full mx-auto font-mono">
-        <Head>
-            <title>Notion blog</title>
-        </Head>
         <main className="container w-full mt-16">
-            <h1 className="text-5xl font-medium text-center mb-16">NotionBlog</h1>
+            <h1 className="text-5xl font-medium text-center mb-16">Horizon TechShelf</h1>
             <section className="sm:grid grid-cols-2 gap-3 mx-auto">
                 {posts.map((post:PostMetaData, i:number)=>(
                 <div key={i}>

@@ -1,4 +1,3 @@
-import Head from "next/head";
 import { getAllTags, getPostsForTopPage } from "@/lib/notionAPI";
 import type { GetStaticProps} from "next";
 import SinglePost from "@/components/Post/SinglePost";
@@ -28,11 +27,8 @@ export const getStaticProps: GetStaticProps = async () => {
 export default function Home({ fourPosts, allTags }: Props) {
   return (
     <div className="container h-full w-full mx-auto">
-      <Head>
-        <title>Notion blog</title>
-      </Head>
       <main className="container w-full mt-16">
-        <h1 className="text-5xl font-medium text-center mb-16">NotionBlog</h1>
+        <h1 className="text-5xl font-medium text-center mb-16">Horizon TechShelf</h1>
         {fourPosts.map((post:PostMetaData,i:number)=>(
           <div className="mx4" key={i}>
             <SinglePost
