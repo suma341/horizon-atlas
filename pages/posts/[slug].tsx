@@ -49,13 +49,15 @@ const Post =({ post }: PostPageData) => {
         <div className='border-b-2 mt-2'></div>
         <span className='text-gray-500'>posted date at {post.metadata.date}</span>
         <br />
-        {post.metadata.tags.map((tag:string)=>(
-          <p className='text-white bg-sky-500 rounded-xl font-medium mt-2 px-2 inline-block mr-2'>{tag}</p>
+        {post.metadata.tags.map((tag:string,i:number)=>(
+          <p className='text-white bg-sky-500 rounded-xl font-medium mt-2 px-2 inline-block mr-2' key={i}>
+            {tag}
+            </p>
         ))}
         <div className='mt-10 font-medium'>
         <ReactMarkDown
           components={{
-            code({ node, inlist, className, children, ...props }) {
+            code({ node, inlist, className, children }) {
               const match = /language-(\w+)/.exec(className || '');
               const codeContent = String(children).replace(/\n$/, '');
               return !inlist && match ? (
@@ -73,7 +75,7 @@ const Post =({ post }: PostPageData) => {
                 </button>
               </div>
               ) : (
-                <code className={className} {...props}>
+                <code>
                   {children}
                 </code>
               )
