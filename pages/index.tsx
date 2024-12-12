@@ -20,7 +20,7 @@ export const getStaticProps: GetStaticProps = async () => {
       fourPosts,
       allTags
     },
-    revalidate: 60 * 5, // 5分間隔でISRを実行
+    revalidate: 50, // 50秒間隔でISRを実行
   };
 };
 
