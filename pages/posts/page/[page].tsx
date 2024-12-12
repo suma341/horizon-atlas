@@ -12,7 +12,7 @@ type pagePath = {
 
 export const getStaticPaths:GetStaticPaths = async() =>{
     const numberOfPages:number =await getNumberOfPages();
-    let paramsList:pagePath[] = [];
+    const paramsList:pagePath[] = [];
     for(let i:number=0;i<numberOfPages;i++){
         paramsList.push({ params:{ page:i.toString() } })
     }
