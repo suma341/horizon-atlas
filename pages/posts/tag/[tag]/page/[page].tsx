@@ -32,7 +32,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const currentPage:string = typeof context.params?.page == 'string' ? context.params.page : "1";
     const currentTag:string = typeof context.params?.tag == 'string' ? context.params.tag : "";
     const numberOfPages:number = await getNumberOfPages(currentTag);
-    const allTags = await getAllTags();
     // console.log(numberOfPages);
 
     const posts:PostMetaData[] = await getPostsByTagAndPage(currentTag, parseInt(currentPage, 10));
@@ -42,13 +41,12 @@ export const getStaticProps: GetStaticProps = async (context) => {
           numberOfPages,
           currentPage,
           currentTag,
-          allTags
         },
         revalidate: 50, // 50秒間隔でISRを実行
     };
 };
 
-const blogTagPageList = ({ posts,numberOfPages,currentPage, currentTag, allTags }: InferGetStaticPropsType<typeof getStaticProps>)=> {
+const blogTagPageList = ({ posts,numberOfPages,currentPage, currentTag}: InferGetStaticPropsType<typeof getStaticProps>)=> {
     return (
         <div className="container h-full w-full mx-auto font-mono">
         <main className="container w-full mt-16">
