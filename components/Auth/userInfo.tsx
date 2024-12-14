@@ -1,5 +1,6 @@
 import { SessionProvider, signOut, useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 
 export default function UserInfo(){
   return (
@@ -47,7 +48,7 @@ export function Session() {
               setIsVisible((prev) => !prev); // 状態を切り替え
             }}
             className="cursor-pointer flex p-1 rounded-lg bg-gray-200">
-              <img src={session.user?.image ? session.user?.image : "@/public/user_icon.png"} className="h-auto w-9 rounded-full"/>
+              <Image src={session.user?.image ? session.user?.image : "@/public/user_icon.png"} alt="User Icon"  className="h-auto w-9 rounded-full"/>
             </div>
             {isVisible && (
               <div
