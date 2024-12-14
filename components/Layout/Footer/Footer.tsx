@@ -9,7 +9,6 @@ const Footer = () => {
           <h4 className="font-bold text-lg mb-2">About Us</h4>
           <p>Learn more about our mission and values.</p>
         </div>
-
         <div>
           <h4 className="font-bold text-lg mb-2">Quick Links</h4>
           <ul>
@@ -18,7 +17,6 @@ const Footer = () => {
             <li><a href="/privacy" className="hover:underline">Privacy Policy</a></li>
           </ul>
         </div>
-
         <div>
           <h4 className="font-bold text-lg mb-2">Follow Us</h4>
           <div className="flex space-x-4">

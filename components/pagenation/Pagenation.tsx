@@ -19,7 +19,7 @@ const Pagenation =(props:Props)=> {
     }
 
     return (
-        <section className='md-8 lg:w-1/2 mx-auto rounded-md p-5'>
+        <section className='mb-12 lg:w-1/2 mx-auto rounded-md p-5'>
             <ul className='flex items-center justify-center gap-4'>
                 {pages.map((page, i:number)=> currentPageNum == page ? (
                     <li className='bg-slate-50 rounded-lg w-6 h-8 relative' key={i}>
