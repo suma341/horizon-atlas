@@ -2,6 +2,14 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
 import type { NextApiRequest, NextApiResponse } from "next";
 
+type Guild = {
+  id: string;
+  name: string;
+  icon: string | null;
+  owner: boolean;
+  permissions: string;
+};
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -19,7 +27,6 @@ export default async function handler(
   }
 
   try {
-    // ユーザーのギルド情報を取得
     const response = await fetch("https://discord.com/api/users/@me/guilds", {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -30,16 +37,15 @@ export default async function handler(
       throw new Error("Failed to fetch guilds");
     }
 
-    const guilds = await response.json();
-    
-    // 特定のギルドIDが存在するかを確認
+    const guilds: Guild[] = await response.json();
+
     const targetGuildId = process.env.DISCORD_SERVER_HORIZON_ID;
-    const userInGuild = guilds.some((guild: any) => guild.id === targetGuildId);
+    const userInGuild = guilds.some((guild) => guild.id === targetGuildId);
 
     if (userInGuild) {
-      res.status(200).json({message: "User is in Horizon" });
+      res.status(200).json({ message: "User is in Horizon" });
     } else {
-      res.status(302).json({message: "User is not in Horizon"})
+      res.status(302).json({ message: "User is not in Horizon" });
     }
   } catch (error) {
     console.error(error);

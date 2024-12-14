@@ -11,10 +11,9 @@ export default function LoginButton() {
 
 export function Session() {
   const { data: session } = useSession();
-
   
     const checkGuild = async () => {
-      if (typeof window !== "undefined") { // クライアントサイドでのみ実行
+      if (typeof window !== "undefined") { 
         try {
           const response = await fetch("/api/discord/guilds");
           const data = await response.json();
