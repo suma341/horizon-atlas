@@ -3,7 +3,6 @@ import type { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "ne
 import SinglePost from "@/components/Post/SinglePost";
 import { PostMetaData } from "@/types/postMetaData";
 import Pagenation from "@/components/pagenation/Pagenation";
-import Tags from '@/components/tag/Tags';
 
 type pagePath = {
     params: { page:string }
@@ -62,7 +61,6 @@ const blogPageList = ({ postsByPage,numberOfPages,currentPage,allTags }: InferGe
         </section>
       </main>
       <Pagenation numberOfPage={numberOfPages} currentPage={currentPage} tag={""} />
-      <Tags allTags={allTags} />
     </div>
     
   );

@@ -23,10 +23,10 @@ const Footer = () => {
           <h4 className="font-bold text-lg mb-2">Follow Us</h4>
           <div className="flex space-x-4">
             <a href="https://twitter.com" aria-label="Twitter" className='mt-1'>
-              <Image src="/x-social-media-logo-icon.svg" alt="X-icon" className="w-8 h-8" />
+              <Image src="/x-social-media-logo-icon.svg" alt="X-icon" width={10} height={10} className="w-8 h-8" />
             </a>
             <a href="https://facebook.com" aria-label="Facebook">
-              <Image src="/Instagram-Logo.wine.svg" alt="Instagram-icon" className="w-10 h-10" />
+              <Image src="/Instagram-Logo.wine.svg" alt="Instagram-icon" width={10} height={10} className="w-10 h-10" />
             </a>
           </div>
         </div>

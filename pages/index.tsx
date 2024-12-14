@@ -1,4 +1,4 @@
-import LoginButton from "@/components/Auth/loginButton";
+import LoginButton from "@/components/LoginButton/loginButton";
 import Head from "next/head";
 
 // Homeコンポーネント

@@ -6,8 +6,8 @@ const BackButton = () => {
   return (
     <button 
       onClick={() => router.back()} 
-      className="my-5 text-slate-400 hover:text-slate-500 underline">
-      戻る
+      className="my-5 text-slate-500 hover:text-slate-600 underline">
+      ← 戻る
     </button>
   );
 };

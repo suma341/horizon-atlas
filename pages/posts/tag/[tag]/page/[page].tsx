@@ -3,7 +3,6 @@ import type { GetStaticProps, InferGetStaticPropsType } from "next";
 import SinglePost from "@/components/Post/SinglePost";
 import { PostMetaData } from "@/types/postMetaData";
 import Pagenation from "@/components/pagenation/Pagenation";
-import Tags from "@/components/tag/Tags";
 
 type pagePath = {
     params: { tag:string, page:string }
@@ -71,7 +70,6 @@ const blogTagPageList = ({ posts,numberOfPages,currentPage, currentTag, allTags 
             </section>
         </main>
         <Pagenation numberOfPage={numberOfPages} currentPage={currentPage} tag={currentTag} />
-        <Tags allTags={allTags} />
         </div>
         
     );

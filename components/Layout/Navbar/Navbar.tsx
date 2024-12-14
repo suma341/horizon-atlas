@@ -1,6 +1,6 @@
-import UserInfo from '@/components/Auth/userInfo'
+import UserIcon from '@/components/Layout/Navbar/UserIcon/userIcon'
 import Link from 'next/link'
-import { MagnifyingGlass } from 'phosphor-react'
+import { FaMagnifyingGlass } from "react-icons/fa6";
 import React from 'react'
 
 const Navbar = () => {
@@ -13,14 +13,14 @@ const Navbar = () => {
             <div>
                 <ul className='flex items-center text-sm py-4'>
                     <li className='mr-3'> 
-                        <button className="p-2 bg-slate-50 hover:bg-gray-100 rounded-full shadow-md">
-                            <MagnifyingGlass size={24} weight="bold" className="text-gray-700">
-                                <Link href='/'></Link>
-                            </MagnifyingGlass>
+                        <button className="p-2 bg-slate-50 hover:bg-gray-100 rounded-full shadow-xl hover:translate-y-1 hover:shadow-none duration-200">
+                            <Link href="/search">
+                            <FaMagnifyingGlass size={22} className="text-gray-600 hover:text-gray-800" />
+                            </Link>
                         </button>
                     </li>
                     <li>
-                        <UserInfo />
+                        <UserIcon />
                     </li>
                 </ul>
             </div>
