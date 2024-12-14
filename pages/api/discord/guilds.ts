@@ -33,7 +33,7 @@ export default async function handler(
     const guilds = await response.json();
     
     // 特定のギルドIDが存在するかを確認
-    const targetGuildId = process.env.DISCORD_SERVER_HORIZON_ID;  // ここに対象のギルドIDを指定
+    const targetGuildId = process.env.DISCORD_SERVER_HORIZON_ID;
     const userInGuild = guilds.some((guild: any) => guild.id === targetGuildId);
 
     if (userInGuild) {

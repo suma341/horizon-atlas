@@ -12,7 +12,7 @@ type LayoutProps = {
 const PUBLIC_PAGES = ["/"]; // 認証不要なページ
 
 function AuthGuard({ children }: { children: React.ReactNode }) {
-  const { data: session, status } = useSession();
+  const { data: session, status } = useSession(); // statusを直接取得
   const router = useRouter();
 
   useEffect(() => {
@@ -24,6 +24,8 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
   if (status === "loading") {
     return <p>Loading...</p>; // ローディング中の表示
   }
+
+  console.log(session);
 
   return <>{children}</>; // ログイン済みの場合にコンテンツを表示
 }
