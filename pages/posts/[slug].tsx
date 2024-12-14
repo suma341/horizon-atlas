@@ -2,15 +2,22 @@ import { GetStaticProps } from 'next';
 import { getAllPosts, getSinglePost } from '@/lib/notionAPI';
 import React from 'react'
 import { PostMetaData } from '@/types/postMetaData';
-import { PostPageData } from '@/types/postPageData';
 import ReactMarkDown from 'react-markdown'
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter'
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import Link from 'next/link';
+import BackButton from '@/components/BackButton/BackButton';
 
 type postPath = {
   params: { slug:string }
 }
+
+type Props = {
+  post: {
+    metadata:PostMetaData,
+    markdown: { parent:string },
+  };
+};
 
 export const getStaticPaths = async() =>{
   const allPosts:PostMetaData[] = await getAllPosts();
@@ -24,7 +31,7 @@ export const getStaticPaths = async() =>{
 }
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const slug = params?.slug as string; // `params?.slug` が確実に string 型であることを明示
+  const slug = params?.slug as string; 
   const post = await getSinglePost(slug);
   return {
     props: {
@@ -34,7 +41,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   };
 };
 
-const Post =({ post }: PostPageData) => {
+const Post =({ post }: Props) => {
   const handleCopy = async (code: string) => {
       await navigator.clipboard.writeText(code);
       alert('コードをコピーしました！');
@@ -77,9 +84,7 @@ const Post =({ post }: PostPageData) => {
               )
             }
           }}>{post.markdown.parent}</ReactMarkDown>  
-          <Link href='/'>
-            <span className='pd-20 block mt-3'>ホームに戻る</span>
-          </Link>
+          <BackButton />
         </div>
     </section>
   )
