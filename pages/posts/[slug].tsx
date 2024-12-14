@@ -40,7 +40,7 @@ const Post =({ post }: PostPageData) => {
       alert('コードをコピーしました！');
   };
   return (
-    <section className='container lg;px-2 px-5 h-screen mx-auto mt-20'>
+    <section className='container lg;px-2 px-5 mx-auto mt-20'>
         <h2 className='w-full text-2xl font-medium'>{post.metadata.title}</h2>
         <div className='border-b-2 mt-2'></div>
         <span className='text-gray-500'>posted date at {post.metadata.date}</span>
