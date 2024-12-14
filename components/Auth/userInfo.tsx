@@ -48,7 +48,7 @@ export function Session() {
               setIsVisible((prev) => !prev); // 状態を切り替え
             }}
             className="cursor-pointer flex p-1 rounded-lg bg-gray-200">
-              <Image src={session.user?.image ? session.user?.image : "@/public/user_icon.png"} alt="User Icon"  className="h-auto w-9 rounded-full"/>
+              <Image src={session.user?.image ? session.user?.image : "/user_icon.png"} alt="UserIcon"  className="h-auto w-9 rounded-full"/>
             </div>
             {isVisible && (
               <div
