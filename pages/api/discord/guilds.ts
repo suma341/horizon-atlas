@@ -39,7 +39,7 @@ export default async function handler(
 
     const guilds: Guild[] = await response.json();
 
-    const targetGuildId = process.env.DISCORD_SERVER_HORIZON_ID;
+    const targetGuildId = process.env.DISCORD_HORIZON_ID;
     const userInGuild = guilds.some((guild) => guild.id === targetGuildId);
 
     if (userInGuild) {
