@@ -7,36 +7,36 @@ const SinglePost = (props:PostMetaData) => {
   return (
     <Link href={`/posts/${slug}`}>
         {isPagenationPage ? (
-            <section className=' bg-sky-900 mb-8 mx-auto rounded-md p-5 shadow-2xl hover:shadow-none hover:translate-y-1 transition-all duration-300'>
+            <section className='border-solid border-x-slate-500 bg-slate-50 mb-8 mx-1 rounded-md p-5 shadow-2xl hover:shadow-none hover:translate-y-1 transition-all duration-300'>
                 <div className='lg:flex lg:flex-wrap items-center'>
-                    <h2 className='text-gray-100 text-2xl font-medium mb-2 mr-1'>
+                    <h2 className='text-2xl font-medium mb-2 mr-1'>
                         {title}
                     </h2>
-                    <div className='text-gray-100 mr-2'>{date}</div>
+                    <div className='mr-2'>{date}</div>
                 </div>
                 <div className='flex flex-wrap'>
                     {tags.map((tag, i:number)=>(
-                        <span className='text-white bg-gray-500 rounded-xl px-2 pb-1/2 mr-2 mb-1 font-thin' key={i}>
+                        <span className=' bg-gray-500 text-white rounded-xl px-2 pb-1/2 mr-2 mb-1 font-thin' key={i}>
                             {tag}
                         </span>
                     ))}
                 </div>
-                <p className='text-gray-100'>{description}</p>
+                <p className=''>{description}</p>
             </section>
         ) : (
-            <section className='lg:w-1/2 bg-sky-900 mb-8 mx-auto rounded-md p-5 shadow-2xl hover:shadow-none hover:translate-y-1 transition-all duration-300'>
+            <section className='border-solid border-spacing-x-7 border-x-slate-500 bg-slate-50 mb-8 mx-auto rounded-md p-5 shadow-2xl hover:shadow-none hover:translate-y-1 transition-all duration-300'>
                 <div className='flex items-center gap-3'>
-                    <h2 className='text-gray-100 text-2xl font-medium mb-2 mr-1'>
+                    <h2 className=' text-2xl font-medium mb-2 mr-1'>
                         {title}
                     </h2>
-                    <div className='text-gray-100'>{date}</div>
+                    <div className=''>{date}</div>
                 </div>
                 {tags.map((tag, i:number)=>(
                     <span className='text-white bg-gray-500 rounded-xl px-2 pb-1 mr-2 font-thin' key={i}>
                         {tag}
                     </span>
                 ))}
-                <p className='text-gray-100 line-clamp-3'>{description}</p>
+                <p className=' line-clamp-3'>{description}</p>
             </section>
         )}
     </Link>

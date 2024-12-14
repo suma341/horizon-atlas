@@ -17,6 +17,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "constants"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "constants", "lib/discordAuth.ts"],
   "exclude": ["node_modules"]
 }
