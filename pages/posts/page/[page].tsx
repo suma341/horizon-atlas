@@ -1,4 +1,4 @@
-import { getNumberOfPages, getPostsByPage } from "@/lib/notionAPI";
+import { getAllMetaData, getNumberOfPages, getPostsByPage } from "@/lib/notionAPI";
 import type { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import SinglePost from "@/components/Post/SinglePost";
 import { PostMetaData } from "@/types/postMetaData";
@@ -26,11 +26,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const numberOfPages:number =await getNumberOfPages();
 
     const postsByPage = await getPostsByPage(parseInt(currentPage));
+    // const allMetaData = await getAllMetaData();
+
     return {
         props: {
           postsByPage,
           numberOfPages,
           currentPage,
+          // allMetaData
         },
         revalidate: 50, // 50秒間隔でISRを実行
     };
@@ -38,6 +41,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 // Homeコンポーネント
 const blogPageList = ({ postsByPage,numberOfPages,currentPage }: InferGetStaticPropsType<typeof getStaticProps>)=> {
+  // console.log(allMetaData);
   return (
     <div className="container h-full w-full mx-auto font-mono">
       <main className="container w-full mt-16 mb-3">

@@ -93,19 +93,12 @@ export const getSinglePost = async (slug:string)=>{
 
     const mdBlocks = await n2m.pageToMarkdown(page.id);
     const mdString = n2m.toMarkdownString(mdBlocks);
-    console.log(mdString);
 
     return {
         metadata,
         markdown: mdString,
+        mdBlocks
     }
-};
-
-// トップページ用のデータ取得
-export const getPostsForTopPage=async(pageSize=4)=>{
-    const allPosts = await getAllPosts();
-    const fourPosts = allPosts.slice(0, pageSize);
-    return fourPosts;
 };
 
 // ページ番号に応じた記事取得

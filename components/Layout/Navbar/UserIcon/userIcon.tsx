@@ -54,21 +54,17 @@ export function Session() {
             </div>
             {isVisible && (
               <div
-                id="toggleTarget"
-                ref={toggleTargetRef}
-                className="absolute bg-white p-2 rounded-md w-32 translate-y-1 translate-x-[-55%]"
-              >
+                id="toggleTarget" ref={toggleTargetRef}
+                className="absolute bg-white p-2 rounded-md w-32 translate-y-1 translate-x-[-55%]">
                 <ul>
-                    <li className="flex relative hover:bg-slate-200 rounded-sm p-1">
+                    <button className="flex relative hover:bg-slate-200 rounded-sm p-1 pr-2">
                       <IoMdPerson size={18} className="mt-0.5 mr-1.5" />
-                      <button>マイページ</button>
-                    </li>
-                    <li className="flex relative hover:bg-slate-200 rounded-sm p-1">
+                      <p>マイページ</p>
+                    </button>
+                    <button onClick={() => signOut()} className="flex relative hover:bg-slate-200 rounded-sm p-1 pr-2">
                       <PiSignOut size={18} className="mt-0.5 mr-1.5" />
-                      <button onClick={() => signOut()}>
-                        ログアウト
-                      </button>
-                    </li>
+                      <p className="">ログアウト</p>
+                    </button>
                 </ul>
             </div>)}
             <div>

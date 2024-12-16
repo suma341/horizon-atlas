@@ -6,6 +6,7 @@ import ReactMarkDown from 'react-markdown'
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter'
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import BackButton from '@/components/BackButton/BackButton';
+import { MdBlock } from 'notion-to-md/build/types';
 
 type postPath = {
   params: { slug:string }
@@ -15,6 +16,7 @@ type Props = {
   post: {
     metadata:PostMetaData,
     markdown: { parent:string },
+    mdBlocks:MdBlock[]
   };
 };
 
@@ -41,6 +43,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 };
 
 const Post =({ post }: Props) => {
+  console.log(post.mdBlocks);
   const handleCopy = async (code: string) => {
       await navigator.clipboard.writeText(code);
       alert('コードをコピーしました！');
