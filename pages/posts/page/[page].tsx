@@ -1,4 +1,4 @@
-import { getAllMetaData, getNumberOfPages, getPostsByPage } from "@/lib/notionAPI";
+import { getNumberOfPages, getPostsByPage } from "@/lib/notionAPI";
 import type { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import SinglePost from "@/components/Post/SinglePost";
 import { PostMetaData } from "@/types/postMetaData";

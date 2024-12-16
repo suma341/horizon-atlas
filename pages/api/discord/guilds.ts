@@ -48,6 +48,7 @@ export default async function handler(
       res.status(302).json({ message: "User is not in Horizon" });
     }
   } catch (error) {
+    console.log(error)
     res.status(500).json({ error: "Internal Server Error" });
   }
 }
