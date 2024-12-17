@@ -52,7 +52,6 @@ const blogPageList = ({ postsByPage,numberOfPages,currentPage }: InferGetStaticP
               <SinglePost
               id={post.id}
               title={post.title} 
-              description={post.description}
               date={post.date}
               tags={post.tags}
               slug={post.slug}
