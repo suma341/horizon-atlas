@@ -57,7 +57,6 @@ const blogTagPageList = ({ posts,numberOfPages,currentPage, currentTag}: InferGe
                     <SinglePost
                     id={post.id}
                     title={post.title} 
-                    description={post.description}
                     date={post.date}
                     tags={post.tags}
                     slug={post.slug}

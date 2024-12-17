@@ -65,7 +65,6 @@ const getPageMetaData = (post: PageObjectResponse) => {
     return {
         id: post.id,
         title:'title' in properties.title ? properties.title.title[0].plain_text : 'untitled',
-        description:'rich_text' in properties.description ? properties.description.rich_text[0].plain_text : '',
         date: date,
         tags: 'multi_select' in properties.tag ? getTags(properties.tag.multi_select) : [],
         slug:'rich_text' in properties.slug ? properties.slug.rich_text[0].plain_text : 'untitled',

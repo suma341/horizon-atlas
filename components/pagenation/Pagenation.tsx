@@ -1,4 +1,4 @@
-import { getPageLink } from '@/lib/blog-helper';
+import { getPageLink } from '@/lib/createPageLink';
 import Link from 'next/link';
 import React from 'react'
 
