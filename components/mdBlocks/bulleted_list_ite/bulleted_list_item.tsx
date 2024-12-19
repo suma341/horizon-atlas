@@ -18,8 +18,8 @@ export default function BulletedListItem(props:Props) {
                 <span className='font-bold mr-1 text-xl'>・</span>
                 <Paragraph parent={text[1]} depth={depth +1} />
             </p>
-            {mdBlock.children.map((child)=>(
-                <div style={{marginLeft:(depth + 1) * 16}}>
+            {mdBlock.children.map((child,i)=>(
+                <div key={i} style={{marginLeft:(depth + 1) * 16}}>
                     <MdBlockComponent mdBlock={child} depth={depth +1} />
                 </div>
             ))}
