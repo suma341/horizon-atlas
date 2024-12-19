@@ -18,8 +18,8 @@ export default function NumberedListItem(props:Props) {
                 <span className='mr-2'>{splitedText[0]}</span>
                 {<Paragraph parent={splitedText[1]} depth={depth +1} />}
             </p>
-            {mdBlock.children.map((child)=>(
-                <div style={{marginLeft:(depth + 1) * 16}}>
+            {mdBlock.children.map((child,i)=>(
+                <div key={i} style={{marginLeft:(depth + 1) * 16}}>
                     <MdBlockComponent mdBlock={child} depth={depth +1} />
                 </div>
             ))}

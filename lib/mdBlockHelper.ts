@@ -11,6 +11,8 @@ type Patterns = {
   regex: RegExp;
 }
 
+rgb
+
 export function searchMDKeyword(text: string): MdTypeAndText[] {
   const types: TypeAndIndex[] = [];
 
@@ -69,8 +71,8 @@ export function searchMDKeyword(text: string): MdTypeAndText[] {
     }else if(sortedText[i].type === 'code'){
       mdArray[i] = mdArray[i].slice(1,-1);
       style = {
-        backgroundColor :rgbOverride(212,212,212),
-        color:rgbOverride(244,63,94),
+        backgroundColor :rgb(212,212,212),
+        color:rgb(244,63,94),
         paddingLeft: 4,
         paddingRight:4,
         borderRadius: 4
@@ -92,7 +94,7 @@ export function searchMDKeyword(text: string): MdTypeAndText[] {
         mdArray[i] = match[1];
         link = match[2];
         style={
-          color: rgbOverride(115, 115, 115)!,
+          color: rgb(115, 115, 115)!,
           textDecorationLine: 'underline'
         }
       }
@@ -108,7 +110,7 @@ export function searchMDKeyword(text: string): MdTypeAndText[] {
   return dividedText;
 }
 
-function rgbOverride(r: number, g: number, b: number): string {
+function rgb(r: number, g: number, b: number): string {
   return `rgb(${r}, ${g}, ${b})`;
 }
 
@@ -132,8 +134,4 @@ function divideConsecutive(arr:number[]) {
 function sortText(types: TypeAndIndex[]){
   const sortedText:TypeAndIndex[] = types.sort((a, b) => a.startIndex - b.startIndex);
   return sortedText;
-}
-
-function rgb(arg0: number, arg1: number, arg2: number) {
-  throw new Error("Function not implemented.");
 }
