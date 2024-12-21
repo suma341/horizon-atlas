@@ -9,9 +9,7 @@ type Props={
 export default function TableBlock(props:Props) {
     const {mdBlock} = props;
     const dividedRows = mdBlock.parent.split("\n");
-    console.log(dividedRows);
     const rows = dividedRows.map((row)=> row.slice(2,-2));
-    console.log(rows);
   return (
     <div className='overflow-x-auto whitespace-nowrap my-2'>
         <table className='table-auto border-collapse border border-neutral-500'>

@@ -12,7 +12,7 @@ export default function ImageBlock(props:Props) {
       if(match){
         const url = match[2][-1]==')' ? match[2].slice(0,-1) : match[2];
         return (
-            <div className='w-10/12 h-auto'>
+            <div>
                 <img src={url.slice(0,-1)} alt={''} style={{
                         width: '100%',
                         height: 'auto',

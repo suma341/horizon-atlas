@@ -22,7 +22,7 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
   }, [status, router]);
 
   if (status === "loading") {
-    return <p>Loading...</p>; // ローディング中の表示
+    return <p className='mx-auto my-0'>Loading...</p>; // ローディング中の表示
   }
 
   console.log(session);

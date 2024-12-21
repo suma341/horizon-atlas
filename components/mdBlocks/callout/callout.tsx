@@ -13,7 +13,7 @@ export default function Callout(props:Props) {
     const text = mdBlock.parent.split(" ")[1];
 
     return (
-        <div className='bg-white p-2 px-3 my-2 w-10/12 border-2 border-neutral-400'>
+        <div className='bg-white p-2 px-3 my-2 border-2 border-neutral-400'>
             <Paragraph parent={text} depth={depth +1} />
             {mdBlock.children.map((child, i)=>(
                 <MdBlockComponent mdBlock={child} key={i} depth={depth +1} />

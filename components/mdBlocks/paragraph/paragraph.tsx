@@ -1,5 +1,6 @@
 import { searchMDKeyword } from '@/lib/mdBlockHelper';
 import { MdTypeAndText } from '@/types/parent';
+import Link from 'next/link';
 import React from 'react'
 
 type Props={
@@ -15,7 +16,13 @@ export default function Paragraph(props:Props){
         <div>
             <p>
                 {mdTypeAndTextList.map((text, index) => {
-                    return <span key={index} style={text.style}>{text.text}</span>;
+                    return text.link === undefined ? ( 
+                    <span key={index} style={text.style}>
+                        {text.text}
+                    </span>) : (
+                    <span key={index} style={text.style}>
+                        <Link href={text.link}>{text.text}</Link>
+                    </span>)
                 })}
             </p>
         </div>

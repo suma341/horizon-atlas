@@ -3,6 +3,7 @@ import { PostMetaData } from '@/types/postMetaData';
 import { Client, isFullPage } from '@notionhq/client';
 import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 import { NotionToMarkdown } from 'notion-to-md';
+import { MdBlock } from 'notion-to-md/build/types';
 
 const notion = new Client({
     auth: process.env.NOTION_TOKEN,
@@ -91,14 +92,25 @@ export const getSinglePost = async (slug:string)=>{
     const metadata = getPageMetaData(page);
 
     const mdBlocks = await n2m.pageToMarkdown(page.id);
-    const mdString = n2m.toMarkdownString(mdBlocks);
 
     return {
         metadata,
-        markdown: mdString,
         mdBlocks
     }
 };
+
+export const getChildPage = async (mdBlocks:MdBlock[])=>{
+    const childPages = mdBlocks.filter((block)=>block.children.map((child)=>child.type==='child_page'))
+    return childPages;
+}
+
+export const getSingleChildPage = async(slug:string, titles:string[])=>{
+    const post = await getSinglePost(slug);
+    const childPages = await getChildPage(post.mdBlocks);
+    for(const title of titles){
+        
+    }
+}
 
 // ページ番号に応じた記事取得
 export const getPostsByPage=async(page:number)=>{

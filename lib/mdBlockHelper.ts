@@ -93,7 +93,8 @@ export function searchMDKeyword(text: string): MdTypeAndText[] {
         link = match[2];
         style={
           color: 'rgb(115, 115, 115)',
-          textDecorationLine: 'underline'
+          textDecorationLine: 'underline',
+          cursor:'pointer'
         }
       }
     };
