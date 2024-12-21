@@ -104,14 +104,6 @@ export const getChildPage = async (mdBlocks:MdBlock[])=>{
     return childPages;
 }
 
-export const getSingleChildPage = async(slug:string, titles:string[])=>{
-    const post = await getSinglePost(slug);
-    const childPages = await getChildPage(post.mdBlocks);
-    for(const title of titles){
-        
-    }
-}
-
 // ページ番号に応じた記事取得
 export const getPostsByPage=async(page:number)=>{
     const allPosts = await getAllPosts();
