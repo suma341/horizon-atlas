@@ -1,5 +1,5 @@
 import { GetStaticProps } from 'next';
-import { getAllPosts, getChildPage, getSinglePost } from '@/lib/notionAPI';
+import { getAllPosts, getSinglePost } from '@/lib/notionAPI';
 import React from 'react'
 import { PostMetaData } from '@/types/postMetaData';
 import BackButton from '@/components/BackButton/BackButton';

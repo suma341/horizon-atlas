@@ -99,10 +99,11 @@ export const getSinglePost = async (slug:string)=>{
     }
 };
 
-export const getChildPage = async (mdBlocks:MdBlock[])=>{
-    const childPages = mdBlocks.filter((block)=>block.children.map((child)=>child.type==='child_page'))
-    return childPages;
-}
+// これ使えない（修正必須）
+// export const getChildPage = async (mdBlocks:MdBlock[])=>{
+//     const childPages = mdBlocks.filter((block)=>block.children.map((child)=>child.type==='child_page'))
+//     return childPages;
+// }
 
 // ページ番号に応じた記事取得
 export const getPostsByPage=async(page:number)=>{
