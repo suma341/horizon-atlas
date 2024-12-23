@@ -3,7 +3,7 @@ import { PostMetaData } from '@/types/postMetaData';
 import { Client, isFullPage } from '@notionhq/client';
 import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 import { NotionToMarkdown } from 'notion-to-md';
-import { MdBlock } from 'notion-to-md/build/types';
+// import { MdBlock } from 'notion-to-md/build/types';
 
 const notion = new Client({
     auth: process.env.NOTION_TOKEN,
