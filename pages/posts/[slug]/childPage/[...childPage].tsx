@@ -50,11 +50,13 @@ export const getStaticProps: GetStaticProps = async (context) => {
     for(let i=0;i<childparam.length;i++){
       const mdBlocks = currentchild;
       const childPages = mdBlocks.filter((block)=>block.type==='child_page');
-      const normalizeString = (str: string) =>
-        str.replace(/[\s\r\n\t]+/g, " ").trim().normalize("NFC");
-      const isEqual = (str1: string, str2: string) =>
-        normalizeString(str1) === normalizeString(str2);
-      const child = childPages.filter((childPage)=>isEqual(childPage.parent,`## ${childparam[i]}`));
+      // const normalizeString = (str: string) =>
+      //   str.replace(/[\s\r\n\t]+/g, " ").trim().normalize("NFC");
+      // const isEqual = (str1: string, str2: string) =>
+      //   normalizeString(str1) === normalizeString(str2);
+      // const child = childPages.filter((childPage)=>isEqual(childPage.parent,`## ${childparam[i]}`));
+
+      const child = childPages.filter((childPage)=>childPage.parent===`## ${childparam[i]}`);
 
       currentchild = child;
     }
