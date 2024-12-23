@@ -23,7 +23,7 @@ export const getStaticPaths = async () => {
     await Promise.all(
       allPosts.map(async (post) => {
         const postData = await getSinglePost(post.slug);
-        const childPages = await getChildPage(postData.mdBlocks);
+        const childPages = postData.mdBlocks.filter((block)=>block.type==='child_page');
         return childPages.map((child) => ({
           params: {
             slug: post.slug,
@@ -33,6 +33,8 @@ export const getStaticPaths = async () => {
       })
     )
   ).flat();
+
+  console.log("paths",paths);
 
   return {
     paths,
