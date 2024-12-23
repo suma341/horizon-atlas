@@ -27,7 +27,7 @@ export const getStaticPaths = async () => {
         return childPages.map((child) => ({
           params: {
             slug: post.slug,
-            childPage: child.parent,
+            childPage: child.parent.replace(/^##\s*/, '').trim(),
           },
         }));
       })
@@ -48,7 +48,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const post = await getSinglePost(currentSlug);
 
   const childPages = post.mdBlocks.filter((block)=>block.type==='child_page');
-  const targetPage = childPages.filter((page)=>page.parent===`## ${childparam}`);
+  const targetPage = childPages.filter((page)=>page.parent.replace(/^##\s*/, '').trim()===childparam);
 
   // if(childparam.length!==0){
   //   for(let i=0;i<childparam.length;i++){
