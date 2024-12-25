@@ -13,7 +13,7 @@ type Props = {
 };
 
 type pagePath = {
-  params: { slug:string, childPage:string }
+  params: { slug:string, childId:string }
 }
 
 export const getStaticPaths = async () => {
@@ -27,14 +27,14 @@ export const getStaticPaths = async () => {
         return childPages.map((child) => ({
           params: {
             slug: post.slug,
-            childPage: child.parent.replace(/^##\s*/, '').trim(),
+            childId: child.blockId,
           },
         }));
       })
     )
   ).flat();
 
-  console.log("paths",paths);
+  // console.log("paths",paths);
 
   return {
     paths,
@@ -44,11 +44,11 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const currentSlug = context.params?.slug as string;
-  const childparam = context.params?.childPage as string;
+  const currentChildId= context.params?.childId as string;
   const post = await getSinglePost(currentSlug);
 
   const childPages = post.mdBlocks.filter((block)=>block.type==='child_page');
-  const targetPage = childPages.filter((page)=>page.parent.replace(/^##\s*/, '').trim()===childparam);
+  const targetPage = childPages.filter((page)=>page.blockId===currentChildId);
 
   // if(childparam.length!==0){
   //   for(let i=0;i<childparam.length;i++){
@@ -68,7 +68,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   return {
     props: {
-      page: childparam,
+      page: currentChildId,
       slug: currentSlug,
       mdBlocks:targetPage[0]
     },

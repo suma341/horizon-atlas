@@ -11,11 +11,13 @@ export default function ChildPage(props: Props) {
   const { mdBlock } = props;
   const title = mdBlock.parent.split(' ')[1]; // 子ページのタイトルを取得
   const router = useRouter();
-  const { slug, childPage } = router.query; // 現在のルートパラメータを取得
+  const { slug } = router.query; // 現在のルートパラメータを取得
   
-  const currentPathArray = Array.isArray(childPage) ? childPage : [childPage];
+//   const currentPathArray = Array.isArray(childId) ? childId : [childId];
+
+    const newPath = `/posts/${slug}/childPage/${mdBlock.blockId}`
   
-  const newPath = `/posts/${slug}/childPage${[...currentPathArray, title].join('/')}`;
+//   const newPath = `/posts/${slug}/childPage${[...currentPathArray, title].join('/')}`;
 
   console.log(newPath);
 
