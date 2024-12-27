@@ -1,7 +1,6 @@
 import { GetStaticProps } from 'next';
 import React from 'react'
 import { PostMetaData } from '@/types/postMetaData';
-import BackButton from '@/components/BackButton/BackButton';
 import { MdBlock } from 'notion-to-md/build/types';
 import MdBlockComponent from '@/components/mdBlocks/mdBlock';
 import { getAllPosts, getSinglePost } from '@/lib/dataAccess/notionApiGateway';
@@ -58,7 +57,6 @@ const Post =({ metadata, mdBlocks }: Props) => {
               <MdBlockComponent mdBlock={mdBlock} depth={0} key={i} />
             ))}
           </div>
-          <BackButton />
         </div>
     </section>
   )

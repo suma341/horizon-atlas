@@ -1,4 +1,3 @@
-import BackButton from '@/components/BackButton/BackButton';
 import Navbar from '@/components/Navbar/navbar';
 import MdBlockComponent from '@/components/mdBlocks/mdBlock';
 import { getAllPosts, getSinglePost } from '@/lib/dataAccess/notionApiGateway';
@@ -9,8 +8,6 @@ import { MdBlock } from 'notion-to-md/build/types';
 import React from 'react';
 
 type Props = {
-  slug:string;
-  page:string[];
   mdBlocks:MdBlock[];
   pageNavs:pageNav[];
 };
@@ -59,26 +56,25 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
     return {
         props: {
-            page: childparam,
-            slug: currentSlug,
             mdBlocks:currentchild,
             pageNavs
         },
         revalidate: 50, // ISR
     };
 };
+
 const PostChildPage = ( props : Props) => {
     const {mdBlocks, pageNavs} = props;
     return (
         <>
             <Navbar pageNavs={pageNavs} />
-            <section className="container lg:px-10 px-20 mx-auto mt-20">
+            <section className="container lg:px-10 px-20 mx-auto my-20">
+                <h2 className='my-2 font-bold text-3xl'>{pageNavs[pageNavs.length - 1].title}</h2>
                 <div>
                     {mdBlocks.map((mdBlock, i)=>(
                         <MdBlockComponent mdBlock={mdBlock} depth={0} key={i} />
                     ))}
                 </div>
-                <BackButton />
             </section>
         </>
     );
