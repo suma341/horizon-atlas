@@ -13,6 +13,7 @@ import Quote from './quote/quote';
 import ImageBlock from './image/image';
 import TableBlock from './table/table';
 import ChildPage from './child_page/child_page';
+import Bookmark from './bookmark/bookmark';
 
 type Props ={
     mdBlock:MdBlock
@@ -22,9 +23,7 @@ type Props ={
 export default function MdBlockComponent(props:Props) {
     const {mdBlock,depth} = props;
     if(mdBlock.type==='paragraph'){
-      return (
-        <Paragraph parent={mdBlock.parent} depth={depth} />
-      )
+      return <Paragraph parent={mdBlock.parent} depth={depth} />
     }else if(mdBlock.type==='heading_1'){
         return <Heading1 mdBlock={mdBlock} depth={depth} />
     }else if(mdBlock.type === 'heading_2'){
@@ -49,8 +48,9 @@ export default function MdBlockComponent(props:Props) {
         return <TableBlock mdBlock={mdBlock} depth={depth} />
     }else if(mdBlock.type==='child_page'){
         return <ChildPage mdBlock={mdBlock} />
+    }else if(mdBlock.type == 'bookmark'){
+        return <Bookmark mdBlock={mdBlock} depth={depth} />
     }
-        
     return (
         <>
           <div></div>
