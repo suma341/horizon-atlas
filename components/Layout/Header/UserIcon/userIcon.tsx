@@ -55,15 +55,15 @@ export function Session() {
             {isVisible && (
               <div
                 id="toggleTarget" ref={toggleTargetRef}
-                className="absolute bg-white p-2 rounded-md w-32 translate-y-1 translate-x-[-55%]">
+                className="border-solid border-neutral-300 border-2 absolute bg-white p-2 rounded-md w-32 translate-y-1 translate-x-[-55%]">
                 <ul>
                     <button className="flex relative hover:bg-slate-200 rounded-sm p-1 pr-2">
-                      <IoMdPerson size={18} className="mt-0.5 mr-1.5" />
-                      <p>マイページ</p>
+                      <IoMdPerson size={18} className="mt-0.5 mr-1.5 text-neutral-600" />
+                      <p className="text-neutral-600">マイページ</p>
                     </button>
                     <button onClick={() => signOut()} className="flex relative hover:bg-slate-200 rounded-sm p-1 pr-2">
-                      <PiSignOut size={18} className="mt-0.5 mr-1.5" />
-                      <p className="">ログアウト</p>
+                      <PiSignOut size={18} className="mt-0.5 mr-1.5 text-neutral-600" />
+                      <p className="text-neutral-600">ログアウト</p>
                     </button>
                 </ul>
             </div>)}

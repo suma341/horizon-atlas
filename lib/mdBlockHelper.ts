@@ -69,7 +69,7 @@ export function searchMDKeyword(text: string): MdTypeAndText[] {
     }else if(sortedText[i].type === 'code'){
       mdArray[i] = mdArray[i].slice(1,-1);
       style = {
-        backgroundColor :'rgb(212,212,212)',
+        backgroundColor :'rgb(235 235 235)',
         color:'rgb(244,63,94)',
         paddingLeft: 4,
         paddingRight:4,

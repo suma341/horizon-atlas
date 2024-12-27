@@ -1,9 +1,9 @@
 import React,{ ReactNode, useEffect } from 'react'
-import Navbar from './Navbar/Navbar';
 import Head from 'next/head';
 import Footer from './Footer/Footer';
 import { SessionProvider, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import Header from './Header/Header';
 
 type LayoutProps = {
     children: ReactNode;
@@ -40,11 +40,11 @@ function SesstionProviderWraped({children} : {children: React.ReactNode}){
 
 const Layout:React.FC<LayoutProps> = ({ children })=> {
   return (
-    <div className='bg-neutral-200'>
+    <div className='bg-white'>
         <Head>
           <title>Horizon TechShelf</title>
         </Head>
-        <Navbar />
+        <Header />
           <SesstionProviderWraped>
             {children}
           </SesstionProviderWraped>

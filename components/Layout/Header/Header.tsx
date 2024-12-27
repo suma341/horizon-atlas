@@ -1,13 +1,13 @@
-import UserIcon from '@/components/Layout/Navbar/UserIcon/userIcon'
+import UserIcon from '@/components/Layout/Header/UserIcon/userIcon'
 import Link from 'next/link'
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import React from 'react'
 
-const Navbar = () => {
+export default function Header(){
   return (
-    <nav className='lg:px-2 px-5 bg-neutral-50'>
+    <header className='lg:px-2 px-5 bg-neutral-300 text-white'>
         <div className='container flex items-center justify-between'>
-            <Link href="/" className='ml-5 text-2xl font-medium bg-neutral-700 text-white p-1 rounded-md'>
+            <Link href="/" className='ml-5 text-2xl font-medium text-white p-1 rounded-md'>
                 TechShelf
             </Link>
             <div>
@@ -25,8 +25,6 @@ const Navbar = () => {
                 </ul>
             </div>
         </div>
-    </nav>
+    </header>
   )
 }
-
-export default Navbar
