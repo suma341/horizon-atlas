@@ -2,6 +2,8 @@ import { MdBlock } from 'notion-to-md/build/types'
 import React from 'react'
 import MdBlockComponent from '../mdBlock';
 import Paragraph from '../paragraph/paragraph';
+import { MdTypeAndText } from '@/types/parent';
+import { searchMDKeyword } from '@/lib/mdBlockHelper';
 
 type Props={
     mdBlock:MdBlock
@@ -10,11 +12,11 @@ type Props={
 
 export default function Callout(props:Props) {
     const {mdBlock,depth} = props;
-    const text = mdBlock.parent.split(" ")[1];
+    const parent = mdBlock.parent.split("> ")[1];
 
     return (
-        <div className='bg-white p-2 px-3 my-2 border-2 border-neutral-400'>
-            <Paragraph parent={text} depth={depth +1} />
+        <div className='bg-white p-2 px-3 my-2 border-2 border-neutral-300'>
+            <Paragraph parent={parent} depth={depth +1} />
             {mdBlock.children.map((child, i)=>(
                 <MdBlockComponent mdBlock={child} key={i} depth={depth +1} />
             ))}
