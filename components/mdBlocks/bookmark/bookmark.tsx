@@ -18,6 +18,7 @@ type ogData = {
     ogDescription?: string;
     ogSiteName?: string;
     ogImage?: ogImage[];
+    favicon?:string;
 };
 
 export default function Bookmark(props: Props) {
@@ -33,8 +34,8 @@ export default function Bookmark(props: Props) {
         console.log(res);
         if(res.ok){
             const {result} = await res.json();
-            const { ogUrl,ogTitle,ogDescription,ogSiteName,ogImage } = result;
-            const ogData = {ogUrl, ogTitle, ogDescription, ogSiteName, ogImage};
+            const { ogUrl,ogTitle,ogDescription,ogSiteName,ogImage, favicon } = result;
+            const ogData = {ogUrl, ogTitle, ogDescription, ogSiteName, ogImage, favicon};
             setOgpData(ogData);
         }
         }
@@ -48,18 +49,22 @@ export default function Bookmark(props: Props) {
     }
 
   return (
-    <div className="my-2 rounded-md border-2 border-neutral-200 p-2">
+    <div className="my-2 rounded-sm border-2 border-neutral-200 hover:bg-neutral-100">
         {ogpData !==undefined && (
             <Link href={ogpData.ogUrl || ""}>
                 <div className="flex">
-                    <div>
-                        <p>{ogpData.ogTitle}</p>
-                        <p>{ogpData.ogDescription}</p>
+                    <div className='m-3'>
+                        <p className='text-neutral-800 line-clamp-1'>{ogpData.ogTitle}</p>
+                        <p className='text-neutral-500 text-sm line-clamp-2'>{ogpData.ogDescription}</p>
+                        <div className='flex mb-0 mt-2'>
+                            <img src={ogpData.favicon} className='w-auto max-h-4 rounded-full m-0 mr-2' />
+                            <span className='text-neutral-600 text-xs line-clamp-1'>{ogpData.ogUrl}</span>
+                        </div>
                     </div>
                     {ogpData.ogImage !==undefined && ogpData.ogImage.length !==0 && (
-                        <div>
-                            <img src={ogpData.ogImage[0].url} className='w-80 h-auto' />
-                        </div>
+                    <div className='p-0 m-0' style={{ lineHeight: 0 }}>
+                        <img src={ogpData.ogImage[0].url} className='w-96 h-28 rounded-sm lg:w-72' />
+                    </div>
                     )}
                 </div>
             </Link>
