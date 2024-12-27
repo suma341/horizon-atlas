@@ -2,8 +2,6 @@ import { MdBlock } from 'notion-to-md/build/types'
 import React from 'react'
 import MdBlockComponent from '../mdBlock';
 import Paragraph from '../paragraph/paragraph';
-import { MdTypeAndText } from '@/types/parent';
-import { searchMDKeyword } from '@/lib/mdBlockHelper';
 
 type Props={
     mdBlock:MdBlock
