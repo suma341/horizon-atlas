@@ -1,5 +1,5 @@
 import Tags from "@/components/tag/Tags";
-import { getAllTags } from "@/lib/notionAPI";
+import { getAllTags } from "@/lib/services/notionApiService";
 import { GetStaticProps } from "next";
 import { FaSearch } from "react-icons/fa";
 
