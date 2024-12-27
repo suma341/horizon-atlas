@@ -7,7 +7,7 @@ const SinglePost = (props:PostMetaData) => {
   return (
     <Link href={`/posts/${slug}`}>
         {isPagenationPage ? (
-            <section className='bg-slate-50 mb-4 mx-auto rounded-md p-3 shadow-2xl hover:shadow-none hover:translate-y-1 transition-all duration-300'>
+            <section className='bg-slate-50 mb-4 mx-auto rounded-md p-3 shadow-2xl hover:shadow-none hover:translate-y-1 hover:bg-neutral-100 transition-all duration-300'>
                 <div className=''>
                     <h2 className='text-xl font-medium mb-2 mr-1'>
                         {title}
@@ -15,21 +15,21 @@ const SinglePost = (props:PostMetaData) => {
                 </div>
                 <div className='flex flex-wrap'>
                     {tags.map((tag, i:number)=>(
-                        <span className='bg-gray-500 text-white rounded-md px-1 pb-1/2 mr-2 mb-1 font-thin' key={i}>
+                        <span className='bg-neutral-400 text-white rounded-md px-1 pb-1/2 mr-2 mb-1 font-thin' key={i}>
                             {tag}
                         </span>
                     ))}
                 </div>
             </section>
         ) : (
-            <section className='bg-slate-50 mb-4 mx-auto rounded-md p-3 shadow-2xl hover:shadow-none hover:translate-y-1 transition-all duration-300'>
+            <section className='bg-slate-50 mb-4 mx-auto rounded-md p-3 shadow-2xl hover:shadow-none hover:translate-y-1 hover:bg-neutral-100 transition-all duration-300'>
                 <div className=''>
                     <h2 className='text-xl font-medium mb-2 mr-1'>
                         {title}
                     </h2>
                 </div>
                 {tags.map((tag, i:number)=>(
-                    <span className='text-white bg-gray-500 rounded-md px-1 pb-1 mr-2 font-thin' key={i}>
+                    <span className='text-white bg-neutral-400 rounded-md px-1 pb-1 mr-2 font-thin' key={i}>
                         {tag}
                     </span>
                 ))}
