@@ -10,17 +10,14 @@ type Props = {
 export default function ChildPage(props: Props) {
   const { mdBlock } = props;
   const title = mdBlock.parent.split(' ')[1]; // 子ページのタイトルを取得
+  const id = mdBlock.blockId;
   const router = useRouter();
-  const { slug } = router.query; // 現在のルートパラメータを取得
-  
-//   const currentPathArray = Array.isArray(childId) ? childId : [childId];
+  const { slug, childId } = router.query;
 
-    const newPath = `/posts/${slug}/childPage/${mdBlock.blockId}`
-  
-//   const newPath = `/posts/${slug}/childPage${[...currentPathArray, title].join('/')}`;
+  const currentPathArray = Array.isArray(childId) ? childId : [childId];
+  const newPath = `/posts/${slug}/${[...currentPathArray, id].join('/')}`;
 
   console.log(newPath);
-
   return (
     <div className='my-2'>
       <Link href={newPath} className="text-neutral-500 underline hover:text-neutral-600">
