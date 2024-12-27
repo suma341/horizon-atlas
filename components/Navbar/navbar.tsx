@@ -7,7 +7,7 @@ type Props ={
     pageNavs:pageNav[]
 }
 
-function navbar(props:Props) {
+function Navbar(props:Props) {
     const {pageNavs} = props;
     const pageLinks = getPageLinks(pageNavs);
 
@@ -58,4 +58,4 @@ function navbar(props:Props) {
     )
 }
 
-export default navbar
+export default Navbar;
