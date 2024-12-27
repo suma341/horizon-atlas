@@ -1,9 +1,6 @@
-import { NUMBER_OF_POSTS_PER_PAGE } from '@/constants/constants';
-import { PostMetaData } from '@/types/postMetaData';
-import { Client, isFullPage } from '@notionhq/client';
-import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
-import { NotionToMarkdown } from 'notion-to-md';
-// import { MdBlock } from 'notion-to-md/build/types';
+import { Client, isFullPage } from "@notionhq/client";
+import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
+import { NotionToMarkdown } from "notion-to-md";
 
 const notion = new Client({
     auth: process.env.NOTION_TOKEN,
@@ -98,68 +95,3 @@ export const getSinglePost = async (slug:string)=>{
         mdBlocks
     }
 };
-
-// これ使えない（修正必須）
-// export const getChildPage = async (mdBlocks:MdBlock[])=>{
-//     const childPages = mdBlocks.filter((block)=>block.children.map((child)=>child.type==='child_page'))
-//     return childPages;
-// }
-
-// ページ番号に応じた記事取得
-export const getPostsByPage=async(page:number)=>{
-    const allPosts = await getAllPosts();
-
-    const startIndex = (page - 1) * NUMBER_OF_POSTS_PER_PAGE;
-
-    const endIndex = startIndex + NUMBER_OF_POSTS_PER_PAGE;
-    
-    return allPosts.slice(startIndex, endIndex);
-};
-
-const calculatePageNumber = (posts:PostMetaData[]) => {
-    const pageNumber = 
-        (posts.length % NUMBER_OF_POSTS_PER_PAGE) != 0 ?
-        Math.trunc(posts.length / NUMBER_OF_POSTS_PER_PAGE) + 1 :
-        Math.trunc(posts.length / NUMBER_OF_POSTS_PER_PAGE);
-
-    return pageNumber;
-}
-
-const getPostsByTag=async(tagName:string)=>{
-    const allPosts = await getAllPosts();
-    const posts:PostMetaData[] = allPosts.filter((post)=> {
-        return post.tags.find((tag:string)=>tag.toLowerCase()==tagName.toLowerCase())
-    });
-    return posts;
-}
-
-export const getNumberOfPages=async(tagName:string|null=null)=>{
-    if(tagName==null){
-        const allPosts = await getAllPosts();
-        return calculatePageNumber(allPosts);
-    }else{
-        const posts = await getPostsByTag(tagName);
-        return calculatePageNumber(posts);
-    }
-};
-
-export const getPostsByTagAndPage=async(tagName:string, page:number)=>{
-    const posts = await getPostsByTag(tagName);
-
-    const startIndex = (page - 1) * NUMBER_OF_POSTS_PER_PAGE;
-    const endIndex = startIndex + NUMBER_OF_POSTS_PER_PAGE;
-    
-    return posts.slice(startIndex, endIndex);
-}
-
-export const getAllTags = async()=>{
-    const allPosts = await getAllPosts();
-    
-    const allTagsDuplicationList = allPosts.flatMap((post)=>{
-        return post.tags;
-    })
-    const set = new Set(allTagsDuplicationList);
-    const allTags = Array.from(set);
-
-    return allTags;
-}

@@ -1,8 +1,8 @@
-import { getAllTags, getNumberOfPages,  getPostsByTagAndPage } from "@/lib/notionAPI";
 import type { GetStaticProps, InferGetStaticPropsType } from "next";
 import SinglePost from "@/components/Post/SinglePost";
 import { PostMetaData } from "@/types/postMetaData";
 import Pagenation from "@/components/pagenation/Pagenation";
+import { getAllTags, getNumberOfPages, getPostsByTagAndPage } from "@/lib/services/notionApiService";
 
 type pagePath = {
     params: { tag:string, page:string }

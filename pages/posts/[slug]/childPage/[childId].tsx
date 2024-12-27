@@ -1,10 +1,10 @@
 import { GetStaticProps } from 'next';
-import { getAllPosts, getSinglePost } from '@/lib/notionAPI';
 import React from 'react'
 import { PostMetaData } from '@/types/postMetaData';
 import BackButton from '@/components/BackButton/BackButton';
 import { MdBlock } from 'notion-to-md/build/types';
 import MdBlockComponent from '@/components/mdBlocks/mdBlock';
+import { getAllPosts, getSinglePost } from '@/lib/dataAccess/notionApiGateway';
 
 type Props = {
   slug:string,
