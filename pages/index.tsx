@@ -43,7 +43,7 @@ export default function Home() {
           <h3 className="text-3xl font-bold text-gray-800">About Horizon TechShelf</h3>
           <p className="text-gray-600 mt-4">
             Horizon TechShelfは、学習資料を整理して部員全員でアクセスできるアプリです。
-            プログラミング、アルゴリズム、デザインなど、幅広いトピックを簡単に探せます。
+            基礎班カリキュラム、web、スマホアプリなど、自分の見たい学習資料を簡単に探せます。
           </p>
         </section>
 

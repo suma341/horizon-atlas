@@ -42,7 +42,7 @@ export function Session() {
   return (
     <>
       <button
-        className="p-3 bg-slate-900 text-white rounded-md shadow-xl hover:shadow-none hover:translate-y-1 transition-all duration-300"
+        className="bg-neutral-900 text-white py-1.5 px-9 mr-2 rounded shadow-2xl hover:bg-neutral-300 hover:text-neutral-800 hover:translate-y-2 hover:shadow-none duration-300"
         onClick={() => signIn("discord")}
       >
         Sign in
