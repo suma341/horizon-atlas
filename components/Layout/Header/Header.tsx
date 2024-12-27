@@ -7,7 +7,7 @@ export default function Header(){
   return (
     <header className='lg:px-2 px-5 bg-neutral-300 text-white'>
         <div className='container flex items-center justify-between'>
-            <Link href="/" className='ml-5 text-2xl font-medium text-white p-1 rounded-md'>
+            <Link href="/posts/page/1" className='ml-5 text-2xl font-medium text-white p-1 rounded-md'>
                 TechShelf
             </Link>
             <div>
