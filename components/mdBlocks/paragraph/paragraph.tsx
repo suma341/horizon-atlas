@@ -1,11 +1,11 @@
 import { searchMDKeyword } from '@/lib/mdBlockHelper';
 import { MdTypeAndText } from '@/types/parent';
 import Link from 'next/link';
-import React from 'react'
+import React from 'react';
 
 type Props={
-    parent:string
-    depth:number
+    parent:string;
+    depth:number;
 }
 
 export default function Paragraph(props:Props){
@@ -13,7 +13,7 @@ export default function Paragraph(props:Props){
     const mdTypeAndTextList:MdTypeAndText[] = searchMDKeyword(parent);
 
     return (
-        <div>
+        <div className='mt-1.5'>
             <p>
                 {mdTypeAndTextList.map((text, index) => {
                     return text.link === undefined ? ( 

@@ -14,7 +14,7 @@ export default function BulletedListItem(props:Props) {
 
     return (
         <div>
-            <p className='my-1.5 flex'>
+            <p className='my-2 flex'>
                 <span className='font-bold mr-1 text-xl'>・</span>
                 <Paragraph parent={text[1]} depth={depth +1} />
             </p>
