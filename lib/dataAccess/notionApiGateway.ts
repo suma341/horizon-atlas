@@ -66,6 +66,8 @@ const getPageMetaData = (post: PageObjectResponse) => {
         date: date,
         tags: 'multi_select' in properties.tag ? getTags(properties.tag.multi_select) : [],
         slug:'rich_text' in properties.slug ? properties.slug.rich_text[0].plain_text : 'untitled',
+        course:'select' in properties.course && properties.course.select ? properties.course.select.name : '',
+        is_basic_curriculum:'checkbox' in properties.is_basic_curriculum ? properties.is_basic_curriculum.checkbox : false,
     };
 };
 

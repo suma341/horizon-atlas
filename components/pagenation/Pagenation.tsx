@@ -5,11 +5,12 @@ import React from 'react'
 interface Props{
     numberOfPage:number;
     currentPage:string;
-    tag:string;
+    tag?:string;
+    course?:string;
 }
 
 const Pagenation =(props:Props)=> {
-    const {numberOfPage, currentPage, tag} = props;
+    const {numberOfPage, currentPage, tag, course} = props;
 
     const currentPageNum = parseInt(currentPage);
 
@@ -21,7 +22,7 @@ const Pagenation =(props:Props)=> {
     return (
         <section className='mb-12 lg:w-1/2 mx-auto rounded-md p-5'>
             <ul className='flex items-center justify-center gap-4'>
-                {pages.map((page, i:number)=> currentPageNum == page ? (
+                {pages.map((page, i:number)=> currentPageNum === page ? (
                     <li className='bg-neutral-50 rounded-lg w-6 h-8 relative shadow-xl' key={i}>
                         <Link href={`/posts/page/${page}`} className='absolute shadow-2xl top-2/4  left-1/4 -translate-y-2/4'>
                             {page}
@@ -30,9 +31,13 @@ const Pagenation =(props:Props)=> {
                 ):
                 (
                     <li className='rounded-lg w-6 h-8 relative shadow-xl' key={i}>
-                        <Link href={getPageLink(tag, page)} className='absolute top-2/4  left-1/4 -translate-y-2/4 text-stone-700'>
+                        {tag!==undefined && (<Link href={getPageLink(page,tag,undefined)} className='absolute top-2/4  left-1/4 -translate-y-2/4 text-stone-700'>
+                            {page}
+                        </Link>)}
+                        {course!==undefined && (<Link href={getPageLink(page,undefined,course)} className='absolute top-2/4  left-1/4 -translate-y-2/4 text-stone-700'>
                             {page}
                         </Link>
+                        )}
                     </li>
                 ))}
             </ul>

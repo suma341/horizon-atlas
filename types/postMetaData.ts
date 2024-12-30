@@ -5,4 +5,6 @@ export type PostMetaData = {
     tags:string[];
     slug:string;
     isPagenationPage?: boolean;
+    course:string;
+    is_basic_curriculum:boolean;
   };
