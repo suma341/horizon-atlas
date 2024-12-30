@@ -10,10 +10,11 @@ type pagePath = {
 
 export const getStaticPaths = async() =>{
     const allCourses = await getAllCourses();
+    const removedEmptyCourses = allCourses.filter((course)=>course!=='');
 
      const paramsList: pagePath[] = (
         await Promise.all(
-            allCourses.map(async (course: string) => {
+            removedEmptyCourses.map(async (course: string) => {
                 const numberOfPagesByTag = await getNumberOfPages(undefined,course);
                 return Array.from({ length: numberOfPagesByTag }, (_, i) => ({
                     params: { course: course, page: (i + 1).toString() },
