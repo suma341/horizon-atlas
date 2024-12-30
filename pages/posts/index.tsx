@@ -24,8 +24,8 @@ const PostsPage = ({ courses }: Props)=> {
           <h1 className="text-5xl font-medium text-center mb-16">Horizon TechShelf</h1>
           <section className="sm:grid grid-cols-2 gap-3 mx-auto">
             <SingleCourse course="基礎班カリキュラム" />
-            {courses.map((course)=>{
-              return <SingleCourse course={course} />
+            {courses.map((course,i)=>{
+              return <SingleCourse course={course} key={i} />
             })}
           </section>
         </main>

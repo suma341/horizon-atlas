@@ -2,7 +2,7 @@ import type { GetStaticProps, InferGetStaticPropsType } from "next";
 import SinglePost from "@/components/Post/SinglePost";
 import { PostMetaData } from "@/types/postMetaData";
 import Pagenation from "@/components/pagenation/Pagenation";
-import { getAllCourses, getNumberOfPages, getPostsByCourseAndPage, getPostsByTagAndPage } from "@/lib/services/notionApiService";
+import { getAllCourses, getNumberOfPages, getPostsByCourseAndPage } from "@/lib/services/notionApiService";
 
 type pagePath = {
     params: { course:string, page:string }
