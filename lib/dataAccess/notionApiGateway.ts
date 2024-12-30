@@ -1,10 +1,10 @@
 import { PostMetaData } from "@/types/postMetaData";
-import { Client, isFullPage } from "@notionhq/client";
+import { Client, isFullPage, } from "@notionhq/client";
 import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import { NotionToMarkdown } from "notion-to-md";
 
 const notion = new Client({
-    auth: process.env.NOTION_TOKEN,
+    auth: process.env.NOTION_TOKEN2,
 });
 
 const n2m = new NotionToMarkdown({notionClient: notion});
@@ -24,7 +24,7 @@ export const getAllMetaData = async()=>{
 
 export const getAllPosts = async () => {
     const posts = await notion.databases.query({
-        database_id: process.env.NOTION_DATABASE_ID!,
+        database_id: process.env.NOTION_DATABASE_ID2!,
         page_size: 100,
         filter:{
             property: "published",
