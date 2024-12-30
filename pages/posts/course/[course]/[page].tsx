@@ -2,7 +2,10 @@ import type { GetStaticProps, InferGetStaticPropsType } from "next";
 import SinglePost from "@/components/Post/SinglePost";
 import { PostMetaData } from "@/types/postMetaData";
 import Pagenation from "@/components/pagenation/Pagenation";
-import { getAllCourses, getNumberOfPages, getPostsByCourseAndPage } from "@/lib/services/notionApiService";
+import { courseIsBasic, getAllCourses, getNumberOfPages, getPostsByCourseAndPage } from "@/lib/services/notionApiService";
+import { BASIC_NAV, HOME_NAV } from "@/constants/pageNavs";
+import { pageNav } from "@/types/pageNav";
+import Navbar from "@/components/Navbar/navbar";
 
 type pagePath = {
     params: { course:string, page:string }
@@ -28,11 +31,22 @@ export const getStaticPaths = async() =>{
     }
   }
 
+type Props={
+    posts:PostMetaData[];
+    numberOfPages:number;
+    currentPage:string;
+    currentCourse:string;
+    pageNavs:pageNav[];
+}
+
 // getStaticProps関数
 export const getStaticProps: GetStaticProps = async (context) => {
     const currentPage:string = typeof context.params?.page == 'string' ? context.params.page : "1";
     const currentCourse:string = typeof context.params?.course == 'string' ? context.params.course: "";
     const numberOfPages:number = await getNumberOfPages(undefined,currentCourse);
+    const isBasic = await courseIsBasic(currentCourse);
+    const currentNav:pageNav = {title:currentCourse,id:`/posts/course/${currentCourse}/1`,child:false};
+    const pageNavs = isBasic ? [HOME_NAV,BASIC_NAV,currentNav] :[HOME_NAV,currentNav];
     // console.log(numberOfPages);
 
     const posts:PostMetaData[] = await getPostsByCourseAndPage(currentCourse, parseInt(currentPage, 10));
@@ -42,34 +56,36 @@ export const getStaticProps: GetStaticProps = async (context) => {
           numberOfPages,
           currentPage,
           currentCourse,
+          pageNavs,
         },
         revalidate: 50, // 50秒間隔でISRを実行
     };
 };
 
-const blogTagPageList = ({ posts,numberOfPages,currentPage, currentCourse}: InferGetStaticPropsType<typeof getStaticProps>)=> {
+const blogTagPageList = ({ posts,numberOfPages,currentPage, currentCourse,pageNavs}: Props)=> {
     return (
         <div className="container h-full w-full mx-auto font-mono">
-        <main className="container w-full mt-16 mb-3">
-            <h1 className="text-5xl font-medium text-center mb-16">{currentCourse}</h1>
-            <section className="sm:grid grid-cols-2 gap-3 mx-auto">
-                {posts.map((post:PostMetaData, i:number)=>(
-                <div key={i}>
-                    <SinglePost
-                    id={post.id}
-                    title={post.title} 
-                    date={post.date}
-                    tags={post.tags}
-                    slug={post.slug}
-                    isPagenationPage={true}
-                    course={post.course}
-                    is_basic_curriculum={post.is_basic_curriculum}
-                    />
-                </div>
-                ))}
-            </section>
-        </main>
-        <Pagenation numberOfPage={numberOfPages} currentPage={currentPage} course={currentCourse} />
+            <Navbar pageNavs={pageNavs} />
+            <main className="container w-full mt-16 mb-3">
+                <h1 className="text-5xl font-medium text-center mb-16">{currentCourse}</h1>
+                <section className="sm:grid grid-cols-2 gap-3 mx-auto">
+                    {posts.map((post:PostMetaData, i:number)=>(
+                    <div key={i}>
+                        <SinglePost
+                        id={post.id}
+                        title={post.title} 
+                        date={post.date}
+                        tags={post.tags}
+                        slug={post.slug}
+                        isPagenationPage={true}
+                        course={post.course}
+                        is_basic_curriculum={post.is_basic_curriculum}
+                        />
+                    </div>
+                    ))}
+                </section>
+            </main>
+            <Pagenation numberOfPage={numberOfPages} currentPage={currentPage} course={currentCourse} />
         </div>
         
     );

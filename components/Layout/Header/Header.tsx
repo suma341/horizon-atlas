@@ -1,5 +1,5 @@
-import UserIcon from '@/components/Layout/Header/UserIcon/userIcon'
-import Link from 'next/link'
+import UserIcon from '@/components/Layout/Header/UserIcon/userIcon';
+import Link from 'next/link';
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import React from 'react'
 
@@ -7,7 +7,7 @@ export default function Header(){
   return (
     <header className='lg:px-2 px-5 bg-neutral-300 text-white'>
         <div className='container flex items-center justify-between'>
-            <Link href="/posts/page/1" className='ml-5 text-2xl font-medium text-white p-1 rounded-md'>
+            <Link href="/posts" className='ml-5 text-2xl font-medium text-white p-1 rounded-md'>
                 TechShelf
             </Link>
             <div>

@@ -4,14 +4,18 @@ import { PostMetaData } from '@/types/postMetaData';
 import { MdBlock } from 'notion-to-md/build/types';
 import MdBlockComponent from '@/components/mdBlocks/mdBlock';
 import { getAllPosts, getSinglePost } from '@/lib/dataAccess/notionApiGateway';
+import { pageNav } from '@/types/pageNav';
+import { BASIC_NAV, HOME_NAV } from '@/constants/pageNavs';
+import Navbar from '@/components/Navbar/navbar';
 
 type postPath = {
   params: { slug:string }
 }
 
 type Props = {
-  metadata:PostMetaData
-  mdBlocks:MdBlock[]
+  metadata:PostMetaData;
+  mdBlocks:MdBlock[];
+  pageNavs:pageNav[];
 };
 
 export const getStaticPaths = async() =>{
@@ -28,19 +32,24 @@ export const getStaticPaths = async() =>{
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const slug = params?.slug as string; 
   const post = await getSinglePost(slug);
+  const courseNav:pageNav = {title:post.metadata.course,id:`/posts/course/${post.metadata.course}`,child:false};
+  const postNav:pageNav = {title:post.metadata.title,id:`/posts/${slug}`,child:true};
+  const pageNavs:pageNav[] = post.metadata.is_basic_curriculum ? 
+    [HOME_NAV,BASIC_NAV,courseNav,postNav] : [HOME_NAV,courseNav,postNav]
   return {
     props: {
       metadata:post.metadata,
-      mdBlocks:post.mdBlocks
+      mdBlocks:post.mdBlocks,
+      pageNavs
     },
     revalidate: 50, // 50秒間隔でISRを実行
   };
 };
 
-const Post =({ metadata, mdBlocks }: Props) => {
-  console.log(mdBlocks);
-  console.log(metadata.id);
+const Post =({ metadata, mdBlocks,pageNavs }: Props) => {
   return (
+    <>
+    <Navbar pageNavs={pageNavs} />
     <section className='container lg;px-10 px-20 mx-auto mt-20'>
         <h2 className='w-full text-2xl font-medium'>{metadata.title}</h2>
         <div className='border-b-2 mt-2'></div>
@@ -59,6 +68,7 @@ const Post =({ metadata, mdBlocks }: Props) => {
           </div>
         </div>
     </section>
+    </>
   )
 }
 

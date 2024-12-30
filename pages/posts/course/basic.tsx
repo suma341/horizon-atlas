@@ -1,4 +1,6 @@
+import Navbar from "@/components/Navbar/navbar";
 import SingleCourse from "@/components/Post/SingleCourse";
+import { BASIC_NAV, HOME_NAV } from "@/constants/pageNavs";
 import {  getEitherCourses } from "@/lib/services/notionApiService";
 import type { GetStaticProps,} from "next";
 
@@ -21,14 +23,15 @@ export const getStaticProps: GetStaticProps = async () => {
 const blogTagPageList = ({basicCourse }: Props)=> {
     return (
         <div className="container h-full w-full mx-auto font-mono">
-        <main className="container w-full mt-16 mb-3">
-            <h1 className="text-5xl font-medium text-center mb-16">Horizon</h1>
-            <section className="sm:grid grid-cols-2 gap-3 mx-auto">
-                {basicCourse.map((course,i)=>
-                    <SingleCourse course={course} key={i} />
-                )}
-            </section>
-        </main>
+            <Navbar pageNavs={[HOME_NAV,BASIC_NAV]} />
+            <main className="container w-full mt-16 mb-3">
+                <h1 className="text-5xl font-medium text-center mb-16">Horizon</h1>
+                <section className="sm:grid grid-cols-2 gap-3 mx-auto">
+                    {basicCourse.map((course,i)=>
+                        <SingleCourse course={course} key={i} />
+                    )}
+                </section>
+            </main>
         </div>
         
     );

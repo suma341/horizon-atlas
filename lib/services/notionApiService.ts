@@ -111,3 +111,12 @@ export const getPostsByCourseAndPage=async(course:string, page:number)=>{
     
     return posts.slice(startIndex, endIndex);
 }
+
+export const courseIsBasic=async(course:string)=>{
+    const posts:PostMetaData[] = await getPostsByCourse(course);
+    const filteredPost = posts.filter((post)=>post.is_basic_curriculum)
+    if(filteredPost.length===0){
+        return false;
+    }
+    return true;
+}

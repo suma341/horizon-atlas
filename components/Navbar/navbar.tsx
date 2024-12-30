@@ -1,4 +1,4 @@
-import { getPageLinks } from '@/lib/createPostPageLink';
+import { getPageNavs } from '@/lib/createPageNav';
 import { pageNav } from '@/types/pageNav'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
@@ -9,13 +9,13 @@ type Props ={
 
 function Navbar(props:Props) {
     const {pageNavs} = props;
-    const pageLinks = getPageLinks(pageNavs);
+    const pageLinks = getPageNavs(pageNavs);
 
     const [show, setShow] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
-        if (window.scrollY > 550) {
+        if (window.scrollY > 240) {
             setShow(true);
         } else {
             setShow(false);

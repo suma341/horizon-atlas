@@ -1,5 +1,6 @@
 import Navbar from '@/components/Navbar/navbar';
 import MdBlockComponent from '@/components/mdBlocks/mdBlock';
+import { BASIC_NAV, HOME_NAV } from '@/constants/pageNavs';
 import { getAllPosts, getSinglePost } from '@/lib/dataAccess/notionApiGateway';
 import { pageNav } from '@/types/pageNav';
 import { PostMetaData } from '@/types/postMetaData';
@@ -44,12 +45,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const post = await getSinglePost(currentSlug);
 
     let currentchild = post.mdBlocks;
-    const pageNavs:pageNav[] = [{title:post.metadata.title,id:post.metadata.slug}]
+    const pageNavs:pageNav[] = post.metadata.is_basic_curriculum ?
+      [HOME_NAV,BASIC_NAV,{title:post.metadata.course,id:`/posts/course/${post.metadata.course}/1`,child:false},{title:post.metadata.title,id:post.metadata.slug,child:true}]
+      : [HOME_NAV,{title:post.metadata.course,id:`/posts/course/${post.metadata.course}/1`,child:false},{title:post.metadata.title,id:post.metadata.slug,child:true}];
     for (let i = 0; i < childparam.length; i++) {
         const childpages = currentchild.filter((block)=>block.type==='child_page');
         const child = childpages.filter((block)=>block.blockId===childparam[i]);
         if(child[0]!==undefined){
-            pageNavs.push({title:child[0].parent.replace("## ",""), id:child[0].blockId});
+            pageNavs.push({title:child[0].parent.replace("## ",""), id:child[0].blockId,child:true});
             currentchild = child[0].children;
         }
     }

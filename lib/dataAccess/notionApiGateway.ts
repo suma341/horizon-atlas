@@ -1,3 +1,4 @@
+import { PostMetaData } from "@/types/postMetaData";
 import { Client, isFullPage } from "@notionhq/client";
 import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import { NotionToMarkdown } from "notion-to-md";
@@ -49,7 +50,7 @@ export const getAllPosts = async () => {
     });
 };
 
-const getPageMetaData = (post: PageObjectResponse) => {
+const getPageMetaData = (post: PageObjectResponse):PostMetaData => {
 
     const getTags = (tags:Array<object>)=>{
         const allTags = tags.map((tag)=>{
@@ -88,7 +89,7 @@ export const getSinglePost = async (slug:string)=>{
     if (!page) {
         throw new Error('Page not found');
       }
-    const metadata = getPageMetaData(page);
+    const metadata:PostMetaData = getPageMetaData(page);
 
     const mdBlocks = await n2m.pageToMarkdown(page.id);
 
