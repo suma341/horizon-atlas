@@ -1,121 +1,71 @@
 import { Client, isFullPage } from "@notionhq/client";
 import { NotionToMarkdown } from "notion-to-md";
 
-const notionENV:{token:string,database:string}[] = [
-    { token: process.env.NOTION_TOKEN!, database: process.env.NOTION_DATABASE_ID! },
-    { token: process.env.NOTION_TOKEN2!, database: process.env.NOTION_DATABASE_ID2! },
-];
+const notion = new Client({
+    auth: process.env.NOTION_TOKEN2,
+});
 
-let currentEnvIndex = 0; // 現在使用しているトークンとデータベースIDのインデックス
-
-const getClient = () => {
-    const { token } = notionENV[currentEnvIndex];
-    return new Client({ auth: token });
-};
-
-const getDatabaseId = () => {
-    return notionENV[currentEnvIndex].database;
-};
-
-function isRateLimitError(error: unknown): error is { status: number; headers?: Record<string, string> } {
-    return (
-        typeof error === "object" &&
-        error !== null &&
-        "status" in error &&
-        typeof (error).status === "number" &&
-        (error).status === 429
-    );
-}
-
-// リトライ処理付きAPIコール
-const callWithRetryAndFailover = async <T>(
-    fn: (notion: Client, databaseId: string) => Promise<T>,
-    delay = 1000
-): Promise<T> => {
-    while (true) {
-        try {
-            const notion = getClient();
-            const databaseId = getDatabaseId();
-            return await fn(notion, databaseId);
-        } catch (error: unknown) {
-            if (isRateLimitError(error)) { // 型ガード関数を使用
-                const retryAfter = parseInt(error.headers?.["retry-after"] || "1", 10) * 1000;
-                await new Promise((resolve) => setTimeout(resolve, retryAfter || delay));
-                // トークンとデータベースIDを次に切り替える
-                currentEnvIndex = (currentEnvIndex + 1) % notionENV.length;
-                console.warn(`Switched to the next Notion token and database.`);
-            } else {
-                throw error; // リトライ不能なエラーは再スロー
-            }
-        }
-    }
-};
+const n2m = new NotionToMarkdown({notionClient: notion});
 
 // テスト用
-export const getAllMetaData = async () => {
-    return await callWithRetryAndFailover(async (notion, databaseId) => {
-        const posts = await notion.databases.query({
-            database_id: databaseId,
-            page_size: 100,
-        });
-
-        // 型ガードを使用して、PageObjectResponse型のみに絞り込む
-        const allPosts = posts.results.filter(isFullPage);
-
-        return allPosts;
+export const getAllMetaData = async()=>{
+    const posts = await notion.databases.query({
+        database_id: process.env.NOTION_DATABASE_ID!,
+        page_size: 100,
     });
-};
+
+    // 型ガードを使用して、PageObjectResponse型のみに絞り込む
+    const allPosts = posts.results.filter(isFullPage);
+
+    return allPosts;
+}
 
 export const getAllData = async () => {
-    return await callWithRetryAndFailover(async (notion, databaseId) => {
-        const posts = await notion.databases.query({
-            database_id: databaseId,
-            page_size: 100,
-            filter: {
-                property: "published",
-                checkbox: {
-                    equals: true,
-                },
-            },
-            sorts: [
-                {
-                    property: "date",
-                    direction: "descending",
-                },
-            ],
-        });
-
-        // 型ガードを使用して、PageObjectResponse型のみに絞り込む
-        const allPosts = posts.results.filter(isFullPage);
-
-        return allPosts;
+    const posts = await notion.databases.query({
+        database_id: process.env.NOTION_DATABASE_ID2!,
+        page_size: 100,
+        filter:{
+            property: "published",
+            checkbox: {
+                equals: true
+            }
+        },
+        sorts: [
+            {
+                property: "date",
+                direction: "descending"
+            }
+        ]
     });
+
+    // 型ガードを使用して、PageObjectResponse型のみに絞り込む
+    const allPosts = posts.results.filter(isFullPage);
+
+    return allPosts;
 };
 
-export const getSinglePage = async (slug: string) => {
-    return await callWithRetryAndFailover(async (notion, databaseId) => {
-        const response = await notion.databases.query({
-            database_id: databaseId,
-            filter: {
-                property: "slug",
-                formula: {
-                    string: {
-                        equals: slug,
-                    },
-                },
-            },
-        });
-
-        const page = response.results.find(isFullPage);
-        if (!page) {
-            throw new Error("Page not found");
+export const getSinglePage = async (slug:string)=>{
+    const response = await notion.databases.query({
+        database_id: process.env.NOTION_DATABASE_ID2!,
+        filter: {
+            property: 'slug',
+            formula: {
+                string:{
+                    equals: slug,
+                }
+            }
         }
-
-        const mdBlocks = await new NotionToMarkdown({ notionClient: notion }).pageToMarkdown(page.id);
-
-        return {
-            page,
-            mdBlocks,
-        };
     });
+
+    const page = response.results.find(isFullPage);
+    if (!page) {
+        throw new Error('Page not found');
+      }
+
+    const mdBlocks = await n2m.pageToMarkdown(page.id);
+
+    return {
+        page,
+        mdBlocks
+    }
 };
