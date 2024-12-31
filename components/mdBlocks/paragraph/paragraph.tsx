@@ -16,13 +16,22 @@ export default function Paragraph(props:Props){
         <div className='mt-1.5'>
             <p>
                 {mdTypeAndTextList.map((text, index) => {
-                    return text.link === undefined ? ( 
-                    <span key={index} style={text.style}>
-                        {text.text}
-                    </span>) : (
-                    <span key={index} style={text.style}>
-                        <Link href={text.link}>{text.text}</Link>
-                    </span>)
+                    if(text.link === undefined){
+                        return ( 
+                            <span key={index} style={text.style}>
+                                {text.text}
+                            </span>)
+                    }else{
+                        if(text.link.slice(0,8)==='https://'){
+                            return (<span key={index} style={text.style}>
+                                <Link href={text.link}>{text.text}</Link>
+                            </span>)
+                        }else{
+                            return (<span key={index} style={text.style}>
+                                <span>{text.text}</span>
+                            </span>)
+                        }
+                    }
                 })}
             </p>
         </div>

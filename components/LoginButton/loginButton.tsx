@@ -19,7 +19,7 @@ export function Session() {
           const data = await response.json();
 
           if (response.status === 200 && data.message === "User is in Horizon") {
-            router.push("/posts/page/1");
+            router.push("/posts");
           } else if (response.status === 302 && data.message === "User is not in Horizon") {
             alert("Only Horizon members can login");
             signOut(); 
