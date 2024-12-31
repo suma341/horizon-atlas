@@ -3,7 +3,7 @@ import React from 'react'
 import { PostMetaData } from '@/types/postMetaData';
 import { MdBlock } from 'notion-to-md/build/types';
 import MdBlockComponent from '@/components/mdBlocks/mdBlock';
-import { getAllPosts, getSinglePost } from '@/lib/dataAccess/notionApiGateway';
+import { getAllPosts, getSinglePost } from '@/lib/services/notionApiService';
 import { pageNav } from '@/types/pageNav';
 import { BASIC_NAV, HOME_NAV } from '@/constants/pageNavs';
 import Navbar from '@/components/Navbar/navbar';

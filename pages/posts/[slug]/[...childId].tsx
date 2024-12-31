@@ -1,7 +1,7 @@
 import Navbar from '@/components/Navbar/navbar';
 import MdBlockComponent from '@/components/mdBlocks/mdBlock';
 import { BASIC_NAV, HOME_NAV } from '@/constants/pageNavs';
-import { getAllPosts, getSinglePost } from '@/lib/dataAccess/notionApiGateway';
+import { getAllPosts, getSinglePost } from '@/lib/services/notionApiService';
 import { pageNav } from '@/types/pageNav';
 import { PostMetaData } from '@/types/postMetaData';
 import { GetStaticProps } from 'next';

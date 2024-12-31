@@ -15,7 +15,7 @@ function Navbar(props:Props) {
 
     useEffect(() => {
         const handleScroll = () => {
-        if (window.scrollY > 240) {
+        if (window.scrollY > 75) {
             setShow(true);
         } else {
             setShow(false);
@@ -32,7 +32,7 @@ function Navbar(props:Props) {
 
     return (
         <>
-            {!show && (<nav className='ml-4 opacity-70 bg-neutral-100 z-50'>
+            <nav className='ml-4 opacity-70 bg-neutral-100 z-50'>
                 <div className='flex'>
                     {pageNavs.map((nav, i)=>(
                         <>
@@ -42,7 +42,7 @@ function Navbar(props:Props) {
                         )
                     )}
                 </div>
-            </nav>)}
+            </nav>
             {show && (<nav className='ml-4 fixed bg-neutral-100 opacity-70 top-0 z-50'>
                 <div className='flex'>
                     {pageNavs.map((nav, i)=>(
