@@ -7,4 +7,5 @@ export type PostMetaData = {
     isPagenationPage?: boolean;
     course:string;
     is_basic_curriculum:boolean;
+    icon:string;
   };

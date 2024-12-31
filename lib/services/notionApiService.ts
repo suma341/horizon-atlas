@@ -31,6 +31,7 @@ const getPageMetaData = (post: PageObjectResponse):PostMetaData => {
     }
     const properties = post.properties;
     const date:string =  'date' in properties.date && 'start' in properties.date.date! && typeof properties.date.date.start == 'string' ?properties.date.date.start :'';
+    const icon:string = 'icon' in properties && 'files' in properties.icon && typeof properties.icon.files[0] === 'object' && 'file' in properties.icon.files[0] ? properties.icon.files[0].file.url : '';
 
     return {
         id: post.id,
@@ -40,6 +41,7 @@ const getPageMetaData = (post: PageObjectResponse):PostMetaData => {
         slug:'rich_text' in properties.slug ? properties.slug.rich_text[0].plain_text : 'untitled',
         course:'select' in properties.course && properties.course.select ? properties.course.select.name : '',
         is_basic_curriculum:'checkbox' in properties.is_basic_curriculum ? properties.is_basic_curriculum.checkbox : false,
+        icon: icon
     };
 };
 

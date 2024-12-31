@@ -7,6 +7,7 @@ import { getAllPosts, getSinglePost } from '@/lib/services/notionApiService';
 import { pageNav } from '@/types/pageNav';
 import { BASIC_NAV, HOME_NAV } from '@/constants/pageNavs';
 import Navbar from '@/components/Navbar/navbar';
+import Image from 'next/image';
 
 type postPath = {
   params: { slug:string }
@@ -51,7 +52,10 @@ const Post =({ metadata, mdBlocks,pageNavs }: Props) => {
     <>
     <Navbar pageNavs={pageNavs} />
     <section className='container lg;px-10 px-20 mx-auto mt-20'>
+      <div className='flex'>
+      {metadata.icon!=="" && <Image src={metadata.icon} alt={''} width={20} height={20} className='relative w-auto h-8 m-0 mr-2 top-0.5' />}
         <h2 className='w-full text-2xl font-medium'>{metadata.title}</h2>
+      </div>
         <div className='border-b-2 mt-2'></div>
         <span className='text-gray-500'>posted date at {metadata.date}</span>
         <br />

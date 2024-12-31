@@ -57,6 +57,7 @@ const blogPageList = ({ postsByPage,numberOfPages,currentPage }: InferGetStaticP
                 isPagenationPage={true}
                 course={post.course}
                 is_basic_curriculum={post.is_basic_curriculum}
+                icon={post.icon}
               />
           </div>
           ))}
