@@ -22,11 +22,10 @@ function isRateLimitError(error: unknown): error is { status: number; headers?: 
         typeof error === "object" &&
         error !== null &&
         "status" in error &&
-        typeof (error as any).status === "number" &&
-        (error as any).status === 429
+        typeof (error).status === "number" &&
+        (error).status === 429
     );
 }
-
 
 // リトライ処理付きAPIコール
 const callWithRetryAndFailover = async <T>(
