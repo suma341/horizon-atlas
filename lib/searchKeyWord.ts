@@ -1,5 +1,5 @@
 import { PostMetaData } from "@/types/postMetaData";
-import { getAllPosts } from "./dataAccess/notionApiGateway";
+import { getAllPosts } from "./services/notionApiService";
 
 export const createSearchQuery=(text:string)=>{
     const keywords = text.split(/[ 　,、]/).filter(item => item.trim() !== "");
