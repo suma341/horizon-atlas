@@ -1,6 +1,4 @@
-import { PostMetaData } from "@/types/postMetaData";
 import { Client, isFullPage, } from "@notionhq/client";
-import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import { NotionToMarkdown } from "notion-to-md";
 
 const notion = new Client({
