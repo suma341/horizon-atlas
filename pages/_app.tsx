@@ -5,7 +5,7 @@ import type { AppProps } from "next/app";
 export default function App({ Component, pageProps, router }: AppProps) {
   const noLayout = router.pathname === "/";
   return noLayout ? (
-    <div className='bg-neutral-200'>
+    <div>
       <Component {...pageProps} />
     </div>
   ) : (

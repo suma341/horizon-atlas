@@ -2,6 +2,7 @@ import { NUMBER_OF_POSTS_PER_PAGE } from "@/constants/constants";
 import { getAllData, getSinglePage } from "../dataAccess/notionApiGateway";
 import { PostMetaData } from "@/types/postMetaData";
 import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
+import { MdBlock } from "notion-to-md/build/types";
 
 export const getAllPosts =async()=>{
     const allData = await getAllData();
@@ -159,4 +160,9 @@ export const courseIsBasic=async(course:string)=>{
         return false;
     }
     return true;
+}
+
+export const getChildPage=(mdBlocks:MdBlock[])=>{
+    const childPages = mdBlocks.filter((block)=>block.type==='child_page');
+    return childPages;
 }

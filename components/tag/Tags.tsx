@@ -14,7 +14,7 @@ function Tags(props:Props) {
             <div className='flex flex-wrap gap-5'>
               {allTags.map((tag,i:number)=>(
                   <span className='cursor-pointer bg-gray-500 text-white rounded-xl px-2 pb-1/2 mr-2 mb-1 font-thin' key={i}>
-                      <Link href={`/posts/tag/${tag}/page/1`}>{tag}</Link>
+                      <Link href={`/posts/tag/${tag}/1`}>{tag}</Link>
                   </span>
               ))}
             </div>

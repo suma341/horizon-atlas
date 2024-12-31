@@ -1,7 +1,8 @@
 import Navbar from '@/components/Navbar/navbar';
+import Sidebar from '@/components/Sidebar/Sidebar';
 import MdBlockComponent from '@/components/mdBlocks/mdBlock';
 import { BASIC_NAV, HOME_NAV } from '@/constants/pageNavs';
-import { getAllPosts, getSinglePost } from '@/lib/services/notionApiService';
+import { getAllPosts, getChildPage, getSinglePost } from '@/lib/services/notionApiService';
 import { pageNav } from '@/types/pageNav';
 import { PostMetaData } from '@/types/postMetaData';
 import { GetStaticProps } from 'next';
@@ -11,6 +12,8 @@ import React from 'react';
 type Props = {
   mdBlocks:MdBlock[];
   pageNavs:pageNav[];
+  parentTitle:string;
+  childNavs:pageNav[];
 };
 
 type pagePath = {
@@ -56,30 +59,45 @@ export const getStaticProps: GetStaticProps = async (context) => {
             currentchild = child[0].children;
         }
     }
+    const childPages = getChildPage(post.mdBlocks);
+    const childNavs:pageNav[] = childPages.map((page)=>{
+      return {
+        title:page.parent.split('## ')[1],
+        id:page.blockId,
+        child:true,
+      }
+    })
 
     return {
         props: {
             mdBlocks:currentchild,
-            pageNavs
+            pageNavs,
+            parentTitle:post.metadata.title,
+            childNavs
         },
         revalidate: 50, // ISR
     };
 };
 
 const PostChildPage = ( props : Props) => {
-    const {mdBlocks, pageNavs} = props;
+    const {mdBlocks, pageNavs,parentTitle,childNavs} = props;
     return (
-        <>
-            <Navbar pageNavs={pageNavs} />
-            <section className="container lg:px-10 px-20 mx-auto my-20">
-                <h2 className='my-2 font-bold text-3xl'>{pageNavs[pageNavs.length - 1].title}</h2>
+      <>
+        <Navbar pageNavs={pageNavs} />
+        <div className="flex">
+            {childNavs.length!==0 && <Sidebar title={parentTitle} childPages={childNavs} />}
+            <section className="container pr-5 mx-auto my-20 ml-10">
+                <h2 className="my-2 font-bold text-3xl">
+                    {pageNavs[pageNavs.length - 1].title}
+                </h2>
                 <div>
-                    {mdBlocks.map((mdBlock, i)=>(
+                    {mdBlocks.map((mdBlock, i) => (
                         <MdBlockComponent mdBlock={mdBlock} depth={0} key={i} />
                     ))}
                 </div>
             </section>
-        </>
+        </div>
+    </>
     );
 };
 export default PostChildPage;

@@ -1,5 +1,7 @@
+import Navbar from "@/components/Navbar/navbar";
 import SearchForm from "@/components/searchForm/searchForm";
 import Tags from "@/components/tag/Tags";
+import { HOME_NAV, SEARCH_NAV } from "@/constants/pageNavs";
 import { getAllTags } from "@/lib/services/notionApiService";
 import { GetStaticProps } from "next";
 import { useRouter } from 'next/router';
@@ -25,6 +27,7 @@ export default function SearchPage({allTags}:allTags) {
 
   return (
     <>
+      <Navbar pageNavs={[HOME_NAV,SEARCH_NAV]} />
       <div className="container h-full w-full mx-auto">
         <main className="container w-full mt-16">
           <div>
