@@ -1,7 +1,7 @@
 import { Client, isFullPage } from "@notionhq/client";
 import { NotionToMarkdown } from "notion-to-md";
 
-const notionENV = [
+const notionENV:{token:string,database:string}[] = [
     { token: process.env.NOTION_TOKEN!, database: process.env.NOTION_DATABASE_ID! },
     { token: process.env.NOTION_TOKEN2!, database: process.env.NOTION_DATABASE_ID2! },
 ];
@@ -17,6 +17,17 @@ const getDatabaseId = () => {
     return notionENV[currentEnvIndex].database;
 };
 
+function isRateLimitError(error: unknown): error is { status: number; headers?: Record<string, string> } {
+    return (
+        typeof error === "object" &&
+        error !== null &&
+        "status" in error &&
+        typeof (error as any).status === "number" &&
+        (error as any).status === 429
+    );
+}
+
+
 // リトライ処理付きAPIコール
 const callWithRetryAndFailover = async <T>(
     fn: (notion: Client, databaseId: string) => Promise<T>,
@@ -27,8 +38,8 @@ const callWithRetryAndFailover = async <T>(
             const notion = getClient();
             const databaseId = getDatabaseId();
             return await fn(notion, databaseId);
-        } catch (error: any) {
-            if (error.status === 429) {
+        } catch (error: unknown) {
+            if (isRateLimitError(error)) { // 型ガード関数を使用
                 const retryAfter = parseInt(error.headers?.["retry-after"] || "1", 10) * 1000;
                 await new Promise((resolve) => setTimeout(resolve, retryAfter || delay));
                 // トークンとデータベースIDを次に切り替える
