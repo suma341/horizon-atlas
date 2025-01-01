@@ -1,8 +1,8 @@
 import { Client, isFullPage } from "@notionhq/client";
 import { NotionToMarkdown } from "notion-to-md";
 
-const NOTION_TOKEN = process.env.NOTION_TOKEN!;
-const NOTION_DATABASE_ID = process.env.NOTION_DATABASE_ID!;
+const NOTION_TOKEN = process.env.NOTION_TOKEN2!;
+const NOTION_DATABASE_ID = process.env.NOTION_DATABASE_ID2!;
 
 const notion = new Client({
     auth: NOTION_TOKEN,
