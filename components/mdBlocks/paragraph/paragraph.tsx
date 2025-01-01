@@ -24,11 +24,11 @@ export default function Paragraph(props:Props){
                     }else{
                         if(text.link.slice(0,8)==='https://'){
                             return (<span key={index} style={text.style}>
-                                <Link href={text.link}>{text.text}</Link>
+                                <Link href={text.link} className='text-neutral-500 underline cursor-pointer hover:text-neutral-800'>{text.text}</Link>
                             </span>)
                         }else{
                             return (<span key={index} style={text.style}>
-                                <span>{text.text}</span>
+                                <span className='text-neutral-500 underline'>{text.text}</span>
                             </span>)
                         }
                     }

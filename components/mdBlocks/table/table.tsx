@@ -1,5 +1,6 @@
 import { MdBlock } from 'notion-to-md/build/types'
 import React from 'react'
+import Paragraph from '../paragraph/paragraph'
 
 type Props={
     mdBlock:MdBlock
@@ -7,7 +8,7 @@ type Props={
 }
 
 export default function TableBlock(props:Props) {
-    const {mdBlock} = props;
+    const {mdBlock,depth} = props;
     const dividedRows = mdBlock.parent.split("\n");
     const rows = dividedRows.map((row)=> row.slice(2,-2));
   return (
@@ -20,13 +21,13 @@ export default function TableBlock(props:Props) {
                         {columns.map((column, j)=>{
                             if(i===0){
                                 return (<th key={j} className='border border-gray-500 px-4 py-2'>
-                                    {column}
+                                    <Paragraph parent={column} depth={depth + 1} />
                                 </th>)
-                            }else if(i===1 && column==='------------'){
-                                return undefined;
+                            }else if(i===1){
+                                return null;
                             }else{
                                 return (<td key={j} className='border border-gray-500 px-4 py-2'>
-                                    {column}
+                                    <Paragraph parent={column} depth={depth + 1} />
                                 </td>)
                             }
                         })}

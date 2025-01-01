@@ -3,24 +3,26 @@ import { MdTypeAndText } from "@/types/parent";
 type TypeAndIndex = {
   startIndex: number;
   endIndex: number;
-  type: "bold" | "italic" | "code" | "underline" | "link" | "normal";
+  type:string;
 };
 
 type Patterns = {
-  type:"bold" | "italic" | "code" | "underline" | "link" | "normal";
+  type:string;
   regex: RegExp;
 }
 
 export function searchMDKeyword(text: string): MdTypeAndText[] {
-  const types: TypeAndIndex[] = [];
+  if (!text) {
+    return [];
+  }
 
-  // パターンの正規表現を準備
-  const patterns:Patterns[] = [
+  const types: TypeAndIndex[] = [];
+  const patterns: Patterns[] = [
+    { type: "link", regex: /\[([^\]]+)\]\(([^\)]+)\)/g }, // リンクを最優先
     { type: "bold", regex: /\*\*(.*?)\*\*/g },
     { type: "italic", regex: /_(.*?)_/g },
     { type: "code", regex: /`(.*?)`/g },
     { type: "underline", regex: /<u>(.*?)<\/u>/g },
-    { type: "link", regex: /\[([^\]]+)\]\(([^\)]+)\)/g },
   ];
 
   // 各パターンに対してマッチを検索
@@ -34,99 +36,138 @@ export function searchMDKeyword(text: string): MdTypeAndText[] {
       });
     }
   }
-  let indexList:number[] = [];
-  for(let j=0;j<text.length;j++){
-    indexList.push(j)
-  } 
-  for(let i=0;i<types.length;i++){
-    for(let j=types[i].startIndex;j<types[i].endIndex;j++){
-      indexList = indexList.filter((item)=>item !== j);
+
+  // 重複部分をマージ
+  const mergedTypes = mergeOverlappingRanges(types);
+
+  const result: MdTypeAndText[] = [];
+  let lastIndex = 0;
+
+  for (const range of mergedTypes) {
+    // 非装飾部分を追加
+    if (lastIndex < range.startIndex) {
+      result.push({
+        type: "plain",
+        text: text.slice(lastIndex, range.startIndex),
+        style: undefined,
+        link: undefined,
+      });
     }
-  }
-  const diveded = divideConsecutive(indexList);
-  for(let i=0;i<diveded.length;i++){
-    types.push({
-      startIndex:diveded[i][0],
-      endIndex:diveded[i][0] + diveded[i].length,
-      type:"normal"
-    })
-  }
 
-  const sortedText:TypeAndIndex[] = sortText(types);
+    // 装飾部分を追加
+    let content = text.slice(range.startIndex, range.endIndex);
+    let style: React.CSSProperties | undefined;
+    let link: string | undefined;
 
-  const mdArray:string[] = [];
-  for(let i=0;i<sortedText.length;i++){
-    mdArray.push(text.slice(sortedText[i].startIndex, sortedText[i].endIndex));
-  }
-
-  const dividedText:MdTypeAndText[] = [];
-  for(let i=0;i<sortedText.length;i++){
-    let link:string = "";
-    let style:React.CSSProperties | undefined;
-    if(sortedText[i].type==='bold'){
-      mdArray[i] = mdArray[i].slice(2, -2);
-      style = {fontWeight: 700};
-    }else if(sortedText[i].type === 'code'){
-      mdArray[i] = mdArray[i].slice(1,-1);
-      style = {
-        backgroundColor :'rgb(235 235 235)',
-        color:'rgb(244,63,94)',
-        paddingLeft: 4,
-        paddingRight:4,
-        borderRadius: 4
-      }
-    }else if(sortedText[i].type=== 'italic'){
-      mdArray[i] = mdArray[i].slice(1,-1);
-      style={
-        fontStyle:'italic'
-      }
-    }
-    else if(sortedText[i].type === 'underline'){
-      mdArray[i] = mdArray[i].slice(3, -4);
-      style={
-        textDecorationLine: 'underline'
-      }
-    }else if(sortedText[i].type === 'link'){
-      const match = mdArray[i].match(/\[([^\]]+)\]\(([^\)]+\))/);
-      if(match){
-        mdArray[i] = match[1];
+    if (range.type.includes("link")) {
+      const match = content.match(/\[([^\]]+)\]\(([^\)]+)\)/);
+      if (match) {
+        const innerText = match[1];
         link = match[2];
-        style={
-          color: 'rgb(115, 115, 115)',
-          textDecorationLine: 'underline',
-          cursor:'pointer'
+
+        // リンク内部を再解析
+        const innerDecorations = searchMDKeyword(innerText);
+
+        if (innerDecorations.length > 0) {
+          // リンク内部の装飾を組み合わせて追加
+          innerDecorations.forEach(deco => {
+            result.push({
+              ...deco,
+              type: combineTypes(deco.type, "link"),
+              link,
+            });
+          });
+        } else {
+          result.push({
+            type: "link",
+            text: innerText,
+            style: {
+              color: "rgb(115, 115, 115)",
+              textDecorationLine: "underline",
+              cursor: "pointer",
+            },
+            link,
+          });
         }
+        lastIndex = range.endIndex;
+        continue;
       }
-    };
-    dividedText.push({
-      type: sortedText[i].type,
-      text: mdArray[i],
-      link: link != "" ? link : undefined,
-      style:style
+    }
+
+    if (range.type.includes("bold")) {
+      content = content.slice(2, -2);
+      style = { fontWeight: 700 };
+    }
+    if (range.type.includes("italic")) {
+      content = content.slice(1, -1);
+      style = { ...style, fontStyle: "italic" };
+    }
+    if (range.type.includes("code")) {
+      content = content.slice(1, -1);
+      style = {
+        ...style,
+        backgroundColor: "rgb(235 235 235)",
+        color: "rgb(244,63,94)",
+        paddingLeft: 4,
+        paddingRight: 4,
+        borderRadius: 4,
+      };
+    }
+    if (range.type.includes("underline")) {
+      content = content.slice(3, -4);
+      style = { ...style, textDecorationLine: "underline" };
+    }
+
+    result.push({ type: range.type, text: content, style, link });
+    lastIndex = range.endIndex;
+  }
+
+  // 最後の非装飾部分を追加
+  if (lastIndex < text.length) {
+    result.push({
+      type: "plain",
+      text: text.slice(lastIndex),
+      style: undefined,
+      link: undefined,
     });
   }
 
-  return dividedText;
-}
-
-function divideConsecutive(arr:number[]) {
-  const result = [];
-  let temp = [arr[0]];
-
-  for (let i = 1; i < arr.length; i++) {
-    if (arr[i] === arr[i - 1] + 1) {
-      temp.push(arr[i]);
-    } else {
-      result.push(temp);
-      temp = [arr[i]];
-    }
-  }
-
-  result.push(temp); // Push the last group
   return result;
 }
 
-function sortText(types: TypeAndIndex[]){
-  const sortedText:TypeAndIndex[] = types.sort((a, b) => a.startIndex - b.startIndex);
-  return sortedText;
+// 装飾範囲をマージ
+function mergeOverlappingRanges(types: TypeAndIndex[]): TypeAndIndex[] {
+  if (types.length === 0) {
+    return [];
+  }
+
+  // 開始位置でソート
+  const sorted = types.sort((a, b) => a.startIndex - b.startIndex);
+
+  const result: TypeAndIndex[] = [];
+  let current = sorted[0];
+
+  for (let i = 1; i < sorted.length; i++) {
+    const next = sorted[i];
+    if (current.endIndex > next.startIndex) {
+      // 重複範囲をマージ
+      current = {
+        startIndex: current.startIndex,
+        endIndex: Math.max(current.endIndex, next.endIndex),
+        type: combineTypes(current.type, next.type),
+      };
+    } else {
+      result.push(current);
+      current = next;
+    }
+  }
+  result.push(current);
+  return result;
 }
+
+// タイプを組み合わせる
+function combineTypes(type1: string, type2: string): string {
+  const types = new Set(type1.split(" ").concat(type2.split(" ")));
+  return Array.from(types).join(" ");
+}
+

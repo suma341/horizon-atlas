@@ -31,7 +31,6 @@ export default function Bookmark(props: Props) {
       if (match) {
         const url = match[0].slice(1, -1);
         const res = await fetch(`/api/getOgp?url=${url}`);
-        console.log(res);
         if(res.ok){
             const {result} = await res.json();
             const { ogUrl,ogTitle,ogDescription,ogSiteName,ogImage, favicon } = result;
@@ -41,7 +40,6 @@ export default function Bookmark(props: Props) {
         }
     };
     fetchOgpData();
-    console.log(ogpData);
   }, []);
 
     if (!match) {

@@ -1,8 +1,11 @@
 import { Client, isFullPage } from "@notionhq/client";
 import { NotionToMarkdown } from "notion-to-md";
 
+const NOTION_TOKEN = process.env.NOTION_TOKEN!;
+const NOTION_DATABASE_ID = process.env.NOTION_DATABASE_ID!;
+
 const notion = new Client({
-    auth: process.env.NOTION_TOKEN2,
+    auth: NOTION_TOKEN,
 });
 
 const n2m = new NotionToMarkdown({notionClient: notion});
@@ -10,7 +13,7 @@ const n2m = new NotionToMarkdown({notionClient: notion});
 // テスト用
 export const getAllMetaData = async()=>{
     const posts = await notion.databases.query({
-        database_id: process.env.NOTION_DATABASE_ID!,
+        database_id: NOTION_DATABASE_ID,
         page_size: 100,
     });
 
@@ -22,7 +25,7 @@ export const getAllMetaData = async()=>{
 
 export const getAllData = async () => {
     const posts = await notion.databases.query({
-        database_id: process.env.NOTION_DATABASE_ID2!,
+        database_id: NOTION_DATABASE_ID,
         page_size: 100,
         filter:{
             property: "published",
@@ -46,7 +49,7 @@ export const getAllData = async () => {
 
 export const getSinglePage = async (slug:string)=>{
     const response = await notion.databases.query({
-        database_id: process.env.NOTION_DATABASE_ID2!,
+        database_id: NOTION_DATABASE_ID,
         filter: {
             property: 'slug',
             formula: {
