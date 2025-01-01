@@ -1,7 +1,7 @@
 import Navbar from "@/components/Navbar/navbar";
 import SingleCourse from "@/components/Post/SingleCourse";
 import { HOME_NAV } from "@/constants/pageNavs";
-import { getEitherCourses, getIconsByPosts, getPostsByCourse } from "@/lib/services/notionApiService";
+import { getEitherCourses, getPostsByCourse } from "@/lib/services/notionApiService";
 import { PostMetaData } from "@/types/postMetaData";
 import { GetStaticProps } from "next";
 
