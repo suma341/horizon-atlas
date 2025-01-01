@@ -14,9 +14,10 @@ export default function ImageBlock(props:Props) {
         return (
             <div>
                 <img src={url.slice(0,-1)} alt={''} style={{
-                        width: '100%',
-                        height: 'auto',
+                        width: 'auto',
+                        height: '100%',
                         display: 'block', 
+                        maxHeight:'300px'
                     }} />
             </div>
         )

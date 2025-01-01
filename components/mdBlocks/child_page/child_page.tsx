@@ -21,7 +21,7 @@ export default function ChildPage(props: Props) {
     ? [childId]
     : []; // 初期値を空配列に設定
 
-  const newPath = `/posts/${slug}/${[...currentPathArray, id].join('/')}`.replace(/\/+/g, '/'); 
+  const newPath = `/posts/post/${slug}/${[...currentPathArray, id].join('/')}`.replace(/\/+/g, '/'); 
 
   return (
     <div className='my-2'>

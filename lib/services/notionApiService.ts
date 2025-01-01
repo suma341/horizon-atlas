@@ -107,6 +107,22 @@ export const getAllTags = async()=>{
     return allTags;
 }
 
+export const getIconsByPosts=(posts:PostMetaData[])=>{
+    const iconsDuplicationList = posts.map((post)=>{
+        return post.icon;
+    })
+    const set = new Set(iconsDuplicationList);
+    const icons = Array.from(set);
+
+    return icons;
+}
+
+export const getBasicPosts = async()=>{
+    const allPosts = await getAllPosts();
+    const basicPosts = allPosts.filter((post)=>post.is_basic_curriculum)
+    return basicPosts;
+}
+
 export const getClassifyPost=async()=>{
     const allPosts:PostMetaData[] = await getAllPosts();
 

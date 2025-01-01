@@ -14,6 +14,7 @@ type Props = {
   pageNavs:pageNav[];
   parentTitle:string;
   childNavs:pageNav[];
+  slug:string;
 };
 
 type pagePath = {
@@ -73,19 +74,20 @@ export const getStaticProps: GetStaticProps = async (context) => {
             mdBlocks:currentchild,
             pageNavs,
             parentTitle:post.metadata.title,
-            childNavs
+            childNavs,
+            slug:currentSlug
         },
         revalidate: 50, // ISR
     };
 };
 
 const PostChildPage = ( props : Props) => {
-    const {mdBlocks, pageNavs,parentTitle,childNavs} = props;
+    const {mdBlocks, pageNavs,parentTitle,childNavs,slug} = props;
     return (
       <>
         <Navbar pageNavs={pageNavs} />
         <div className="flex">
-            {childNavs.length!==0 && <Sidebar title={parentTitle} childPages={childNavs} />}
+            {childNavs.length!==0 && <Sidebar title={parentTitle} slug={slug} childPages={childNavs} />}
             <section className="container pr-5 mx-auto my-20 ml-10">
                 <h2 className="my-2 font-bold text-3xl">
                     {pageNavs[pageNavs.length - 1].title}

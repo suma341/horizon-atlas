@@ -6,7 +6,7 @@ import Image from 'next/image';
 const SinglePost = (props:PostMetaData) => {
     const {title, tags, slug, isPagenationPage,icon} = props;
     return (
-        <Link href={`/posts/${slug}`}>
+        <Link href={`/posts/post/${slug}`}>
             {isPagenationPage ? (
                 <section className='bg-slate-50 mb-4 mx-auto rounded-md p-3 shadow-2xl hover:shadow-none hover:translate-y-1 hover:bg-neutral-100 transition-all duration-300'>
                     <div className='flex w-auto h-9 my-1'>
