@@ -45,7 +45,7 @@ const Sidebar = ({ title, childPages, slug }:Props) => {
         <p className="truncate text-sm px-1">{title}</p>
         <div className="pl-4">
           {childPages.map((page, i) => (
-            <Link href={`/posts/${slug}/${page.id}`} key={i} className="w-40">
+            <Link href={`/posts/post/${slug}/${page.id}`} key={i} className="w-40">
               <p className="my-1.5 text-sm text-neutral-500 underline truncate hover:text-neutral-900">
                 {page.title}
               </p>
@@ -60,7 +60,7 @@ const Sidebar = ({ title, childPages, slug }:Props) => {
         <p className="truncate text-sm px-1">{title}</p>
         <div className="pl-4">
           {childPages.map((page, i) => (
-            <Link href={`/posts/${slug}/${page.id}`} key={i} className="w-40">
+            <Link href={`/posts/post/${slug}/${page.id}`} key={i} className="w-40">
               <p className="my-1.5 text-sm text-neutral-500 underline truncate hover:text-neutral-900">
                 {page.title}
               </p>
