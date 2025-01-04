@@ -36,9 +36,9 @@ export default function SearchPage({allTags, query,posts}:Props) {
           <div>
             <SearchForm />
             {query===null && <Tags allTags={allTags} />}
-            {query!==null && posts.length!==0 && posts.map((post)=>{
-              return (<SinglePost postData={post} isPagenationPage={false} />)
-            })}
+            {query!==null && posts.length!==0 && posts.map((post,i)=>
+              <SinglePost postData={post} isPagenationPage={false} key={i} />
+            )}
           </div>
         </main>
       </div>
