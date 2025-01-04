@@ -3,8 +3,14 @@ import { PostMetaData } from "@/types/postMetaData";
 import Link from 'next/link';
 import Image from 'next/image';
 
-const SinglePost = (props:PostMetaData) => {
-    const {title, tags, slug, isPagenationPage,icon} = props;
+type Props = {
+    postData:PostMetaData;
+    isPagenationPage:boolean;
+}
+
+const SinglePost = (props:Props) => {
+    const {title, tags, slug, icon} = props.postData;
+    const isPagenationPage = props.isPagenationPage;
     return (
         <Link href={`/posts/post/${slug}`}>
             {isPagenationPage ? (

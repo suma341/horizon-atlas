@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar/navbar";
 import SingleCourse from "@/components/Post/SingleCourse";
+import BasicCurriculum from "@/components/Post/basicCurriculum";
 import { HOME_NAV } from "@/constants/pageNavs";
 import { getEitherCourses, getPostsByCourse } from "@/lib/services/notionApiService";
 import { PostMetaData } from "@/types/postMetaData";
@@ -35,9 +36,9 @@ const PostsPage = ({ courseAndPosts }: Props)=> {
       <div className="container h-full w-full mx-auto font-mono">
         <Navbar pageNavs={[HOME_NAV]} />
         <main className="container w-full mt-16 mb-3">
-          <h1 className="text-5xl font-medium text-center mb-16">Horizon TechShelf</h1>
+          <h1 className="text-5xl font-medium text-center mb-16"></h1>
           <section className="gap-3 mx-auto">
-            <SingleCourse course="基礎班カリキュラム" posts={[]} />
+            <BasicCurriculum />
             {courseAndPosts.map((courseAndPosts,i)=>{
               return <SingleCourse course={courseAndPosts.course} posts={courseAndPosts.posts} key={i} />
             })}

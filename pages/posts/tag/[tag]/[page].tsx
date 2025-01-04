@@ -60,15 +60,8 @@ const blogTagPageList = ({ posts,numberOfPages,currentPage, currentTag}: InferGe
                     {posts.map((post:PostMetaData, i:number)=>(
                     <div key={i}>
                         <SinglePost
-                        id={post.id}
-                        title={post.title} 
-                        date={post.date}
-                        tags={post.tags}
-                        slug={post.slug}
-                        isPagenationPage={true}
-                        course={post.course}
-                        is_basic_curriculum={post.is_basic_curriculum}
-                        icon={post.icon}
+                            postData={post}
+                            isPagenationPage={true}
                         />
                     </div>
                     ))}

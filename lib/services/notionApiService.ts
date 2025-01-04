@@ -39,7 +39,7 @@ const getPageMetaData = (post: PageObjectResponse):PostMetaData => {
         date: date,
         tags: 'multi_select' in properties.tag ? getTags(properties.tag.multi_select) : [],
         slug:'rich_text' in properties.slug ? properties.slug.rich_text[0].plain_text : 'untitled',
-        course:'select' in properties.course && properties.course.select ? properties.course.select.name : '',
+        category:'select' in properties.category && properties.category.select ? properties.category.select.name : '',
         is_basic_curriculum:'checkbox' in properties.is_basic_curriculum ? properties.is_basic_curriculum.checkbox : false,
         icon: icon
     };
@@ -137,14 +137,14 @@ export const getClassifyPost=async()=>{
 
 export const getPostsByCourse=async(course:string)=>{
     const AllPosts:PostMetaData[] = await getAllPosts();
-    const postByCourse = AllPosts.filter((post)=>post.course===course);
+    const postByCourse = AllPosts.filter((post)=>post.category===course);
     return postByCourse;
 }
 
 export const getAllCourses = async()=>{
     const allPosts:PostMetaData[] = await getAllPosts();
     const allCoursesDuplication = allPosts.map((post)=>{
-        return post.course;
+        return post.category;
     })
     const set = new Set(allCoursesDuplication);
     const allCourses = Array.from(set);
@@ -155,7 +155,7 @@ export const getEitherCourses = async(isBasic:boolean)=>{
     const classifiedPost = await getClassifyPost();
     const post = isBasic ? classifiedPost.basic : classifiedPost.notBasic;
     const allCoursesDuplication = post.map((post)=>{
-        return post.course;
+        return post.category;
     })
     const set = new Set(allCoursesDuplication);
     const allCourses = Array.from(set);

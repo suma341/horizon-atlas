@@ -1,7 +1,7 @@
 import { createSearchQuery } from '@/lib/searchKeyWord';
 import router from 'next/router';
-import React, { useState } from 'react'
-import { FaSearch } from 'react-icons/fa'
+import React, { useState } from 'react';
+import { FaSearch } from 'react-icons/fa';
 
 export default function SearchForm() {
     const [keyWord, setKeyWord] = useState<string>('');
@@ -13,7 +13,7 @@ export default function SearchForm() {
           }
 
         if (event.key === 'Enter') {
-          router.push(`/search?q=${createSearchQuery(keyWord)}`);
+          router.push({pathname:'/search',query:{q:createSearchQuery(keyWord)}});
         }
       };
 
@@ -39,4 +39,4 @@ export default function SearchForm() {
             </div>
         </section>
     )
-    }
+}
