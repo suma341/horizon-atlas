@@ -27,7 +27,6 @@ export const getStaticProps: GetStaticProps = async () => {
         props: {
           courseAndPosts
         },
-        revalidate: 50, // 50秒間隔でISRを実行
     };
 };
 

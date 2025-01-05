@@ -77,7 +77,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
             childNavs,
             slug:currentSlug
         },
-        revalidate: 50, // ISR
     };
 };
 

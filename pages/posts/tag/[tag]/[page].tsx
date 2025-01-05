@@ -45,7 +45,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
           currentPage,
           currentTag,
         },
-        revalidate: 50, // 50秒間隔でISRを実行
     };
 };
 

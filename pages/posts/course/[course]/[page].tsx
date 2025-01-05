@@ -58,7 +58,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
           currentCourse,
           pageNavs,
         },
-        revalidate: 50, // 50秒間隔でISRを実行
     };
 };
 

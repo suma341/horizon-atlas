@@ -12,9 +12,7 @@ export default function BasicCurriculum() {
                 </div>
                 <div className=''>
                     <p className='text-neutral-500 text-sm'>
-                        Pythonの基礎文法やFletでのアプリ開発の方法を学ぶことができます。
-                        また、プログラミングをする上で必須とも言える「VisualStudioCode」や「Git」といったツールの使い方を学ぶこともできます。
-                        基礎班カリキュラムでは、それらを通してプログラミングの基礎を身につけてもらうことを目的としています。
+                        
                     </p>
                 </div>
             </section>

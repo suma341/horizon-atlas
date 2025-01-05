@@ -43,7 +43,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       mdBlocks:post.mdBlocks,
       pageNavs
     },
-    revalidate: 50, // 50秒間隔でISRを実行
   };
 };
 
