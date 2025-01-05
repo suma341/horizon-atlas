@@ -29,7 +29,7 @@ export default function Session() {
     if (status === "authenticated") {
       checkGuild();
     }
-  }, [status]);
+  }, [session]);
 
   if (status === "loading") {
     return <p>Loading session...</p>;
