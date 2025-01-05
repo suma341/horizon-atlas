@@ -5,26 +5,22 @@ import React from 'react'
 
 export default function Header(){
   return (
-    <header className='bg-neutral-300 text-white px-4'>
-        <div className='flex items-center justify-between'>
-            <Link href="/posts" className='ml-5 text-2xl font-medium text-white p-1 rounded-md'>
-                TechShelf
-            </Link>
-            <div>
-                <ul className='flex items-center text-sm py-4'>
-                    <li className='mr-4'>
-                        <button className="p-2 bg-slate-50 hover:bg-gray-100 rounded-full shadow-xl hover:translate-y-1 hover:shadow-none duration-200">
-                            <Link href="/search">
-                            <FaMagnifyingGlass size={22} className="text-neutral-700 hover:text-gray-900" />
-                            </Link>
-                        </button>
-                    </li>
-                    <li>
-                        <UserIcon />
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </header>
+    <header className="bg-neutral-300 text-white px-4 flex justify-between items-center">
+    <Link href="/posts" className="ml-5 text-2xl font-medium text-white p-1 rounded-md">
+        TechShelf
+    </Link>
+    <ul className="flex items-center text-sm py-4">
+        <li className="mr-4">
+            <button className="p-2 bg-slate-50 hover:bg-gray-100 rounded-full shadow-xl hover:translate-y-1 hover:shadow-none duration-200">
+                <Link href="/search">
+                    <FaMagnifyingGlass size={22} className="text-neutral-700 hover:text-gray-900" />
+                </Link>
+            </button>
+        </li>
+        <li>
+            <UserIcon />
+        </li>
+    </ul>
+</header>
   )
 }
