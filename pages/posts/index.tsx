@@ -2,7 +2,7 @@ import Navbar from "@/components/Navbar/navbar";
 import SingleCourse from "@/components/Post/SingleCourse";
 import BasicCurriculum from "@/components/Post/basicCurriculum";
 import { HOME_NAV } from "@/constants/pageNavs";
-import { getEitherCourses, getPostsByCourse } from "@/lib/services/notionApiService";
+import { getAllPosts, getEitherCourses, getPostsByCourse } from "@/lib/services/notionApiService";
 import { PostMetaData } from "@/types/postMetaData";
 import { GetStaticProps } from "next";
 
@@ -14,10 +14,11 @@ type Props = {
 };
 
 export const getStaticProps: GetStaticProps = async () => {
-  const notBasicCourses = await getEitherCourses(false);
+  const allPosts = await getAllPosts();
+  const notBasicCourses = await getEitherCourses(false,allPosts);
   const removeEmptyCourses = notBasicCourses.filter((course)=>course!=="")
   const courseAndPosts = await Promise.all(removeEmptyCourses.map(async(course)=>{
-    const posts = await getPostsByCourse(course);
+    const posts = await getPostsByCourse(course,allPosts);
     return {
         course,
         posts

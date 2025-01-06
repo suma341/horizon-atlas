@@ -1,7 +1,7 @@
 import Navbar from "@/components/Navbar/navbar";
 import SingleCourse from "@/components/Post/SingleCourse";
 import { BASIC_NAV, HOME_NAV } from "@/constants/pageNavs";
-import {  getEitherCourses, getPostsByCourse } from "@/lib/services/notionApiService";
+import {  getAllPosts, getEitherCourses, getPostsByCourse } from "@/lib/services/notionApiService";
 import { PostMetaData } from "@/types/postMetaData";
 import type { GetStaticProps,} from "next";
 
@@ -14,9 +14,10 @@ type Props={
 
 // getStaticProps関数
 export const getStaticProps: GetStaticProps = async () => {
-    const basicCourse = await getEitherCourses(true);
+    const allPosts = await getAllPosts();
+    const basicCourse = await getEitherCourses(true,allPosts);
     const courseAndPosts = await Promise.all(basicCourse.map(async(course)=>{
-        const posts = await getPostsByCourse(course);
+        const posts = await getPostsByCourse(course,allPosts);
         return {
             course,
             posts

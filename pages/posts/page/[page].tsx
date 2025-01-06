@@ -2,14 +2,15 @@ import type { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "ne
 import SinglePost from "@/components/Post/SinglePost";
 import { PostMetaData } from "@/types/postMetaData";
 import Pagenation from "@/components/pagenation/Pagenation";
-import { getNumberOfPages, getPostsByPage } from "@/lib/services/notionApiService";
+import { getAllPosts, getNumberOfPages, getPostsByPage } from "@/lib/services/notionApiService";
 
 type pagePath = {
     params: { page:string }
   }
 
 export const getStaticPaths:GetStaticPaths = async() =>{
-    const numberOfPages:number =await getNumberOfPages();
+    const allPosts = await getAllPosts();
+    const numberOfPages:number =await getNumberOfPages(allPosts);
     const paramsList:pagePath[] = [];
     for(let i:number=0;i<numberOfPages;i++){
         paramsList.push({ params:{ page:i.toString() } })
@@ -23,9 +24,10 @@ export const getStaticPaths:GetStaticPaths = async() =>{
 // getStaticProps関数
 export const getStaticProps: GetStaticProps = async (context) => {
     const currentPage:string = typeof context.params?.page == 'string' ? context.params.page : '1';
-    const numberOfPages:number =await getNumberOfPages();
+    const allPosts = await getAllPosts();
+    const numberOfPages:number =await getNumberOfPages(allPosts);
 
-    const postsByPage = await getPostsByPage(parseInt(currentPage));
+    const postsByPage = await getPostsByPage(parseInt(currentPage),allPosts);
     // const allMetaData = await getAllMetaData();
     return {
         props: {

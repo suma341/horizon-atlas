@@ -2,7 +2,7 @@ import type { GetStaticProps } from "next";
 import SinglePost from "@/components/Post/SinglePost";
 import { PostMetaData } from "@/types/postMetaData";
 import Pagenation from "@/components/pagenation/Pagenation";
-import { courseIsBasic, getAllCourses, getNumberOfPages, getPostsByCourseAndPage } from "@/lib/services/notionApiService";
+import { courseIsBasic, getAllCourses, getAllPosts, getNumberOfPages, getPostsByCourseAndPage } from "@/lib/services/notionApiService";
 import { BASIC_NAV, HOME_NAV } from "@/constants/pageNavs";
 import { pageNav } from "@/types/pageNav";
 import Navbar from "@/components/Navbar/navbar";
@@ -12,13 +12,14 @@ type pagePath = {
   }
 
 export const getStaticPaths = async() =>{
-    const allCourses = await getAllCourses();
+    const allPosts = await getAllPosts();
+    const allCourses = await getAllCourses(allPosts);
     const removedEmptyCourses = allCourses.filter((course)=>course!=='');
 
      const paramsList: pagePath[] = (
         await Promise.all(
             removedEmptyCourses.map(async (course: string) => {
-                const numberOfPagesByTag = await getNumberOfPages(undefined,course);
+                const numberOfPagesByTag = await getNumberOfPages(allPosts,undefined,course);
                 return Array.from({ length: numberOfPagesByTag }, (_, i) => ({
                     params: { course: course, page: (i + 1).toString() },
                 }));
@@ -43,13 +44,14 @@ type Props={
 export const getStaticProps: GetStaticProps = async (context) => {
     const currentPage:string = typeof context.params?.page == 'string' ? context.params.page : "1";
     const currentCourse:string = typeof context.params?.course == 'string' ? context.params.course: "";
-    const numberOfPages:number = await getNumberOfPages(undefined,currentCourse);
-    const isBasic = await courseIsBasic(currentCourse);
+    const allPosts = await getAllPosts();
+    const numberOfPages:number = await getNumberOfPages(allPosts,undefined,currentCourse);
+    const isBasic = await courseIsBasic(currentCourse,allPosts);
     const currentNav:pageNav = {title:currentCourse,id:`/posts/course/${currentCourse}/1`,child:false};
     const pageNavs = isBasic ? [HOME_NAV,BASIC_NAV,currentNav] :[HOME_NAV,currentNav];
     // console.log(numberOfPages);
 
-    const posts:PostMetaData[] = await getPostsByCourseAndPage(currentCourse, parseInt(currentPage, 10));
+    const posts:PostMetaData[] = await getPostsByCourseAndPage(currentCourse, parseInt(currentPage, 10),allPosts);
     return {
         props: {
           posts,

@@ -2,7 +2,7 @@ import type { GetStaticProps, InferGetStaticPropsType } from "next";
 import SinglePost from "@/components/Post/SinglePost";
 import { PostMetaData } from "@/types/postMetaData";
 import Pagenation from "@/components/pagenation/Pagenation";
-import { getAllTags, getNumberOfPages, getPostsByTagAndPage } from "@/lib/services/notionApiService";
+import { getAllPosts, getAllTags, getNumberOfPages, getPostsByTagAndPage } from "@/lib/services/notionApiService";
 import Navbar from "@/components/Navbar/navbar";
 import { HOME_NAV, SEARCH_NAV } from "@/constants/pageNavs";
 import { pageNav } from "@/types/pageNav";
@@ -12,12 +12,14 @@ type pagePath = {
   }
 
 export const getStaticPaths = async() =>{
-    const allTags = await getAllTags();
+
+    const allPosts = await getAllPosts();
+    const allTags = await getAllTags(allPosts);
 
      const paramsList: pagePath[] = (
         await Promise.all(
             allTags.map(async (tag: string) => {
-                const numberOfPagesByTag = await getNumberOfPages(tag);
+                const numberOfPagesByTag = await getNumberOfPages(allPosts,tag);
                 return Array.from({ length: numberOfPagesByTag }, (_, i) => ({
                     params: { tag: tag, page: (i + 1).toString() },
                 }));
@@ -34,10 +36,11 @@ export const getStaticPaths = async() =>{
 export const getStaticProps: GetStaticProps = async (context) => {
     const currentPage:string = typeof context.params?.page == 'string' ? context.params.page : "1";
     const currentTag:string = typeof context.params?.tag == 'string' ? context.params.tag : "";
-    const numberOfPages:number = await getNumberOfPages(currentTag);
+    const allPosts = await getAllPosts();
+    const numberOfPages:number = await getNumberOfPages(allPosts,currentTag);
     // console.log(numberOfPages);
 
-    const posts:PostMetaData[] = await getPostsByTagAndPage(currentTag, parseInt(currentPage, 10));
+    const posts:PostMetaData[] = await getPostsByTagAndPage(currentTag, parseInt(currentPage, 10),allPosts);
     return {
         props: {
           posts,

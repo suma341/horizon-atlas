@@ -46,8 +46,7 @@ const getPageMetaData = (post: PageObjectResponse):PostMetaData => {
 };
 
 // ページ番号に応じた記事取得
-export const getPostsByPage=async(page:number)=>{
-    const allPosts:PostMetaData[] = await getAllPosts();
+export const getPostsByPage=async(page:number,allPosts:PostMetaData[])=>{
 
     const startIndex = (page - 1) * NUMBER_OF_POSTS_PER_PAGE;
 
@@ -65,20 +64,19 @@ const calculatePageNumber = (posts:PostMetaData[]) => {
     return pageNumber;
 }
 
-export const getPostsByTag=async(tagName:string)=>{
-    const allPosts:PostMetaData[] = await getAllPosts();
+export const getPostsByTag=async(tagName:string, allPosts:PostMetaData[])=>{
     const posts:PostMetaData[] = allPosts.filter((post)=> {
         return post.tags.find((tag:string)=>tag.toLowerCase()==tagName.toLowerCase())
     });
     return posts;
 }
 
-export const getNumberOfPages=async(tagName?:string, course?:string)=>{
+export const getNumberOfPages=async(allPosts:PostMetaData[],tagName?:string, course?:string)=>{
     if(tagName!==undefined){
-        const posts = await getPostsByTag(tagName);
+        const posts = await getPostsByTag(tagName,allPosts);
         return calculatePageNumber(posts);
     }else if(course!==undefined){
-        const posts = await getPostsByCourse(course);
+        const posts = await getPostsByCourse(course,allPosts);
         return calculatePageNumber(posts);
     }else{
         const allPosts = await getAllPosts();
@@ -86,8 +84,8 @@ export const getNumberOfPages=async(tagName?:string, course?:string)=>{
     }
 };
 
-export const getPostsByTagAndPage=async(tagName:string, page:number)=>{
-    const posts:PostMetaData[] = await getPostsByTag(tagName);
+export const getPostsByTagAndPage=async(tagName:string, page:number,allPosts:PostMetaData[])=>{
+    const posts:PostMetaData[] = await getPostsByTag(tagName,allPosts);
 
     const startIndex = (page - 1) * NUMBER_OF_POSTS_PER_PAGE;
     const endIndex = startIndex + NUMBER_OF_POSTS_PER_PAGE;
@@ -95,8 +93,7 @@ export const getPostsByTagAndPage=async(tagName:string, page:number)=>{
     return posts.slice(startIndex, endIndex);
 }
 
-export const getAllTags = async()=>{
-    const allPosts:PostMetaData[] = await getAllPosts();
+export const getAllTags = async(allPosts:PostMetaData[])=>{
     
     const allTagsDuplicationList = allPosts.flatMap((post)=>{
         return post.tags;
@@ -117,14 +114,7 @@ export const getIconsByPosts=(posts:PostMetaData[])=>{
     return icons;
 }
 
-export const getBasicPosts = async()=>{
-    const allPosts = await getAllPosts();
-    const basicPosts = allPosts.filter((post)=>post.is_basic_curriculum)
-    return basicPosts;
-}
-
-export const getClassifyPost=async()=>{
-    const allPosts:PostMetaData[] = await getAllPosts();
+export const getClassifyPost=async(allPosts:PostMetaData[])=>{
 
     const basic = allPosts.filter((post)=>post.is_basic_curriculum);
     const notBasic = allPosts.filter((post)=>!post.is_basic_curriculum);
@@ -135,14 +125,12 @@ export const getClassifyPost=async()=>{
     } 
 }
 
-export const getPostsByCourse=async(course:string)=>{
-    const AllPosts:PostMetaData[] = await getAllPosts();
-    const postByCourse = AllPosts.filter((post)=>post.category===course);
+export const getPostsByCourse=async(course:string,allPosts:PostMetaData[])=>{
+    const postByCourse = allPosts.filter((post)=>post.category===course);
     return postByCourse;
 }
 
-export const getAllCourses = async()=>{
-    const allPosts:PostMetaData[] = await getAllPosts();
+export const getAllCourses = async(allPosts:PostMetaData[])=>{
     const allCoursesDuplication = allPosts.map((post)=>{
         return post.category;
     })
@@ -151,8 +139,8 @@ export const getAllCourses = async()=>{
     return allCourses;
 }
 
-export const getEitherCourses = async(isBasic:boolean)=>{
-    const classifiedPost = await getClassifyPost();
+export const getEitherCourses = async(isBasic:boolean,allPosts:PostMetaData[])=>{
+    const classifiedPost = await getClassifyPost(allPosts);
     const post = isBasic ? classifiedPost.basic : classifiedPost.notBasic;
     const allCoursesDuplication = post.map((post)=>{
         return post.category;
@@ -162,8 +150,8 @@ export const getEitherCourses = async(isBasic:boolean)=>{
     return allCourses;
 }
 
-export const getPostsByCourseAndPage=async(course:string, page:number)=>{
-    const posts:PostMetaData[] = await getPostsByCourse(course);
+export const getPostsByCourseAndPage=async(course:string, page:number, allPosts:PostMetaData[])=>{
+    const posts:PostMetaData[] = await getPostsByCourse(course,allPosts);
 
     const startIndex = (page - 1) * NUMBER_OF_POSTS_PER_PAGE;
     const endIndex = startIndex + NUMBER_OF_POSTS_PER_PAGE;
@@ -171,8 +159,8 @@ export const getPostsByCourseAndPage=async(course:string, page:number)=>{
     return posts.slice(startIndex, endIndex);
 }
 
-export const courseIsBasic=async(course:string)=>{
-    const posts:PostMetaData[] = await getPostsByCourse(course);
+export const courseIsBasic=async(course:string,allPosts:PostMetaData[])=>{
+    const posts:PostMetaData[] = await getPostsByCourse(course,allPosts);
     const filteredPost = posts.filter((post)=>post.is_basic_curriculum)
     if(filteredPost.length===0){
         return false;
