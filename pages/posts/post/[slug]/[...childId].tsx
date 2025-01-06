@@ -50,8 +50,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
     let currentchild = post.mdBlocks;
     const pageNavs:pageNav[] = post.metadata.is_basic_curriculum ?
-      [HOME_NAV,BASIC_NAV,{title:post.metadata.category,id:`/posts/course/${post.metadata.category}/1`,child:false},{title:post.metadata.title,id:post.metadata.slug,child:true}]
-      : [HOME_NAV,{title:post.metadata.category,id:`/posts/course/${post.metadata.category}/1`,child:false},{title:post.metadata.title,id:post.metadata.slug,child:true}];
+      [HOME_NAV,BASIC_NAV,{title:post.metadata.category,id:`/posts/course/${post.metadata.category}/1`,child:false},{title:post.metadata.title,id:`/post/${post.metadata.slug}`,child:true}]
+      : [HOME_NAV,{title:post.metadata.category,id:`/posts/course/${post.metadata.category}/1`,child:false},{title:post.metadata.title,id:`/post/${post.metadata.slug}`,child:true}];
     for (let i = 0; i < childparam.length; i++) {
         const childpages = currentchild.filter((block)=>block.type==='child_page');
         const child = childpages.filter((block)=>block.blockId===childparam[i]);
