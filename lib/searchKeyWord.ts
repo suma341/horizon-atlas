@@ -1,36 +1,33 @@
 import { PostMetaData } from "@/types/postMetaData";
-import { getAllPosts } from "./services/notionApiService";
+import stringSimilarity from 'string-similarity';
 
 export const createSearchQuery=(text:string)=>{
     const keywords = text.split(/[ 　,、]/).filter(item => item.trim() !== "");
     return keywords;
 }
 
-export const searchByKeyWord = async (keyWords: string[]) => {
-    const allPosts: PostMetaData[] = await getAllPosts();
+export const searchByKeyWord = (keyWords: string[],allPosts: PostMetaData[]) => {
+    const normalize = (str: string) => str.replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, "");
 
     const scoredPosts = allPosts.map(post => {
         let score = 0;
         for (const word of keyWords) {
             const lowerWord = word.toLowerCase();
-            if (post.title.toLowerCase().includes(lowerWord)) {
-                score += 2; // タイトル内の部分一致
-            }
-            if (post.slug.toLowerCase().includes(lowerWord)) {
-                score += 1; // スラッグ内の部分一致
-            }
+            const normalizedWord = normalize(lowerWord);
+            score = score + stringSimilarity.compareTwoStrings(normalize(post.title), normalizedWord) * 1.2;
+            score = score +  stringSimilarity.compareTwoStrings(normalize(post.slug), normalizedWord) * 1.2;
             for(const tag of post.tags){
-                if(tag.toLowerCase().includes(lowerWord)){
-                    score += 1;
-                }
+                score = score + (stringSimilarity.compareTwoStrings(normalize(tag),normalizedWord));
             }
         }
+        console.log(post.title);
+        console.log(score);
         return { post, score };
     });
 
     // スコア順にソートし、スコアが0以上のものを返す
     return scoredPosts
-        .filter(({ score }) => score > 12)
+        .filter(({ score }) => score > 0.33)
         .sort((a, b) => b.score - a.score)
         .map(({ post }) => post);
 };

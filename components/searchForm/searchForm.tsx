@@ -1,9 +1,14 @@
-import { createSearchQuery } from '@/lib/searchKeyWord';
-import router from 'next/router';
-import React, { useState } from 'react';
+import { createSearchQuery, searchByKeyWord } from '@/lib/searchKeyWord';
+import { PostMetaData } from '@/types/postMetaData';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
 
-export default function SearchForm() {
+type Props={
+    allPosts:PostMetaData[];
+    setMatchPosts: Dispatch<SetStateAction<PostMetaData[]>>;
+}
+
+export default function SearchForm({allPosts,setMatchPosts}:Props) {
     const [keyWord, setKeyWord] = useState<string>('');
     const [isComposing, setIsComposing] = useState<boolean>(false);
 
@@ -13,7 +18,8 @@ export default function SearchForm() {
           }
 
         if (event.key === 'Enter') {
-          router.push({pathname:'/search',query:{q:createSearchQuery(keyWord)}});
+          const result = searchByKeyWord(createSearchQuery(keyWord), allPosts);
+          setMatchPosts(result);
         }
       };
 
