@@ -30,7 +30,7 @@ export default function Code(props: Props) {
     };
 
     return (
-        <div className='mb-2 mt-4 relative'>
+        <div className='mb-2 mt-4 relative w-11/12'>
             <button
                 onClick={handleCopy}
                 className={`absolute top-2 right-2 px-2 py-1 text-sm rounded ${

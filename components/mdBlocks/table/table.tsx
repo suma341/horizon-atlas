@@ -12,7 +12,7 @@ export default function TableBlock(props:Props) {
     const dividedRows = mdBlock.parent.split("\n");
     const rows = dividedRows.map((row)=> row.slice(2,-2));
   return (
-    <div className='overflow-x-auto whitespace-nowrap my-2'>
+    <div className='overflow-x-auto whitespace-nowrap my-2 w-11/12'>
         <table className='table-auto border-collapse border border-neutral-500'>
             {rows.map((row,i)=>{
                 const columns = row.split(" | ");

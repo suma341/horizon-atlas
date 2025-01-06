@@ -37,15 +37,15 @@ const Sidebar = ({ title, childPages, slug }:Props) => {
   }, [window.scrollY]);
 
   return (
-    <section className="hidden md:block w-44 mt-10 ml-2">
+    <section className="hidden md:block w-36 lg:w-44 mt-10 ml-2">
       <div
-        className={"border h-screen fixed overflow-y-scroll scrollbar-thin py-4 rounded-md"}
-        style={isFixed ? { opacity:"0" } : {opacity:"75",height:"400px"}}
+        className={"border h-screen fixed overflow-y-scroll scrollbar-thin py-4 rounded-md w-36 lg:w-44"}
+        style={isFixed ? {opacity:0} : {opacity:"75",height:"400px"}}
       >
         <p className="truncate text-sm px-1">{title}</p>
         <div className="pl-4">
           {childPages.map((page, i) => (
-            <Link href={`/posts/post/${slug}/${page.id}`} key={i} className="w-40">
+            <Link href={`/posts/post/${slug}/${page.id}`} key={i} className="w-36 lg:w-44">
               <p className="my-1.5 text-sm text-neutral-500 underline truncate hover:text-neutral-900">
                 {page.title}
               </p>
@@ -55,12 +55,12 @@ const Sidebar = ({ title, childPages, slug }:Props) => {
       </div>
       <div
         className={`border h-screen relative overflow-y-scroll scrollbar-thin py-4 rounded-md`}
-        style={isFixed ? { top: window.scrollY <= 40 ? "40px" : `${getPageHeight() - 1000}px` ,opacity:"75",height:"400px" } : {opacity:"0"}}
+        style={isFixed ? { top: window.scrollY <= 40 ? "40px" : `${getPageHeight() - 1000}px` ,opacity:"75",height:"400px" } : {opacity:0}}
       >
         <p className="truncate text-sm px-1">{title}</p>
         <div className="pl-4">
           {childPages.map((page, i) => (
-            <Link href={`/posts/post/${slug}/${page.id}`} key={i} className="w-40">
+            <Link href={`/posts/post/${slug}/${page.id}`} key={i} className="w-36 lg:w-44">
               <p className="my-1.5 text-sm text-neutral-500 underline truncate hover:text-neutral-900">
                 {page.title}
               </p>

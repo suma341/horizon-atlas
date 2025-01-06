@@ -9,21 +9,30 @@ export default function Session() {
   useEffect(() => {
     const checkGuild = async () => {
       try {
-        setLoading(true);
         const response = await fetch("/api/discord/guilds");
+        
+        if (!response.ok) {
+          console.error("API Error:", response.status, await response.text());
+          alert("Error fetching guilds. Please try again later.");
+          setLoading(false);
+          return;
+        }
+        
         const data = await response.json();
-
-        if (response.status === 200 && data.message === "User is in Horizon") {
+      
+        if (data.message === "User is in Horizon") {
           router.push("/posts");
-        } else if (response.status === 302 && data.message === "User is not in Horizon") {
+        } else if (data.message === "User is not in Horizon") {
           alert("Only Horizon members can login");
           signOut();
         }
       } catch (error) {
         console.error("Error checking guild:", error);
+        alert("Unexpected error occurred. Please try again later.");
       } finally {
         setLoading(false);
       }
+      
     };
 
     if (status === "authenticated") {

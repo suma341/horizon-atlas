@@ -85,9 +85,9 @@ const PostChildPage = ( props : Props) => {
     return (
       <>
         <Navbar pageNavs={pageNavs} />
-        <div className="flex">
+        <div className="flex mx-2">
             {childNavs.length!==0 && <Sidebar title={parentTitle} slug={slug} childPages={childNavs} />}
-            <section className="container pr-5 mx-auto my-20 ml-10">
+            <section className="container px-5 my-20">
                 <h2 className="my-2 font-bold text-3xl">
                     {pageNavs[pageNavs.length - 1].title}
                 </h2>

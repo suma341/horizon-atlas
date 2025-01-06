@@ -13,7 +13,7 @@ export default function Heading2(props:Props) {
     const textBlocks = searchMDKeyword(text);
     
     return (
-        <div>
+        <div className='w-11/12'>
             <h2 className='my-2 mt-5 font-bold text-3xl'>
                 {textBlocks.map((block, i)=>(
                     <span style={block.style} key={i}>{block.text}</span>

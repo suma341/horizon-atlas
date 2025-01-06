@@ -47,7 +47,7 @@ export default function Bookmark(props: Props) {
     }
 
   return (
-    <div className="my-2 rounded-sm border-2 border-neutral-200 hover:bg-neutral-100">
+    <div className="my-2 rounded-sm border-2 border-neutral-200 hover:bg-neutral-100 w-11/12">
         {ogpData !==undefined && (
             <Link href={ogpData.ogUrl || ""}>
                 <div className="flex">
