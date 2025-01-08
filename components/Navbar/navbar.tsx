@@ -36,7 +36,7 @@ function Navbar(props:Props) {
                 <div className='flex'>
                     {pageNavs.map((nav, i)=>(
                         <div className='flex' key={i}>
-                            <Link href={pageLinks[i]} className='mr-2 px-1 hover:bg-neutral-400'>{nav.title}</Link>
+                            <Link href={pageLinks[i]} className='mr-2 px-1 hover:bg-neutral-400 truncate'>{nav.title}</Link>
                             {i + 1<pageNavs.length && <p className='mr-2 cursor-default'>/</p>}
                         </div>
                         )
@@ -47,7 +47,7 @@ function Navbar(props:Props) {
                 <div className='flex'>
                     {pageNavs.map((nav, i)=>(
                         <>
-                            <Link href={pageLinks[i]} className='mr-2 hover:bg-neutral-400'>{nav.title}</Link>
+                            <Link href={pageLinks[i]} className='mr-2 hover:bg-neutral-400 truncate'>{nav.title}</Link>
                             {i + 1<pageNavs.length && <p className='mr-2 '>/</p>}
                         </>
                         )
