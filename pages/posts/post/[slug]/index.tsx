@@ -56,7 +56,7 @@ const Post =({ metadata, mdBlocks,pageNavs }: Props) => {
         <h2 className='w-full text-2xl font-medium'>{metadata.title}</h2>
       </div>
         <div className='border-b-2 mt-2'></div>
-        <span className='text-gray-500'>posted date at {metadata.date}</span>
+        <span className='text-gray-500'>created at {metadata.date}</span>
         <br />
         {metadata.tags.map((tag:string,i:number)=>(
           <p className='text-white bg-sky-500 rounded-xl font-medium mt-2 px-2 inline-block mr-2' key={i}>

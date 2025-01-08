@@ -63,7 +63,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     };
 };
 
-const blogTagPageList = ({ posts,numberOfPages,currentPage, currentCourse,pageNavs}: Props)=> {
+const CoursePage = ({ posts,numberOfPages,currentPage, currentCourse,pageNavs}: Props)=> {
     return (
         <div className="container h-full w-full mx-auto font-mono">
             <Navbar pageNavs={pageNavs} />
@@ -86,4 +86,4 @@ const blogTagPageList = ({ posts,numberOfPages,currentPage, currentCourse,pageNa
     );
 }
 
-export default blogTagPageList;
+export default CoursePage;

@@ -2,6 +2,7 @@ import { Client, isFullPage } from "@notionhq/client";
 import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import { NotionToMarkdown } from "notion-to-md";
 import { MdBlock } from "notion-to-md/build/types";
+import NodeCache from "node-cache";
 
 const NOTION_TOKEN = process.env.NOTION_TOKEN2!;
 const NOTION_DATABASE_ID = process.env.NOTION_DATABASE_ID2!;
@@ -13,23 +14,23 @@ const notion = new Client({
 const n2m = new NotionToMarkdown({notionClient: notion});
 
 // テスト用
-export const getAllMetaData = async()=>{
-    const posts = await notion.databases.query({
-        database_id: NOTION_DATABASE_ID,
-        page_size: 100,
-    });
+// export const getAllMetaData = async()=>{
+//     const posts = await notion.databases.query({
+//         database_id: NOTION_DATABASE_ID,
+//         page_size: 100,
+//     });
 
-    // 型ガードを使用して、PageObjectResponse型のみに絞り込む
-    const allPosts = posts.results.filter(isFullPage);
+//     const allPosts = posts.results.filter(isFullPage);
 
-    return allPosts;
-}
+//     return allPosts;
+// }
 
-let cachedAllData: PageObjectResponse[] | null = null;
+const cache = new NodeCache({ stdTTL: 3600 });
 
 export const getAllData = async () => {
-    if (cachedAllData) {
-        return cachedAllData; // キャッシュされたデータを返す
+    const cachedData = cache.get<PageObjectResponse[]>("allData");
+    if (cachedData) {
+        return cachedData;
     }
 
     const posts = await notion.databases.query({
@@ -51,7 +52,7 @@ export const getAllData = async () => {
 
     const allPosts = posts.results.filter(isFullPage);
 
-    cachedAllData = allPosts; // データをキャッシュ
+    cache.set("allData", allPosts);
     console.log("allPosts");
     return allPosts;
 };
