@@ -16,7 +16,7 @@ export const getPageNavs=(pageNavs:pageNav[])=>{
         pageLinks.push(parent[i].id);
     }
     for(let i=0;i<child.length;i++){
-        let link = `/posts/${child[0].id}`;
+        let link = `/posts${child[0].id}`;
         for(let k=0;k<i;k++){
             link = link + `/${child[k + 1].id}`;
         }
