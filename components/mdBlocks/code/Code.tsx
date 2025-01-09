@@ -1,6 +1,6 @@
 import { MdBlock } from 'notion-to-md/build/types';
 import React, { useState } from 'react';
-import { dracula } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
+import { atomOneLight } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 import SyntaxHighlighter from 'react-syntax-highlighter/dist/cjs/default-highlight';
 
 type Props = {
@@ -31,15 +31,19 @@ export default function Code(props: Props) {
 
     return (
         <div className='mb-2 mt-4 relative w-11/12'>
-            <button
-                onClick={handleCopy}
-                className={`absolute top-2 right-2 px-2 py-1 text-sm rounded ${
-                    copied ? 'bg-neutral-600 text-white' : 'bg-gray-200 text-gray-800'
-                }`}
-            >
-                {copied ? 'Copied!' : 'Copy'}
-            </button>
-            <SyntaxHighlighter style={dracula} language={language}>
+            <div className='mb-0' style={{background: "rgb(245, 245, 245)"}}>
+                <p className='text-neutral-800 px-2 text-base py-1'>{language}</p>
+                <button
+                    onClick={handleCopy}
+                    className={`absolute top-0.5 right-2 px-2 py-1 text-sm rounded ${
+                        copied ? 'bg-neutral-600 text-white' : 'bg-gray-100 text-gray-800'
+                    }`}
+                >
+                    {copied ? 'Copied' : 'Copy'}
+                </button>
+            </div>
+            
+            <SyntaxHighlighter style={atomOneLight} language={language}>
                 {String(codeContent).replace(/\n$/, '')}
             </SyntaxHighlighter>
         </div>
