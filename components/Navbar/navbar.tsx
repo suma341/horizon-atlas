@@ -4,14 +4,13 @@ import React, { useEffect, useState } from 'react'
 import DetailNav from './detailNav/DetailNav';
 
 type Props ={
-    pageNavs:pageNav[]
+    pageNavs:pageNav[];
 }
 
 function Navbar(props:Props) {
     const {pageNavs} = props;
 
     const [show, setShow] = useState(false);
-    const [isVisible, setIsVisible] = useState(false); 
 
     useEffect(() => {
         const handleScroll = () => {
@@ -37,7 +36,7 @@ function Navbar(props:Props) {
                     <div className='flex'>
                         <Link href={pageNavs[0].id} className='mr-2 px-1 hover:bg-neutral-200 text-neutral-500'>{pageNavs[0].title}</Link>
                         <p className='mr-2 cursor-default text-neutral-500'>/</p>
-                        <DetailNav pageNav={pageNavs.slice(1,-2)} show={show} isVisible={isVisible} setIsVisible={setIsVisible} />
+                        <DetailNav pageNav={pageNavs.slice(1,-2)} show={show} />
                         <p className='mr-2 cursor-default text-neutral-500'>/</p>
                         <Link href={pageNavs[pageNavs.length - 2].id} className='mr-2 px-1 hover:bg-neutral-200 text-neutral-500'>{pageNavs[pageNavs.length - 2].title}</Link>
                         <p className='mr-2 cursor-default text-neutral-500'>/</p>
@@ -59,7 +58,7 @@ function Navbar(props:Props) {
                     <div className='flex'>
                         <Link href={pageNavs[0].id} className='mr-2 px-1 hover:bg-neutral-200 text-neutral-500'>{pageNavs[0].title}</Link>
                         <p className='mr-2 cursor-default text-neutral-500'>/</p>
-                        <DetailNav pageNav={pageNavs.slice(1,-2)} isVisible={isVisible} setIsVisible={setIsVisible} />
+                        <DetailNav pageNav={pageNavs.slice(1,-2)} show={!show} />
                         <p className='mr-2 cursor-default text-neutral-500'>/</p>
                         <Link href={pageNavs[pageNavs.length - 2].id} className='mr-2 px-1 hover:bg-neutral-200 text-neutral-500'>{pageNavs[pageNavs.length - 2].title}</Link>
                         <p className='mr-2 cursor-default text-neutral-500'>/</p>

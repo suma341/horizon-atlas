@@ -1,15 +1,14 @@
 import { pageNav } from '@/types/pageNav';
 import Link from 'next/link';
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 type Props ={
   pageNav:pageNav[];
-  show?:boolean;
-  isVisible:boolean;
-  setIsVisible:React.Dispatch<React.SetStateAction<boolean>>;
+  show:boolean;
 }
 
-function DetailNav({pageNav,show,isVisible,setIsVisible}:Props) {
+function DetailNav({pageNav,show}:Props) {
+  const [isVisible, setIsVisible] = useState(false); 
   const toggleRef = useRef<HTMLDivElement>(null); // toggle要素への参照
   const toggleTargetRef = useRef<HTMLDivElement>(null); // toggleTarget要素への参照
 
@@ -34,9 +33,7 @@ function DetailNav({pageNav,show,isVisible,setIsVisible}:Props) {
   }, []);
 
   useEffect(()=>{
-    if(show!==undefined){
       setIsVisible(show)
-    }
   },[show])
 
   return (
