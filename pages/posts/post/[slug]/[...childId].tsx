@@ -50,16 +50,22 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const post = await getSinglePost(currentSlug);
 
     let currentchild = post.mdBlocks;
+    const links:string[] = [`/posts/post/${post.metadata.slug}`];
     const pageNavs:pageNav[] = post.metadata.is_basic_curriculum ?
-      [HOME_NAV,BASIC_NAV,{title:post.metadata.category,id:`/posts/course/${post.metadata.category}/1`,child:false},{title:post.metadata.title,id:`/post/${post.metadata.slug}`,child:true}]
-      : [HOME_NAV,{title:post.metadata.category,id:`/posts/course/${post.metadata.category}/1`,child:false},{title:post.metadata.title,id:`/post/${post.metadata.slug}`,child:true}];
+      [HOME_NAV,BASIC_NAV,{title:post.metadata.category,id:`/posts/course/${post.metadata.category}/1`,child:false},{title:post.metadata.title,id:`/posts/post/${post.metadata.slug}`,child:false}]
+      : [HOME_NAV,{title:post.metadata.category,id:`/posts/course/${post.metadata.category}/1`,child:false},{title:post.metadata.title,id:`/posts/post/${post.metadata.slug}`,child:false}];
     for (let i = 0; i < childparam.length; i++) {
-        const childpages = currentchild.filter((block)=>block.type==='child_page');
-        const child = childpages.filter((block)=>block.blockId===childparam[i]);
-        if(child[0]!==undefined){
-            pageNavs.push({title:child[0].parent.replace("## ",""), id:child[0].blockId,child:true});
-            currentchild = child[0].children;
+      const childpages = currentchild.filter((block)=>block.type==='child_page');
+      const child = childpages.filter((block)=>block.blockId===childparam[i]);
+      if(child[0]!==undefined){
+        links.push(child[0].blockId);
+        let link = "";
+        for(let k=0;k<links.length;k++){
+          link = link + links[k];
         }
+        pageNavs.push({title:child[0].parent.replace("## ",""), id:link,child:false});
+        currentchild = child[0].children;
+      }
     }
     const childPages = getChildPage(post.mdBlocks);
     const childNavs:pageNav[] = childPages.map((page)=>{
