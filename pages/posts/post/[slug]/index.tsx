@@ -51,7 +51,7 @@ const Post =({ metadata, mdBlocks,pageNavs }: Props) => {
   return (
     <>
     <Navbar pageNavs={pageNavs} />
-    <section className='container lg;px-10 px-20 mx-auto mt-20'>
+    <section className='container px-5 mt-20'>
       <div className='flex'>
       {metadata.icon!=="" && <Image src={metadata.icon} alt={''} width={20} height={20} className='relative w-auto h-8 m-0 mr-2 top-0.5' />}
         <h2 className='w-full text-2xl font-medium'>{metadata.title}</h2>

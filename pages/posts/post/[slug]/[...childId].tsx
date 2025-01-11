@@ -95,14 +95,13 @@ const PostChildPage = ( props : Props) => {
         <div className="flex mx-2">
             {childNavs.length!==0 && <Sidebar title={parentTitle} slug={slug} childPages={childNavs} />}
             <section className="container px-5 my-20">
-                <h2 className="my-2 font-bold text-3xl">
-                    {pageNavs[pageNavs.length - 1].title}
-                </h2>
-                <div>
-                    {mdBlocks.map((mdBlock, i) => (
-                        <MdBlockComponent mdBlock={mdBlock} depth={0} key={i} />
-                    ))}
-                </div>
+              <h2 className="w-full text-2xl font-medium">
+                  {pageNavs[pageNavs.length - 1].title}
+              </h2>
+              <div className='border-b-2 mt-2'></div>
+              {mdBlocks.map((mdBlock, i) => (
+                  <MdBlockComponent mdBlock={mdBlock} depth={0} key={i} />
+              ))}
             </section>
         </div>
     </>
