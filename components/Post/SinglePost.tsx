@@ -22,13 +22,11 @@ const SinglePost = (props:Props) => {
                             {title}
                         </h2>
                     </div>
-                    <div className='flex flex-wrap'>
-                        {tags.map((tag, i:number)=>(
-                            <span style={tagStyle} key={i}>
-                                {tag}
-                            </span>
-                        ))}
-                    </div>
+                    {tags.map((tag, i:number)=>(
+                        <span style={tagStyle} key={i}>
+                            {tag}
+                        </span>
+                    ))}
                 </section>
             ) : (
                 <section className='bg-slate-50 mb-4 mx-auto rounded-md p-3 shadow-2xl hover:shadow-none hover:translate-y-1 hover:bg-neutral-100 transition-all duration-300'>

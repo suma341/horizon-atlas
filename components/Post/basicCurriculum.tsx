@@ -12,7 +12,7 @@ export default function BasicCurriculum() {
                 </div>
                 <div className=''>
                     <p className='text-neutral-500 text-sm'>
-                        
+                        基礎班のカリキュラムです。pythonやFletライブラリを通してアプリ開発を学べます。
                     </p>
                 </div>
             </section>
