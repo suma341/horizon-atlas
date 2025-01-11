@@ -5,8 +5,8 @@ import React from 'react'
 
 export default function Header(){
   return (
-    <header className="bg-neutral-300 text-white px-4 flex justify-between items-center">
-    <Link href="/posts" className="ml-5 text-2xl font-medium text-white p-1 rounded-md">
+    <header className="bg-neutral-300 text-white px-5 flex justify-between items-center">
+    <Link href="/posts" className="text-2xl font-medium text-white rounded-md">
         TechShelf
     </Link>
     <ul className="flex items-center text-sm py-4">
