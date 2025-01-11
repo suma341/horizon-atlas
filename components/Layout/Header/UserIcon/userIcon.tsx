@@ -48,7 +48,7 @@ export function Session() {
               event.stopPropagation(); // クリックイベントの伝播を防ぐ
               setIsVisible((prev) => !prev); // 状態を切り替え
             }}
-            className="cursor-pointer flex p-1 rounded-lg shadow-lx  hover:translate-y-1 hover:opacity-85 duration-200">
+            className="cursor-pointer flex rounded-lg shadow-lx  hover:translate-y-1 hover:opacity-85 duration-200">
               <Image src={session.user?.image ? session.user?.image : "/user_icon.png"} alt="UserIcon" width={10} height={10}  className="h-auto w-9 rounded-full"/>
             </div>
             {isVisible && (
