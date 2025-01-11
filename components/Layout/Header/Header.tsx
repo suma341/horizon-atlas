@@ -1,7 +1,7 @@
 import UserIcon from '@/components/Layout/Header/UserIcon/userIcon';
 import Link from 'next/link';
-import { FaMagnifyingGlass } from "react-icons/fa6";
 import React from 'react'
+import Image from 'next/image';
 
 export default function Header(){
   return (
@@ -13,7 +13,7 @@ export default function Header(){
         <li className="mr-4">
             <button className="p-2 bg-slate-50 hover:bg-gray-100 rounded-full shadow-xl hover:translate-y-1 hover:shadow-none duration-200">
                 <Link href="/search">
-                    <FaMagnifyingGlass size={22} className="text-neutral-700 hover:text-gray-900" />
+                    <Image src="/magnifying_glass.png" alt='magnifying_glass' height={20} width={20} className='w-5 h-auto' />
                 </Link>
             </button>
         </li>

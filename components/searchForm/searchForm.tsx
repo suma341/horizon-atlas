@@ -1,7 +1,7 @@
 import { createSearchQuery, searchByKeyWord } from '@/lib/searchKeyWord';
 import { PostMetaData } from '@/types/postMetaData';
 import React, { Dispatch, SetStateAction, useState } from 'react';
-import { FaSearch } from 'react-icons/fa';
+import Image from 'next/image';
 
 type Props={
     allPosts:PostMetaData[];
@@ -29,10 +29,8 @@ export default function SearchForm({allPosts,setMatchPosts}:Props) {
 
     return (
         <section className="p-3 shadow-2xl mb-12">
-            <div className="flex bg-white p-1 rounded-md">
-                <FaSearch
-                    className="ml-1 mt-0.5 text-gray-500"
-                    size={25}/>
+            <div className="flex bg-white rounded-md">
+            <Image src="/magnifying_glass.png" alt='magnifying_glass' height={20} width={20} className='w-auto h-6' />
                 <input
                     value={keyWord}
                     onChange={handleChange}

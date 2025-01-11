@@ -29,8 +29,8 @@ export default function SearchPage({allTags, posts}:Props) {
   return (
     <>
       <Navbar pageNavs={[HOME_NAV,SEARCH_NAV]} />
-      <div className="h-full w-full mx-auto">
-        <main className="w-full mt-16 px-8 sm:px-28 lg:px-44">
+      <div className="">
+        <main className="w-full mt-16 px-8">
           <div>
             <SearchForm allPosts={posts} setMatchPosts={setMatchPosts} />
             <Tags allTags={allTags} />

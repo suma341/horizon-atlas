@@ -1,7 +1,6 @@
 import { SessionProvider, signOut, useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { PiSignOut } from "react-icons/pi";
 
 export default function UserIcon(){
   return (
@@ -54,10 +53,10 @@ export function Session() {
             {isVisible && (
               <div
                 id="toggleTarget" ref={toggleTargetRef}
-                className="z-50 border-solid border-neutral-300 border-2 absolute bg-white p-2 rounded-md w-32 translate-y-1 translate-x-[-55%]">
+                className="z-50 border-solid border-neutral-300 border-2 absolute bg-white p-2 rounded-md w-32 translate-y-1 translate-x-[-65%]">
                 <ul>
                     <button onClick={() => signOut()} className="flex relative hover:bg-slate-200 rounded-sm p-1 pr-2">
-                      <PiSignOut size={18} className="mt-0.5 mr-1.5 text-neutral-600" />
+                      {/* <PiSignOut size={18} className="mt-0.5 mr-1.5 text-neutral-600" /> */}
                       <p className="text-neutral-600">ログアウト</p>
                     </button>
                 </ul>
