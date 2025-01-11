@@ -6,9 +6,7 @@ import { getAllPosts, getChildPage, getSinglePost } from '@/lib/services/notionA
 import { pageNav } from '@/types/pageNav';
 import { PostMetaData } from '@/types/postMetaData';
 import { GetStaticProps } from 'next';
-import { useRouter } from 'next/router';
 import { MdBlock } from 'notion-to-md/build/types';
-import React, { useEffect, useState } from 'react';
 
 type Props = {
   mdBlocks:MdBlock[];
@@ -89,32 +87,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 const PostChildPage = ( props : Props) => {
     const {mdBlocks, pageNavs,parentTitle,childNavs,slug} = props;
-    const [mdBlock, setMdBlock] = useState<MdBlock[]>(mdBlocks);
-    const [loading,setLoading] = useState<boolean>(false);
-    const router = useRouter();
-
-    useEffect(() => {
-      const getMdBlocks = async () => {
-        const res = await fetch(`/api/post/getMdBlocks?slug=${slug}`);
-        setLoading(true);
-        if(res.ok){
-            const {mdBlocks}:{mdBlocks:MdBlock[]} = await res.json();
-            const childparam = router.asPath.split("/").filter(item => item.trim() !== "").slice(3);
-            let currentchild:MdBlock[] = mdBlocks;
-            for (let i = 0; i < childparam.length; i++) {
-                const childpages = currentchild.filter((block)=>block.type==='child_page');
-                const child = childpages.filter((block)=>block.blockId===childparam[i]);
-                if(child[0]!==undefined){
-                    currentchild = child[0].children;
-                }
-            }
-            setMdBlock(currentchild);
-            console.log("page update");
-        }
-        setLoading(false);
-      };
-      getMdBlocks();
-    }, []);
 
     return (
       <>
@@ -126,8 +98,7 @@ const PostChildPage = ( props : Props) => {
                     {pageNavs[pageNavs.length - 1].title}
                 </h2>
                 <div>
-                    {loading && <div>Loading...</div>}
-                    {mdBlock.map((mdBlock, i) => (
+                    {mdBlocks.map((mdBlock, i) => (
                         <MdBlockComponent mdBlock={mdBlock} depth={0} key={i} />
                     ))}
                 </div>
