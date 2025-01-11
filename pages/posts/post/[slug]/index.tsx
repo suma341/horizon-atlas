@@ -43,6 +43,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       mdBlocks:post.mdBlocks,
       pageNavs
     },
+    revalidate: 600
   };
 };
 
