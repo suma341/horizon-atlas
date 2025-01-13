@@ -33,8 +33,8 @@ export const getStaticPaths = async() =>{
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const slug = params?.slug as string; 
   const post = await getSinglePost(slug);
-  const courseNav:pageNav = {title:post.metadata.category,id:`/posts/course/${post.metadata.category}/1`,child:false};
-  const postNav:pageNav = {title:post.metadata.title,id:`/posts/post/${slug}`,child:false};
+  const courseNav:pageNav = {title:post.metadata.category,id:`/posts/course/${post.metadata.category}/1`};
+  const postNav:pageNav = {title:post.metadata.title,id:`/posts/post/${slug}`};
   const pageNavs:pageNav[] = post.metadata.is_basic_curriculum ? 
     [HOME_NAV,BASIC_NAV,courseNav,postNav] : post.metadata.category ==='' ? [HOME_NAV,postNav] : [HOME_NAV,courseNav,postNav]
   return {

@@ -50,8 +50,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
     let currentchild = post.mdBlocks;
     const links:string[] = [`/posts/post/${post.metadata.slug}`];
     const pageNavs:pageNav[] = post.metadata.is_basic_curriculum ?
-      [HOME_NAV,BASIC_NAV,{title:post.metadata.category,id:`/posts/course/${post.metadata.category}/1`,child:false},{title:post.metadata.title,id:`/posts/post/${post.metadata.slug}`,child:false}]
-      : [HOME_NAV,{title:post.metadata.category,id:`/posts/course/${post.metadata.category}/1`,child:false},{title:post.metadata.title,id:`/posts/post/${post.metadata.slug}`,child:false}];
+      [HOME_NAV,BASIC_NAV,{title:post.metadata.category,id:`/posts/course/${post.metadata.category}/1`},{title:post.metadata.title,id:`/posts/post/${post.metadata.slug}`}]
+      : [HOME_NAV,{title:post.metadata.category,id:`/posts/course/${post.metadata.category}/1`},{title:post.metadata.title,id:`/posts/post/${post.metadata.slug}`}];
     for (let i = 0; i < childparam.length; i++) {
       const childpages = currentchild.filter((block)=>block.type==='child_page');
       const child = childpages.filter((block)=>block.blockId===childparam[i]);
@@ -61,7 +61,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
         for(let k=0;k<links.length;k++){
           link = link + links[k];
         }
-        pageNavs.push({title:child[0].parent.replace("## ",""), id:link,child:false});
+        pageNavs.push({title:child[0].parent.replace("## ",""), id:link});
         currentchild = child[0].children;
       }
     }

@@ -52,7 +52,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 const blogTagPageList = ({ posts,numberOfPages,currentPage, currentTag}: InferGetStaticPropsType<typeof getStaticProps>)=> {
-    const tagSearchNav:pageNav = {title:`タグ検索：${currentTag}`,id:`/posts/tag/${currentTag}/${currentPage}`,child:false};
+    const tagSearchNav:pageNav = {title:`タグ検索：${currentTag}`,id:`/posts/tag/${currentTag}/${currentPage}`};
     return (
         <>
             <Navbar pageNavs={[HOME_NAV,SEARCH_NAV,tagSearchNav]} />

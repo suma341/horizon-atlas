@@ -47,7 +47,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const allPosts = await getAllPosts();
     const numberOfPages:number = await getNumberOfPages(allPosts,undefined,currentCourse);
     const isBasic = await courseIsBasic(currentCourse,allPosts);
-    const currentNav:pageNav = {title:currentCourse,id:`/posts/course/${currentCourse}/1`,child:false};
+    const currentNav:pageNav = {title:currentCourse,id:`/posts/course/${currentCourse}/1`};
     const pageNavs = isBasic ? [HOME_NAV,BASIC_NAV,currentNav] :[HOME_NAV,currentNav];
     // console.log(numberOfPages);
 
