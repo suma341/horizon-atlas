@@ -14,7 +14,7 @@ export default function Heading2(props:Props) {
     
     return (
         <div className='w-11/12'>
-            <h2 className='my-2 mt-5 font-bold text-3xl'>
+            <h2 className='mb-1 mt-6 font-bold text-2xl'>
                 {textBlocks.map((block, i)=>(
                     <span style={block.style} key={i}>{block.text}</span>
                 ))}
