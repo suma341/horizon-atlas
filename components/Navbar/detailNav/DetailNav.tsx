@@ -50,7 +50,7 @@ function DetailNav({pageNav,show}:Props) {
       {isVisible && (
           <div
             id="toggleTarget" ref={toggleTargetRef}
-            className="absolute bg-white p-2 rounded-xl translate-y-[62%] translate-x-[40%] shadow-2xl">
+            className="absolute bg-white p-2 rounded-xl translate-y-[45%] translate-x-[40%] shadow-2xl">
             {pageNav.map((nav,i)=>(
               <Link href={nav.id} className='z-50' key={i}>
                 <p className='hover:bg-neutral-200 text-neutral-500 text-sm'>{nav.title}</p>
