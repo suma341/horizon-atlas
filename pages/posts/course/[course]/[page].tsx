@@ -60,6 +60,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
           currentCourse,
           pageNavs,
         },
+        revalidate: 600
     };
 };
 

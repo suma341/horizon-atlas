@@ -36,6 +36,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
           currentPage,
           // allMetaData
         },
+        revalidate: 600
     };
 };
 
