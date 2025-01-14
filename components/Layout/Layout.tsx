@@ -1,7 +1,7 @@
 import React,{ ReactNode, useEffect } from 'react'
 import Head from 'next/head';
 import Footer from './Footer/Footer';
-import { SessionProvider, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import Header from './Header/Header';
 
@@ -31,11 +31,9 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
 }
 function SesstionProviderWraped({children} : {children: React.ReactNode}){
   return (
-    <SessionProvider>
       <AuthGuard>
         {children}
-      </AuthGuard>
-    </SessionProvider>)
+      </AuthGuard>)
 }
 
 const Layout:React.FC<LayoutProps> = ({ children })=> {
