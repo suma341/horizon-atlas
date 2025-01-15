@@ -14,7 +14,7 @@ export default function Home() {
 
       <header className="bg-neutral-300 text-white py-4">
         <div className="container mx-auto flex justify-between items-center px-4">
-          <h1 className="text-2xl font-bold">Horizon TechShelf</h1>
+          <h1 className="text-2xl font-bold">HorizonAtlas</h1>
           <nav>
             <ul className="flex space-x-4">
               <li><a href="#about" className="hover:underline">About</a></li>
@@ -27,7 +27,7 @@ export default function Home() {
 
       <main className="container mx-auto px-4 py-8">
         <section className="text-center py-16">
-          <h2 className="text-4xl font-bold text-gray-800">Welcome to Horizon TechShelf</h2>
+          <h2 className="text-4xl font-bold text-gray-800">Welcome to HorizonAtlas</h2>
           <p className="text-gray-600 mt-4">プログラミング部Horizonで使用する学習資料を簡単に閲覧、検索できます。</p>
           <div className="mt-8">
           <SessionProvider>
@@ -45,7 +45,7 @@ export default function Home() {
         <section id="about" className="py-16">
           <h3 className="text-3xl font-bold text-gray-800">About Horizon TechShelf</h3>
           <p className="text-gray-600 mt-4">
-            Horizon TechShelfは、学習資料を整理して部員全員でアクセスできるアプリです。
+            HorizonAtlasは、学習資料を整理して部員全員でアクセスできるアプリです。
             基礎班カリキュラム、web、スマホアプリなど、自分の見たい学習資料を簡単に探せます。
           </p>
         </section>
