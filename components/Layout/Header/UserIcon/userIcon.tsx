@@ -1,15 +1,8 @@
-import { SessionProvider, signOut, useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
-export default function UserIcon(){
-  return (
-    <SessionProvider>
-      <Session />
-    </SessionProvider>)
-}
-
-export function Session() {
+export default function UserIcon() {
   const { data: session } = useSession();
   
   const [isVisible, setIsVisible] = useState(false); // トグルの状態を管理
