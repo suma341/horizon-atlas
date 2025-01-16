@@ -43,7 +43,7 @@ export default function Home() {
         </section>
 
         <section id="about" className="py-16">
-          <h3 className="text-3xl font-bold text-gray-800">About Horizon TechShelf</h3>
+          <h3 className="text-3xl font-bold text-gray-800">About Horizon Atlas</h3>
           <p className="text-gray-600 mt-4">
             HorizonAtlasは、学習資料を整理して部員全員でアクセスできるアプリです。
             基礎班カリキュラム、web、スマホアプリなど、自分の見たい学習資料を簡単に探せます。
