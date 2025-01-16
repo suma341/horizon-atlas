@@ -4,10 +4,9 @@ import React, { useEffect, useRef, useState } from 'react'
 
 type Props ={
   pageNav:pageNav[];
-  show:boolean;
 }
 
-function DetailNav({pageNav,show}:Props) {
+function DetailNav({pageNav}:Props) {
   const [isVisible, setIsVisible] = useState(false); 
   const toggleRef = useRef<HTMLDivElement>(null); // toggle要素への参照
   const toggleTargetRef = useRef<HTMLDivElement>(null); // toggleTarget要素への参照
@@ -31,10 +30,6 @@ function DetailNav({pageNav,show}:Props) {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
-
-  useEffect(()=>{
-      setIsVisible(show)
-  },[show])
 
   return (
     <>

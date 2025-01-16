@@ -19,7 +19,6 @@ export default function Home() {
             <ul className="flex space-x-4">
               <li><a href="#about" className="hover:underline">About</a></li>
               <li><a href="#features" className="hover:underline">Features</a></li>
-              <li><a href="#contact" className="hover:underline">Contact</a></li>
             </ul>
           </nav>
         </div>
@@ -59,11 +58,6 @@ export default function Home() {
           </ul>
         </section>
 
-        <section id="contact" className="py-16">
-          <h3 className="text-3xl font-bold text-gray-800">Contact Us</h3>
-          <p className="text-gray-600 mt-4">ご意見や質問がありましたら、以下のメールアドレスまでご連絡ください。</p>
-          <p className="text-blue-600 mt-2">horizon-techshelf@example.com</p>
-        </section>
       </main>
 
       <footer className="bg-gray-800 text-white py-4">

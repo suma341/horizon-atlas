@@ -1,4 +1,4 @@
-import Navbar from "@/components/Navbar/navbar";
+import Layout from "@/components/Layout/Layout";
 import SingleCourse from "@/components/Post/SingleCourse";
 import BasicCurriculum from "@/components/Post/basicCurriculum";
 import { HOME_NAV } from "@/constants/pageNavs";
@@ -34,8 +34,8 @@ export const getStaticProps: GetStaticProps = async () => {
 
 const PostsPage = ({ courseAndPosts }: Props)=> {
     return (
-      <div className="container h-full w-full mx-auto font-mono">
-        <Navbar pageNavs={[HOME_NAV]} />
+      <Layout headerProps={[HOME_NAV]}>  
+        <div className="container h-full w-full mx-auto font-mono pt-20">
         <main className="container w-full mt-16 mb-3">
           <h1 className="text-5xl font-medium text-center mb-16"></h1>
           <section className="gap-3 mx-auto">
@@ -46,7 +46,7 @@ const PostsPage = ({ courseAndPosts }: Props)=> {
           </section>
         </main>
       </div>
-      
+      </Layout>
     );
   }
 

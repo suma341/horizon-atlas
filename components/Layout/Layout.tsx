@@ -4,10 +4,7 @@ import Footer from './Footer/Footer';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import Header from './Header/Header';
-
-type LayoutProps = {
-    children: ReactNode;
-};
+import { pageNav } from '@/types/pageNav';
 
 const PUBLIC_PAGES = ["/"]; // 認証不要なページ
 
@@ -36,13 +33,18 @@ function SesstionProviderWraped({children} : {children: React.ReactNode}){
       </AuthGuard>)
 }
 
-const Layout:React.FC<LayoutProps> = ({ children })=> {
+type LayoutProps={
+  children: ReactNode;
+  headerProps:pageNav[];
+}
+
+const Layout:React.FC<LayoutProps> = ({ children,headerProps })=> {
   return (
     <div className='bg-white'>
         <Head>
           <title>Horizon TechShelf</title>
         </Head>
-        <Header />
+        <Header pageNavs={headerProps} />
           <SesstionProviderWraped>
             {children}
           </SesstionProviderWraped>

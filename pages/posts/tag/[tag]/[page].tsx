@@ -3,9 +3,9 @@ import SinglePost from "@/components/Post/SinglePost";
 import { PostMetaData } from "@/types/postMetaData";
 import Pagenation from "@/components/pagenation/Pagenation";
 import { getAllPosts, getAllTags, getNumberOfPages, getPostsByTagAndPage } from "@/lib/services/notionApiService";
-import Navbar from "@/components/Navbar/navbar";
 import { HOME_NAV, SEARCH_NAV } from "@/constants/pageNavs";
 import { pageNav } from "@/types/pageNav";
+import Layout from "@/components/Layout/Layout";
 
 type pagePath = {
     params: { tag:string, page:string }
@@ -55,8 +55,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 const blogTagPageList = ({ posts,numberOfPages,currentPage, currentTag}: InferGetStaticPropsType<typeof getStaticProps>)=> {
     const tagSearchNav:pageNav = {title:`タグ検索：${currentTag}`,id:`/posts/tag/${currentTag}/${currentPage}`};
     return (
-        <>
-            <Navbar pageNavs={[HOME_NAV,SEARCH_NAV,tagSearchNav]} />
+        <Layout headerProps={[HOME_NAV,SEARCH_NAV,tagSearchNav]}>
             <div className="container h-full w-full mx-auto font-mono">
             <main className="container w-full mt-16 mb-3">
                 <section className="sm:grid grid-cols-2 gap-3 mx-auto">
@@ -72,7 +71,7 @@ const blogTagPageList = ({ posts,numberOfPages,currentPage, currentTag}: InferGe
             </main>
             <Pagenation numberOfPage={numberOfPages} currentPage={currentPage} tag={currentTag} />
             </div>
-        </>
+        </Layout>
     );
 }
 

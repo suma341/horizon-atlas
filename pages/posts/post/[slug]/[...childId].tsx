@@ -1,4 +1,4 @@
-import Navbar from '@/components/Navbar/navbar';
+import Layout from '@/components/Layout/Layout';
 import Sidebar from '@/components/Sidebar/Sidebar';
 import MdBlockComponent from '@/components/mdBlocks/mdBlock';
 import { BASIC_NAV, HOME_NAV } from '@/constants/pageNavs';
@@ -90,9 +90,8 @@ const PostChildPage = ( props : Props) => {
     const {mdBlocks, pageNavs,parentTitle,childNavs,slug} = props;
 
     return (
-      <>
-        <Navbar pageNavs={pageNavs} />
-        <div className="flex mx-2">
+      <Layout headerProps={pageNavs}>
+        <div className="flex mx-2 pt-20">
             {childNavs.length!==0 && <Sidebar title={parentTitle} slug={slug} childPages={childNavs} />}
             <section className="container px-5 my-20">
               <h2 className="w-full text-2xl font-medium">
@@ -104,7 +103,7 @@ const PostChildPage = ( props : Props) => {
               ))}
             </section>
         </div>
-    </>
+    </Layout>
     );
 };
 export default PostChildPage;

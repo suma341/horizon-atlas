@@ -1,4 +1,4 @@
-import Navbar from "@/components/Navbar/navbar";
+import Layout from "@/components/Layout/Layout";
 import SinglePost from "@/components/Post/SinglePost";
 import SearchForm from "@/components/searchForm/searchForm";
 import Tags from "@/components/tag/Tags";
@@ -28,9 +28,8 @@ export const getStaticProps: GetStaticProps = async () => {
 export default function SearchPage({allTags, posts}:Props) {
   const [matchPosts, setMatchPosts] = useState<PostMetaData[]>(posts);
   return (
-    <>
-      <Navbar pageNavs={[HOME_NAV,SEARCH_NAV]} />
-      <div className="">
+    <Layout headerProps={[HOME_NAV,SEARCH_NAV]}>
+      <div className="pt-20">
         <main className="w-full mt-16 px-8">
           <div>
             <SearchForm allPosts={posts} setMatchPosts={setMatchPosts} />
@@ -42,6 +41,6 @@ export default function SearchPage({allTags, posts}:Props) {
           </div>
         </main>
       </div>
-    </>
+    </Layout>
   );
 }
