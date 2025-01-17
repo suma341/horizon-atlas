@@ -91,7 +91,7 @@ const PostChildPage = ( props : Props) => {
 
     return (
       <Layout headerProps={pageNavs}>
-        <div className="flex p-4 pt-24 pb-8 bg-neutral-100">
+        <div className="pt-24 pb-8 bg-neutral-100 sm:flex">
             {childNavs.length!==0 && <Sidebar title={parentTitle} slug={slug} childPages={childNavs} />}
             <section className="p-5 pb-10 bg-white">
               <h2 className="w-full text-2xl font-medium">
