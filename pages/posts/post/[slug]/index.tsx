@@ -50,18 +50,19 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 const Post =({ metadata, mdBlocks,pageNavs }: Props) => {
   return (
     <Layout headerProps={pageNavs}>
-      <section className='container px-5'>
-        <div className='flex pt-28'>
+      <div className='p-4 pt-24 pb-8 bg-neutral-100'>
+      <section className='p-5 bg-white pb-10'>
+        <div className='flex'>
         {metadata.icon!=="" && <Image src={metadata.icon} alt={''} width={20} height={20} className='relative w-auto h-8 m-0 mr-2 top-0.5' />}
           <h2 className='w-full text-2xl font-medium'>{metadata.title}</h2>
         </div>
-          <div className='border-b-2 mt-2'></div>
+          <div className='border-b mt-2'></div>
           <span className='text-gray-500'>created at {metadata.date}</span>
           <br />
           {metadata.tags.map((tag:string,i:number)=>(
             <p className='text-white bg-sky-500 rounded-xl font-medium mt-2 px-2 inline-block mr-2' key={i}>
               {tag}
-              </p>
+            </p>
           ))}
           <div className='mt-10 font-medium'>
             <div>
@@ -71,6 +72,7 @@ const Post =({ metadata, mdBlocks,pageNavs }: Props) => {
             </div>
           </div>
       </section>
+      </div>
     </Layout>
   )
 }

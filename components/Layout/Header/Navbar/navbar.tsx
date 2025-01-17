@@ -12,7 +12,7 @@ function Navbar(props:Props) {
 
     return (
         <>
-            <nav className='ml-4 bg-neutral-50 relative'>
+            <nav className='pl-4 relative bg-white'>
                 {pageNavs.length>3 && <div className='flex'>
                     <div className='flex'>
                         <Link href={pageNavs[0].id} className='mr-2 px-1 hover:bg-neutral-200 text-neutral-500'>{pageNavs[0].title}</Link>

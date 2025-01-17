@@ -42,7 +42,7 @@ const Layout:React.FC<LayoutProps> = ({ children,headerProps })=> {
   return (
     <div className='bg-white'>
         <Head>
-          <title>Horizon TechShelf</title>
+          <title>Horizon Atlas</title>
         </Head>
         <Header pageNavs={headerProps} />
           <SesstionProviderWraped>

@@ -21,7 +21,7 @@ const Sidebar = ({ title, childPages, slug }:Props) => {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY >= getPageHeight() - 1000 || window.scrollY <= 40) {
+      if (window.scrollY >= getPageHeight() - 1000 || window.scrollY <= 30) {
         setIsFixed(true);
       } else {
         setIsFixed(false);
@@ -37,10 +37,10 @@ const Sidebar = ({ title, childPages, slug }:Props) => {
   }, [window.scrollY]);
 
   return (
-    <section className="hidden md:block w-36 lg:w-44 mt-14 ml-2">
+    <section className="hidden md:block w-36 lg:w-44 mt-14 mr-2">
       <div
-        className={"border h-screen fixed overflow-y-scroll scrollbar-thin py-4 rounded-md w-36 lg:w-44"}
-        style={isFixed ? {opacity:0} : {opacity:"75",height:"400px"}}
+        className="border h-screen fixed overflow-y-scroll scrollbar-thin py-4 rounded-md w-36 lg:w-44 bg-white"
+        style={isFixed ? {opacity:0} : {opacity:"100",height:"400px"}}
       >
         <p className="truncate text-sm px-1">{title}</p>
         <div className="pl-4">
@@ -54,8 +54,8 @@ const Sidebar = ({ title, childPages, slug }:Props) => {
         </div>
       </div>
       <div
-        className={`border h-screen relative overflow-y-scroll scrollbar-thin py-4 rounded-md`}
-        style={isFixed ? { top: window.scrollY <= 40 ? "40px" : `${getPageHeight() - 1000}px` ,opacity:"75",height:"400px" } : {opacity:0}}
+        className="border h-screen relative overflow-y-scroll scrollbar-thin py-4 rounded-md bg-white"
+        style={isFixed ? { top: window.scrollY <= 40 ? "30px" : `${getPageHeight() - 1000}px` ,opacity:"100",height:"400px" } : {opacity:0}}
       >
         <p className="truncate text-sm px-1">{title}</p>
         <div className="pl-4">
