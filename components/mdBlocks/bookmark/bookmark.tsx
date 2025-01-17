@@ -8,8 +8,8 @@ type Props = {
 };
 
 type ogImage = {
-    url?: string;
-    type?: string;
+  url?: string;
+  type?: string;
 };
   
 type ogData = {
