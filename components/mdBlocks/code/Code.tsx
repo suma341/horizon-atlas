@@ -30,7 +30,7 @@ export default function Code(props: Props) {
     };
 
     return (
-        <div className='mb-2 mt-2 relative w-full'>
+        <div className='mb-2 mt-2 relative'>
             <div className='mb-0' style={{backgroundColor:"rgb(250,250,250)"}}>
                 <p>
                     <span className='text-neutral-600 text-sm px-3 py-1 rounded' style={{background: "rgb(235, 235, 235)"}}>{language}</span>

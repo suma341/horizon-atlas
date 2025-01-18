@@ -13,7 +13,7 @@ export default function Quote(props:Props) {
     const text = mdBlock.parent.split(" ")[1];
 
     return (
-        <div className='my-1 border-l-2 border-neutral-800 pl-3 w-11/12'>
+        <div className='my-1 border-l-2 border-neutral-800 pl-3'>
             <Paragraph parent={text} depth={depth + 1} />
             {mdBlock.children.map((child,i)=>(
                 <MdBlockComponent key={i} mdBlock={child} depth={depth + 1} />

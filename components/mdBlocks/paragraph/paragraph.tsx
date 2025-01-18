@@ -13,7 +13,7 @@ export default function Paragraph(props:Props){
     const mdTypeAndTextList:MdTypeAndText[] = searchMDKeyword(parent);
 
     return (
-        <div className='mb-0.5 mt-1 w-11/12'>
+        <div className='mb-0.5 mt-1'>
             <p>
                 {mdTypeAndTextList.map((text, index) => {
                     if(text.link === undefined){
