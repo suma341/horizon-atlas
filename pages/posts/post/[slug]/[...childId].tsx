@@ -7,6 +7,7 @@ import { pageNav } from '@/types/pageNav';
 import { PostMetaData } from '@/types/postMetaData';
 import { GetStaticProps } from 'next';
 import { MdBlock } from 'notion-to-md/build/types';
+import { useState } from 'react';
 
 type Props = {
   mdBlocks:MdBlock[];
@@ -88,11 +89,24 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 const PostChildPage = ( props : Props) => {
     const {mdBlocks, pageNavs,parentTitle,childNavs,slug} = props;
+    const [openSide,setOpenSide] = useState<boolean>(false);
 
     return (
-      <Layout headerProps={pageNavs}>
+      <Layout headerProps={{pageNav:pageNavs,setOpenSide}}>
+        {openSide &&<div
+          className='fixed top-0 left-0 w-full h-full z-40 opacity-50 duration-200'
+          style={{backgroundColor:"rgb(0,0,0.5)"}}
+          onClick={()=>setOpenSide(false)}
+        ></div>}
+        {openSide &&<div className='fixed w-1/4 h-full bg-neutral-100 z-40 pt-12 pl-2'>
+          <Sidebar title={parentTitle} slug={slug} childPages={childNavs} md={true} />
+        </div>}
         <div className="pt-24 pb-8 bg-neutral-100 sm:flex">
-            {childNavs.length!==0 && <Sidebar title={parentTitle} slug={slug} childPages={childNavs} />}
+            {childNavs.length!==0 && (
+              <div className='hidden md:block'>
+                <Sidebar title={parentTitle} slug={slug} childPages={childNavs} />
+              </div>
+            )}
             <section className="p-5 pb-10 bg-white">
               <h2 className="w-full text-2xl font-medium">
                   {pageNavs[pageNavs.length - 1].title}

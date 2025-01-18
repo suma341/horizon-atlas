@@ -1,8 +1,12 @@
-import React from 'react'
+import React, { Dispatch, SetStateAction } from 'react'
 
-function HamburgerButton() {
+type Props ={
+  setOpenSide: Dispatch<SetStateAction<boolean>>;
+}
+
+function HamburgerButton({setOpenSide}:Props) {
   return (
-    <button className="flex flex-col gap-1 w-5 h-6">
+    <button onClick={()=>setOpenSide(true)} className="flex flex-col gap-1 w-5 h-6">
         <span className="border border-neutral-400 w-5"></span>
         <span className="border border-neutral-400 w-5"></span>
         <span className="border border-neutral-400 w-5"></span>

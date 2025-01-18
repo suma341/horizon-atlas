@@ -1,15 +1,16 @@
 import UserIcon from '@/components/Layout/Header/UserIcon/userIcon';
 import Link from 'next/link';
-import React from 'react'
+import React, { Dispatch, SetStateAction } from 'react'
 import Image from 'next/image';
 import Navbar from './Navbar/navbar';
 import { pageNav } from '@/types/pageNav';
 
 type Props={
     pageNavs:pageNav[];
+    setOpenSide: Dispatch<SetStateAction<boolean>>;
 }
 
-export default function Header({pageNavs}:Props){
+export default function Header({pageNavs,setOpenSide}:Props){
   return (
     <header className='fixed z-50 w-full top-0'>
         <div className=" bg-white text-white px-5 flex justify-between items-center">
@@ -29,7 +30,7 @@ export default function Header({pageNavs}:Props){
                 </li>
             </ul>
         </div>
-        <Navbar pageNavs={pageNavs} />
+        <Navbar pageNavs={pageNavs} setOpenSide={setOpenSide} />
     </header>
   )
 }

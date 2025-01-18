@@ -6,9 +6,26 @@ type Props={
     title:string;
     slug:string;
     childPages:pageNav[];
+    md?:boolean;
 }
 
-const Sidebar = ({ title, childPages, slug }:Props) => {
+const Sidebar = ({ title, childPages, slug, md }:Props) => {
+  if(md){
+    return <section className="w-36 lg:w-44 mr-2 py-12 pt-14">
+    <div className="border fixed overflow-y-scroll scrollbar-thin py-4 rounded-md w-36 lg:w-44 bg-white">
+      <p className="truncate text-sm px-1">{title}</p>
+      <div className="pl-4">
+        {childPages.map((page, i) => (
+          <Link href={`/posts/post/${slug}/${page.id}`} key={i} className="w-36 lg:w-44">
+            <p className="my-1.5 text-sm text-neutral-500 underline truncate hover:text-neutral-900">
+              {page.title}
+            </p>
+          </Link>
+        ))}
+      </div>
+    </div>
+  </section>
+  }
   const [isFixed, setIsFixed] = useState(false);
 
   const getPageHeight = () => {
@@ -37,10 +54,10 @@ const Sidebar = ({ title, childPages, slug }:Props) => {
   }, [window.scrollY]);
 
   return (
-    <section className="hidden md:block w-36 lg:w-44 mt-14 mr-2">
+    <section className="w-36 lg:w-44 mr-2">
       <div
-        className="border h-screen fixed overflow-y-scroll scrollbar-thin py-4 rounded-md w-36 lg:w-44 bg-white"
-        style={isFixed ? {opacity:0} : {opacity:"100",height:"400px"}}
+        className="border fixed overflow-y-scroll scrollbar-thin py-4 rounded-md w-36 lg:w-44 bg-white"
+        style={isFixed ? {opacity:0} : {opacity:"100", height:"400px"}}
       >
         <p className="truncate text-sm px-1">{title}</p>
         <div className="pl-4">
@@ -54,7 +71,7 @@ const Sidebar = ({ title, childPages, slug }:Props) => {
         </div>
       </div>
       <div
-        className="border h-screen relative overflow-y-scroll scrollbar-thin py-4 rounded-md bg-white"
+        className="border relative overflow-y-scroll scrollbar-thin py-4 rounded-md bg-white"
         style={isFixed ? { top: window.scrollY <= 40 ? "30px" : `${getPageHeight() - 1000}px` ,opacity:"100",height:"400px" } : {opacity:0}}
       >
         <p className="truncate text-sm px-1">{title}</p>

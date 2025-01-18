@@ -1,4 +1,4 @@
-import React,{ ReactNode, useEffect } from 'react'
+import React,{ Dispatch, ReactNode, SetStateAction, useEffect } from 'react'
 import Head from 'next/head';
 import Footer from './Footer/Footer';
 import { useSession } from 'next-auth/react';
@@ -35,7 +35,10 @@ function SesstionProviderWraped({children} : {children: React.ReactNode}){
 
 type LayoutProps={
   children: ReactNode;
-  headerProps:pageNav[];
+  headerProps:{
+    pageNav:pageNav[];
+    setOpenSide: Dispatch<SetStateAction<boolean>>;
+  }
 }
 
 const Layout:React.FC<LayoutProps> = ({ children,headerProps })=> {
@@ -44,7 +47,7 @@ const Layout:React.FC<LayoutProps> = ({ children,headerProps })=> {
         <Head>
           <title>Horizon Atlas</title>
         </Head>
-        <Header pageNavs={headerProps} />
+        <Header pageNavs={headerProps.pageNav} setOpenSide={headerProps.setOpenSide} />
           <SesstionProviderWraped>
             {children}
           </SesstionProviderWraped>
