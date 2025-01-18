@@ -34,7 +34,7 @@ export const getStaticProps: GetStaticProps = async () => {
 
 const blogTagPageList = ({courseAndPosts }: Props)=> {
     return (
-        <Layout headerProps={[HOME_NAV,BASIC_NAV]}>
+        <Layout headerProps={{pageNavs:[HOME_NAV,BASIC_NAV]}}>
             <div className="container h-full w-full mx-auto font-mono pt-20">
                 <main className="container w-full mt-16 mb-3">
                     <h1 className="text-5xl font-medium text-center mb-16">基礎班カリキュラム</h1>

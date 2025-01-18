@@ -28,7 +28,7 @@ export const getStaticProps: GetStaticProps = async () => {
 export default function SearchPage({allTags, posts}:Props) {
   const [matchPosts, setMatchPosts] = useState<PostMetaData[]>(posts);
   return (
-    <Layout headerProps={[HOME_NAV,SEARCH_NAV]}>
+    <Layout headerProps={{pageNavs:[HOME_NAV,SEARCH_NAV]}}>
       <div className="pt-20">
         <main className="w-full mt-16 px-8">
           <div>

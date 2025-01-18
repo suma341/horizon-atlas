@@ -7,7 +7,7 @@ import { pageNav } from '@/types/pageNav';
 
 type Props={
     pageNavs:pageNav[];
-    setOpenSide: Dispatch<SetStateAction<boolean>>;
+    setOpenSide?: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function Header({pageNavs,setOpenSide}:Props){

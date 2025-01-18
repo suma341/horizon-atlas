@@ -36,8 +36,8 @@ function SesstionProviderWraped({children} : {children: React.ReactNode}){
 type LayoutProps={
   children: ReactNode;
   headerProps:{
-    pageNav:pageNav[];
-    setOpenSide: Dispatch<SetStateAction<boolean>>;
+    pageNavs:pageNav[];
+    setOpenSide?: Dispatch<SetStateAction<boolean>>;
   }
 }
 
@@ -47,7 +47,7 @@ const Layout:React.FC<LayoutProps> = ({ children,headerProps })=> {
         <Head>
           <title>Horizon Atlas</title>
         </Head>
-        <Header pageNavs={headerProps.pageNav} setOpenSide={headerProps.setOpenSide} />
+        <Header pageNavs={headerProps.pageNavs} setOpenSide={headerProps.setOpenSide} />
           <SesstionProviderWraped>
             {children}
           </SesstionProviderWraped>
