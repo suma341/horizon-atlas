@@ -82,7 +82,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
             childNavs,
             slug:currentSlug
         },
-        revalidate: 600
+        revalidate: 300
     };
 };
 
