@@ -98,7 +98,7 @@ const PostChildPage = ( props : Props) => {
           style={{backgroundColor:"rgb(0,0,0.5)"}}
           onClick={()=>setOpenSide(false)}
         ></div>}
-        {openSide &&<div className='fixed w-1/4 h-full bg-neutral-100 z-40 pt-12 pl-2'>
+        {openSide &&<div className='fixed w-2/5 h-full bg-neutral-100 z-40 pt-12 pl-3'>
           <Sidebar title={parentTitle} slug={slug} childPages={childNavs} md={true} />
         </div>}
         <div className="pt-24 pb-8 bg-neutral-100 sm:flex">
