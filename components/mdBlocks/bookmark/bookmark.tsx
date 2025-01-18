@@ -30,6 +30,7 @@ export default function Bookmark(props: Props) {
     const fetchOgpData = async () => {
       if (match) {
         const url = match[0].slice(1, -1);
+        console.log("url",url);
         const res = await fetch(`/api/getOgp?url=${url}`);
         if(res.ok){
             const {result} = await res.json();
@@ -47,16 +48,18 @@ export default function Bookmark(props: Props) {
     }
 
   return (
-    <div className="my-2 rounded-sm border-2 border-neutral-200 hover:bg-neutral-100 w-11/12">
+    <div className="my-2 rounded-sm border-2 border-neutral-200 hover:bg-neutral-100">
         {ogpData !==undefined && (
-            <Link href={ogpData.ogUrl || ""}>
+            <Link href={ogpData.ogUrl || match[0].slice(1, -1)}>
                 <div className="flex">
                     <div className='m-3'>
                         <p className='text-neutral-800 line-clamp-1'>{ogpData.ogTitle}</p>
                         <p className='text-neutral-500 text-sm line-clamp-2'>{ogpData.ogDescription}</p>
                         <div className='flex mb-0 mt-2'>
                             <img src={ogpData.favicon} className='w-auto max-h-4 rounded-full m-0 mr-2' />
-                            <span className='text-neutral-600 text-xs line-clamp-1'>{ogpData.ogUrl}</span>
+                            <span className='text-neutral-600 text-xs line-clamp-1'>
+                              {ogpData.ogUrl!==undefined ? ogpData.ogUrl : match[0].slice(1, -1) }
+                            </span>
                         </div>
                     </div>
                     {ogpData.ogImage !==undefined && ogpData.ogImage.length !==0 && (
