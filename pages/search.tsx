@@ -1,6 +1,5 @@
 import Layout from "@/components/Layout/Layout";
 import SinglePost from "@/components/Post/SinglePost";
-import SearchForm from "@/components/searchForm/searchForm";
 import Tags from "@/components/tag/Tags";
 import { HOME_NAV, SEARCH_NAV } from "@/constants/pageNavs";
 import { createSearchQuery, searchByKeyWord } from "@/lib/searchKeyWord";
