@@ -24,19 +24,17 @@ function SearchField({searchKeyWord}:Props) {
     };
 
     return (
-        <section className="mt-2">
-            <div className="flex bg-white rounded-md">
-            <IoIosSearch size={25} className='text-neutral-500' />
-                <input
-                    value={keyWord}
-                    onChange={handleChange}
-                    onKeyDown={handleKeyDown}
-                    onCompositionStart={() => setIsComposing(true)}
-                    onCompositionEnd={() => setIsComposing(false)}
-                    type="text"
-                    className="rounded mx-4 text-neutral-600 bg-neutral-100 px-2 focus:outline-none focus:bg-slate-100 duration-300"
-                    placeholder="キーワードで検索"/>
-            </div>
+        <section className="flex bg-white rounded-md mt-1" >
+            <input
+                value={keyWord}
+                onChange={handleChange}
+                onKeyDown={handleKeyDown}
+                onCompositionStart={() => setIsComposing(true)}
+                onCompositionEnd={() => setIsComposing(false)}
+                type="text"
+                className="w-full sm:w-auto py-1 rounded text-neutral-600 bg-neutral-100 px-2 focus:outline-none focus:bg-slate-100 duration-300"
+                placeholder="キーワードで検索"/>
+            <IoIosSearch size={25} className='text-white bg-neutral-300 w-10 h-8 rounded-r py-0.5' />
         </section>
     )
 }
