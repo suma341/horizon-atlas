@@ -5,12 +5,13 @@ import SearchField from './searchField/searchField';
 
 type Props={
     searchKeyWord?:string;
+    isVisible:boolean;
 }
 
-export default function Header({searchKeyWord}:Props){
+export default function Header({searchKeyWord,isVisible}:Props){
     
   return (
-    <header className='w-full mb-1 bg-white'>
+    <header className='w-full pb-1 bg-white'>
         <div className=" text-white px-5 mb-0 flex justify-between items-center">
             <Link href="/posts" className="text-2xl mb-0 font-medium text-neutral-400 rounded-md">
                 HorizonAtlas
@@ -24,7 +25,7 @@ export default function Header({searchKeyWord}:Props){
                 </li>
             </ul>
         </div>
-        <div className='block sm:hidden mt-0 px-5 w-full'>
+        <div className='block sm:hidden mt-0 px-5 w-full' style={isVisible ? {} : {display:"none"}}>
             <SearchField searchKeyWord={searchKeyWord || ''} />
         </div>
     </header>
