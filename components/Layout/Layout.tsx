@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import Header from './Header/Header';
 import { pageNav } from '@/types/pageNav';
+import Navbar from './Navbar/navbar';
 
 const PUBLIC_PAGES = ["/"]; // 認証不要なページ
 
@@ -38,6 +39,7 @@ type LayoutProps={
   headerProps:{
     pageNavs:pageNav[];
     setOpenSide?: Dispatch<SetStateAction<boolean>>;
+    searchKeyWord?:string;
   }
 }
 
@@ -47,10 +49,13 @@ const Layout:React.FC<LayoutProps> = ({ children,headerProps })=> {
         <Head>
           <title>Horizon Atlas</title>
         </Head>
-        <Header pageNavs={headerProps.pageNavs} setOpenSide={headerProps.setOpenSide} />
-          <SesstionProviderWraped>
-            {children}
-          </SesstionProviderWraped>
+        <div className='fixed top-0 z-50 w-full'>
+          <Header searchKeyWord={headerProps.searchKeyWord} />
+          <Navbar pageNavs={headerProps.pageNavs} setOpenSide={headerProps.setOpenSide} />
+        </div>
+        <SesstionProviderWraped>
+          {children}
+        </SesstionProviderWraped>
         <Footer />
     </div>
   );

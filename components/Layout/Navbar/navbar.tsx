@@ -2,7 +2,7 @@ import { pageNav } from '@/types/pageNav';
 import Link from 'next/link';
 import React, { Dispatch, SetStateAction } from 'react';
 import DetailNav from './detailNav/DetailNav';
-import HamburgerButton from '../hamburgerButton./hamburgerButton';
+import HamburgerButton from '../Header/hamburgerButton./hamburgerButton';
 
 type Props ={
     pageNavs:pageNav[];
@@ -14,7 +14,7 @@ function Navbar(props:Props) {
 
     return (
         <>
-            <nav className='pl-4 relative bg-white'>
+            <nav className='pl-4 bg-white'>
                 {pageNavs.length>3 && <div className='flex'>
                     {setOpenSide && <div className='md:hidden relative top-1 mr-4'>
                         <HamburgerButton setOpenSide={setOpenSide} />
