@@ -10,8 +10,8 @@ type Props={
 export default function Header({searchKeyWord}:Props){
     
   return (
-    <header className='w-full mb-1'>
-        <div className=" bg-white text-white px-5 mb-0 flex justify-between items-center">
+    <header className='w-full mb-1 bg-white'>
+        <div className=" text-white px-5 mb-0 flex justify-between items-center">
             <Link href="/posts" className="text-2xl mb-0 font-medium text-neutral-400 rounded-md">
                 HorizonAtlas
             </Link>
