@@ -5,10 +5,9 @@ import SearchField from './searchField/searchField';
 
 type Props={
     searchKeyWord?:string;
-    isVisible:boolean;
 }
 
-export default function Header({searchKeyWord,isVisible}:Props){
+export default function Header({searchKeyWord}:Props){
     
   return (
     <header className='w-full pb-1 bg-white'>
@@ -25,7 +24,7 @@ export default function Header({searchKeyWord,isVisible}:Props){
                 </li>
             </ul>
         </div>
-        <div className='block sm:hidden mt-0 px-5 w-full' style={isVisible ? {} : {display:"none"}}>
+        <div className='block sm:hidden mt-0 px-5 w-full'>
             <SearchField searchKeyWord={searchKeyWord || ''} />
         </div>
     </header>

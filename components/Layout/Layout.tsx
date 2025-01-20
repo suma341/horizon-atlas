@@ -74,9 +74,9 @@ const Layout:React.FC<LayoutProps> = ({ children,headerProps })=> {
         <Head>
           <title>Horizon Atlas</title>
         </Head>
-        <div className='fixed top-0 z-50 w-full duration-500'  style={isVisible ? {transform: "translateY(0px)"} : {transform: "translateY(-70%)"}}>
-          <Header searchKeyWord={headerProps.searchKeyWord} isVisible={isVisible} />
-          <Navbar pageNavs={headerProps.pageNavs} setOpenSide={headerProps.setOpenSide} />
+        <div className='fixed top-0 z-50 w-full duration-500'  style={isVisible ? {transform: "translateY(0px)"} : {transform: "translateY(-75%)"}}>
+          <Header searchKeyWord={headerProps.searchKeyWord} />
+          <Navbar pageNavs={headerProps.pageNavs} setOpenSide={headerProps.setOpenSide} isVisible={isVisible} />
         </div>
         <SesstionProviderWraped>
           {children}
