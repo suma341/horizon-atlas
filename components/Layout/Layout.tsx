@@ -1,4 +1,4 @@
-import React,{ Dispatch, ReactNode, SetStateAction, useEffect } from 'react'
+import React,{ Dispatch, ReactNode, SetStateAction, useEffect, useState } from 'react'
 import Head from 'next/head';
 import Footer from './Footer/Footer';
 import { useSession } from 'next-auth/react';
@@ -44,12 +44,37 @@ type LayoutProps={
 }
 
 const Layout:React.FC<LayoutProps> = ({ children,headerProps })=> {
+  const [isVisible, setIsVisible] = useState(true); // ヘッダーの表示状態
+    const [lastScrollY, setLastScrollY] = useState(0); // 最後のスクロール位置
+
+    useEffect(() => {
+        const handleScroll = () => {
+        const currentScrollY = window.scrollY;
+
+        if (currentScrollY > lastScrollY && currentScrollY > 50) {
+            // 下にスクロール: ヘッダーを非表示
+            setIsVisible(false);
+        } else {
+            // 上にスクロール: ヘッダーを表示
+            setIsVisible(true);
+        }
+
+        setLastScrollY(currentScrollY);
+        };
+
+        window.addEventListener("scroll", handleScroll);
+
+        return () => {
+        window.removeEventListener("scroll", handleScroll);
+        };
+    }, [lastScrollY]);
+
   return (
     <div className='bg-white'>
         <Head>
           <title>Horizon Atlas</title>
         </Head>
-        <div className='fixed top-0 z-50 w-full'>
+        <div className='fixed top-0 z-50 w-full duration-300'  style={isVisible ? {transform: "translateY(0px)"} : {transform: "translateY(-100%)"}}>
           <Header searchKeyWord={headerProps.searchKeyWord} />
           <Navbar pageNavs={headerProps.pageNavs} setOpenSide={headerProps.setOpenSide} />
         </div>

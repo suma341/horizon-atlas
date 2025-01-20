@@ -6,7 +6,7 @@ type Props={
     searchKeyWord:string;
 }
 
-function searchField({searchKeyWord}:Props) {
+function SearchField({searchKeyWord}:Props) {
     const [keyWord, setKeyWord] = useState<string>(searchKeyWord);
     const [isComposing, setIsComposing] = useState<boolean>(false);
 
@@ -41,4 +41,4 @@ function searchField({searchKeyWord}:Props) {
     )
 }
 
-export default searchField;
+export default SearchField;

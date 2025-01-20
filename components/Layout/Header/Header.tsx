@@ -1,8 +1,6 @@
 import UserIcon from '@/components/Layout/Header/UserIcon/userIcon';
 import Link from 'next/link';
-import React, { Dispatch, SetStateAction } from 'react'
-import Navbar from '../Navbar/navbar';
-import { pageNav } from '@/types/pageNav';
+import React from 'react'
 import SearchField from './searchField/searchField';
 
 type Props={
@@ -10,6 +8,7 @@ type Props={
 }
 
 export default function Header({searchKeyWord}:Props){
+    
   return (
     <header className='w-full'>
         <div className=" bg-white text-white px-5 flex justify-between items-center">
