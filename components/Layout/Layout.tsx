@@ -39,6 +39,7 @@ type LayoutProps={
   headerProps:{
     pageNavs:pageNav[];
     setOpenSide?: Dispatch<SetStateAction<boolean>>;
+    openSide?:boolean;
     searchKeyWord?:string;
   }
 }
@@ -76,7 +77,7 @@ const Layout:React.FC<LayoutProps> = ({ children,headerProps })=> {
         </Head>
         <div className='fixed top-0 z-50 w-full duration-500'  style={isVisible ? {transform: "translateY(0px)"} : {transform: "translateY(-75%)"}}>
           <Header searchKeyWord={headerProps.searchKeyWord} />
-          <Navbar pageNavs={headerProps.pageNavs} setOpenSide={headerProps.setOpenSide} isVisible={isVisible} />
+          <Navbar pageNavs={headerProps.pageNavs} setOpenSide={headerProps.setOpenSide} isVisible={isVisible} openSide={headerProps.openSide} />
         </div>
         <SesstionProviderWraped>
           {children}

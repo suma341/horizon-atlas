@@ -7,18 +7,19 @@ import HamburgerButton from '../Header/hamburgerButton./hamburgerButton';
 type Props ={
     pageNavs:pageNav[];
     setOpenSide?: Dispatch<SetStateAction<boolean>>;
+    openSide?:boolean;
     isVisible:boolean;
 }
 
 function Navbar(props:Props) {
-    const {pageNavs,setOpenSide,isVisible} = props;
+    const {pageNavs,setOpenSide,isVisible,openSide} = props;
 
     return (
         <>
-            <nav className='pl-4 bg-white duration-100' style={isVisible ?  {transform: "translateY(0px)"} : {transform: "translateY(3%)",paddingTop:"0.5em"}}>
+            <nav className='pl-4 bg-white duration-100 pt-1' style={isVisible ?  {transform: "translateY(0px)"} : {transform: "translateY(3%)",paddingTop:"0.5em"}}>
                 {pageNavs.length>3 && <div className='flex'>
-                    {setOpenSide && <div className='md:hidden relative top-1 mr-4'>
-                        <HamburgerButton setOpenSide={setOpenSide} />
+                    {setOpenSide && openSide!==undefined && <div className='md:hidden relative top-1 mr-4'>
+                        <HamburgerButton setOpenSide={setOpenSide} openSide={openSide} />
                     </div>}
                     <div className='flex'>
                         <Link href={pageNavs[0].id} className='pr-2 hover:bg-neutral-200 text-neutral-500'>

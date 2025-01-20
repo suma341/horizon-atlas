@@ -92,7 +92,7 @@ const PostChildPage = ( props : Props) => {
     const [openSide,setOpenSide] = useState<boolean>(false);
 
     return (
-      <Layout headerProps={{pageNavs:pageNavs,setOpenSide}}>
+      <Layout headerProps={{pageNavs:pageNavs,setOpenSide,openSide}}>
         {openSide &&<div
           className='fixed top-0 left-0 w-full h-full z-40 opacity-50 duration-200'
           style={{backgroundColor:"rgb(0,0,0.5)"}}
