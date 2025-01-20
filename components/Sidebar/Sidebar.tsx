@@ -39,11 +39,11 @@ const Sidebar = ({ title, childPages, slug, md }:Props) => {
 
   if(md){
     return <section className="w-36 lg:w-44 mr-2 py-12 pt-14">
-    <div className="border fixed overflow-y-scroll scrollbar-thin py-4 rounded-md w-36 lg:w-44 bg-white">
+    <div className="border fixed overflow-y-scroll scrollbar-thin py-4 rounded-md w-10/12 bg-white">
       <p className="truncate text-sm px-1">{title}</p>
       <div className="pl-4">
         {childPages.map((page, i) => (
-          <Link href={`/posts/post/${slug}/${page.id}`} key={i} className="w-36 lg:w-44">
+          <Link href={`/posts/post/${slug}/${page.id}`} key={i} className="">
             <p className="my-1.5 text-sm text-neutral-500 underline truncate hover:text-neutral-900">
               {page.title}
             </p>
