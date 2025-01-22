@@ -81,7 +81,7 @@ const Layout:React.FC<LayoutProps> = ({ children,headerProps })=> {
         <Sidebar openbar={openbar} setOpenbar={setOpenbar} allTags={headerProps.allTags} />
         <div className='fixed top-0 z-50 w-full duration-500'  style={isVisible ? {transform: "translateY(0px)"} : {transform: "translateY(-65%)"}}>
           <Header searchKeyWord={headerProps.searchKeyWord} setOpenbar={setOpenbar} />
-          <Navbar pageNavs={headerProps.pageNavs} setOpenSide={headerProps.setOpenSide} isVisible={isVisible} openSide={headerProps.openSide} />
+          <Navbar pageNavs={headerProps.pageNavs} setOpenSide={headerProps.setOpenSide} openSide={headerProps.openSide} />
         </div>
         <SesstionProviderWraped>
           {children}

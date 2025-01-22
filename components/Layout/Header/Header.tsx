@@ -1,6 +1,6 @@
 import UserIcon from '@/components/Layout/Header/UserInfo/userIcon';
 import Link from 'next/link';
-import React, { useState } from 'react'
+import React from 'react'
 import SearchField from './searchField/searchField';
 import HamburgerButton from './hamburgerButton./hamburgerButton';
 

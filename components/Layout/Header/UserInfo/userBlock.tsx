@@ -1,5 +1,4 @@
 import React from 'react'
-import UserIcon from './userIcon'
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 
