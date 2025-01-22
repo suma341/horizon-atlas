@@ -32,6 +32,12 @@ export default function UserIcon() {
 
   if (session) {
 
+    const fetchProfile = async() =>{
+      const res = await fetch("/api/discord/profile");
+      const data = await res.json();
+      console.log("userProfile",data);
+    }
+
     return (
       <>
         <div className="max-w-md">
@@ -51,6 +57,9 @@ export default function UserIcon() {
                     <button onClick={() => signOut()} className="flex relative hover:bg-slate-200 rounded-sm p-1 pr-2">
                       {/* <PiSignOut size={18} className="mt-0.5 mr-1.5 text-neutral-600" /> */}
                       <p className="text-neutral-600">ログアウト</p>
+                    </button>
+                    <button onClick={fetchProfile} className="flex relative hover:bg-slate-200 rounded-sm p-1 pr-2">
+                      <p className="text-neutral-600">fetchProfile</p>
                     </button>
                 </ul>
             </div>)}

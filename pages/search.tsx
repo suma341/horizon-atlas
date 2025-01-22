@@ -39,7 +39,7 @@ export default function SearchPage({allTags, posts}:Props) {
   },[])
   
   return (
-    <Layout headerProps={{pageNavs:[HOME_NAV,SEARCH_NAV],searchKeyWord:query}}>
+    <Layout headerProps={{pageNavs:[HOME_NAV,SEARCH_NAV],searchKeyWord:query,allTags}}>
       <div className="pt-20">
         <main className="w-full mt-16 px-8">
           <div>

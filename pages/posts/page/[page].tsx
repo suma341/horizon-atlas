@@ -45,7 +45,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 const blogPageList = ({ postsByPage,numberOfPages,currentPage }: InferGetStaticPropsType<typeof getStaticProps>)=> {
   // console.log(allMetaData);
   return (
-    <Layout headerProps={{pageNavs:[]}}>
+    <Layout headerProps={{pageNavs:[],allTags:[]}}>
       <div className="container h-full w-full mx-auto font-mono">
         <main className="container w-full mt-16 mb-3">
           <h1 className="text-5xl font-medium text-center mb-16">Horizon TechShelf</h1>

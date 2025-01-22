@@ -16,7 +16,7 @@ function Navbar(props:Props) {
 
     return (
         <>
-            <nav className='pl-4 bg-white duration-100 pt-1' style={isVisible ?  {transform: "translateY(0px)"} : {transform: "translateY(3%)",paddingTop:"0.5em"}}>
+            <nav className='pl-4 bg-white duration-100 pt-1'>
                 {pageNavs.length>3 && <div className='flex'>
                     {setOpenSide && openSide!==undefined && <div className='md:hidden relative top-1 mr-4'>
                         <HamburgerButton setOpenSide={setOpenSide} openSide={openSide} />

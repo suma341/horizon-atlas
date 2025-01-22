@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import Header from './Header/Header';
 import { pageNav } from '@/types/pageNav';
 import Navbar from './Navbar/navbar';
+import Sidebar from './Sidebar/Sidebar';
 
 const PUBLIC_PAGES = ["/"]; // 認証不要なページ
 
@@ -41,12 +42,14 @@ type LayoutProps={
     setOpenSide?: Dispatch<SetStateAction<boolean>>;
     openSide?:boolean;
     searchKeyWord?:string;
+    allTags:string[];
   }
 }
 
 const Layout:React.FC<LayoutProps> = ({ children,headerProps })=> {
   const [isVisible, setIsVisible] = useState(true); // ヘッダーの表示状態
-    const [lastScrollY, setLastScrollY] = useState(0); // 最後のスクロール位置
+  const [lastScrollY, setLastScrollY] = useState(0); // 最後のスクロール位置
+  const [openbar,setOpenbar]=useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -75,8 +78,9 @@ const Layout:React.FC<LayoutProps> = ({ children,headerProps })=> {
         <Head>
           <title>Horizon Atlas</title>
         </Head>
-        <div className='fixed top-0 z-50 w-full duration-500'  style={isVisible ? {transform: "translateY(0px)"} : {transform: "translateY(-75%)"}}>
-          <Header searchKeyWord={headerProps.searchKeyWord} />
+        <Sidebar openbar={openbar} setOpenbar={setOpenbar} allTags={headerProps.allTags} />
+        <div className='fixed top-0 z-50 w-full duration-500'  style={isVisible ? {transform: "translateY(0px)"} : {transform: "translateY(-65%)"}}>
+          <Header searchKeyWord={headerProps.searchKeyWord} setOpenbar={setOpenbar} />
           <Navbar pageNavs={headerProps.pageNavs} setOpenSide={headerProps.setOpenSide} isVisible={isVisible} openSide={headerProps.openSide} />
         </div>
         <SesstionProviderWraped>

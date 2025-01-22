@@ -22,6 +22,9 @@ function SearchField({searchKeyWord}:Props) {
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setKeyWord(event.target.value);
     };
+    const handleButton =()=>{
+        router.push({pathname:"/search",query:{search:keyWord}})
+    }
 
     return (
         <section className="flex bg-white rounded-md mt-1" >
@@ -34,7 +37,9 @@ function SearchField({searchKeyWord}:Props) {
                 type="text"
                 className="w-full sm:w-auto py-1 rounded text-neutral-600 bg-neutral-100 px-2 focus:outline-none focus:bg-slate-100 duration-300"
                 placeholder="キーワードで検索"/>
-            <IoIosSearch size={25} className='text-white bg-neutral-300 w-10 h-8 rounded-r py-0.5' />
+            <button onClick={handleButton}>
+                <IoIosSearch size={25} className='text-white bg-neutral-300 w-10 h-8 rounded-r py-0.5' />
+            </button>
         </section>
     )
 }
