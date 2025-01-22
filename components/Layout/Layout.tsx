@@ -1,4 +1,4 @@
-import React,{ Dispatch, ReactNode, SetStateAction, useEffect, useState } from 'react'
+import React,{ ReactNode,  useEffect, useState } from 'react'
 import Head from 'next/head';
 import Footer from './Footer/Footer';
 import { useSession } from 'next-auth/react';
@@ -39,8 +39,6 @@ type LayoutProps={
   children: ReactNode;
   headerProps:{
     pageNavs:pageNav[];
-    setOpenSide?: Dispatch<SetStateAction<boolean>>;
-    openSide?:boolean;
     searchKeyWord?:string;
     allTags:string[];
   }
@@ -52,18 +50,20 @@ const Layout:React.FC<LayoutProps> = ({ children,headerProps })=> {
   const [openbar,setOpenbar]=useState(false);
 
     useEffect(() => {
+      if(window!==undefined){
         const handleScroll = () => {
-        const currentScrollY = window.scrollY;
+          
+            const currentScrollY = window.scrollY;
 
-        if (currentScrollY > lastScrollY && currentScrollY > 50) {
-            // 下にスクロール: ヘッダーを非表示
-            setIsVisible(false);
-        } else {
-            // 上にスクロール: ヘッダーを表示
-            setIsVisible(true);
-        }
+            if (currentScrollY > lastScrollY && currentScrollY > 50) {
+                // 下にスクロール: ヘッダーを非表示
+                setIsVisible(false);
+            } else {
+                // 上にスクロール: ヘッダーを表示
+                setIsVisible(true);
+            }
 
-        setLastScrollY(currentScrollY);
+            setLastScrollY(currentScrollY);
         };
 
         window.addEventListener("scroll", handleScroll);
@@ -71,6 +71,7 @@ const Layout:React.FC<LayoutProps> = ({ children,headerProps })=> {
         return () => {
         window.removeEventListener("scroll", handleScroll);
         };
+      }
     }, [lastScrollY]);
 
   return (
@@ -81,7 +82,7 @@ const Layout:React.FC<LayoutProps> = ({ children,headerProps })=> {
         <Sidebar openbar={openbar} setOpenbar={setOpenbar} allTags={headerProps.allTags} />
         <div className='fixed top-0 z-50 w-full duration-500'  style={isVisible ? {transform: "translateY(0px)"} : {transform: "translateY(-65%)"}}>
           <Header searchKeyWord={headerProps.searchKeyWord} setOpenbar={setOpenbar} />
-          <Navbar pageNavs={headerProps.pageNavs} setOpenSide={headerProps.setOpenSide} openSide={headerProps.openSide} />
+          <Navbar pageNavs={headerProps.pageNavs} />
         </div>
         <SesstionProviderWraped>
           {children}
