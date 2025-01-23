@@ -1,12 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
+import { IoIosLogOut } from "react-icons/io";
 
 function UserBlock() {
     const { data: session } = useSession();
     const [isVisible, setIsVisible] = useState(false); // トグルの状態を管理
     const toggleRef = useRef<HTMLDivElement>(null); // toggle要素への参照
     const toggleTargetRef = useRef<HTMLDivElement>(null);
+
+    const user_icon = session && session.user?.image!==undefined && session.user.image ? 
+        session.user.image : "/user_icon.png";
+    const user_name = session && session.user?.name!==undefined && session.user?.name ?
+        session.user.name : "user";
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -27,7 +33,6 @@ function UserBlock() {
         };
     }, []);
 
-    if(session)
     return (
         <>
             <div
@@ -36,23 +41,24 @@ function UserBlock() {
                   event.stopPropagation(); // クリックイベントの伝播を防ぐ
                   setIsVisible((prev) => !prev); // 状態を切り替え
                 }} 
-                className='flex gap-1.5 mt-2 border border-neutral-300 rounded p-1'>
+                className='flex cursor-pointer gap-1.5 mt-2 border border-neutral-300 rounded p-1'>
                 <div>
                     <Image width={20} height={20} 
-                    src={session.user?.image ? session.user.image : "/user_icon.png"} alt={''}
+                    src={user_icon} alt={''}
                     className='rounded-full w-9 h-auto' />
                 </div>
                 <div>
-                    <p className='mt-1.5 text-sm text-neutral-500'>{session?.user?.name}</p>
+                    <p className='mt-1.5 mr-0.5 text-sm text-neutral-500'>{user_name}</p>
                 </div>
             </div>
             {isVisible && (
               <div
                 id="toggleTarget" ref={toggleTargetRef}
-                className="z-50 border-solid border-neutral-300 border-2 absolute bg-white p-2 rounded-md w-32 translate-y-1 translate-x-[-65%]">
+                className="z-50 border-solid border-neutral-300 border absolute bg-white p-1.5 rounded-md w-32 translate-y-[100%] translate-x-[135%]">
                 <ul>
                     <button onClick={() => signOut()} className="flex relative hover:bg-slate-200 rounded-sm p-1 pr-2">
-                      <p className="text-neutral-600">ログアウト</p>
+                        <IoIosLogOut size={21} className='mr-1' />
+                        <p className="text-neutral-600 text-sm">ログアウト</p>
                     </button>
                 </ul>
             </div>)}
