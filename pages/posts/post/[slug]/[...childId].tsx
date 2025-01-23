@@ -2,7 +2,7 @@ import Layout from '@/components/Layout/Layout';
 import Sidebar from '@/components/Sidebar/Sidebar';
 import MdBlockComponent from '@/components/mdBlocks/mdBlock';
 import { BASIC_NAV, HOME_NAV } from '@/constants/pageNavs';
-import { getAllPosts, getChildPage, getSinglePost } from '@/lib/services/notionApiService';
+import { getAllPosts, getAllTags, getChildPage, getSinglePost } from '@/lib/services/notionApiService';
 import { pageNav } from '@/types/pageNav';
 import { PostMetaData } from '@/types/postMetaData';
 import { GetStaticProps } from 'next';
@@ -14,6 +14,7 @@ type Props = {
   parentTitle:string;
   childNavs:pageNav[];
   slug:string;
+  allTags:string[];
 };
 
 type pagePath = {
@@ -46,6 +47,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const currentSlug = context.params?.slug as string;
     const childparam = (context.params?.childId as string[]) || [];
     const post = await getSinglePost(currentSlug);
+    const allPosts = await getAllPosts();
+    const allTags = await getAllTags(allPosts);
 
     let currentchild = post.mdBlocks;
     const links:string[] = [`/posts/post/${post.metadata.slug}`];
@@ -80,17 +83,18 @@ export const getStaticProps: GetStaticProps = async (context) => {
             pageNavs,
             parentTitle:post.metadata.title,
             childNavs,
-            slug:currentSlug
+            slug:currentSlug,
+            allTags
         },
         revalidate: 300
     };
 };
 
 const PostChildPage = ( props : Props) => {
-    const {mdBlocks, pageNavs,parentTitle,childNavs,slug} = props;
+    const {mdBlocks, pageNavs,parentTitle,childNavs,slug,allTags} = props;
 
     return (
-      <Layout headerProps={{pageNavs:pageNavs,allTags:[]}}>
+      <Layout headerProps={{pageNavs:pageNavs,allTags}}>
         {/* {openSide &&<div
           className='fixed top-0 left-0 w-full h-full z-40 opacity-50 duration-200'
           style={{backgroundColor:"rgb(0,0,0.5)"}}

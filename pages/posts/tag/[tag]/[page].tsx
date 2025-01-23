@@ -32,11 +32,20 @@ export const getStaticPaths = async() =>{
     }
   }
 
+type Props ={
+    posts:PostMetaData[];
+    numberOfPages:number;
+    currentTag:string;
+    currentPage:string;
+    allTags:string[];
+}
+
 // getStaticProps関数
 export const getStaticProps: GetStaticProps = async (context) => {
     const currentPage:string = typeof context.params?.page == 'string' ? context.params.page : "1";
     const currentTag:string = typeof context.params?.tag == 'string' ? context.params.tag : "";
     const allPosts = await getAllPosts();
+    const allTags = await getAllTags(allPosts);
     const numberOfPages:number = await getNumberOfPages(allPosts,currentTag);
     // console.log(numberOfPages);
 
@@ -47,15 +56,16 @@ export const getStaticProps: GetStaticProps = async (context) => {
           numberOfPages,
           currentPage,
           currentTag,
+          allTags
         },
         revalidate: 600
     };
 };
 
-const blogTagPageList = ({ posts,numberOfPages,currentPage, currentTag}: InferGetStaticPropsType<typeof getStaticProps>)=> {
+const blogTagPageList = ({ posts,numberOfPages,currentPage, currentTag,allTags}: Props)=> {
     const tagSearchNav:pageNav = {title:`タグ検索：${currentTag}`,id:`/posts/tag/${currentTag}/${currentPage}`};
     return (
-        <Layout headerProps={{pageNavs:[HOME_NAV,SEARCH_NAV,tagSearchNav],allTags:[]}}>
+        <Layout headerProps={{pageNavs:[HOME_NAV,SEARCH_NAV,tagSearchNav],allTags:allTags}}>
             <div className="container h-full w-full mx-auto font-mono">
             <main className="container w-full mt-16 mb-3">
                 <section className="sm:grid grid-cols-2 gap-3 mx-auto">
