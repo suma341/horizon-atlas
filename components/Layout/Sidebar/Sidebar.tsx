@@ -53,10 +53,12 @@ function Sidebar({openbar,setOpenbar,allTags,pageNav}:Props) {
                         {pageNav!==undefined && <div className='p-1 border border-neutral-400 rounded'>
                             <p className='text-base'>{pageNav.title}</p>
                             {pageNav.childPages.map((nav,i)=>{
-                                return (<ul key={i} className='pl-1.5'>
-                                    <Link className='truncate text-neutral-500 underline hover:text-neutral-800 mt-0.5' 
-                                        href={`/posts/post/${pageNav.slug}/${nav.id}`}>{nav.title}</Link>
-                                </ul>)
+                                return (
+                                    <Link key={i} href={`/posts/post/${pageNav.slug}/${nav.id}`} >
+                                        <p className="my-1.5 text-sm text-neutral-500 underline truncate hover:text-neutral-900">
+                                        {nav.title}
+                                        </p>
+                                    </Link>)
                             })}
                         </div>}
                     </li>
