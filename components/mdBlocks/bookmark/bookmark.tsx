@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import { MdBlock } from 'notion-to-md/build/types';
 import React, { useEffect, useState } from 'react';
@@ -58,7 +57,7 @@ export default function Bookmark(props: Props) {
                         <p className='text-neutral-500 text-sm line-clamp-2'>{ogpData.ogDescription}</p>
                         <div className='flex mb-0 mt-2'>
                             {ogpData.favicon!==undefined && 
-                              <Image height={30} width={30} src={ogpData.favicon} className='w-auto max-h-4 rounded-full m-0 mr-2' alt={'pageIcon'} />}
+                              <img src={ogpData.favicon} className='w-auto max-h-4 rounded-full m-0 mr-2' alt={'pageIcon'} />}
                             <span className='text-neutral-600 text-xs line-clamp-1'>
                               {ogpData.ogUrl!==undefined ? ogpData.ogUrl : match[0].slice(1, -1) }
                             </span>
@@ -66,7 +65,7 @@ export default function Bookmark(props: Props) {
                     </div>
                     {ogpData.ogImage !==undefined && ogpData.ogImage[0].url!==undefined && (
                     <div className='p-0 m-0' style={{ lineHeight: 0 }}>
-                        <Image height={40} width={40} src={ogpData.ogImage[0].url} className='w-96 h-28 rounded-sm lg:w-72' alt={'pageImage'} />
+                        <img src={ogpData.ogImage[0].url} className='w-96 h-28 rounded-sm lg:w-72' alt={'pageImage'} />
                     </div>
                     )}
                 </div>
