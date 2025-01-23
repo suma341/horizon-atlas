@@ -1,15 +1,22 @@
-import React from 'react'
+import React from 'react';
 import UserBlock from '../Header/UserInfo/userBlock';
 import SearchField from '../Header/searchField/searchField';
 import Tags from '@/components/tag/Tags';
+import { pageNav } from '@/types/pageNav';
+import Link from 'next/link';
 
 type Props={
     openbar:boolean;
     setOpenbar:React.Dispatch<React.SetStateAction<boolean>>;
     allTags:string[];
+    pageNav?:{
+        title:string;
+        slug:string;
+        childPages:pageNav[];
+    }
 }
 
-function Sidebar({openbar,setOpenbar,allTags}:Props) {
+function Sidebar({openbar,setOpenbar,allTags,pageNav}:Props) {
 
     const getPageHeight = () => {
         const pageHeight = Math.max(
@@ -42,8 +49,16 @@ function Sidebar({openbar,setOpenbar,allTags}:Props) {
                     <li className='px-5 mt-2'>
                         <Tags allTags={allTags} />
                     </li>
-                    <li>
-                        
+                    <li className='px-5 mt-2'>
+                        {pageNav!==undefined && <div className='p-1 border border-neutral-400 rounded'>
+                            <p className='text-base'>{pageNav.title}</p>
+                            {pageNav.childPages.map((nav,i)=>{
+                                return (<ul key={i} className='pl-1.5'>
+                                    <Link className='truncate text-neutral-500 underline hover:text-neutral-800 mt-0.5' 
+                                        href={`/posts/post/${pageNav.slug}/${nav.id}`}>{nav.title}</Link>
+                                </ul>)
+                            })}
+                        </div>}
                     </li>
                 </ul>
             </div>
