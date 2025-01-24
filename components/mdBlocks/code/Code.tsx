@@ -41,7 +41,7 @@ export default function Code(props: Props) {
                     onClick={handleCopy}
                     className={'h-5 absolute top-1 right-2 px-2 text-sm rounded text-neutral-400 hover:text-neutral-500'}
                 >
-                    {copied ? <span className='flex'>copied ! <IoCopy size={25} /></span> : <LuCopy size={25} />}
+                    {copied ? <span className='flex'>copied ! <IoCopy size={24} /></span> : <LuCopy size={24} />}
                 </button>
             </div>
             
