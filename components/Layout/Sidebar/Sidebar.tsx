@@ -27,13 +27,13 @@ function Sidebar({openbar,setOpenbar,allTags,pageNav}:Props) {
     };
 
     return (
-        <div>
+        <>
             {openbar &&<div 
                 onClick={()=>setOpenbar(false)}
                 className='bg-black opacity-45 fixed w-full top-0 block sm:hidden' style={{height:`${getPageHeight()}px`,zIndex:"9998"}}>
                 </div>}
             <div className='fixed w-7/12 top-0 right-0 block sm:hidden bg-white duration-700'
-            style={openbar ? {transform: "translateX(0px)",height:`${getPageHeight()}px`,zIndex:"9999"}:{transform:"translateX(130%)",height:`${getPageHeight()}px`,zIndex:"9999"}}>
+            style={openbar ? {transform:"translateX(0px)",height:`${getPageHeight()}px`,zIndex:"9999"}:{transform:"translateX(130%)", height:"100%"}}>
                 <ul>
                     <li className='flex items-center justify-between mr-5'>
                         <div></div>
@@ -64,7 +64,7 @@ function Sidebar({openbar,setOpenbar,allTags,pageNav}:Props) {
                     </li>
                 </ul>
             </div>
-        </div>
+        </>
     )
 }
 
