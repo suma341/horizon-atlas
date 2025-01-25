@@ -17,7 +17,7 @@ export default function Header({searchKeyWord,setOpenbar}:Props){
             <Link href="/posts" className="text-2xl mt-3 mb-0 font-medium text-neutral-400 rounded-md">
                 HorizonAtlas
             </Link>
-            <ul className="hidden sm:flex items-center text-sm pt-2 duration-100">
+            <ul className="hidden md:flex items-center text-sm pt-2 duration-100">
                 <li className="mr-4">
                     <SearchField searchKeyWord={searchKeyWord || ''} />
                 </li>
@@ -25,7 +25,7 @@ export default function Header({searchKeyWord,setOpenbar}:Props){
                     <UserIcon />
                 </li>
             </ul>
-            <ul className='flex sm:hidden items-center text-sm pt-2'>
+            <ul className='flex md:hidden items-center text-sm pt-2'>
                 <li>
                     <HamburgerButton setOpenSide={setOpenbar} />
                 </li>

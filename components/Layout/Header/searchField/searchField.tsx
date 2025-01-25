@@ -35,7 +35,7 @@ function SearchField({searchKeyWord}:Props) {
                 onCompositionStart={() => setIsComposing(true)}
                 onCompositionEnd={() => setIsComposing(false)}
                 type="text"
-                className="w-full sm:w-auto py-1 rounded text-neutral-600 bg-neutral-100 px-2 focus:outline-none focus:bg-slate-100 duration-300"
+                className="w-full py-1 rounded text-neutral-600 bg-neutral-100 px-2 focus:outline-none focus:bg-slate-100 duration-300"
                 placeholder="キーワードで検索"/>
             <button onClick={handleButton}>
                 <IoIosSearch size={25} className='text-white bg-neutral-300 w-10 h-8 rounded-r py-0.5' />

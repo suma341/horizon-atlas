@@ -1,5 +1,5 @@
 import Layout from '@/components/Layout/Layout';
-import Sidebar from '@/components/Sidebar/Sidebar';
+import SideBlock from '@/components/SideBlock/SideBlock';
 import MdBlockComponent from '@/components/mdBlocks/mdBlock';
 import { BASIC_NAV, HOME_NAV } from '@/constants/pageNavs';
 import { getAllPosts, getAllTags, getChildPage, getSinglePost } from '@/lib/services/notionApiService';
@@ -95,29 +95,19 @@ const PostChildPage = ( props : Props) => {
 
     return (
       <Layout headerProps={{pageNavs:pageNavs,allTags}} sideNavProps={{title:parentTitle,slug,childPages:childNavs}}>
-        {/* {openSide &&<div
-          className='fixed top-0 left-0 w-full h-full z-40 opacity-50 duration-200'
-          style={{backgroundColor:"rgb(0,0,0.5)"}}
-          onClick={()=>setOpenSide(false)}
-        ></div>} */}
-        {/* <div className='fixed w-3/5 sm:w-2/5 lg:w-1/5 h-full bg-neutral-100 z-40 pt-14 pl-3 duration-300' style={openSide ? {transform: "translateX(0%)"} : {transform: "translateX(-100%)"}}>
-          <Sidebar title={parentTitle} slug={slug} childPages={childNavs} md={true} />
-        </div> */}
-        <div className="pt-24 pb-8 bg-neutral-100 sm:flex">
-            {childNavs.length!==0 && (
-              <div className='hidden md:block'>
-                <Sidebar title={parentTitle} slug={slug} childPages={childNavs} />
-              </div>
-            )}
-            <section className="p-5 pb-10 bg-white">
-              <h2 className="w-full text-2xl font-medium">
-                  {pageNavs[pageNavs.length - 1].title}
-              </h2>
-              <div className='border-b-2 mt-2'></div>
-              {mdBlocks.map((mdBlock, i) => (
-                  <MdBlockComponent mdBlock={mdBlock} depth={0} key={i} />
-              ))}
-            </section>
+        <div className='block md:flex md:gap-1 mt-24'>
+          <section className="p-5 pb-10 bg-white">
+            <h2 className="w-full text-2xl font-medium">
+                {pageNavs[pageNavs.length - 1].title}
+            </h2>
+            <div className='border-b-2 mt-2'></div>
+            {mdBlocks.map((mdBlock, i) => (
+                <MdBlockComponent mdBlock={mdBlock} depth={0} key={i} />
+            ))}
+          </section>
+          <div className='hidden md:block mt-5'>
+            <SideBlock title={parentTitle} slug={slug} childPages={childNavs} />
+          </div>
         </div>
     </Layout>
     );
