@@ -49,6 +49,7 @@ const PostsPage = ({ courseAndPosts,allTags }: Props)=> {
           </section>
         </main>
       </div>
+      <div className="mb-40"></div>
       </Layout>
     );
   }

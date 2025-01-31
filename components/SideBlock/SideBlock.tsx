@@ -37,7 +37,7 @@ const SideBlock = ({ title, childPages, slug }:Props) => {
   }, [window.scrollY]);
 
   return (
-    <section className="w-36 lg:w-44 mr-2">
+    <section className="w-44 mr-2">
       <div
         className="border fixed overflow-y-scroll scrollbar-thin py-4 rounded-md w-36 lg:w-44 bg-white"
         style={isFixed ? {opacity:0} : {opacity:"100", height:"400px"}}
