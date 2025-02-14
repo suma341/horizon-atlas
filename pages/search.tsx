@@ -22,7 +22,7 @@ export const getStaticProps: GetStaticProps = async () => {
       allTags,
       posts:allPosts,
     },
-    revalidate:600
+    // revalidate:600
   }
 }
 

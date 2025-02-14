@@ -47,7 +47,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       pageNavs,
       allTags
     },
-    revalidate: 600
+    // revalidate: 600
   };
 };
 

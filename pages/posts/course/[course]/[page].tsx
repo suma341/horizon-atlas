@@ -63,7 +63,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
           pageNavs,
           allTags,
         },
-        revalidate: 600
     };
 };
 

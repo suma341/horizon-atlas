@@ -31,7 +31,7 @@ export const getStaticProps: GetStaticProps = async () => {
         courseAndPosts,
         allTags
       },
-      revalidate: 600
+      // revalidate: 600
   };
 };
 

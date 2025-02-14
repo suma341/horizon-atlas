@@ -86,7 +86,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
             slug:currentSlug,
             allTags
         },
-        revalidate: 300
+        // revalidate: 300
     };
 };
 
