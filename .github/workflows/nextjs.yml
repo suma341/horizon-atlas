@@ -35,12 +35,9 @@ jobs:
           DISCORD_CLIENT_ID: ${{ secrets.DISCORD_CLIENT_ID}}
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET}}
 
-      - name: GitHub Pages 用にエクスポート
-        run: npm run export
-
       - name: gh-pages ブランチにデプロイ
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./out
-          publish_branch: main
+          publish_branch: gh-pages
