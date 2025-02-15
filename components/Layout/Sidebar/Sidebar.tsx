@@ -9,6 +9,8 @@ type Props={
     openbar:boolean;
     setOpenbar:React.Dispatch<React.SetStateAction<boolean>>;
     allTags:string[];
+    name:string;
+    image:string;
     pageNav?:{
         title:string;
         slug:string;
@@ -16,7 +18,7 @@ type Props={
     }
 }
 
-function Sidebar({openbar,setOpenbar,allTags,pageNav}:Props) {
+function Sidebar({openbar,setOpenbar,allTags,pageNav,name,image}:Props) {
 
     const getPageHeight = () => {
         const pageHeight = Math.max(
@@ -41,7 +43,7 @@ function Sidebar({openbar,setOpenbar,allTags,pageNav}:Props) {
                     </li>
                     <li className='flex items-center justify-between mr-5'>
                         <div></div>
-                        <UserBlock />
+                        <UserBlock name={name} image={image} />
                     </li>
                     <li className='px-5 mt-2'>
                         <SearchField searchKeyWord={''} />

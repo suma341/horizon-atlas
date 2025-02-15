@@ -1,100 +1,123 @@
-import React,{ ReactNode,  useEffect, useState } from 'react'
-import Head from 'next/head';
-import Footer from './Footer/Footer';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
-import Header from './Header/Header';
-import { pageNav } from '@/types/pageNav';
-import Navbar from './Navbar/navbar';
-import Sidebar from './Sidebar/Sidebar';
+import React, { ReactNode, useEffect, useState } from "react";
+import Head from "next/head";
+import Footer from "./Footer/Footer";
+import { useRouter } from "next/router";
+import Header from "./Header/Header";
+import { pageNav } from "@/types/pageNav";
+import Navbar from "./Navbar/navbar";
+import Sidebar from "./Sidebar/Sidebar";
+import { SessionData } from "@/types/sessionData";
 
-const PUBLIC_PAGES = ["/"]; // 認証不要なページ
+type LayoutProps = {
+  children: ReactNode;
+  headerProps: {
+    pageNavs: pageNav[];
+    searchKeyWord?: string;
+    allTags: string[];
+  };
+  sideNavProps?: {
+    title: string;
+    slug: string;
+    childPages: pageNav[];
+  };
+};
 
-function AuthGuard({ children }: { children: React.ReactNode }) {
-  const { data: session, status } = useSession(); // statusを直接取得
+const Layout: React.FC<LayoutProps> = ({ children, headerProps, sideNavProps }) => {
+  const [isVisible, setIsVisible] = useState(true); // ヘッダーの表示状態
+  const [lastScrollY, setLastScrollY] = useState(0); // 最後のスクロール位置
+  const [openbar, setOpenbar] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [session, setSession] = useState(false);
+  const [name, setName] = useState("");
+  const [image,setImage] = useState("");
+
   const router = useRouter();
 
   useEffect(() => {
-    if (status === "unauthenticated" && !PUBLIC_PAGES.includes(router.pathname)) {
-      router.push("/"); // 未ログインで公開ページ以外にアクセスした場合は初期ページへ
-    }
-  }, [status, router]);
+    let isMounted = true; // コンポーネントのマウント状態を管理
 
-  if (status === "loading") {
-    return <p className='mx-auto my-0'>Loading...</p>; // ローディング中の表示
-  }
+    async function checkLoginStatus() {
+      const res = await fetch("https://horizon-atlas.vercel.app/api/auth/session", {
+        credentials: "include", // Cookie を送る
+      });
 
-  console.log(session);
+      const data:SessionData = await res.json();
 
-  return <>{children}</>; // ログイン済みの場合にコンテンツを表示
-}
-function SesstionProviderWraped({children} : {children: React.ReactNode}){
-  return (
-      <AuthGuard>
-        {children}
-      </AuthGuard>)
-}
-
-type LayoutProps={
-  children: ReactNode;
-  headerProps:{
-    pageNavs:pageNav[];
-    searchKeyWord?:string;
-    allTags:string[];
-  }
-  sideNavProps?:{
-    title:string;
-    slug:string;
-    childPages:pageNav[];
-  }
-}
-
-const Layout:React.FC<LayoutProps> = ({ children,headerProps,sideNavProps })=> {
-  const [isVisible, setIsVisible] = useState(true); // ヘッダーの表示状態
-  const [lastScrollY, setLastScrollY] = useState(0); // 最後のスクロール位置
-  const [openbar,setOpenbar]=useState(false);
-
-    useEffect(() => {
-      if(window!==undefined){
-        const handleScroll = () => {
-          
-            const currentScrollY = window.scrollY;
-
-            if (currentScrollY > lastScrollY && currentScrollY > 50) {
-                // 下にスクロール: ヘッダーを非表示
-                setIsVisible(false);
-            } else {
-                // 上にスクロール: ヘッダーを表示
-                setIsVisible(true);
-            }
-
-            setLastScrollY(currentScrollY);
-        };
-
-        window.addEventListener("scroll", handleScroll);
-
-        return () => {
-        window.removeEventListener("scroll", handleScroll);
-        };
+      if (!data || Object.keys(data).length === 0) {
+        console.log("ログインしていません");
+        if (isMounted) {
+          setSession(false);
+          setLoading(false);
+          router.push("/");
+        }
+        return; // ここで処理を終了
       }
-    }, [lastScrollY]);
 
-  return (
-    <div className='bg-white'>
+      console.log("ログインしています:", data);
+      if (isMounted) {
+        setSession(true);
+        if(data.user){
+          setName(data.user.name);
+          setImage(data.user.image);
+        }
+        setLoading(false);
+      }
+    }
+
+    checkLoginStatus();
+
+    return () => {
+      isMounted = false; // コンポーネントがアンマウントされたらフラグを変更
+    };
+  }, [router]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const handleScroll = () => {
+        const currentScrollY = window.scrollY;
+
+        if (currentScrollY > lastScrollY && currentScrollY > 50) {
+          setIsVisible(false);
+        } else {
+          setIsVisible(true);
+        }
+
+        setLastScrollY(currentScrollY);
+      };
+
+      window.addEventListener("scroll", handleScroll);
+
+      return () => {
+        window.removeEventListener("scroll", handleScroll);
+      };
+    }
+  }, [lastScrollY]);
+
+  if (loading) {
+    return <div>...Loading</div>;
+  }
+
+  if (session) {
+    return (
+      <div className="bg-white">
         <Head>
           <title>Horizon Atlas</title>
         </Head>
-        <SesstionProviderWraped>
-          <Sidebar openbar={openbar} setOpenbar={setOpenbar} allTags={headerProps.allTags} pageNav={sideNavProps} />
-          <div className='fixed top-0 z-50 w-full duration-500'  style={isVisible ? {transform: "translateY(0px)"} : {transform: "translateY(-65%)"}}>
-            <Header searchKeyWord={headerProps.searchKeyWord} setOpenbar={setOpenbar} />
-            <Navbar pageNavs={headerProps.pageNavs} />
-          </div>
-            {children}
-          <Footer />
-        </SesstionProviderWraped>
-    </div>
-  );
+        <Sidebar name={name} image={image} openbar={openbar} setOpenbar={setOpenbar} allTags={headerProps.allTags} pageNav={sideNavProps} />
+        <div
+          className="fixed top-0 z-50 w-full duration-500"
+          style={isVisible ? { transform: "translateY(0px)" } : { transform: "translateY(-65%)" }}
+        >
+          <Header image={image} searchKeyWord={headerProps.searchKeyWord} setOpenbar={setOpenbar} />
+          <Navbar pageNavs={headerProps.pageNavs} />
+        </div>
+        {children}
+        <Footer />
+      </div>
+    );
+  }
+
+  return null; // 何も表示しない
 };
 
-export default Layout
+export default Layout;

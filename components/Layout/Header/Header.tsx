@@ -7,9 +7,10 @@ import HamburgerButton from './hamburgerButton./hamburgerButton';
 type Props={
     searchKeyWord?:string;
     setOpenbar:React.Dispatch<React.SetStateAction<boolean>>;
+    image:string;
 }
 
-export default function Header({searchKeyWord,setOpenbar}:Props){
+export default function Header({searchKeyWord,setOpenbar,image}:Props){
     
   return (
     <header className='w-full pb-1 bg-white'>
@@ -22,7 +23,7 @@ export default function Header({searchKeyWord,setOpenbar}:Props){
                     <SearchField searchKeyWord={searchKeyWord || ''} />
                 </li>
                 <li>
-                    <UserIcon />
+                    <UserIcon image={image} />
                 </li>
             </ul>
             <ul className='flex md:hidden items-center text-sm pt-2'>

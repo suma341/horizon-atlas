@@ -1,18 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { signOut, useSession } from 'next-auth/react';
+import { signOut } from 'next-auth/react';
 import Image from 'next/image';
 import { IoIosLogOut } from "react-icons/io";
 
-function UserBlock() {
-    const { data: session } = useSession();
+type Props ={
+    name:string;
+    image:string;
+}
+
+function UserBlock({name,image}:Props) {
     const [isVisible, setIsVisible] = useState(false); // トグルの状態を管理
     const toggleRef = useRef<HTMLDivElement>(null); // toggle要素への参照
     const toggleTargetRef = useRef<HTMLDivElement>(null);
-
-    const user_icon = session && session.user?.image!==undefined && session.user.image ? 
-        session.user.image : "/user_icon.png";
-    const user_name = session && session.user?.name!==undefined && session.user?.name ?
-        session.user.name : "user";
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -44,11 +43,11 @@ function UserBlock() {
                 className='flex cursor-pointer gap-1.5 mt-2 border border-neutral-300 rounded p-1'>
                 <div>
                     <Image width={20} height={20} 
-                    src={user_icon} alt={''}
+                    src={image} alt={''}
                     className='rounded-full w-9 h-auto' />
                 </div>
                 <div>
-                    <p className='mt-1.5 mr-0.5 text-sm text-neutral-500'>{user_name}</p>
+                    <p className='mt-1.5 mr-0.5 text-sm text-neutral-500'>{name}</p>
                 </div>
             </div>
             {isVisible && (

@@ -1,15 +1,20 @@
-import { signIn, signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import router from "next/router";
+import { useRouter } from "next/router";
+import { SessionData } from "@/types/sessionData";
 
-export default function Session() {
-  const { data: session, status } = useSession();
-  const [loading, setLoading] = useState(false);
+interface checkGuildData {
+  message:string;
+}
+
+export default function LoginButton() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const [session, setSession] = useState(false);
 
   useEffect(() => {
     const checkGuild = async () => {
       try {
-        const response = await fetch("/api/discord/guilds");
+        const response = await fetch("https://horizon-atlas.vercel.app/api/discord/guilds");
         
         if (!response.ok) {
           console.error("API Error:", response.status, await response.text());
@@ -17,14 +22,14 @@ export default function Session() {
           setLoading(false);
           return;
         }
-        
-        const data = await response.json();
-      
+
+        const data:checkGuildData = await response.json();
+
         if (data.message === "User is in Horizon") {
           router.push("/posts");
         } else if (data.message === "User is not in Horizon") {
-          alert("Only Horizon members can login");
-          signOut();
+          alert(data.message);
+          window.location.href = "https://horizon-atlas.vercel.app/api/auth/signout?callbackUrl=https%3A%2F%2Fsakiyamamamama.github.io%2Fhorizon-atlas";
         }
       } catch (error) {
         console.error("Error checking guild:", error);
@@ -32,31 +37,44 @@ export default function Session() {
       } finally {
         setLoading(false);
       }
-      
     };
 
-    if (status === "authenticated") {
-      checkGuild();
-    }
-  }, [session]);
+    async function checkLoginStatus() {
+      const res = await fetch("https://horizon-atlas.vercel.app/api/auth/session", {
+        credentials: "include", // Cookie を送る
+      });
 
-  if (status === "loading") {
-    return <p>Loading session...</p>;
+      const data:SessionData = await res.json();
+      console.log(data); // デバッグ用
+
+      if (!data || Object.keys(data).length === 0) {
+        console.log("ログインしていません");
+        setLoading(false);
+        setSession(false);
+        return;
+      }
+
+      console.log("ログインしています:", data);
+      setSession(true);
+      await checkGuild();
+    }
+
+    checkLoginStatus();
+  }, []); 
+
+  if (loading) {
+    return <p>Checking your membership...</p>;
   }
 
   if (!session) {
     return (
-      <button
+      <a
+        href="https://horizon-atlas.vercel.app/api/auth/signin?callbackUrl=https%3A%2F%2Fsakiyamamamama.github.io%2Fhorizon-atlas"
         className="bg-neutral-900 text-white py-1.5 px-9 mr-2 rounded shadow-2xl hover:bg-neutral-300 hover:text-neutral-800 hover:translate-y-2 hover:shadow-none duration-300"
-        onClick={() => signIn("discord")}
       >
         Sign in
-      </button>
+      </a>
     );
-  }
-
-  if (loading) {
-    return <p>Checking your membership...</p>;
   }
 
   return null;

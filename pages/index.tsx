@@ -1,6 +1,5 @@
 // pages/index.js
 import LoginButton from '@/components/LoginButton/loginButton';
-import { SessionProvider } from 'next-auth/react';
 import Head from 'next/head';
 
 export default function Home() {
@@ -29,9 +28,7 @@ export default function Home() {
           <h2 className="text-4xl font-bold text-gray-800">Welcome to HorizonAtlas</h2>
           <p className="text-gray-600 mt-4">プログラミング部Horizonで使用する学習資料を簡単に閲覧、検索できます。</p>
           <div className="mt-8">
-          <SessionProvider>
             <LoginButton />
-          </SessionProvider>
             <a
               href="#features"
               className="bg-neutral-500 text-white py-2 px-4 rounded hover:bg-neutral-600"

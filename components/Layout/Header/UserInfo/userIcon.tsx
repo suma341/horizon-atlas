@@ -2,7 +2,11 @@ import { signOut, useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
-export default function UserIcon() {
+type Props={
+  image:string;
+}
+
+export default function UserIcon({image}:Props) {
   const { data: session } = useSession();
   
   const [isVisible, setIsVisible] = useState(false); // トグルの状態を管理
@@ -41,7 +45,7 @@ export default function UserIcon() {
               setIsVisible((prev) => !prev); // 状態を切り替え
             }}
             className="cursor-pointer flex rounded-lg shadow-lx  hover:translate-y-1 hover:opacity-85 duration-200">
-              <Image src={session.user?.image ? session.user?.image : "/user_icon.png"} alt="UserIcon" width={10} height={10}  className="h-auto w-9 rounded-full"/>
+              <Image src={image} alt="UserIcon" width={10} height={10}  className="h-auto w-9 rounded-full"/>
             </div>
             {isVisible && (
               <div
