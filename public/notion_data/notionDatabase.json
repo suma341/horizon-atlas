@@ -1,0 +1,16 @@
+[
+  {
+    "id": "16d0a16d-c518-804e-b2e5-c6727ccb0d11",
+    "title": "Flet",
+    "date": "2025-01-01",
+    "tags": [
+      "基礎班",
+      "Python",
+      "Flet"
+    ],
+    "slug": "flet-1",
+    "category": "前期",
+    "is_basic_curriculum": true,
+    "icon": "https://prod-files-secure.s3.us-west-2.amazonaws.com/c57151a2-d4ad-4c5b-bbe7-f9a712f5fce3/30f58a96-0f10-409f-bfbf-a406a32bdeb5/flet-logo.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466UB564K5E%2F20250215%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20250215T170757Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEB8aCXVzLXdlc3QtMiJHMEUCIEdfOb7gyhCF2M0NfhnfDF0%2Fx2%2FAzv2FwBVV5NHgmS4vAiEAxDCfMOm4z4%2FJ1gIJX5mCwJB%2FaeB8OnkNYadIwDNckTMq%2FwMIRxAAGgw2Mzc0MjMxODM4MDUiDGs7ASthz4ibHM%2B%2FwyrcA2xoL%2Fk%2BmEvJSwSLrUH0kX507Kzi1fqHtgOc6dy5O2HD75gGTzus2zGt%2Fm7S88PE0XiOWOnx9KxNNn1Z2cko%2BX1uUsgUXYGIffLDbPDU2VlaycbGz8fy6nCPgpNgHVJ7bTJosST7EDe5sfzNXjAX2d4Tj7Uax6EvVUTHSZr7XDJEi6j%2FgBHay%2BzoH%2F1mLBIijLaI6tnTRYk1xLh6pzn1Xl1xDakWFjEADJiuh1JwJVujEOk01yCBhQ2Jut13hgD6LqUtBY9EfAh%2BM82PCUsYFEsOJC6p4%2BVu%2FbDFgmTFfxgdlSsY3tQ9ZtMJ1ftUZeF%2BrhLZIlOKorzHTEq5X%2B8tnltglJqCsPqY6C%2B%2FkHx%2BH2eQiVnB0ABoTNUCBvuNB7AUMnJSLExng16hQfZr5K5Ej3Sv%2FYV%2F1xPKiBUi5KSSu7JHuOwT4MPiIMchTZgaMJhtlC%2FGEDP7SF73QXE28VW4RnSeAMkn1Ax3eoak%2BRG0AbmedTymc9FXOL8A4lNzEg78dj0NfbDfovjsIJQOJ4YmHGA37mKh%2FwAF4Ck2daes55JxoYcZzeMxGvhWrEa5VcbT8K3ZgK8nAKsHA%2FlRnXkIh0mMippkAoVvVp%2FUaHYxstgBgX1dusNOOR%2BrcFqGMOXFwr0GOqUBBux9ivFYsb5bmi8Ln8zICauE%2BO%2B4eRhljIejhqylLC%2BPNxQkoKklNFNwOt%2BHqtqi9dylskIKj8QfFkO7FmmXz5vAGdCh%2FGNZZDIkLcGMofAU1m5%2FoIIaDnglVYZYp%2Fc7YGLTmzgl9vjwsC2Z%2FWcX8dkYdiOss4ZIeXZaR92UgYXHsq2P7fXNucdnMDNoL%2FghO6H%2FiQePMj5Xo5JtkFHYpVRvt3NF&X-Amz-Signature=6703d0707c661a9e63fe446c2986d39c15626fef6e8f19876345f8b4c945ba77&X-Amz-SignedHeaders=host&x-id=GetObject"
+  }
+]

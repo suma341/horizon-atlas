@@ -2,11 +2,13 @@ import Layout from '@/components/Layout/Layout';
 import SideBlock from '@/components/SideBlock/SideBlock';
 import MdBlockComponent from '@/components/mdBlocks/mdBlock';
 import { BASIC_NAV, HOME_NAV } from '@/constants/pageNavs';
-import { getAllPosts, getAllTags, getChildPage, getSinglePost } from '@/lib/services/notionApiService';
+import { getAllTags, getChildPage } from '@/lib/services/notionApiService';
 import { pageNav } from '@/types/pageNav';
 import { PostMetaData } from '@/types/postMetaData';
 import { GetStaticProps } from 'next';
 import { MdBlock } from 'notion-to-md/build/types';
+import path from 'path';
+import fs from "fs";
 
 type Props = {
   mdBlocks:MdBlock[];
@@ -22,12 +24,18 @@ type pagePath = {
 }
 
 export const getStaticPaths = async () => {
-  const allPosts: PostMetaData[] = await getAllPosts();
+  const filePath = path.join(process.cwd(), "public", "notion_data", "notionDatabase.json");
+  const jsonData = fs.readFileSync(filePath, "utf8");
+  const allPosts: PostMetaData[] = JSON.parse(jsonData);
+  // const allPosts: PostMetaData[] = await getAllPosts();
   const paths: pagePath[] = (
     await Promise.all(
       allPosts.map(async (post) => {
-        const postData = await getSinglePost(post.slug);
-        const childPages = postData.mdBlocks.filter((block)=>block.type==='child_page')
+        // const postData = await getSinglePost(post.slug);
+        const postPath = path.join(process.cwd(), "public", "notion_data", "eachPage", `${post.slug}.json`);
+        const postData = fs.readFileSync(postPath, "utf8");
+        const mdBlocks:MdBlock[] = JSON.parse(postData);
+        const childPages = mdBlocks.filter((block)=>block.type==='child_page')
         return childPages.map((child) => ({
           params: {
             slug: post.slug,
@@ -46,9 +54,20 @@ export const getStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async (context) => {
     const currentSlug = context.params?.slug as string;
     const childparam = (context.params?.childId as string[]) || [];
-    const post = await getSinglePost(currentSlug);
-    const allPosts = await getAllPosts();
+    // const post = await getSinglePost(currentSlug);
+    // const allPosts = await getAllPosts();
+    const postPath = path.join(process.cwd(), "public", "notion_data", "eachPage", `${currentSlug}.json`);
+    const postData = fs.readFileSync(postPath, "utf8");
+    const mdBlocks:MdBlock[] = JSON.parse(postData);
+    const filePath = path.join(process.cwd(), "public", "notion_data", "notionDatabase.json");
+    const jsonData = fs.readFileSync(filePath, "utf8");
+    const allPosts: PostMetaData[] = JSON.parse(jsonData);
     const allTags = await getAllTags(allPosts);
+    const singlePost = allPosts.filter(item=>item.slug===currentSlug)
+    const post ={
+      mdBlocks,
+      metadata:singlePost[0]
+    }
 
     let currentchild = post.mdBlocks;
     const links:string[] = [`/posts/post/${post.metadata.slug}`];
