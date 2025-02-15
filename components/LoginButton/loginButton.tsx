@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 // import { useRouter } from "next/router";
-import { SessionData } from "@/types/sessionData";
+// import { SessionData } from "@/types/sessionData";
 
 // interface checkGuildData {
 //   message:string;
@@ -54,19 +54,16 @@ export default function LoginButton() {
         });
     
         if (!res.ok) {
-          console.error("Session check failed:", res.status);
-          setSession(false);
-          setLoading(false);
-          return;
+          throw new Error(`HTTP error! status: ${res.status}`);
         }
     
-        const data: SessionData = await res.json();
-        console.log("Session response:", data);
+        const data = await res.json();
+        console.log("Session data:", data);
     
-        if (!data || Object.keys(data).length === 0) {
-          setSession(false);
-        } else {
+        if (data && data.token) {
           setSession(true);
+        } else {
+          setSession(false);
         }
       } catch (error) {
         console.error("Session check error:", error);
