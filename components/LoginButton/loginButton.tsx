@@ -12,62 +12,75 @@ export default function LoginButton() {
   const [session, setSession] = useState(false);
 
   useEffect(() => {
-    const checkGuild = async () => {
-      try {
-        const response = await fetch("https://horizon-atlas.vercel.app/api/discord/guilds",{
-          credentials: "include", // Cookie を送る
-          mode:"cors",
-        });
+    // const checkGuild = async () => {
+    //   try {
+    //     const response = await fetch("https://horizon-atlas.vercel.app/api/discord/guilds",{
+    //       credentials: "include", 
+    //       mode:"cors",
+    //     });
         
-        if (!response.ok) {
-          console.error("API Error:", response.status, await response.text());
-          alert("Error fetching guilds. Please try again later.");
+    //     if (!response.ok) {
+    //       console.error("API Error:", response.status, await response.text());
+    //       alert("Error fetching guilds. Please try again later.");
+    //       setLoading(false);
+    //       return;
+    //     }
+
+    //     const data:checkGuildData = await response.json();
+
+    //     if (data.message === "User is in Horizon") {
+    //       router.push("/posts");
+    //     } else if (data.message === "User is not in Horizon") {
+    //       alert(data.message);
+    //       window.location.href = "https://horizon-atlas.vercel.app/api/auth/signout?callbackUrl=https%3A%2F%2Fsakiyamamamama.github.io%2Fhorizon-atlas";
+    //     }
+    //   } catch (error) {
+    //     console.error("Error checking guild:", error);
+    //     alert("Unexpected error occurred. Please try again later.");
+    //   } finally {
+    //     setLoading(false);
+    //   }
+    // };
+
+    async function checkLoginStatus() {
+      try {
+        const res = await fetch("https://horizon-atlas.vercel.app/api/auth/session", {
+          credentials: "include",
+          mode: "cors",
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+          },
+        });
+    
+        if (!res.ok) {
+          console.error("Session check failed:", res.status);
+          setSession(false);
           setLoading(false);
           return;
         }
-
-        const data:checkGuildData = await response.json();
-
-        if (data.message === "User is in Horizon") {
-          router.push("/posts");
-        } else if (data.message === "User is not in Horizon") {
-          alert(data.message);
-          window.location.href = "https://horizon-atlas.vercel.app/api/auth/signout?callbackUrl=https%3A%2F%2Fsakiyamamamama.github.io%2Fhorizon-atlas";
+    
+        const data: SessionData = await res.json();
+        console.log("Session response:", data);
+    
+        if (!data || Object.keys(data).length === 0) {
+          setSession(false);
+        } else {
+          setSession(true);
         }
       } catch (error) {
-        console.error("Error checking guild:", error);
-        alert("Unexpected error occurred. Please try again later.");
+        console.error("Session check error:", error);
+        setSession(false);
       } finally {
         setLoading(false);
       }
-    };
-
-    async function checkLoginStatus() {
-      const res = await fetch("https://horizon-atlas.vercel.app/api/auth/session", {
-        credentials: "include", // Cookie を送る
-        mode:"cors",
-      });
-
-      const data:SessionData = await res.json();
-      console.log(data); // デバッグ用
-
-      if (!data || Object.keys(data).length === 0) {
-        console.log("ログインしていません");
-        setLoading(false);
-        setSession(false);
-        return;
-      }
-
-      console.log("ログインしています:", data);
-      setSession(true);
-      await checkGuild();
     }
 
     checkLoginStatus();
   }, []); 
 
   if (loading) {
-    return <p>Checking your membership...</p>;
+    return <p>Checking session ...</p>;
   }
 
   if (!session) {
