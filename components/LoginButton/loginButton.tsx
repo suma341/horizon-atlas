@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 // import { useRouter } from "next/router";
 // import { SessionData } from "@/types/sessionData";
 
@@ -7,9 +8,9 @@ import { useEffect, useState } from "react";
 // }
 
 export default function LoginButton() {
-  // const router = useRouter();
-  const [loading, setLoading] = useState(true);
-  const [session, setSession] = useState(false);
+  const router = useRouter();
+  // const [loading, setLoading] = useState(true);
+  // const [session, setSession] = useState(false);
 
   useEffect(() => {
     // const checkGuild = async () => {
@@ -43,55 +44,60 @@ export default function LoginButton() {
     // };
 
     async function checkLoginStatus() {
-      try {
-        const res = await fetch("https://horizon-atlas.vercel.app/api/auth/session", {
-          method: "GET", // 変更点
-          credentials: "include",
-          mode: "cors",
-          headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-          },
-        });
+      router.push("/posts")
+    //   try {
+    //     const res = await fetch("https://horizon-atlas.vercel.app/api/auth/session", {
+    //       method: "GET", // 変更点
+    //       credentials: "include",
+    //       mode: "cors",
+    //       headers: {
+    //         "Accept": "application/json",
+    //         "Content-Type": "application/json",
+    //       },
+    //     });
 
     
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
+    //     if (!res.ok) {
+    //       throw new Error(`HTTP error! status: ${res.status}`);
+    //     }
     
-        const data = await res.json();
-        console.log("Session data:", data);
+    //     const data = await res.json();
+    //     console.log("Session data:", data);
     
-        if (data && data.token) {
-          setSession(true);
-        } else {
-          setSession(false);
-        }
-      } catch (error) {
-        console.error("Session check error:", error);
-        setSession(false);
-      } finally {
-        setLoading(false);
-      }
+    //     if (data && data.token) {
+    //       setSession(true);
+    //     } else {
+    //       setSession(false);
+    //     }
+    //   } catch (error) {
+    //     console.error("Session check error:", error);
+    //     setSession(false);
+    //   } finally {
+    //     setLoading(false);
+    //   }
     }
 
     checkLoginStatus();
   }, []); 
 
-  if (loading) {
-    return <p>Checking session ...</p>;
-  }
+  return <button
+   className="bg-neutral-900 text-white py-1.5 px-9 mr-2 rounded shadow-2xl hover:bg-neutral-300 hover:text-neutral-800 hover:translate-y-2 hover:shadow-none duration-300">
+   </button>
 
-  if (!session) {
-    return (
-      <a
-        href="https://horizon-atlas.vercel.app/api/auth/signin?callbackUrl=https%3A%2F%2Fsakiyamamamama.github.io%2Fhorizon-atlas"
-        className="bg-neutral-900 text-white py-1.5 px-9 mr-2 rounded shadow-2xl hover:bg-neutral-300 hover:text-neutral-800 hover:translate-y-2 hover:shadow-none duration-300"
-      >
-        Sign in
-      </a>
-    );
-  }
+  // if (loading) {
+  //   return <p>Checking session ...</p>;
+  // }
 
-  return null;
+  // if (!session) {
+  //   return (
+  //     <a
+  //       href="https://horizon-atlas.vercel.app/api/auth/signin?callbackUrl=https%3A%2F%2Fsakiyamamamama.github.io%2Fhorizon-atlas"
+  //       className="bg-neutral-900 text-white py-1.5 px-9 mr-2 rounded shadow-2xl hover:bg-neutral-300 hover:text-neutral-800 hover:translate-y-2 hover:shadow-none duration-300"
+  //     >
+  //       Sign in
+  //     </a>
+  //   );
+  // }
+
+  // return null;
 }
