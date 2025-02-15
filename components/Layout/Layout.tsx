@@ -39,6 +39,7 @@ const Layout: React.FC<LayoutProps> = ({ children, headerProps, sideNavProps }) 
     async function checkLoginStatus() {
       const res = await fetch("https://horizon-atlas.vercel.app/api/auth/session", {
         credentials: "include", // Cookie を送る
+        mode:"cors",
       });
 
       const data:SessionData = await res.json();
