@@ -14,7 +14,10 @@ export default function LoginButton() {
   useEffect(() => {
     const checkGuild = async () => {
       try {
-        const response = await fetch("https://horizon-atlas.vercel.app/api/discord/guilds");
+        const response = await fetch("https://horizon-atlas.vercel.app/api/discord/guilds",{
+          credentials: "include", // Cookie を送る
+          mode:"cors",
+        });
         
         if (!response.ok) {
           console.error("API Error:", response.status, await response.text());
@@ -42,6 +45,7 @@ export default function LoginButton() {
     async function checkLoginStatus() {
       const res = await fetch("https://horizon-atlas.vercel.app/api/auth/session", {
         credentials: "include", // Cookie を送る
+        mode:"cors",
       });
 
       const data:SessionData = await res.json();
