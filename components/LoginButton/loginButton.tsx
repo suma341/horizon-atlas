@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+// import { useRouter } from "next/router";
 import { SessionData } from "@/types/sessionData";
 
-interface checkGuildData {
-  message:string;
-}
+// interface checkGuildData {
+//   message:string;
+// }
 
 export default function LoginButton() {
-  const router = useRouter();
+  // const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState(false);
 
