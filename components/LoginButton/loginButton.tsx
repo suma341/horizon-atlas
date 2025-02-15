@@ -45,6 +45,7 @@ export default function LoginButton() {
     async function checkLoginStatus() {
       try {
         const res = await fetch("https://horizon-atlas.vercel.app/api/auth/session", {
+          method: "POST", // 変更点
           credentials: "include",
           mode: "cors",
           headers: {
@@ -52,6 +53,7 @@ export default function LoginButton() {
             "Content-Type": "application/json",
           },
         });
+
     
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
