@@ -1,49 +1,49 @@
 import { NUMBER_OF_POSTS_PER_PAGE } from "@/constants/constants";
-import { getAllData, getSinglePage } from "../dataAccess/notionApiGateway";
+// import { getAllData, getSinglePage } from "../dataAccess/notionApiGateway";
 import { PostMetaData } from "@/types/postMetaData";
-import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
+// import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import { MdBlock } from "notion-to-md/build/types";
 
-export const getAllPosts =async()=>{
-    const allData = await getAllData();
-    return allData.map((data)=>{
-        return getPageMetaData(data);
-    })
-}
+// export const getAllPosts =async()=>{
+//     const allData = await getAllData();
+//     return allData.map((data)=>{
+//         return getPageMetaData(data);
+//     })
+// }
 
-export const getSinglePost=async(slug:string)=>{
-    const {page,mdBlocks} = await getSinglePage(slug);
-    const metadata:PostMetaData = getPageMetaData(page);
+// export const getSinglePost=async(slug:string)=>{
+//     const {page,mdBlocks} = await getSinglePage(slug);
+//     const metadata:PostMetaData = getPageMetaData(page);
 
-    return {
-        metadata,
-        mdBlocks
-    }
-}
+//     return {
+//         metadata,
+//         mdBlocks
+//     }
+// }
 
-const getPageMetaData = (post: PageObjectResponse):PostMetaData => {
+// const getPageMetaData = (post: PageObjectResponse):PostMetaData => {
 
-    const getTags = (tags:Array<object>)=>{
-        const allTags = tags.map((tag)=>{
-            return 'name' in tag && typeof tag.name == 'string' ? tag.name : '';
-        });
-        return allTags;
-    }
-    const properties = post.properties;
-    const date:string =  'date' in properties.date && 'start' in properties.date.date! && typeof properties.date.date.start == 'string' ?properties.date.date.start :'';
-    const icon:string = 'icon' in properties && 'files' in properties.icon && typeof properties.icon.files[0] === 'object' && 'file' in properties.icon.files[0] ? properties.icon.files[0].file.url : '';
+//     const getTags = (tags:Array<object>)=>{
+//         const allTags = tags.map((tag)=>{
+//             return 'name' in tag && typeof tag.name == 'string' ? tag.name : '';
+//         });
+//         return allTags;
+//     }
+//     const properties = post.properties;
+//     const date:string =  'date' in properties.date && 'start' in properties.date.date! && typeof properties.date.date.start == 'string' ?properties.date.date.start :'';
+//     const icon:string = 'icon' in properties && 'files' in properties.icon && typeof properties.icon.files[0] === 'object' && 'file' in properties.icon.files[0] ? properties.icon.files[0].file.url : '';
 
-    return {
-        id: post.id,
-        title:'title' in properties.title ? properties.title.title[0].plain_text : 'untitled',
-        date: date,
-        tags: 'multi_select' in properties.tag ? getTags(properties.tag.multi_select) : [],
-        slug:'rich_text' in properties.slug ? properties.slug.rich_text[0].plain_text : 'untitled',
-        category:'select' in properties.category && properties.category.select ? properties.category.select.name : '',
-        is_basic_curriculum:'checkbox' in properties.is_basic_curriculum ? properties.is_basic_curriculum.checkbox : false,
-        icon: icon
-    };
-};
+//     return {
+//         id: post.id,
+//         title:'title' in properties.title ? properties.title.title[0].plain_text : 'untitled',
+//         date: date,
+//         tags: 'multi_select' in properties.tag ? getTags(properties.tag.multi_select) : [],
+//         slug:'rich_text' in properties.slug ? properties.slug.rich_text[0].plain_text : 'untitled',
+//         category:'select' in properties.category && properties.category.select ? properties.category.select.name : '',
+//         is_basic_curriculum:'checkbox' in properties.is_basic_curriculum ? properties.is_basic_curriculum.checkbox : false,
+//         icon: icon
+//     };
+// };
 
 // ページ番号に応じた記事取得
 export const getPostsByPage=async(page:number,allPosts:PostMetaData[])=>{
@@ -79,7 +79,6 @@ export const getNumberOfPages=async(allPosts:PostMetaData[],tagName?:string, cou
         const posts = await getPostsByCourse(course,allPosts);
         return calculatePageNumber(posts);
     }else{
-        const allPosts = await getAllPosts();
         return calculatePageNumber(allPosts);
     }
 };
