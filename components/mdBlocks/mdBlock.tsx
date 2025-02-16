@@ -15,7 +15,6 @@ import ImageBlock from './image/image';
 import TableBlock from './table/table';
 import ChildPage from './child_page/child_page';
 import Bookmark from './bookmark/bookmark';
-import Toggle from './toggle/toggle';
 import ToggleBlock from './toggle/toggle';
 
 type Props ={
