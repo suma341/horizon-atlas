@@ -15,7 +15,7 @@ export default function Callout(props:Props) {
 
     return (
         <div className='bg-white p-2 px-3 mb-3 mt-4 border border-neutral-300 rounded'>
-            <Paragraph parent={parent} depth={depth +1} />
+            <Paragraph mdBlock={mdBlock} quote={true} parent={parent} depth={depth +1} />
             {mdBlock.children.map((child, i)=>(
                 <MdBlockComponent mdBlock={child} key={i} depth={depth +1} />
             ))}

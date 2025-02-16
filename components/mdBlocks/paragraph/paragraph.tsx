@@ -2,16 +2,25 @@
 import { searchMDKeyword } from '@/lib/mdBlockHelper';
 import { MdTypeAndText } from '@/types/parent';
 import Link from 'next/link';
-import React from 'react';
+import { MdBlock } from 'notion-to-md/build/types';
+import React, { useEffect, useState } from 'react';
+import MdBlockComponent from '../mdBlock';
 
 type Props={
+    mdBlock:MdBlock;
     parent:string;
     depth:number;
+    quote?:boolean;
 }
 
 export default function Paragraph(props:Props){
-    const {parent} = props;
-    const mdTypeAndTextList:MdTypeAndText[] = searchMDKeyword(parent);
+    const {parent,mdBlock,depth,quote} = props;
+    const [mdTypeAndTextList,setMd]=useState<MdTypeAndText[]>([]);
+    useEffect(()=>{
+        searchMDKeyword(parent).then(md=>{
+            setMd(md)
+        })
+    },[])
 
     return (
         <div className='mb-0.5 mt-1'>
@@ -23,18 +32,23 @@ export default function Paragraph(props:Props){
                                 {text.text}
                             </span>)
                     }else{
-                        if(text.link.slice(0,8)==='https://'){
+                        if(text.link===''){
                             return (<span key={index} style={text.style}>
-                                <Link href={text.link} className='text-neutral-500 underline cursor-pointer hover:text-neutral-800'>{text.text}</Link>
+                                <span className='text-neutral-500 underline'>{text.text}</span>
                             </span>)
                         }else{
                             return (<span key={index} style={text.style}>
-                                <span className='text-neutral-500 underline'>{text.text}</span>
+                                <Link href={text.link} className='text-neutral-500 underline cursor-pointer hover:text-neutral-800'>{text.text}</Link>
                             </span>)
                         }
                     }
                 })}
             </p>
+            {(quote===false || quote===undefined) && mdBlock.children.length!==0 && mdBlock.children.map((child,i)=>{
+                return (<div key={i}>
+                    <MdBlockComponent mdBlock={child} depth={depth + 1} />
+                </div>)
+            })}
         </div>
     )
 }

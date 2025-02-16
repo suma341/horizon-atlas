@@ -40,11 +40,11 @@ function Table_of_contents({mdBlock}:Props) {
         {headingList.map((heading,i)=>{
             return (
                 <div key={i} className='mt-1.5'>
-                    {heading.type===1 && <a className='ml-0.5 text-lg text-neutral-500 underline cursor-pointer hover:text-neutral-800' href={`#${heading.blockId}`}>
+                    {heading.type===1 && <a className='ml-0.5 text-neutral-500 underline cursor-pointer hover:text-neutral-800' href={`#${heading.blockId}`}>
                         {heading.parent.slice(2)}</a>}
-                    {heading.type===2 && <a className='ml-5 mt-1 text-base text-neutral-500 underline cursor-pointer hover:text-neutral-800' href={`#${heading.blockId}`}>
+                    {heading.type===2 && <a className='ml-5 mt-1 text-neutral-500 underline cursor-pointer hover:text-neutral-800' href={`#${heading.blockId}`}>
                         {heading.parent.slice(3)}</a>}
-                    {heading.type===3 && <a className='ml-8 text-sm text-neutral-500 underline cursor-pointer hover:text-neutral-800' href={`#${heading.blockId}`}>
+                    {heading.type===3 && <a className='ml-8 text-neutral-500 underline cursor-pointer hover:text-neutral-800' href={`#${heading.blockId}`}>
                         {heading.parent.slice(4)}</a>}
                 </div>)
         })}

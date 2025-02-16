@@ -13,7 +13,7 @@ export async function searchPageById(id:string):Promise<Page>{
     const posts:PostMetaData[] = await res_posts.json();
     console.log(posts)
     for(const post of posts){
-        if(id === post.id){
+        if(id === post.id || id===post.id.replaceAll("-", "")){
             return {
                 pageId:post.slug,
                 isChildPage:false,
@@ -24,7 +24,7 @@ export async function searchPageById(id:string):Promise<Page>{
         const res_page = await fetch(`/horizon-atlas/notion_data/eachPage/${post.slug}.json`);
         const page:MdBlock[] = await res_page.json();
         for(const block of page){
-            if(block.blockId===id){
+            if(block.blockId===id || id===block.blockId.replaceAll("-","")){
                 return {
                     pageId:block.blockId,
                     isChildPage:true,

@@ -1,7 +1,8 @@
 "use client";
 import { searchMDKeyword } from '@/lib/mdBlockHelper'
+import { MdTypeAndText } from '@/types/parent';
 import { MdBlock } from 'notion-to-md/build/types'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 type Props={
     mdBlock:MdBlock
@@ -10,8 +11,13 @@ type Props={
 
 export default function Heading1(props:Props) {
     const {mdBlock} = props;
+    const [textBlocks,setText] = useState<MdTypeAndText[]>([]);
     const text = mdBlock.parent.slice(2);
-    const textBlocks = searchMDKeyword(text);
+    useEffect(()=>{
+        searchMDKeyword(text).then(md=>{
+            setText(md);
+        })
+    },[])
 
     return (
         <div id={mdBlock.blockId}>

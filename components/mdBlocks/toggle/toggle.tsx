@@ -23,7 +23,7 @@ export default function ToggleBlock(props:Props) {
                 >
                     {isOpen ? "▼" : "▶︎"}
                 </button>
-                <Paragraph parent={mdBlock.parent} depth={depth + 1} />
+                <Paragraph mdBlock={mdBlock} quote={true} parent={mdBlock.parent} depth={depth + 1} />
             </div>
             {isOpen && mdBlock.children.map((child,i)=>(
                 <MdBlockComponent key={i} mdBlock={child} depth={depth + 1} />

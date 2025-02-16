@@ -15,7 +15,7 @@ export default function Quote(props:Props) {
 
     return (
         <div className='my-1 border-l-2 border-neutral-800 pl-3'>
-            <Paragraph parent={text} depth={depth + 1} />
+            <Paragraph mdBlock={mdBlock} quote={true} parent={text} depth={depth + 1} />
             {mdBlock.children.map((child,i)=>(
                 <MdBlockComponent key={i} mdBlock={child} depth={depth + 1} />
             ))}
