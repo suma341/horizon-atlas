@@ -12,7 +12,7 @@ export default function ImageBlock(props:Props) {
     const {mdBlock} = props;
         return (
             <div>
-                <Image height={400} width={400} src={`/notion_data/page_image/${mdBlock.blockId}.png`} alt={'image_block'} style={{
+                <Image height={400} width={400} src={`/horizon-atlas/notion_data/page_image/${mdBlock.blockId}.png`} alt={'image_block'} style={{
                         width: 'auto',
                         height: '100%',
                         display: 'block', 

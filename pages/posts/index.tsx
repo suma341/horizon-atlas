@@ -2,9 +2,11 @@ import Layout from "@/components/Layout/Layout";
 import SingleCourse from "@/components/Post/SingleCourse";
 import BasicCurriculum from "@/components/Post/basicCurriculum";
 import { HOME_NAV } from "@/constants/pageNavs";
-import { getAllPosts, getAllTags, getEitherCourses, getPostsByCourse } from "@/lib/services/notionApiService";
+import {  getAllTags, getEitherCourses, getPostsByCourse } from "@/lib/services/notionApiService";
 import { PostMetaData } from "@/types/postMetaData";
 import { GetStaticProps } from "next";
+import path from "path";
+import fs from "fs";
 
 type Props = {
   courseAndPosts:{
@@ -15,7 +17,10 @@ type Props = {
 };
 
 export const getStaticProps: GetStaticProps = async () => {
-  const allPosts = await getAllPosts();
+  const filePath = path.join(process.cwd(), "public", "notion_data", "notionDatabase.json");
+  const jsonData = fs.readFileSync(filePath, "utf8");
+  const allPosts: PostMetaData[] = JSON.parse(jsonData);
+  // const allPosts = await getAllPosts();
   const notBasicCourses = await getEitherCourses(false,allPosts);
   const removeEmptyCourses = notBasicCourses.filter((course)=>course!=="")
   const courseAndPosts = await Promise.all(removeEmptyCourses.map(async(course)=>{

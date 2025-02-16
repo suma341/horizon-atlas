@@ -3,11 +3,13 @@ import SinglePost from "@/components/Post/SinglePost";
 import Tags from "@/components/tag/Tags";
 import { HOME_NAV, SEARCH_NAV } from "@/constants/pageNavs";
 import { createSearchQuery, searchByKeyWord } from "@/lib/searchKeyWord";
-import { getAllPosts, getAllTags } from "@/lib/services/notionApiService";
+import { getAllTags } from "@/lib/services/notionApiService";
 import { PostMetaData } from "@/types/postMetaData";
 import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
+import path from "path";
 import { useEffect, useState } from "react";
+import fs from "fs";
 
 type Props = {
   allTags:string[];
@@ -15,14 +17,16 @@ type Props = {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const allPosts:PostMetaData[] = await getAllPosts();
+  const filePath = path.join(process.cwd(), "public", "notion_data", "notionDatabase.json");
+  const jsonData = fs.readFileSync(filePath, "utf8");
+  const allPosts: PostMetaData[] = JSON.parse(jsonData);
+  // const allPosts:PostMetaData[] = await getAllPosts();
   const allTags:string[] = await getAllTags(allPosts);
   return {
     props:{
       allTags,
       posts:allPosts,
     },
-    // revalidate:600
   }
 }
 
