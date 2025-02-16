@@ -102,7 +102,12 @@ const fetchAllMdBlock = async (mdBlocks) => {
                     fs.writeFileSync(`./public/notion_data/ogsData/${block.blockId}.json`, JSON.stringify(saveData, null, 2));
                 }else{
                     const saveData = { ogTitle,ogDescription,ogSiteName,ogUrl, favicon };
-                    fs.writeFileSync(`./public/notion_data/ogsData/${block.blockId}.json`, JSON.stringify(saveData, null, 2));
+                    const isAllUndefined = Object.values(saveData).every(value => value === undefined);
+                    if(isAllUndefined){
+                        fs.writeFileSync(`./public/notion_data/ogsData/${block.blockId}.json`, JSON.stringify(result, null, 2));
+                    }else{
+                        fs.writeFileSync(`./public/notion_data/ogsData/${block.blockId}.json`, JSON.stringify(saveData, null, 2));
+                    }
                 }
             }
         }

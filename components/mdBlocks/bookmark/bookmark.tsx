@@ -21,10 +21,11 @@ type ogsData ={
 export default function Bookmark(props: Props) {
   const { mdBlock } = props;
   const [ogpData, setOgpData] = useState<ogsData>();
+  const match = mdBlock.parent.match(/\((.*?)\)/g);
 
   useEffect(() => {
     const fetchOgpData = async () => {
-        const res = await fetch(`/notion_data/ogsData/${mdBlock.blockId}`);
+        const res = await fetch(`/horizon-atlas/notion_data/ogsData/${mdBlock.blockId}.json`);
         const data:ogsData = await res.json();
         setOgpData(data);
         }
@@ -54,6 +55,20 @@ export default function Bookmark(props: Props) {
                     )}
                 </div>
             </Link>
+        )}
+        {ogpData===undefined && match && (
+          <Link href={match[0].slice(1, -1)}>
+          <div className="flex">
+              <div className='m-3'>
+                  <p className='text-neutral-800 line-clamp-1'>{match[0].slice(1, -1)}</p>
+                  <div className='flex mb-0 mt-2'>
+                      <span className='text-neutral-600 text-xs line-clamp-1'>
+                        {match[0].slice(1, -1)}
+                      </span>
+                  </div>
+              </div>
+          </div>
+      </Link>
         )}
     </div>
   );
