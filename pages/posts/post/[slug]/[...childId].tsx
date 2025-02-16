@@ -115,8 +115,8 @@ const PostChildPage = ( props : Props) => {
 
     return (
       <Layout headerProps={{pageNavs:pageNavs,allTags}} sideNavProps={{title:parentTitle,slug,childPages:childNavs}}>
-        <div className='block md:flex md:gap-1 mt-24'>
-          <section className="p-5 pb-10 bg-white">
+        <div className='block mt-24'>
+          <section className="p-5 pb-10 md:w-3/4 lg:w-4/5 bg-white">
             <h2 className="w-full text-2xl font-medium">
                 {pageNavs[pageNavs.length - 1].title}
             </h2>
@@ -125,7 +125,7 @@ const PostChildPage = ( props : Props) => {
                 <MdBlockComponent mdBlock={mdBlock} depth={0} key={i} />
             ))}
           </section>
-          <div className='hidden md:block mt-5'>
+          <div className='hidden md:block md:w-1/4 mt-5'>
             <SideBlock title={parentTitle} slug={slug} childPages={childNavs} />
           </div>
         </div>

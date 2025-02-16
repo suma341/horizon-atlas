@@ -10,7 +10,6 @@ type Props = {
 };
 
 const SideBlock = ({ title, childPages, slug }: Props) => {
-    const [isFixed, setIsFixed] = useState(false);
     const [scrollY, setScrollY] = useState(0); // スクロール量を管理
 
     const getPageHeight = () => {
@@ -27,12 +26,6 @@ const SideBlock = ({ title, childPages, slug }: Props) => {
         const handleScroll = () => {
             const newScrollY = window.scrollY;
             setScrollY(newScrollY);
-
-            if (newScrollY >= getPageHeight() - 1000 || newScrollY <= 30) {
-                setIsFixed(true);
-            } else {
-                setIsFixed(false);
-            }
         };
 
         window.addEventListener("scroll", handleScroll);
@@ -44,30 +37,15 @@ const SideBlock = ({ title, childPages, slug }: Props) => {
     }, []); // 依存配列を空にして、マウント時のみ実行
 
     return (
-        <section className="w-44 mr-2">
+        <section className="w-52 mr-2 fixed right-0" style={{top:scrollY > getPageHeight() - 1000 ? `${(getPageHeight() - 1000) - scrollY + 128}px` : "128px"}}>
             <div
-                className="border fixed overflow-y-scroll scrollbar-thin py-4 rounded-md w-36 lg:w-44 bg-white"
-                style={isFixed ? { opacity: 0 } : { opacity: "100", height: "400px" }}
+                className="border fixed overflow-y-scroll scrollbar-thin py-4 rounded-md w-52 bg-white"
+                style={{ opacity: "100", height: "400px" }}
             >
                 <p className="truncate text-sm px-1">{title}</p>
                 <div className="pl-4">
                     {childPages.map((page, i) => (
-                        <Link href={`/posts/post/${slug}/${page.id}`} key={i} className="w-36 lg:w-44">
-                            <p className="my-1.5 text-sm text-neutral-500 underline truncate hover:text-neutral-900">
-                                {page.title}
-                            </p>
-                        </Link>
-                    ))}
-                </div>
-            </div>
-            <div
-                className="border relative overflow-y-scroll scrollbar-thin py-4 rounded-md bg-white"
-                style={isFixed ? { top: scrollY <= 40 ? "30px" : `${getPageHeight() - 1000}px`, opacity: "100", height: "400px" } : { opacity: 0 }}
-            >
-                <p className="truncate text-sm px-1">{title}</p>
-                <div className="pl-4">
-                    {childPages.map((page, i) => (
-                        <Link href={`/posts/post/${slug}/${page.id}`} key={i} className="w-36 lg:w-44">
+                        <Link href={`/posts/post/${slug}/${page.id}`} key={i} className="w-52">
                             <p className="my-1.5 text-sm text-neutral-500 underline truncate hover:text-neutral-900">
                                 {page.title}
                             </p>

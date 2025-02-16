@@ -48,6 +48,7 @@ export default function SearchPage({allTags, posts}:Props) {
         <main className="w-full mt-16 px-8">
           <div>
             <Tags allTags={allTags} />
+            <div className="mt-5" />
             {matchPosts.length!==0 && matchPosts.map((post,i)=>
               <SinglePost postData={post} isPagenationPage={false} key={i} />
             )}
