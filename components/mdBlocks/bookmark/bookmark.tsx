@@ -7,51 +7,34 @@ type Props = {
   mdBlock: MdBlock;
   depth: number;
 };
-
-type ogImage = {
-  url?: string;
-  type?: string;
-};
   
-type ogData = {
-    ogUrl?: string;
-    ogTitle?: string;
-    ogDescription?: string;
-    ogSiteName?: string;
-    ogImage?: ogImage[];
-    favicon?:string;
-};
+type ogsData ={
+  ogTitle?: string;
+  ogDescription?: string;
+  ogSiteName?:string;
+  ogLocale?: string;
+  favicon?: string;
+  ogUrl?: string;
+  ImageUrl?:string;
+}
 
 export default function Bookmark(props: Props) {
   const { mdBlock } = props;
-  const match = mdBlock.parent.match(/\((.*?)\)/g);
-  const [ogpData, setOgpData] = useState<ogData>();
+  const [ogpData, setOgpData] = useState<ogsData>();
 
   useEffect(() => {
     const fetchOgpData = async () => {
-      if (match) {
-        const url = match[0].slice(1, -1);
-        console.log("url",url);
-        const res = await fetch(`/api/getOgp?url=${url}`);
-        if(res.ok){
-            const {result} = await res.json();
-            const { ogUrl,ogTitle,ogDescription,ogSiteName,ogImage, favicon } = result;
-            const ogData = {ogUrl, ogTitle, ogDescription, ogSiteName, ogImage, favicon};
-            setOgpData(ogData);
+        const res = await fetch(`/notion_data/ogsData/${mdBlock.blockId}`);
+        const data:ogsData = await res.json();
+        setOgpData(data);
         }
-        }
-    };
     fetchOgpData();
   }, []);
-
-    if (!match) {
-        return null;
-    }
 
   return (
     <div className="my-2 rounded-sm border-2 border-neutral-200 hover:bg-neutral-100">
         {ogpData !==undefined && (
-            <Link href={ogpData.ogUrl || match[0].slice(1, -1)}>
+            <Link href={ogpData.ogUrl || ""}>
                 <div className="flex">
                     <div className='m-3'>
                         <p className='text-neutral-800 line-clamp-1'>{ogpData.ogTitle}</p>
@@ -60,13 +43,13 @@ export default function Bookmark(props: Props) {
                             {ogpData.favicon!==undefined && 
                               <img src={ogpData.favicon} className='w-auto max-h-4 rounded-full m-0 mr-2' alt={'pageIcon'} />}
                             <span className='text-neutral-600 text-xs line-clamp-1'>
-                              {ogpData.ogUrl!==undefined ? ogpData.ogUrl : match[0].slice(1, -1) }
+                              {ogpData.ogUrl}
                             </span>
                         </div>
                     </div>
-                    {ogpData.ogImage !==undefined && ogpData.ogImage[0].url!==undefined && (
+                    {ogpData.ImageUrl !==undefined && ogpData.ImageUrl!==undefined && (
                     <div className='p-0 m-0' style={{ lineHeight: 0 }}>
-                        <img src={ogpData.ogImage[0].url} className='w-96 h-28 rounded-sm lg:w-72' alt={'pageImage'} />
+                        <img src={ogpData.ImageUrl} className='w-96 h-28 rounded-sm lg:w-72' alt={'pageImage'} />
                     </div>
                     )}
                 </div>

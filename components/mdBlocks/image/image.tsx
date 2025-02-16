@@ -10,12 +10,9 @@ type Props={
 
 export default function ImageBlock(props:Props) {
     const {mdBlock} = props;
-    const match = mdBlock.parent.match(/\!\[([^\]]+)\]\(([^\)]+\))/);
-      if(match){
-        const url = match[2][-1]==')' ? match[2].slice(0,-1) : match[2];
         return (
             <div>
-                <Image height={400} width={400} src={url.slice(0,-1)} alt={'image_block'} style={{
+                <Image height={400} width={400} src={`/notion_data/page_image/${mdBlock.blockId}.png`} alt={'image_block'} style={{
                         width: 'auto',
                         height: '100%',
                         display: 'block', 
@@ -24,4 +21,4 @@ export default function ImageBlock(props:Props) {
             </div>
         )
       }
-}
+

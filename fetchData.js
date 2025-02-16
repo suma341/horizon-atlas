@@ -95,7 +95,15 @@ const fetchAllMdBlock = async (mdBlocks) => {
             if (match) {
                 const url = match[0].slice(1, -1);
                 const { result } = await ogs({url});
-                fs.writeFileSync(`./public/notion_data/ogsData/${block.blockId}.json`, JSON.stringify(result, null, 2));
+                const { ogTitle,ogDescription,ogSiteName,ogUrl,ogImage,favicon } = result;
+                if(ogImage){
+                    const { url } = ogImage[0];
+                    const saveData = { ogTitle,ogDescription,ogSiteName,ogUrl,ImageUrl:url, favicon };
+                    fs.writeFileSync(`./public/notion_data/ogsData/${block.blockId}.json`, JSON.stringify(saveData, null, 2));
+                }else{
+                    const saveData = { ogTitle,ogDescription,ogSiteName,ogUrl, favicon };
+                    fs.writeFileSync(`./public/notion_data/ogsData/${block.blockId}.json`, JSON.stringify(saveData, null, 2));
+                }
             }
         }
         if (block.type === 'child_page' && block.children.length > 0) {
@@ -103,6 +111,39 @@ const fetchAllMdBlock = async (mdBlocks) => {
         }
     }
 };
+
+function clearDirectorySync(dirPath) {
+    try {
+        const files = fs.readdirSync(dirPath);
+        for (const file of files) {
+            const filePath = path.join(dirPath, file);
+            const stat = fs.statSync(filePath);
+            if (stat.isDirectory()) {
+                fs.rmSync(filePath, { recursive: true, force: true }); // サブディレクトリ削除
+            } else {
+                fs.unlinkSync(filePath); // ファイル削除
+            }
+        }
+        console.log('ディレクトリの中身を削除しました:', dirPath);
+    } catch (err) {
+        console.error('エラー:', err);
+    }
+}
+
+const rm_data_list = [
+    "./public/notion_data/icon",
+    "./public/notion_data/eachPage",
+    "./public/notion_data/ogsData",
+    "./public/notion_data/page_image"
+];
+
+function clearAllDirectories() {
+    for (const rm_data of rm_data_list) {
+        clearDirectorySync(rm_data); // ← ここで await をつける
+    }
+}
+
+clearAllDirectories()
 
 getAllData().then(data => {
     fs.writeFileSync("./public/notion_data/notionDatabase.json", JSON.stringify(data, null, 2));
