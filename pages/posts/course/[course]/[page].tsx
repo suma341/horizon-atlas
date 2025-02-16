@@ -2,17 +2,22 @@ import type { GetStaticProps } from "next";
 import SinglePost from "@/components/Post/SinglePost";
 import { PostMetaData } from "@/types/postMetaData";
 import Pagenation from "@/components/pagenation/Pagenation";
-import { courseIsBasic, getAllCourses, getAllPosts, getAllTags, getNumberOfPages, getPostsByCourseAndPage } from "@/lib/services/notionApiService";
+import { courseIsBasic, getAllCourses, getAllTags, getNumberOfPages, getPostsByCourseAndPage } from "@/lib/services/notionApiService";
 import { BASIC_NAV, HOME_NAV } from "@/constants/pageNavs";
 import { pageNav } from "@/types/pageNav";
 import Layout from "@/components/Layout/Layout";
+import fs from "fs";
+import path from "path";
 
 type pagePath = {
     params: { course:string, page:string }
   }
 
 export const getStaticPaths = async() =>{
-    const allPosts = await getAllPosts();
+    const filePath = path.join(process.cwd(), "public", "notion_data", "notionDatabase.json");
+    const jsonData = fs.readFileSync(filePath, "utf8");
+    const allPosts: PostMetaData[] = JSON.parse(jsonData);
+    // const allPosts = await getAllPosts();
     const allCourses = await getAllCourses(allPosts);
     const removedEmptyCourses = allCourses.filter((course)=>course!=='');
 
@@ -43,9 +48,12 @@ type Props={
 
 // getStaticProps関数
 export const getStaticProps: GetStaticProps = async (context) => {
+    const filePath = path.join(process.cwd(), "public", "notion_data", "notionDatabase.json");
+    const jsonData = fs.readFileSync(filePath, "utf8");
+    const allPosts: PostMetaData[] = JSON.parse(jsonData);
     const currentPage:string = typeof context.params?.page == 'string' ? context.params.page : "1";
     const currentCourse:string = typeof context.params?.course == 'string' ? context.params.course: "";
-    const allPosts = await getAllPosts();
+    // const allPosts = await getAllPosts();
     const allTags = await getAllTags(allPosts);
     const numberOfPages:number = await getNumberOfPages(allPosts,undefined,currentCourse);
     const isBasic = await courseIsBasic(currentCourse,allPosts);

@@ -2,16 +2,21 @@ import type { GetStaticPaths, GetStaticProps } from "next";
 import SinglePost from "@/components/Post/SinglePost";
 import { PostMetaData } from "@/types/postMetaData";
 import Pagenation from "@/components/pagenation/Pagenation";
-import { getAllPosts, getAllTags, getNumberOfPages, getPostsByPage } from "@/lib/services/notionApiService";
+import { getAllTags, getNumberOfPages, getPostsByPage } from "@/lib/services/notionApiService";
 import Layout from "@/components/Layout/Layout";
 import { HOME_NAV } from "@/constants/pageNavs";
+import fs from "fs";
+import path from "path";
 
 type pagePath = {
     params: { page:string }
   }
 
 export const getStaticPaths:GetStaticPaths = async() =>{
-    const allPosts = await getAllPosts();
+    const filePath = path.join(process.cwd(), "public", "notion_data", "notionDatabase.json");
+    const jsonData = fs.readFileSync(filePath, "utf8");
+    const allPosts: PostMetaData[] = JSON.parse(jsonData);
+    // const allPosts = await getAllPosts();
     const numberOfPages:number =await getNumberOfPages(allPosts);
     const paramsList:pagePath[] = [];
     for(let i:number=0;i<numberOfPages;i++){
@@ -32,8 +37,11 @@ type Props = {
 
 // getStaticProps関数
 export const getStaticProps: GetStaticProps = async (context) => {
+    const filePath = path.join(process.cwd(), "public", "notion_data", "notionDatabase.json");
+    const jsonData = fs.readFileSync(filePath, "utf8");
+    const allPosts: PostMetaData[] = JSON.parse(jsonData);
     const currentPage:string = typeof context.params?.page == 'string' ? context.params.page : '1';
-    const allPosts = await getAllPosts();
+    // const allPosts = await getAllPosts();
     const allTags = await getAllTags(allPosts);
     const numberOfPages:number =await getNumberOfPages(allPosts);
 
