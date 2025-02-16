@@ -21,7 +21,7 @@ export default function ImageBlock(props: Props) {
                     setImageSrc(url);
                 }
             } catch (error) {
-                console.error(`❌ 画像の取得に失敗: ${url}`, error);
+                console.error(`画像の取得に失敗: ${url}`, error);
             }
         };
 

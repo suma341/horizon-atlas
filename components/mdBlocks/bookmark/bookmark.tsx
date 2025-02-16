@@ -27,7 +27,28 @@ export default function Bookmark(props: Props) {
     const fetchOgpData = async () => {
         const res = await fetch(`/horizon-atlas/notion_data/ogsData/${mdBlock.blockId}.json`);
         const data:ogsData = await res.json();
-        setOgpData(data);
+        if(data.favicon?.slice(8)!=="https://"){
+          console.log("data",data.favicon);
+          const url = "https://flet.dev/docs/controls/view";
+          const domain = new URL(url).origin;
+          let datafa = data.favicon
+          if(datafa!==undefined && datafa[0]!=="/"){
+            datafa = "/" + datafa;
+          }
+          let favi = domain + datafa;
+          console.log(favi);
+          setOgpData({
+            ogTitle: data.ogTitle,
+            ogDescription: data.ogDescription,
+            ogSiteName: data.ogSiteName,
+            ogLocale:data.ogLocale,
+            favicon: favi,
+            ogUrl: data.ogUrl,
+            ImageUrl:data.ImageUrl
+          })
+        }else{
+          setOgpData(data);
+        }
         }
     fetchOgpData();
   }, []);
