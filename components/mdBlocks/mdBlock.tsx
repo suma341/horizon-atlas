@@ -17,6 +17,7 @@ import ChildPage from './child_page/child_page';
 import Bookmark from './bookmark/bookmark';
 import ToggleBlock from './toggle/toggle';
 import EmbedBlock from './embed/embed';
+import Link_to_page from './link_to_page/link_to_page';
 
 type Props ={
     mdBlock:MdBlock
@@ -57,6 +58,8 @@ export default function MdBlockComponent(props:Props) {
         return <ToggleBlock mdBlock={mdBlock} depth={depth} />
     }else if(mdBlock.type === 'embed'){
         return <EmbedBlock mdBlock={mdBlock} depth={depth} />
+    }else if(mdBlock.type==='link_to_page'){
+        return <Link_to_page mdBlock={mdBlock} />
     }
     return (
         <>
