@@ -30,7 +30,7 @@ export default function Link_to_page(props: Props) {
   return (
     <div className='my-2'>
       <Link href={url} className="text-neutral-500 underline hover:text-neutral-600">
-        {title}...
+        {title}
       </Link>
     </div>
   );

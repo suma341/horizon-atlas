@@ -88,7 +88,7 @@ const Post =({ metadata, mdBlocks,pageNavs,allTags }: Props) => {
       <div className='p-4 pt-24 pb-8 bg-neutral-100'>
       <section className='p-5 bg-white pb-10'>
         <div className='flex'>
-        {metadata.icon!=="" && <Image src={metadata.icon} alt={''} width={20} height={20} className='relative w-auto h-8 m-0 mr-2 top-0.5' />}
+        {metadata.icon!=="" && <Image src={`/horizon-atlas/notion_data/icon/${metadata.slug}.png`} alt={''} width={20} height={20} className='relative w-auto h-8 m-0 mr-2 top-0.5' />}
           <h2 className='w-full text-2xl font-medium'>{metadata.title}</h2>
         </div>
           <div className='border-b mt-2'></div>

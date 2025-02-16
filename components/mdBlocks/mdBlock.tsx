@@ -18,6 +18,7 @@ import Bookmark from './bookmark/bookmark';
 import ToggleBlock from './toggle/toggle';
 import EmbedBlock from './embed/embed';
 import Link_to_page from './link_to_page/link_to_page';
+import Table_of_contents from './table_of_contents/table_of_contents';
 
 type Props ={
     mdBlock:MdBlock
@@ -60,6 +61,8 @@ export default function MdBlockComponent(props:Props) {
         return <EmbedBlock mdBlock={mdBlock} depth={depth} />
     }else if(mdBlock.type==='link_to_page'){
         return <Link_to_page mdBlock={mdBlock} />
+    }else if(mdBlock.type==='table_of_contents'){
+        return <Table_of_contents mdBlock={mdBlock} />
     }
     return (
         <>

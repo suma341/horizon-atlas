@@ -24,7 +24,7 @@ export async function searchPageById(id:string):Promise<Page>{
         const res_page = await fetch(`/horizon-atlas/notion_data/eachPage/${post.slug}.json`);
         const page:MdBlock[] = await res_page.json();
         for(const block of page){
-            if(block.blockId===id && block.type==="child_page"){
+            if(block.blockId===id){
                 return {
                     pageId:block.blockId,
                     isChildPage:true,
