@@ -41,7 +41,7 @@ const SingleCourse = (props:Props) => {
                 <div className=''>
                     {posts.slice(0, 5).map((post,i)=>{
                         return (<div key={i} className='ml-3 text-neutral-500 flex mt-1'>
-                            {icons[i]!=='' ? <Image src={icons[i]} alt={''} height={20} width={20} className='h-6 w-auto m-0 mr-1.5' /> : <p>・</p>}
+                            {icons[i]!=='' ? <Image src={`./horizon-atlas/notion_data/icon/${post.slug}.png`} alt={''} height={20} width={20} className='h-6 w-auto m-0 mr-1.5' /> : <p>・</p>}
                             {post.title}
                         </div>)
                     })}
