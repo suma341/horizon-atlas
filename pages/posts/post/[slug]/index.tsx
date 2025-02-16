@@ -8,8 +8,6 @@ import { pageNav } from '@/types/pageNav';
 import { BASIC_NAV, HOME_NAV } from '@/constants/pageNavs';
 import Image from 'next/image';
 import Layout from '@/components/Layout/Layout';
-import fs from "fs";
-import path from "path";
 
 type postPath = {
   params: { slug:string }
@@ -21,6 +19,9 @@ type Props = {
   pageNavs:pageNav[];
   allTags:string[];
 };
+
+import fs from "fs";
+import path from "path";
 
 export const getStaticPaths = async () => {
   const filePath = path.join(process.cwd(), "public", "notion_data", "notionDatabase.json");

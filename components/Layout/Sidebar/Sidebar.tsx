@@ -1,5 +1,4 @@
 import React from 'react';
-import UserBlock from '../Header/UserInfo/userBlock';
 import SearchField from '../Header/searchField/searchField';
 import Tags from '@/components/tag/Tags';
 import { pageNav } from '@/types/pageNav';
@@ -9,8 +8,6 @@ type Props={
     openbar:boolean;
     setOpenbar:React.Dispatch<React.SetStateAction<boolean>>;
     allTags:string[];
-    name:string;
-    image:string;
     pageNav?:{
         title:string;
         slug:string;
@@ -18,7 +15,7 @@ type Props={
     }
 }
 
-function Sidebar({openbar,setOpenbar,allTags,pageNav,name,image}:Props) {
+function Sidebar({openbar,setOpenbar,allTags,pageNav}:Props) {
 
     const getPageHeight = () => {
         const pageHeight = Math.max(
@@ -43,7 +40,7 @@ function Sidebar({openbar,setOpenbar,allTags,pageNav,name,image}:Props) {
                     </li>
                     <li className='flex items-center justify-between mr-5'>
                         <div></div>
-                        <UserBlock name={name} image={image} />
+                        {/* <UserBlock name={name} image={image} /> */}
                     </li>
                     <li className='px-5 mt-2'>
                         <SearchField searchKeyWord={''} />

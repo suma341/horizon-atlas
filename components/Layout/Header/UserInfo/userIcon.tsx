@@ -1,4 +1,4 @@
-import { signOut, useSession } from "next-auth/react";
+// import { signOut, useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
@@ -7,7 +7,7 @@ type Props={
 }
 
 export default function UserIcon({image}:Props) {
-  const { data: session } = useSession();
+  // const { data: session } = useSession();
   
   const [isVisible, setIsVisible] = useState(false); // トグルの状態を管理
   const toggleRef = useRef<HTMLDivElement>(null); // toggle要素への参照
@@ -34,7 +34,7 @@ export default function UserIcon({image}:Props) {
     };
   }, []);
 
-  if (session) {
+  // if (session) {
 
     return (
       <>
@@ -52,10 +52,10 @@ export default function UserIcon({image}:Props) {
                 id="toggleTarget" ref={toggleTargetRef}
                 className="z-50 border-solid border-neutral-300 border-2 absolute bg-white p-2 rounded-md w-32 translate-y-1 translate-x-[-65%]">
                 <ul>
-                    <button onClick={() => signOut()} className="flex relative hover:bg-slate-200 rounded-sm p-1 pr-2">
+                    {/* <button onClick={() => signOut()} className="flex relative hover:bg-slate-200 rounded-sm p-1 pr-2"> */}
                       {/* <PiSignOut size={18} className="mt-0.5 mr-1.5 text-neutral-600" /> */}
-                      <p className="text-neutral-600">ログアウト</p>
-                    </button>
+                      {/* <p className="text-neutral-600">ログアウト</p> */}
+                    {/* </button> */}
                 </ul>
             </div>)}
             <div>
@@ -63,8 +63,8 @@ export default function UserIcon({image}:Props) {
         </div>
       </>
     );
-  }
-  return (
-    <div></div>
-  );
+  // }
+  // return (
+  //   <div></div>
+  // );
 }

@@ -1,4 +1,3 @@
-import UserIcon from '@/components/Layout/Header/UserInfo/userIcon';
 import Link from 'next/link';
 import React from 'react'
 import SearchField from './searchField/searchField';
@@ -7,10 +6,9 @@ import HamburgerButton from './hamburgerButton./hamburgerButton';
 type Props={
     searchKeyWord?:string;
     setOpenbar:React.Dispatch<React.SetStateAction<boolean>>;
-    image:string;
 }
 
-export default function Header({searchKeyWord,setOpenbar,image}:Props){
+export default function Header({searchKeyWord,setOpenbar}:Props){
     
   return (
     <header className='w-full pb-1 bg-white'>
@@ -22,9 +20,9 @@ export default function Header({searchKeyWord,setOpenbar,image}:Props){
                 <li className="mr-4">
                     <SearchField searchKeyWord={searchKeyWord || ''} />
                 </li>
-                <li>
+                {/* <li>
                     <UserIcon image={image} />
-                </li>
+                </li> */}
             </ul>
             <ul className='flex md:hidden items-center text-sm pt-2'>
                 <li>

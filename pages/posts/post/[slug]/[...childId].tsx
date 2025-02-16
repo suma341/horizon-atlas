@@ -7,8 +7,6 @@ import { pageNav } from '@/types/pageNav';
 import { PostMetaData } from '@/types/postMetaData';
 import { GetStaticProps } from 'next';
 import { MdBlock } from 'notion-to-md/build/types';
-import path from 'path';
-import fs from "fs";
 
 type Props = {
   mdBlocks:MdBlock[];
@@ -22,6 +20,9 @@ type Props = {
 type pagePath = {
   params: { slug:string, childId:string[] }
 }
+
+import path from 'path';
+import fs from "fs";
 
 export const getStaticPaths = async () => {
   const filePath = path.join(process.cwd(), "public", "notion_data", "notionDatabase.json");

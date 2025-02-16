@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { signOut } from 'next-auth/react';
+// import { signOut } from 'next-auth/react';
 import Image from 'next/image';
-import { IoIosLogOut } from "react-icons/io";
+// import { IoIosLogOut } from "react-icons/io";
 
 type Props ={
     name:string;
@@ -55,10 +55,10 @@ function UserBlock({name,image}:Props) {
                 id="toggleTarget" ref={toggleTargetRef}
                 className="z-50 border-solid border-neutral-300 border absolute bg-white p-1.5 rounded-md w-32 translate-y-[100%] right-5">
                 <ul>
-                    <button onClick={() => signOut()} className="flex relative hover:bg-slate-200 rounded-sm p-1 pr-2">
+                    {/* <button onClick={() => signOut()} className="flex relative hover:bg-slate-200 rounded-sm p-1 pr-2">
                         <IoIosLogOut size={21} className='mr-1' />
                         <p className="text-neutral-600 text-sm">ログアウト</p>
-                    </button>
+                    </button> */}
                 </ul>
             </div>)}
         </>

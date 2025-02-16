@@ -1,3 +1,4 @@
+"use client";
 import Link from 'next/link';
 import { MdBlock } from 'notion-to-md/build/types';
 import React, { useEffect, useState } from 'react';

@@ -1,3 +1,4 @@
+"use client";
 import { MdBlock } from 'notion-to-md/build/types';
 import React, { useState } from 'react';
 import { atomOneLight } from 'react-syntax-highlighter/dist/cjs/styles/hljs';

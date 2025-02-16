@@ -1,3 +1,4 @@
+"use client";
 import { searchMDKeyword } from '@/lib/mdBlockHelper'
 import { MdBlock } from 'notion-to-md/build/types'
 import React from 'react'

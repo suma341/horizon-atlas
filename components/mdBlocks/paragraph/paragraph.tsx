@@ -1,3 +1,4 @@
+"use client";
 import { searchMDKeyword } from '@/lib/mdBlockHelper';
 import { MdTypeAndText } from '@/types/parent';
 import Link from 'next/link';
