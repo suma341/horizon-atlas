@@ -35,8 +35,7 @@ export default function Bookmark(props: Props) {
           if(datafa!==undefined && datafa[0]!=="/"){
             datafa = "/" + datafa;
           }
-          let favi = domain + datafa;
-          console.log(favi);
+          const favi = domain + datafa;
           setOgpData({
             ogTitle: data.ogTitle,
             ogDescription: data.ogDescription,
