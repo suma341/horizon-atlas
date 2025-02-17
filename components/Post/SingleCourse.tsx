@@ -1,54 +1,49 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { PostMetaData } from '@/types/postMetaData';
 import { getIconsByPosts } from '@/lib/services/notionApiService';
-import isImageUrlValid from '@/lib/validationImageUrl';
 
-type Props={
-    course:string;
-    posts:PostMetaData[];
-}
+type Props = {
+    course: string;
+    posts: PostMetaData[];
+};
 
-const SingleCourse = (props:Props) => {
-    const {course,posts} = props;
+const SingleCourse = ({ course, posts }: Props) => {
     const icons = getIconsByPosts(posts);
-    useEffect(()=>{
-        const validList:boolean[] = [];
-        for(const icon of icons){
-            isImageUrlValid(icon).then(
-                (valid)=>{
-                    validList.push(valid);
-                }
-            );
-        }
-        for(const valid of validList){
-            if(!valid){
-                window.location.reload();
-                break;
-            }
-        }
-    },[])
+
     return (
         <Link href={`/posts/course/${course}/1`}>
-            <section className='bg-slate-50 mb-4 mx-auto rounded-md p-3 shadow-2xl hover:shadow-none hover:translate-y-1 hover:bg-neutral-100 transition-all duration-300'>
-                <div className=''>
-                    {<span className='text-sm text-neutral-500 my-0'>カリキュラム数：{posts.length}</span>}
-                    <h2 className='text-2xl font-medium mt-0'>
-                        {course}
-                    </h2>
+            <section className="bg-white border border-gray-200 rounded-md p-2 mb-4 mx-auto shadow-sm hover:bg-neutral-50 hover:shadow-md hover:-translate-y-1 transition-all duration-200">
+                <div className="flex justify-between items-center">
+                    <h2 className="text-lg font-semibold text-gray-800">{course}</h2>
+                    <span className="text-xs font-medium bg-gray-100 text-gray-600 px-2 py-0.5 rounded-md">
+                        {posts.length} カリキュラム
+                    </span>
                 </div>
-                <div className=''>
-                    {posts.slice(0, 5).map((post,i)=>{
-                        return (<div key={i} className='ml-3 text-neutral-500 flex mt-1'>
-                            {icons[i]!=='' ? <Image src={`/horizon-atlas/notion_data/eachPage/${post.slug}/icon.png`} alt={''} height={20} width={20} className='h-6 w-auto m-0 mr-1.5' /> : <p>・</p>}
-                            {post.title}
-                        </div>)
-                    })}
+                <div className="mt-2">
+                    {posts.slice(0, 5).map((post, i) => (
+                        <div key={i} className="flex items-center text-gray-700 text-sm border-l border-gray-300 pl-2">
+                            <div className="flex">
+                                {icons[i] ? (
+                                    <Image
+                                        src={`/horizon-atlas/notion_data/eachPage/${post.slug}/icon.png`}
+                                        alt=""
+                                        height={20}
+                                        width={20}
+                                        className="h-5 w-5 rounded mr-2"
+                                    />
+                                ) : (
+                                    <span className="text-gray-400 mr-2">・</span>
+                                )}
+                                <span>{post.title}</span>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </section>
         </Link>
-    )
-}
+    );
+};
 
 export default SingleCourse;

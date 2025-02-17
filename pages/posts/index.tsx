@@ -44,8 +44,9 @@ export const getStaticProps: GetStaticProps = async () => {
 const PostsPage = ({ courseAndPosts,allTags }: Props)=> {
     return (
       <Layout headerProps={{pageNavs:[HOME_NAV],allTags:allTags}}>  
-        <div className="container h-full w-full mx-auto font-mono pt-20">
-        <main className="container w-full mt-16 mb-3">
+        <div className="bg-gradient-to-b from-gray-50 to-white min-h-screen">
+          <div className="container max-w-screen-lg mx-auto font-mono pt-20 px-5">
+            <main className="mt-16 mb-3">
           <SearchField searchKeyWord={""} />
           <section className="my-10">
             <BasicCurriculum />
@@ -54,8 +55,8 @@ const PostsPage = ({ courseAndPosts,allTags }: Props)=> {
             })}
           </section>
         </main>
+        </div>
       </div>
-      <div className="mb-40"></div>
       </Layout>
     );
   }

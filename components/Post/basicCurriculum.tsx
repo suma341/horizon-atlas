@@ -1,20 +1,19 @@
 import Link from 'next/link';
-import React from 'react';
+import { PiArrowRightBold } from "react-icons/pi"; // アイコン追加
 
 export default function BasicCurriculum() {
     return (
-        <Link href={`/posts/course/basic`}>
-            <section className='bg-slate-50 mb-4 mx-auto rounded-md p-3 shadow-2xl hover:shadow-none hover:translate-y-1 hover:bg-neutral-100 transition-all duration-300'>
-                <div className=''>
-                    <h2 className='text-2xl font-medium mt-0'>
+        <Link href={`/posts/course/basic`} className="block group">
+            <section className='relative bg-gradient-to-br mb-6 border mx-auto rounded-lg p-5 shadow-lg hover:bg-slate-50 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1'>
+                <div className='flex items-center justify-between'>
+                    <h2 className='text-2xl font-bold text-gray-800 group-hover:text-blue-700 transition-colors duration-300'>
                         基礎班カリキュラム
                     </h2>
+                    <PiArrowRightBold className="text-3xl text-gray-600 group-hover:text-blue-700 transition-colors duration-300" />
                 </div>
-                <div className=''>
-                    <p className='text-neutral-500 text-sm'>
-                        基礎班のカリキュラムです。pythonやFletライブラリを通してアプリ開発を学べます。
-                    </p>
-                </div>
+                <p className='text-gray-600 mt-2 text-sm leading-relaxed'>
+                    PythonやFletライブラリを通してアプリ開発を学べるコースです。初心者向けに丁寧に解説！
+                </p>
             </section>
         </Link>
     )

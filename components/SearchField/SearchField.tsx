@@ -1,33 +1,31 @@
-import React, { useState } from 'react'
-import {IoIosSearch} from 'react-icons/io'
-import router from 'next/router'
+import React, { useState } from 'react';
+import { IoIosSearch } from 'react-icons/io';
 
-type Props={
-    searchKeyWord:string;
-}
+type Props = {
+    searchKeyWord: string;
+};
 
-function SearchField({searchKeyWord}:Props) {
+function SearchField({ searchKeyWord }: Props) {
     const [keyWord, setKeyWord] = useState<string>(searchKeyWord);
     const [isComposing, setIsComposing] = useState<boolean>(false);
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-        if (isComposing) {
-            return;
-          }
+        if (isComposing) return;
         if (event.key === 'Enter') {
-          router.push({pathname:"/search", query:{search:keyWord}});
+            window.location.href = `/horizon-atlas/search?search=${keyWord}`;
         }
-      };
+    };
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setKeyWord(event.target.value);
     };
-    const handleButton =()=>{
-        router.push({pathname:"/search",query:{search:keyWord}})
-    }
+
+    const handleButton = () => {
+        window.location.href = `/horizon-atlas/search?search=${keyWord}`;
+    };
 
     return (
-        <section className="flex bg-white rounded-md mt-1" >
+        <section className="flex items-center bg-white border border-gray-300 rounded-full shadow-md px-4 py-2 transition-all duration-300 focus-within:border-blue-500 focus-within:shadow-lg">
             <input
                 value={keyWord}
                 onChange={handleChange}
@@ -35,13 +33,14 @@ function SearchField({searchKeyWord}:Props) {
                 onCompositionStart={() => setIsComposing(true)}
                 onCompositionEnd={() => setIsComposing(false)}
                 type="text"
-                className="w-full py-1 rounded text-neutral-600 bg-neutral-100 px-2 focus:outline-none focus:bg-slate-100 duration-300"
-                placeholder="キーワードで検索"/>
-            <button onClick={handleButton}>
-                <IoIosSearch size={25} className='text-white bg-neutral-300 w-10 h-8 rounded-r py-0.5' />
+                className="w-full bg-transparent text-gray-700 focus:outline-none placeholder-gray-400"
+                placeholder="キーワードで検索"
+            />
+            <button onClick={handleButton} className="ml-2 p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-all duration-300">
+                <IoIosSearch size={22} />
             </button>
         </section>
-    )
+    );
 }
 
 export default SearchField;
