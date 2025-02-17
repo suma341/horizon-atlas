@@ -85,7 +85,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 const Post =({ metadata, mdBlocks,pageNavs,allTags }: Props) => {
   return (
     <Layout headerProps={{pageNavs,allTags}}>
-      <div className='p-4 pt-24 pb-8 bg-neutral-100'>
+      <div className='p-4 pt-24 pb-8'>
       <section className='p-5 bg-white pb-10'>
         <div className='flex'>
         {metadata.icon!=="" && <Image src={`/horizon-atlas/notion_data/eachPage/${metadata.slug}/icon.png`} alt={''} width={20} height={20} className='relative w-auto h-8 m-0 mr-2 top-0.5' />}

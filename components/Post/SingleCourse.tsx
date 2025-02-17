@@ -14,7 +14,7 @@ const SingleCourse = ({ course, posts }: Props) => {
 
     return (
         <Link href={`/posts/course/${course}/1`}>
-            <section className="bg-white border border-gray-200 rounded-md p-2 mb-4 mx-auto shadow-sm hover:bg-neutral-50 hover:shadow-md hover:-translate-y-1 transition-all duration-200">
+            <section className="bg-white border border-gray-200 rounded-md p-2 mb-4 mx-5 shadow-sm hover:bg-neutral-50 hover:shadow-md hover:-translate-y-1 transition-all duration-200">
                 <div className="flex justify-between items-center">
                     <h2 className="text-lg font-semibold text-gray-800">{course}</h2>
                     <span className="text-xs font-medium bg-gray-100 text-gray-600 px-2 py-0.5 rounded-md">
@@ -23,7 +23,7 @@ const SingleCourse = ({ course, posts }: Props) => {
                 </div>
                 <div className="mt-2">
                     {posts.slice(0, 5).map((post, i) => (
-                        <div key={i} className="flex items-center text-gray-700 text-sm border-l border-gray-300 pl-2">
+                        <div key={i} className="flex items-center text-gray-700 mb-0.5 text-sm border-l border-gray-300 pl-2">
                             <div className="flex">
                                 {icons[i] ? (
                                     <Image

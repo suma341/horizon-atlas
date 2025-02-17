@@ -1,65 +1,48 @@
-import { tagStyle } from '@/styles/tag/tagStyle';
-import Link from 'next/link'
-import React, { useEffect, useState } from 'react'
+// import { tagStyle } from '@/styles/tag/tagStyle';
+import Link from 'next/link';
+import React, { useEffect, useState } from 'react';
 
 type Props = {
-    allTags:string[];
-}
+    allTags: string[];
+};
 
-function Tags(props:Props) {
-  const [visible, setVisible] = useState<boolean>(false);
-  const [windowWidth, setWindowWidth] = useState<number>(0);
+function Tags({ allTags }: Props) {
+    const [visible, setVisible] = useState<boolean>(false);
+    const [windowWidth, setWindowWidth] = useState<number>(0);
 
-  useEffect(() => {
-    if(window!==undefined){
-      const handleResize = () => {
-        setWindowWidth(window.innerWidth);
-      };
-  
-      // イベントリスナーを登録
-      window.addEventListener('resize', handleResize);
-  
-      // 初期値を設定
-      handleResize();
-  
-      // クリーンアップ関数
-      return () => {
-        window.removeEventListener('resize', handleResize);
-      };
-    }
+    useEffect(() => {
+        const handleResize = () => {
+            setWindowWidth(window.innerWidth);
+        };
+        window.addEventListener('resize', handleResize);
+        handleResize();
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
-  }, []);
-
-  const {allTags} = props;
-  return (
-      <section className='bg-slate-50 rounded-md p-5'>
-          <div className='font-medium mb-4'>タグ検索</div>
-          {!visible && <>
-            <div className='flex flex-wrap gap-3'>
-              {allTags.slice(0,Math.trunc(windowWidth / 100)).map((tag,i:number)=>(
-                  <span className="cursor-pointer" style={tagStyle} key={i}>
-                      <Link href={`/posts/tag/${tag}/1`}>{tag}</Link>
-                  </span>
-              ))}
+    return (
+        <section className="bg-white border border-gray-200 rounded-lg p-5 shadow-lg">
+            <div className="font-semibold text-gray-800 mb-4 text-lg">タグ検索</div>
+            <div className="flex flex-wrap gap-2">
+                {(visible ? allTags : allTags.slice(0, Math.trunc(windowWidth / 100))).map((tag, i) => (
+                    <Link key={i} href={`/posts/tag/${tag}/1`}>
+                        <span className="px-3 py-1 text-sm bg-gray-100 text-gray-800 rounded-full cursor-pointer hover:bg-gray-200 transition-all">
+                            {tag}
+                        </span>
+                    </Link>
+                ))}
             </div>
-            {Math.trunc(windowWidth / 100) <allTags.length && <div className='flex justify-end'>
-              <button className='text-neutral-500' onClick={()=>setVisible(true)}>view more...</button>
-            </div>}
-          </>}
-          {visible && <>
-            <div className='flex flex-wrap gap-3'>
-              {allTags.map((tag,i:number)=>(
-                  <span className="cursor-pointer" style={tagStyle} key={i}>
-                      <Link href={`/posts/tag/${tag}/1`}>{tag}</Link>
-                  </span>
-              ))}
-            </div>
-            <div className='flex justify-end'>
-              <button className='text-neutral-500' onClick={()=>setVisible(false)}>view less</button>
-            </div>
-          </>}
-      </section>
-  )
+            {allTags.length > Math.trunc(windowWidth / 100) && (
+                <div className="mt-3 flex justify-end">
+                    <button
+                        className="text-blue-600 hover:text-blue-700 text-sm font-medium transition-all"
+                        onClick={() => setVisible(!visible)}
+                    >
+                        {visible ? "view less" : "view more..."}
+                    </button>
+                </div>
+            )}
+        </section>
+    );
 }
 
 export default Tags;

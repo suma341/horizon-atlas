@@ -60,8 +60,10 @@ const Layout: React.FC<LayoutProps> = ({ children, headerProps, sideNavProps }) 
           <Header searchKeyWord={headerProps.searchKeyWord} setOpenbar={setOpenbar} />
           <Navbar pageNavs={headerProps.pageNavs} />
         </div>
-        {children}
-        <div className="h-10"></div>
+        <div className="bg-gray-50">
+          {children}
+          <div className="h-5"></div>
+        </div>
         <Footer />
       </div>
     );

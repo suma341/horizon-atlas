@@ -8,6 +8,7 @@ import { GetStaticProps } from "next";
 import path from "path";
 import fs from "fs";
 import SearchField from "@/components/SearchField/SearchField";
+import Tags from "@/components/tag/Tags";
 
 type Props = {
   courseAndPosts:{
@@ -46,14 +47,15 @@ const PostsPage = ({ courseAndPosts,allTags }: Props)=> {
       <Layout headerProps={{pageNavs:[HOME_NAV],allTags:allTags}}>  
         <div className="bg-gradient-to-b from-gray-50 to-white min-h-screen">
           <div className="container max-w-screen-lg mx-auto font-mono pt-20 px-5">
-            <main className="mt-16 mb-3">
-          <SearchField searchKeyWord={""} />
-          <section className="my-10">
+            <main className="mt-16 mb-3 flex flex-col gap-5">
+          <section className="mb-10">
             <BasicCurriculum />
             {courseAndPosts.map((courseAndPosts,i)=>{
               return <SingleCourse course={courseAndPosts.course} posts={courseAndPosts.posts} key={i} />
             })}
           </section>
+          <SearchField searchKeyWord={""} />
+          <Tags allTags={allTags} />
         </main>
         </div>
       </div>

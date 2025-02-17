@@ -42,8 +42,8 @@ export const getStaticProps: GetStaticProps = async () => {
 const blogTagPageList = ({courseAndPosts,allTags }: Props)=> {
     return (
         <Layout headerProps={{pageNavs:[HOME_NAV,BASIC_NAV],allTags}}>
-            <div className="container h-full w-full mx-auto font-mono pt-20">
-                <main className="container w-full mt-16 mb-3">
+            <div className="h-full w-full mx-auto font-mono pt-20 ">
+                <main className="w-full mt-16 mb-3">
                     <h1 className="text-5xl font-medium text-center mb-16">基礎班カリキュラム</h1>
                     <section className="gap-3 mx-auto">
                         {courseAndPosts.map((courseAndPosts,i)=>
