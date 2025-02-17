@@ -47,7 +47,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const slug = params?.slug as string;
 
   // 各ページのJSONを読み込む
-  const postPath = path.join(process.cwd(), "public", "notion_data", "eachPage", `${slug}.json`);
+  const postPath = path.join(process.cwd(), "public", "notion_data", "eachPage", `${slug}`, "page.json");
   const postData = fs.readFileSync(postPath, "utf8");
   const mdBlocks:MdBlock[] = JSON.parse(postData);
 
@@ -88,7 +88,7 @@ const Post =({ metadata, mdBlocks,pageNavs,allTags }: Props) => {
       <div className='p-4 pt-24 pb-8 bg-neutral-100'>
       <section className='p-5 bg-white pb-10'>
         <div className='flex'>
-        {metadata.icon!=="" && <Image src={`/horizon-atlas/notion_data/icon/${metadata.slug}.png`} alt={''} width={20} height={20} className='relative w-auto h-8 m-0 mr-2 top-0.5' />}
+        {metadata.icon!=="" && <Image src={`/horizon-atlas/notion_data/eachPage/${metadata.slug}/icon.png`} alt={''} width={20} height={20} className='relative w-auto h-8 m-0 mr-2 top-0.5' />}
           <h2 className='w-full text-2xl font-medium'>{metadata.title}</h2>
         </div>
           <div className='border-b mt-2'></div>
@@ -102,7 +102,7 @@ const Post =({ metadata, mdBlocks,pageNavs,allTags }: Props) => {
           <div className='mt-10 font-medium'>
             <div>
               {mdBlocks.map((mdBlock, i)=>(
-                <MdBlockComponent mdBlock={mdBlock} depth={0} key={i} />
+                <MdBlockComponent mdBlock={mdBlock} slug={metadata.slug} depth={0} key={i} />
               ))}
             </div>
           </div>

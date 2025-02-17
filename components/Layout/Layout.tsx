@@ -61,6 +61,7 @@ const Layout: React.FC<LayoutProps> = ({ children, headerProps, sideNavProps }) 
           <Navbar pageNavs={headerProps.pageNavs} />
         </div>
         {children}
+        <div className="h-10"></div>
         <Footer />
       </div>
     );

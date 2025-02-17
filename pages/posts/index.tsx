@@ -7,6 +7,7 @@ import { PostMetaData } from "@/types/postMetaData";
 import { GetStaticProps } from "next";
 import path from "path";
 import fs from "fs";
+import SearchField from "@/components/SearchField/SearchField";
 
 type Props = {
   courseAndPosts:{
@@ -45,8 +46,8 @@ const PostsPage = ({ courseAndPosts,allTags }: Props)=> {
       <Layout headerProps={{pageNavs:[HOME_NAV],allTags:allTags}}>  
         <div className="container h-full w-full mx-auto font-mono pt-20">
         <main className="container w-full mt-16 mb-3">
-          <h1 className="text-5xl font-medium text-center mb-16"></h1>
-          <section className="gap-3 mx-auto">
+          <SearchField searchKeyWord={""} />
+          <section className="my-10">
             <BasicCurriculum />
             {courseAndPosts.map((courseAndPosts,i)=>{
               return <SingleCourse course={courseAndPosts.course} posts={courseAndPosts.posts} key={i} />

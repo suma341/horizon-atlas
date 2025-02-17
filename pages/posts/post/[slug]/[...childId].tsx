@@ -33,7 +33,7 @@ export const getStaticPaths = async () => {
     await Promise.all(
       allPosts.map(async (post) => {
         // const postData = await getSinglePost(post.slug);
-        const postPath = path.join(process.cwd(), "public", "notion_data", "eachPage", `${post.slug}.json`);
+        const postPath = path.join(process.cwd(), "public", "notion_data", "eachPage", `${post.slug}`,"page.json");
         const postData = fs.readFileSync(postPath, "utf8");
         const mdBlocks:MdBlock[] = JSON.parse(postData);
         const childPages = mdBlocks.filter((block)=>block.type==='child_page')
@@ -57,7 +57,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const childparam = (context.params?.childId as string[]) || [];
     // const post = await getSinglePost(currentSlug);
     // const allPosts = await getAllPosts();
-    const postPath = path.join(process.cwd(), "public", "notion_data", "eachPage", `${currentSlug}.json`);
+    const postPath = path.join(process.cwd(), "public", "notion_data", "eachPage", `${currentSlug}`,"page.json");
     const postData = fs.readFileSync(postPath, "utf8");
     const mdBlocks:MdBlock[] = JSON.parse(postData);
     const filePath = path.join(process.cwd(), "public", "notion_data", "notionDatabase.json");
@@ -122,7 +122,7 @@ const PostChildPage = ( props : Props) => {
             </h2>
             <div className='border-b-2 mt-2'></div>
             {mdBlocks.map((mdBlock, i) => (
-                <MdBlockComponent mdBlock={mdBlock} depth={0} key={i} />
+                <MdBlockComponent mdBlock={mdBlock} depth={0} slug={slug} key={i} />
             ))}
           </section>
           <div className='hidden md:block md:w-1/4 mt-5'>

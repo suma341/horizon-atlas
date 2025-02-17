@@ -5,23 +5,24 @@ import Paragraph from '../paragraph/paragraph';
 import MdBlockComponent from '../mdBlock';
 
 type Props={
-    mdBlock:MdBlock
-    depth:number
+    mdBlock:MdBlock;
+    depth:number;
+    slug:string;
 }
 
 export default function BulletedListItem(props:Props) {
-    const {mdBlock,depth} =props;
+    const {mdBlock,depth,slug} =props;
     const text = mdBlock.parent.split(" ")
 
     return (
         <div>
             <p className='my-2 flex'>
                 <span className='font-bold mr-1 text-xl'>・</span>
-                <Paragraph quote={true} parent={text[1]} depth={depth + 1} mdBlock={mdBlock} />
+                <Paragraph slug={slug}  quote={true} parent={text[1]} depth={depth + 1} mdBlock={mdBlock} />
             </p>
             {mdBlock.children.map((child,i)=>(
                 <div key={i} style={{marginLeft:(depth + 1) * 16}}>
-                    <MdBlockComponent mdBlock={child} depth={depth +1} />
+                    <MdBlockComponent slug={slug} mdBlock={child} depth={depth +1} />
                 </div>
             ))}
         </div>

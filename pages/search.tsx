@@ -35,15 +35,13 @@ export default function SearchPage({allTags, posts}:Props) {
   const router = useRouter();
   const query = router.query.search!==undefined ? router.query.search as string : undefined;
   useEffect(()=>{
-    async function getMatchPosts(KeyWords:string[]){
-      const result = await searchByKeyWord(KeyWords,posts)
-      setMatchPosts(result);
-    }
     if(query!==undefined){
       const searchKeyWords = createSearchQuery(query);
-      getMatchPosts(searchKeyWords);
+      const result = searchByKeyWord(searchKeyWords,posts)
+      setMatchPosts(result)
     }
-  },[])
+  },[query])
+  console.log(query);
   
   return (
     <Layout headerProps={{pageNavs:[HOME_NAV,SEARCH_NAV],searchKeyWord:query,allTags}}>

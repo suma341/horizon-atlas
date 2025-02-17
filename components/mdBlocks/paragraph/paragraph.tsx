@@ -11,10 +11,11 @@ type Props={
     parent:string;
     depth:number;
     quote?:boolean;
+    slug:string;
 }
 
 export default function Paragraph(props:Props){
-    const {parent,mdBlock,depth,quote} = props;
+    const {parent,mdBlock,depth,quote,slug} = props;
     const [mdTypeAndTextList,setMd]=useState<MdTypeAndText[]>([]);
     useEffect(()=>{
         searchMDKeyword(parent).then(md=>{
@@ -46,7 +47,7 @@ export default function Paragraph(props:Props){
             </p>
             {(quote===false || quote===undefined) && mdBlock.children.length!==0 && mdBlock.children.map((child,i)=>{
                 return (<div key={i}>
-                    <MdBlockComponent mdBlock={child} depth={depth + 1} />
+                    <MdBlockComponent slug={slug} mdBlock={child} depth={depth + 1} />
                 </div>)
             })}
         </div>

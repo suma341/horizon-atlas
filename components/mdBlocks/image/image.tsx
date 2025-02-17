@@ -6,15 +6,16 @@ import Image from 'next/image';
 type Props = {
     mdBlock: MdBlock;
     depth: number;
+    slug:string;
 };
 
 export default function ImageBlock(props: Props) {
-    const { mdBlock } = props;
+    const { mdBlock,slug } = props;
     const [imageSrc, setImageSrc] = useState<string | null>(null);
 
     useEffect(() => {
         const checkImageExists = async (extension: string) => {
-            const url = `/horizon-atlas/notion_data/page_image/${mdBlock.blockId}.${extension}`;
+            const url = `/horizon-atlas/notion_data/eachPage/${slug}/image/${mdBlock.blockId}.${extension}`;
             try {
                 const response = await fetch(url, { method: 'HEAD' });
                 if (response.ok) {

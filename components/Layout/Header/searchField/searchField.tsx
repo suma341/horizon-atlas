@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import {IoIosSearch} from 'react-icons/io'
-import router from 'next/router'
 
 type Props={
     searchKeyWord:string;
@@ -15,7 +14,8 @@ function SearchField({searchKeyWord}:Props) {
             return;
           }
         if (event.key === 'Enter') {
-          router.push({pathname:"/search", query:{search:keyWord}});
+        //   router.push({pathname:"/search", query:{search:keyWord}});
+          window.location.href=`/horizon-atlas/search?search=${keyWord}`
         }
       };
 
@@ -23,7 +23,8 @@ function SearchField({searchKeyWord}:Props) {
         setKeyWord(event.target.value);
     };
     const handleButton =()=>{
-        router.push({pathname:"/search",query:{search:keyWord}})
+        // router.push({pathname:"/search",query:{search:keyWord}});
+        window.location.href=`/horizon-atlas/search?search=${keyWord}`
     }
 
     return (

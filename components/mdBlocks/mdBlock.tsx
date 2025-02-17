@@ -21,14 +21,15 @@ import Link_to_page from './link_to_page/link_to_page';
 import Table_of_contents from './table_of_contents/table_of_contents';
 
 type Props ={
-    mdBlock:MdBlock
-    depth:number
+    mdBlock:MdBlock;
+    depth:number;
+    slug:string;
 }
 
 export default function MdBlockComponent(props:Props) {
-    const {mdBlock,depth} = props;
+    const {mdBlock,depth,slug} = props;
     if(mdBlock.type==='paragraph'){
-      return <Paragraph parent={mdBlock.parent} mdBlock={mdBlock} depth={depth} />
+      return <Paragraph parent={mdBlock.parent} slug={slug} mdBlock={mdBlock} depth={depth} />
     }else if(mdBlock.type==='heading_1'){
         return <Heading1 mdBlock={mdBlock} depth={depth} />
     }else if(mdBlock.type === 'heading_2'){
@@ -40,23 +41,23 @@ export default function MdBlockComponent(props:Props) {
     }else if(mdBlock.type === 'code'){
         return <Code mdBlock={mdBlock} depth={depth} />
     }else if(mdBlock.type==='numbered_list_item'){
-        return <NumberedListItem mdBlock={mdBlock} depth={depth} />
+        return <NumberedListItem slug={slug} mdBlock={mdBlock} depth={depth} />
     }else if(mdBlock.type==='bulleted_list_item'){
-        return <BulletedListItem mdBlock={mdBlock} depth={depth} />
+        return <BulletedListItem slug={slug} mdBlock={mdBlock} depth={depth} />
     }else if(mdBlock.type==='callout'){
-        return <Callout mdBlock={mdBlock} depth={depth} />
+        return <Callout slug={slug} mdBlock={mdBlock} depth={depth} />
     }else if(mdBlock.type === 'quote'){
-        return <Quote mdBlock={mdBlock} depth={depth} />
+        return <Quote slug={slug} mdBlock={mdBlock} depth={depth} />
     }else if(mdBlock.type === 'image'){
-        return <ImageBlock mdBlock={mdBlock} depth={depth} />
+        return <ImageBlock mdBlock={mdBlock} depth={depth} slug={slug} />
     }else if(mdBlock.type==='table'){
-        return <TableBlock mdBlock={mdBlock} depth={depth} />
+        return <TableBlock slug={slug} mdBlock={mdBlock} depth={depth} />
     }else if(mdBlock.type==='child_page'){
         return <ChildPage mdBlock={mdBlock} />
     }else if(mdBlock.type === 'bookmark'){
-        return <Bookmark mdBlock={mdBlock} depth={depth} />
+        return <Bookmark slug={slug}  mdBlock={mdBlock} depth={depth} />
     }else if(mdBlock.type === 'toggle'){
-        return <ToggleBlock mdBlock={mdBlock} depth={depth} />
+        return <ToggleBlock slug={slug} mdBlock={mdBlock} depth={depth} />
     }else if(mdBlock.type === 'embed'){
         return <EmbedBlock mdBlock={mdBlock} depth={depth} />
     }else if(mdBlock.type==='link_to_page'){
