@@ -29,14 +29,6 @@ const Layout: React.FC<LayoutProps> = ({ children, headerProps, sideNavProps }) 
   const [openbar, setOpenbar] = useState(false);
   const { isAuthenticated } = useAuth0();
 
-  // const router = useRouter();
-
-  // useEffect(()=>{
-  //   if(!isAuthenticated){
-  //     router.push(process.env.NEXT_PUBLIC_ROOT_PATH!);
-  //   }
-  // },[isAuthenticated])
-
   useEffect(() => {
     if (window !== undefined) {
       const handleScroll = () => {
@@ -86,6 +78,8 @@ const Layout: React.FC<LayoutProps> = ({ children, headerProps, sideNavProps }) 
 };
 
 function LoginModal() {
+  const redirectUri =
+    process.env.NEXT_PUBLIC_ROOT_PATH ?? "https://sakiyamamamama.github.io/horizon-atlas";
   const router = useRouter();
   return (
     <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
@@ -94,7 +88,7 @@ function LoginModal() {
         <button
           className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
           onClick={() => {
-            router.push(process.env.NEXT_PUBLIC_ROOT_PATH!);
+            router.push(redirectUri);
           }}
         >
           OK

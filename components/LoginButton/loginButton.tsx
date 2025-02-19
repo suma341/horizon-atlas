@@ -5,6 +5,9 @@ import { useEffect } from "react";
 export default function AuthButton() {
   const { loginWithRedirect, logout, isAuthenticated } = useAuth0();
 
+  const redirectUri =
+  process.env.NEXT_PUBLIC_ROOT_PATH ?? "https://sakiyamamamama.github.io/horizon-atlas";
+
   const router = useRouter();
 
   useEffect(()=>{
@@ -17,7 +20,7 @@ export default function AuthButton() {
     <div className="">
       {isAuthenticated ? (
         <>
-          <button onClick={() => logout({ logoutParams: { returnTo: process.env.NEXT_PUBLIC_ROOT_PATH! } })}>
+          <button onClick={() => logout({ logoutParams: { returnTo: redirectUri } })}>
             ログアウト
           </button>
         </>
@@ -27,7 +30,7 @@ export default function AuthButton() {
           onClick={() =>
             loginWithRedirect({
               authorizationParams: {
-                redirect_uri: process.env.NEXT_PUBLIC_ROOT_PATH!,
+                redirect_uri: redirectUri,
                 connection: "discord",
               },
             })
