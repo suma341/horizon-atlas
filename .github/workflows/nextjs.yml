@@ -34,6 +34,9 @@ jobs:
           DISCORD_CLIENT_SECRET: ${{ secrets.DISCORD_CLIENT_SECRET}}
           DISCORD_CLIENT_ID: ${{ secrets.DISCORD_CLIENT_ID}}
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET}}
+          NEXT_PUBLIC_AUTH0_DOMAIN: ${{secrets.NEXT_PUBLIC_AUTH0_DOMAIN}}
+          NEXT_PUBLIC_AUTH0_CLIENT_ID: ${{secrets.NEXT_PUBLIC_AUTH0_CLIENT_ID}}
+          NEXT_PUBLIC_ROOT_PATH: ${{secrets.NEXT_PUBLIC_ROOT_PATH}}
 
       - name: gh-pages ブランチにデプロイ
         uses: peaceiris/actions-gh-pages@v4
