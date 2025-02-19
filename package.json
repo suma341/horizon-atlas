@@ -13,6 +13,8 @@
     "@auth0/auth0-react": "^2.3.0",
     "@notionhq/client": "^2.2.15",
     "@tailwindcss/line-clamp": "^0.4.4",
+    "axios": "^1.7.9",
+    "dotenv": "^16.4.7",
     "next": "15.0.3",
     "next-auth": "^4.24.11",
     "node-cache": "^5.1.2",
