@@ -74,9 +74,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
     };
 };
 
-const CoursePage = ({ posts,numberOfPages,currentPage, currentCourse,pageNavs}: Props)=> {
+const CoursePage = ({ posts,numberOfPages,currentPage, currentCourse,pageNavs,allTags}: Props)=> {
     return (
-        <Layout headerProps={{pageNavs,allTags:[]}}> 
+        <Layout headerProps={{pageNavs,allTags:allTags}}> 
             <div className="h-full w-full mx-auto font-mono pt-20">
                 <main className="w-full mt-16 mb-3">
                     <h1 className="text-5xl font-medium text-center mb-16">{currentCourse}</h1>

@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { IoIosSearch } from 'react-icons/io';
 
@@ -9,9 +10,11 @@ function SearchField({ searchKeyWord }: Props) {
     const [keyWord, setKeyWord] = useState<string>(searchKeyWord);
     const [isComposing, setIsComposing] = useState<boolean>(false);
 
+    const router = useRouter();
+
     const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (!isComposing && event.key === 'Enter') {
-            window.location.href = `/horizon-atlas/search?search=${keyWord}`;
+            router.push({pathname:"/search", query:{search:keyWord}});
         }
     };
 
@@ -28,7 +31,7 @@ function SearchField({ searchKeyWord }: Props) {
                 placeholder="キーワードで検索"
             />
             <button
-                onClick={() => window.location.href = `/horizon-atlas/search?search=${keyWord}`}
+                onClick={() => router.push({pathname:"/search", query:{search:keyWord}})}
                 className="ml-2 p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-all duration-300"
             >
                 <IoIosSearch size={22} />
