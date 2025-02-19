@@ -10,12 +10,14 @@ function SearchField({searchKeyWord}:Props) {
     const [isComposing, setIsComposing] = useState<boolean>(false);
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-        if (isComposing) {
-            return;
-          }
-        if (event.key === 'Enter') {
-        //   router.push({pathname:"/search", query:{search:keyWord}});
-          window.location.href=`/horizon-atlas/search?search=${keyWord}`
+        if(window!==undefined){
+            if (isComposing) {
+                return;
+              }
+            if (event.key === 'Enter') {
+            //   router.push({pathname:"/search", query:{search:keyWord}});
+              window.location.href=`/horizon-atlas/search?search=${keyWord}`
+            }
         }
       };
 
@@ -24,6 +26,7 @@ function SearchField({searchKeyWord}:Props) {
     };
     const handleButton =()=>{
         // router.push({pathname:"/search",query:{search:keyWord}});
+        if(window!==undefined)
         window.location.href=`/horizon-atlas/search?search=${keyWord}`
     }
 

@@ -39,7 +39,7 @@ export const getStaticProps: GetStaticProps = async () => {
     };
 };
 
-const blogTagPageList = ({courseAndPosts,allTags }: Props)=> {
+const blogTagPageList = ({courseAndPosts,allTags}: Props)=> {
     return (
         <Layout headerProps={{pageNavs:[HOME_NAV,BASIC_NAV],allTags}}>
             <div className="h-full w-full mx-auto font-mono pt-20 ">
@@ -52,8 +52,7 @@ const blogTagPageList = ({courseAndPosts,allTags }: Props)=> {
                     </section>
                 </main>
             </div>
-        </Layout>
-        
+        </Layout>  
     );
 }
 

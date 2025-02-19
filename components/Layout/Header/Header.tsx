@@ -2,6 +2,7 @@ import Link from 'next/link';
 import React from 'react'
 import SearchField from './searchField/searchField';
 import HamburgerButton from './hamburgerButton./hamburgerButton';
+import UserIcon from './UserInfo/userIcon';
 
 type Props={
     searchKeyWord?:string;
@@ -19,6 +20,9 @@ export default function Header({searchKeyWord,setOpenbar}:Props){
             <ul className="hidden md:flex items-center text-sm pt-2 duration-100">
                 <li className="mr-4">
                     <SearchField searchKeyWord={searchKeyWord || ''} />
+                </li>
+                <li>
+                    <UserIcon />
                 </li>
             </ul>
             <ul className='flex md:hidden items-center text-sm pt-2'>

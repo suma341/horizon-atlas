@@ -3,6 +3,7 @@ import SearchField from '../Header/searchField/searchField';
 import Tags from '@/components/tag/Tags';
 import { pageNav } from '@/types/pageNav';
 import Link from 'next/link';
+import UserBlock from '../Header/UserInfo/userBlock';
 
 type Props={
     openbar:boolean;
@@ -18,11 +19,13 @@ type Props={
 function Sidebar({openbar,setOpenbar,allTags,pageNav}:Props) {
 
     const getPageHeight = () => {
-        const pageHeight = Math.max(
-          document.body.scrollHeight,
-          document.documentElement.scrollHeight
-        );
-        return pageHeight;
+        if(window!==undefined){
+            const pageHeight = Math.max(
+                document.body.scrollHeight,
+                document.documentElement.scrollHeight
+              );
+              return pageHeight;
+        }
     };
 
     return (
@@ -40,7 +43,7 @@ function Sidebar({openbar,setOpenbar,allTags,pageNav}:Props) {
                     </li>
                     <li className='flex items-center justify-between mr-5'>
                         <div></div>
-                        {/* <UserBlock name={name} image={image} /> */}
+                        <UserBlock />
                     </li>
                     <li className='px-5 mt-2'>
                         <SearchField searchKeyWord={''} />

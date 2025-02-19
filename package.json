@@ -10,6 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@auth0/auth0-react": "^2.3.0",
     "@notionhq/client": "^2.2.15",
     "@tailwindcss/line-clamp": "^0.4.4",
     "next": "15.0.3",

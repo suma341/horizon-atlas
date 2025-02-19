@@ -1,103 +1,42 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-// import { useRouter } from "next/router";
-// import { SessionData } from "@/types/sessionData";
 
-// interface checkGuildData {
-//   message:string;
-// }
+export default function AuthButton() {
+  const { loginWithRedirect, logout, isAuthenticated } = useAuth0();
 
-export default function LoginButton() {
   const router = useRouter();
-  // const [loading, setLoading] = useState(true);
-  // const [session, setSession] = useState(false);
 
-  useEffect(() => {
-    // const checkGuild = async () => {
-    //   try {
-    //     const response = await fetch("https://horizon-atlas.vercel.app/api/discord/guilds",{
-    //       credentials: "include", 
-    //       mode:"cors",
-    //     });
-        
-    //     if (!response.ok) {
-    //       console.error("API Error:", response.status, await response.text());
-    //       alert("Error fetching guilds. Please try again later.");
-    //       setLoading(false);
-    //       return;
-    //     }
-
-    //     const data:checkGuildData = await response.json();
-
-    //     if (data.message === "User is in Horizon") {
-    //       router.push("/posts");
-    //     } else if (data.message === "User is not in Horizon") {
-    //       alert(data.message);
-    //       window.location.href = "https://horizon-atlas.vercel.app/api/auth/signout?callbackUrl=https%3A%2F%2Fsakiyamamamama.github.io%2Fhorizon-atlas";
-    //     }
-    //   } catch (error) {
-    //     console.error("Error checking guild:", error);
-    //     alert("Unexpected error occurred. Please try again later.");
-    //   } finally {
-    //     setLoading(false);
-    //   }
-    // };
-
-    async function checkLoginStatus() {
-      router.push("/posts")
-    //   try {
-    //     const res = await fetch("https://horizon-atlas.vercel.app/api/auth/session", {
-    //       method: "GET", // 変更点
-    //       credentials: "include",
-    //       mode: "cors",
-    //       headers: {
-    //         "Accept": "application/json",
-    //         "Content-Type": "application/json",
-    //       },
-    //     });
-
-    
-    //     if (!res.ok) {
-    //       throw new Error(`HTTP error! status: ${res.status}`);
-    //     }
-    
-    //     const data = await res.json();
-    //     console.log("Session data:", data);
-    
-    //     if (data && data.token) {
-    //       setSession(true);
-    //     } else {
-    //       setSession(false);
-    //     }
-    //   } catch (error) {
-    //     console.error("Session check error:", error);
-    //     setSession(false);
-    //   } finally {
-    //     setLoading(false);
-    //   }
+  useEffect(()=>{
+    if(isAuthenticated){
+      router.push("/posts");
     }
+  },[isAuthenticated])
 
-    checkLoginStatus();
-  }, []); 
-
-  return <button
-   className="bg-neutral-900 text-white py-1.5 px-9 mr-2 rounded shadow-2xl hover:bg-neutral-300 hover:text-neutral-800 hover:translate-y-2 hover:shadow-none duration-300">
-   </button>
-
-  // if (loading) {
-  //   return <p>Checking session ...</p>;
-  // }
-
-  // if (!session) {
-  //   return (
-  //     <a
-  //       href="https://horizon-atlas.vercel.app/api/auth/signin?callbackUrl=https%3A%2F%2Fsakiyamamamama.github.io%2Fhorizon-atlas"
-  //       className="bg-neutral-900 text-white py-1.5 px-9 mr-2 rounded shadow-2xl hover:bg-neutral-300 hover:text-neutral-800 hover:translate-y-2 hover:shadow-none duration-300"
-  //     >
-  //       Sign in
-  //     </a>
-  //   );
-  // }
-
-  // return null;
+  return (
+    <div className="">
+      {isAuthenticated ? (
+        <>
+          <button onClick={() => logout({ logoutParams: { returnTo: process.env.NEXT_PUBLIC_ROOT_PATH! } })}>
+            ログアウト
+          </button>
+        </>
+      ) : (
+        <button
+        className="flex items-center justify-center px-4 py-3 bg-white text-gray-700 border border-gray-300 rounded-lg shadow-sm transition duration-300 hover:bg-gray-100"
+          onClick={() =>
+            loginWithRedirect({
+              authorizationParams: {
+                redirect_uri: process.env.NEXT_PUBLIC_ROOT_PATH!,
+                connection: "discord",
+              },
+            })
+          }
+        >
+          <img src="/horizon-atlas/discord_logo.png" alt="Google" className="w-5 h-5 mr-2" />
+          Discordでログイン
+        </button>
+      )}
+    </div>
+  );
 }

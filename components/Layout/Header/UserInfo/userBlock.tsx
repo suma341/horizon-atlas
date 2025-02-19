@@ -1,17 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react'
-// import { signOut } from 'next-auth/react';
 import Image from 'next/image';
-// import { IoIosLogOut } from "react-icons/io";
+import { useAuth0 } from '@auth0/auth0-react';
+import { IoIosLogOut } from "react-icons/io";
 
-type Props ={
-    name:string;
-    image:string;
-}
-
-function UserBlock({name,image}:Props) {
+function UserBlock() {
     const [isVisible, setIsVisible] = useState(false); // トグルの状態を管理
     const toggleRef = useRef<HTMLDivElement>(null); // toggle要素への参照
     const toggleTargetRef = useRef<HTMLDivElement>(null);
+    const { user,logout } = useAuth0();
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -43,11 +39,11 @@ function UserBlock({name,image}:Props) {
                 className='flex cursor-pointer gap-1.5 mt-2 border border-neutral-300 rounded p-1'>
                 <div>
                     <Image width={20} height={20} 
-                    src={image} alt={''}
+                    src={user?.picture || ""} alt={''}
                     className='rounded-full w-9 h-auto' />
                 </div>
                 <div>
-                    <p className='mt-1.5 mr-0.5 text-sm text-neutral-500'>{name}</p>
+                    <p className='mt-1.5 mr-0.5 text-sm text-neutral-500'>{user?.name}</p>
                 </div>
             </div>
             {isVisible && (
@@ -55,10 +51,10 @@ function UserBlock({name,image}:Props) {
                 id="toggleTarget" ref={toggleTargetRef}
                 className="z-50 border-solid border-neutral-300 border absolute bg-white p-1.5 rounded-md w-32 translate-y-[100%] right-5">
                 <ul>
-                    {/* <button onClick={() => signOut()} className="flex relative hover:bg-slate-200 rounded-sm p-1 pr-2">
+                    <button onClick={() => logout()} className="flex relative hover:bg-slate-200 rounded-sm p-1 pr-2">
                         <IoIosLogOut size={21} className='mr-1' />
                         <p className="text-neutral-600 text-sm">ログアウト</p>
-                    </button> */}
+                    </button>
                 </ul>
             </div>)}
         </>

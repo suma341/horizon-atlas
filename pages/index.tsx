@@ -1,5 +1,5 @@
 // pages/index.js
-import LoginButton from '@/components/LoginButton/loginButton';
+import AuthButton from '@/components/LoginButton/loginButton';
 import Head from 'next/head';
 
 export default function Home() {
@@ -16,7 +16,6 @@ export default function Home() {
           <h1 className="text-2xl font-bold">HorizonAtlas</h1>
           <nav>
             <ul className="flex space-x-4">
-              <li><a href="#about" className="hover:underline">About</a></li>
               <li><a href="#features" className="hover:underline">Features</a></li>
             </ul>
           </nav>
@@ -28,22 +27,8 @@ export default function Home() {
           <h2 className="text-4xl font-bold text-gray-800">Welcome to HorizonAtlas</h2>
           <p className="text-gray-600 mt-4">プログラミング部Horizonで使用する学習資料を簡単に閲覧、検索できます。</p>
           <div className="mt-8">
-            <LoginButton />
-            <a
-              href="#features"
-              className="bg-neutral-500 text-white py-2 px-4 rounded hover:bg-neutral-600"
-            >
-              Learn More
-            </a>
+            <AuthButton />
           </div>
-        </section>
-
-        <section id="about" className="py-16">
-          <h3 className="text-3xl font-bold text-gray-800">About Horizon Atlas</h3>
-          <p className="text-gray-600 mt-4">
-            HorizonAtlasは、学習資料を整理して部員全員でアクセスできるアプリです。
-            基礎班カリキュラム、web、スマホアプリなど、自分の見たい学習資料を簡単に探せます。
-          </p>
         </section>
 
         <section id="features" className="py-16 px-4 bg-gray-100 rounded-lg">

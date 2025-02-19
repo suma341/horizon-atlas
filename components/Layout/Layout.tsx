@@ -1,3 +1,4 @@
+"use client";
 import React, { ReactNode, useEffect, useState } from "react";
 import Head from "next/head";
 import Footer from "./Footer/Footer";
@@ -5,6 +6,8 @@ import Header from "./Header/Header";
 import { pageNav } from "@/types/pageNav";
 import Navbar from "./Navbar/navbar";
 import Sidebar from "./Sidebar/Sidebar";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useRouter } from "next/router";
 
 type LayoutProps = {
   children: ReactNode;
@@ -24,9 +27,18 @@ const Layout: React.FC<LayoutProps> = ({ children, headerProps, sideNavProps }) 
   const [isVisible, setIsVisible] = useState(true); // ヘッダーの表示状態
   const [lastScrollY, setLastScrollY] = useState(0); // 最後のスクロール位置
   const [openbar, setOpenbar] = useState(false);
+  const { isAuthenticated } = useAuth0();
+
+  // const router = useRouter();
+
+  // useEffect(()=>{
+  //   if(!isAuthenticated){
+  //     router.push(process.env.NEXT_PUBLIC_ROOT_PATH!);
+  //   }
+  // },[isAuthenticated])
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (window !== undefined) {
       const handleScroll = () => {
         const currentScrollY = window.scrollY;
 
@@ -46,6 +58,10 @@ const Layout: React.FC<LayoutProps> = ({ children, headerProps, sideNavProps }) 
       };
     }
   }, [lastScrollY]);
+
+  if(!isAuthenticated){
+    return <LoginModal />
+  }
 
     return (
       <div className="bg-white">
@@ -68,5 +84,24 @@ const Layout: React.FC<LayoutProps> = ({ children, headerProps, sideNavProps }) 
       </div>
     );
 };
+
+function LoginModal() {
+  const router = useRouter();
+  return (
+    <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+        <h2 className="text-xl font-bold mb-4">ログインが必要です</h2>
+        <button
+          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+          onClick={() => {
+            router.push(process.env.NEXT_PUBLIC_ROOT_PATH!);
+          }}
+        >
+          OK
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default Layout;

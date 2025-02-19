@@ -11,12 +11,14 @@ function Tags({ allTags }: Props) {
     const [windowWidth, setWindowWidth] = useState<number>(0);
 
     useEffect(() => {
+      if(window!==undefined){
         const handleResize = () => {
-            setWindowWidth(window.innerWidth);
+          setWindowWidth(window.innerWidth);
         };
         window.addEventListener('resize', handleResize);
         handleResize();
         return () => window.removeEventListener('resize', handleResize);
+      }
     }, []);
 
     return (
