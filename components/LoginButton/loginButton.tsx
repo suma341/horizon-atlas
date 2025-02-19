@@ -15,12 +15,7 @@ export default function AuthButton() {
   useEffect(()=>{
     if(isAuthenticated){
       const checkGuild = async()=>{
-        const GUILD_ID = process.env.NEXT_PUBLIC_GUILD_ID!;
-
-        const isMember = customUser?.profile!.some((guild) => guild.id === GUILD_ID);
-        // console.log("GUILD_ID",GUILD_ID);
-        // console.log(user?.profile?.map((p)=>p.id));
-
+        const isMember = customUser.profile
         if (!isMember) {
           console.warn("Horizonメンバーアカウントではないため許可されません");
           logout({ logoutParams:{returnTo:redirectUri} });
