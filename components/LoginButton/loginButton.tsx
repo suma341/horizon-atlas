@@ -17,8 +17,8 @@ export default function AuthButton() {
       const checkGuild = async()=>{
         const isMember = customUser.profile
         if (!isMember) {
-          console.warn("Horizonメンバーアカウントではないため許可されません");
-          logout({ logoutParams:{returnTo:redirectUri} });
+          alert("Horizonメンバーアカウントのみログインできます");
+          logout({ logoutParams: { returnTo: redirectUri } });
         } else {
           setAllowed(true);
         }
