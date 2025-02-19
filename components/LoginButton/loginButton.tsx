@@ -1,3 +1,4 @@
+import { CustomUser } from "@/global";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -9,12 +10,14 @@ export default function AuthButton() {
   process.env.NEXT_PUBLIC_ROOT_PATH ?? "https://sakiyamamamama.github.io/horizon-atlas";
   const router = useRouter();
 
+  const customUser = user! as CustomUser;
+
   useEffect(()=>{
     if(isAuthenticated){
       const checkGuild = async()=>{
         const GUILD_ID = process.env.NEXT_PUBLIC_GUILD_ID!;
 
-        const isMember = user?.profile!.some((guild) => guild.id === GUILD_ID);
+        const isMember = customUser?.profile!.some((guild) => guild.id === GUILD_ID);
         // console.log("GUILD_ID",GUILD_ID);
         // console.log(user?.profile?.map((p)=>p.id));
 
