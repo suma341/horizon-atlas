@@ -1,5 +1,6 @@
 import { findHeadingBlock } from '@/lib/findHeadingBlock';
 import { searchPageById } from '@/lib/searchPageById';
+import Link from 'next/link';
 import { MdBlock } from 'notion-to-md/build/types';
 import React, { useEffect, useState } from 'react'
 
@@ -34,16 +35,18 @@ function Table_of_contents({mdBlock}:Props) {
     }
 
   return (
-    <div id={mdBlock.blockId}>
+    <div id={mdBlock.blockId} className='w-full'>
         {headingList.map((heading,i)=>{
             return (
-                <div key={i} className='mt-1.5'>
-                    {heading.type===1 && <a className='ml-0.5 text-neutral-500 underline cursor-pointer hover:text-neutral-800' href={`#${heading.blockId}`}>
-                        {heading.parent.slice(2)}</a>}
-                    {heading.type===2 && <a className='ml-5 mt-1 text-neutral-500 underline cursor-pointer hover:text-neutral-800' href={`#${heading.blockId}`}>
-                        {heading.parent.slice(3)}</a>}
-                    {heading.type===3 && <a className='ml-8 text-neutral-500 underline cursor-pointer hover:text-neutral-800' href={`#${heading.blockId}`}>
-                        {heading.parent.slice(4)}</a>}
+                <div key={i} className='mt-0.5 w-full py-1 rounded-md cursor-pointer hover:bg-neutral-100'>
+                    <Link href={`#${heading.blockId}`}>
+                        {heading.type===1 && <p className='ml-0.5 text-neutral-500 underline'>
+                            {heading.parent.slice(2)}</p>}
+                        {heading.type===2 && <p className='ml-5 mt-1 text-neutral-500 underline'>
+                            {heading.parent.slice(3)}</p>}
+                        {heading.type===3 && <p className='ml-8 text-neutral-500 underline'>
+                            {heading.parent.slice(4)}</p>}
+                    </Link>
                 </div>)
         })}
     </div>

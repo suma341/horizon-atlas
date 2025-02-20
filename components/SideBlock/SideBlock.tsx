@@ -45,11 +45,13 @@ const SideBlock = ({ title, childPages, slug }: Props) => {
                 <p className="truncate text-sm px-1">{title}</p>
                 <div className="pl-4">
                     {childPages.map((page, i) => (
-                        <Link href={`/posts/post/${slug}/${page.id}`} key={i} className="w-52">
-                            <p className="my-1.5 text-sm text-neutral-500 underline truncate hover:text-neutral-900">
-                                {page.title}
-                            </p>
-                        </Link>
+                        <div key={i} className="p-0.5 mt-1 cursor-pointer w-52 hover:bg-neutral-100">
+                            <Link href={`/posts/post/${slug}/${page.id}`} className="text-sm text-neutral-500 underline truncate">
+                                <p >
+                                    {page.title}
+                                </p>
+                            </Link>
+                        </div>
                     ))}
                 </div>
             </div>
