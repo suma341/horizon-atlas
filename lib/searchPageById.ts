@@ -21,7 +21,7 @@ export async function searchPageById(id:string):Promise<Page>{
                 slug:post.slug
             }
         }
-        const res_page = await fetch(`/horizon-atlas/notion_data/eachPage/${post.slug}.json`);
+        const res_page = await fetch(`/horizon-atlas/notion_data/eachPage/${post.slug}/page.json`);
         const page:MdBlock[] = await res_page.json();
         for(const block of page){
             if(block.blockId===id || id===block.blockId.replaceAll("-","")){

@@ -21,7 +21,7 @@ function Table_of_contents({mdBlock}:Props) {
             setLoading(true);
             const { slug } = await searchPageById(mdBlock.blockId);
             console.log("slug",slug)
-            const res = await fetch(`/horizon-atlas/notion_data/eachPage/${slug}.json`);
+            const res = await fetch(`/horizon-atlas/notion_data/eachPage/${slug}/page.json`);
             const blocks:MdBlock[] = await res.json();
             const findList = findHeadingBlock(blocks);
             console.log("findList",findList);
