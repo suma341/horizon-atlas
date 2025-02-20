@@ -10,7 +10,26 @@ type Props = {
 };
 
 const SideBlock = ({ title, childPages, slug }: Props) => {
-    const [scrollY, setScrollY] = useState(0); // スクロール量を管理
+    const [scrollY, setScrollY] = useState(window.scrollY); // スクロール量を管理
+    const [size, setSize] = useState({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    
+      useEffect(() => {
+        const updateSize = () => {
+          setSize({
+            width: window.innerWidth,
+            height: window.innerHeight,
+          });
+        };
+    
+        window.addEventListener("resize", updateSize);
+    
+        return () => {
+          window.removeEventListener("resize", updateSize);
+        };
+      }, []);
 
     const getPageHeight = () => {
         if (typeof window === "undefined") return 0; // サーバーサイドで実行されないようにする
@@ -37,17 +56,18 @@ const SideBlock = ({ title, childPages, slug }: Props) => {
     }, []); // 依存配列を空にして、マウント時のみ実行
 
     return (
-        <section className="w-52 mr-2 fixed right-0" style={{top:scrollY > getPageHeight() - 1000 ? `${(getPageHeight() - 1000) - scrollY + 128}px` : "128px"}}>
+        <section className="w-1/4 pl-4 fixed right-0" style={{top:scrollY > getPageHeight() - 1000 ? `${(getPageHeight() - 1000) - scrollY + 128}px` : "128px"}}>
             <div
-                className="border fixed overflow-y-scroll scrollbar-thin py-4 rounded-md w-52 bg-white"
-                style={{ opacity: "100", height: "400px" }}
+                className="border fixed overflow-y-scroll scrollbar-thin py-4 rounded-md bg-white"
+                style={{ opacity: "100", height: `${size.height / 1.5}px`, width:`${size.width / 5}px` }}
             >
                 <p className="truncate text-sm px-1">{title}</p>
-                <div className="pl-4">
+                <div className="pl-3">
                     {childPages.map((page, i) => (
-                        <div key={i} className="p-0.5 mt-1 cursor-pointer w-52 hover:bg-neutral-100">
+                        <div key={i} className="p-0.5 mt-1 cursor-pointer w-48 hover:bg-neutral-100"
+                        style={{width:`${size.width / 5}px`}}>
                             <Link href={`/posts/post/${slug}/${page.id}`} className="text-sm text-neutral-500 underline truncate">
-                                <p >
+                                <p>
                                     {page.title}
                                 </p>
                             </Link>

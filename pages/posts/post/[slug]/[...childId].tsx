@@ -116,7 +116,7 @@ const PostChildPage = ( props : Props) => {
     return (
       <Layout headerProps={{pageNavs:pageNavs,allTags}} sideNavProps={{title:parentTitle,slug,childPages:childNavs}}>
         <div className='mt-24'>
-          <section className="p-5 pb-10 md:w-3/4 lg:w-4/5 bg-white">
+          <section className="p-5 pb-10 md:w-3/4 bg-white">
             <h2 className="w-full text-2xl font-medium">
                 {pageNavs[pageNavs.length - 1].title}
             </h2>
