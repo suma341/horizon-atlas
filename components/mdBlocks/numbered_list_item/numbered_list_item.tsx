@@ -15,7 +15,7 @@ export default function NumberedListItem(props:Props) {
     const splitedText = mdBlock.parent.split(' ');
 
     return (
-        <div className='my-1.5'>
+        <div className='my-1.5' id={mdBlock.blockId}>
             <p className='flex'>
                 <span className='mr-2'>{splitedText[0]}</span>
                 {<Paragraph  slug={slug} quote={true} mdBlock={mdBlock} parent={splitedText[1]} depth={depth +1} />}

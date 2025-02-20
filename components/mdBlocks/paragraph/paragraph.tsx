@@ -24,7 +24,7 @@ export default function Paragraph(props:Props){
     },[])
 
     return (
-        <div className='mb-0.5 mt-1'>
+        <div className='mb-0.5 mt-1' id={mdBlock.blockId}>
             <p>
                 {mdTypeAndTextList.map((text, index) => {
                     if(text.link === undefined){

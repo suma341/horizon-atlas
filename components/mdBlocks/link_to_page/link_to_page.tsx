@@ -28,7 +28,7 @@ export default function Link_to_page(props: Props) {
   },[])
 
   return (
-    <div className='my-2'>
+    <div className='my-2' id={mdBlock.blockId}>
       <Link href={url} className="text-neutral-500 underline hover:text-neutral-600">
         {title}
       </Link>

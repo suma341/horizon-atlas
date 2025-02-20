@@ -37,7 +37,7 @@ export default function MdBlockComponent(props:Props) {
     }else if(mdBlock.type==='heading_3'){
         return <Heading3 mdBlock={mdBlock} depth={depth} />
     }else if(mdBlock.type==='divider'){
-        return <Divider />
+        return <Divider mdBlock={mdBlock} />
     }else if(mdBlock.type === 'code'){
         return <Code mdBlock={mdBlock} depth={depth} />
     }else if(mdBlock.type==='numbered_list_item'){

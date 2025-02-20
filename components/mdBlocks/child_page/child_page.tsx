@@ -25,7 +25,7 @@ export default function ChildPage(props: Props) {
   const newPath = `/posts/post/${slug}/${[...currentPathArray, id].join('/')}`.replace(/\/+/g, '/'); 
 
   return (
-      <Link href={newPath}>
+      <Link href={newPath} id={mdBlock.blockId}>
         <div className=' my-0.5 py-1 px-0.5 hover:bg-neutral-100 cursor-pointer text-neutral-500 underline'>
         {title}
         </div>

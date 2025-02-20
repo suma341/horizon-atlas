@@ -16,7 +16,7 @@ export default function ToggleBlock(props:Props) {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <div className='my-1 border-neutral-800 pl-1.5 bg-neutral-100'>
+        <div className='my-1 border-neutral-800 pl-1.5 bg-neutral-100' id={mdBlock.blockId}>
             <div className='flex'>
                 <button
                     className="text-left space-x-1 p-1 rounded-lg hover:bg-neutral-200 transition"

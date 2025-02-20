@@ -15,7 +15,7 @@ export default function BulletedListItem(props:Props) {
     const text = mdBlock.parent.split(" ")
 
     return (
-        <div>
+        <div id={mdBlock.blockId}>
             <p className='my-2 flex'>
                 <span className='font-bold mr-1 text-xl'>・</span>
                 <Paragraph slug={slug}  quote={true} parent={text[1]} depth={depth + 1} mdBlock={mdBlock} />

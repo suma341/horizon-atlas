@@ -12,7 +12,7 @@ function EmbedBlock(props: Props) {
     if(match){
         const url = match[0].slice(1, -1);
         return (
-            <div className='mx-1.5 my-1.5'>
+            <div className='mx-1.5 my-1.5' id={mdBlock.blockId}>
                 <iframe
                     src={url}
                     style={{ width: "100%", height: "300px", border: "none" }}

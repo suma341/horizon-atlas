@@ -38,7 +38,7 @@ export default function ImageBlock(props: Props) {
     if (!imageSrc) return null; // 画像が見つからない場合は何も表示しない
 
     return (
-        <div>
+        <div id={mdBlock.blockId}>
             <Image
                 height={400}
                 width={400}

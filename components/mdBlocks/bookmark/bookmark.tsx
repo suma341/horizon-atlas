@@ -56,7 +56,7 @@ export default function Bookmark(props: Props) {
   }, []);
   if(match)
   return (
-    <div className="my-2 rounded-sm border-2 border-neutral-200 hover:bg-neutral-100">
+    <div className="my-2 rounded-sm border-2 border-neutral-200 hover:bg-neutral-100" id={mdBlock.blockId}>
         
             <Link href={ogpData && ogpData.ogUrl ? ogpData.ogUrl : match[0].slice(1,-1)}>
                 <div className="flex">
