@@ -3,11 +3,11 @@ import { NotionToMarkdown } from "notion-to-md";
 import fs from "fs";
 import path from "path";
 import axios from "axios";
-import 'dotenv/config';
 import ogs from "open-graph-scraper";
+import "dotenv/config"
 
-const NOTION_TOKEN = process.env.NOTION_TOKEN2;
-const NOTION_DATABASE_ID = process.env.NOTION_DATABASE_ID2;
+const NOTION_TOKEN = process.env.NOTION_TOKEN;
+const NOTION_DATABASE_ID = process.env.NOTION_DATABASE_ID;
 
 const notion = new Client({ auth: NOTION_TOKEN });
 const n2m = new NotionToMarkdown({ notionClient: notion });
@@ -22,7 +22,7 @@ export const getAllData = async () => {
                 equals: true,
             },
         },
-        sorts: [{ property: "date", direction: "descending" }],
+        sorts: [{ property: "date", direction: "ascending" }],
     });
 
     const allPosts = posts.results.filter(isFullPage);
@@ -80,42 +80,84 @@ const downloadImage = async (imageUrl, savePath) => {
     }
 };
 
-const fetchAllMdBlock = async (mdBlocks) => {
+async function isPathOk(url) {
+    try {
+        const res = await fetch(url, { method: "HEAD" }); // HEAD を使うとデータ取得せずに済む
+        return res.ok; // 200〜299 の場合は true、それ以外は false
+    } catch (error) {
+        return false; // ネットワークエラーなどが発生した場合は false
+    }
+}
+
+const fetchAllMdBlock = async (mdBlocks,slug) => {
     for (const block of mdBlocks) {
         if (block.type === 'image') {
             const match = block.parent.match(/!\[([^\]]+)\]\(([^\)]+)\)/);
             if (match) {
                 const url = match[2].endsWith(')') ? match[2].slice(0, -1) : match[2];
+                let exte = match[1].split(".")[1]
+                console.log(exte)
+                if(exte===undefined || (exte!=="png" && exte!="jpg")){
+                    exte = "png"
+                }
                 console.log("Downloading image:", block.blockId);
-                await downloadImage(url, `./public/notion_data/page_image/${block.blockId}.png`);
+                await downloadImage(url, `./public/notion_data/eachPage/${slug}/image/${block.blockId}.${exte}`);
             }
         }
         if(block.type==='bookmark'){
             const match = block.parent.match(/\((.*?)\)/g);
             if (match) {
-                const url = match[0].slice(1, -1);
-                const { result } = await ogs({url});
-                const { ogTitle,ogDescription,ogSiteName,ogUrl,ogImage,favicon } = result;
-                if(ogImage){
-                    const { url } = ogImage[0];
-                    const saveData = { ogTitle,ogDescription,ogSiteName,ogUrl,ImageUrl:url, favicon };
-                    fs.writeFileSync(`./public/notion_data/ogsData/${block.blockId}.json`, JSON.stringify(saveData, null, 2));
-                }else{
-                    const saveData = { ogTitle,ogDescription,ogSiteName,ogUrl, favicon };
-                    const isAllUndefined = Object.values(saveData).every(value => value === undefined);
-                    if(isAllUndefined){
-                        fs.writeFileSync(`./public/notion_data/ogsData/${block.blockId}.json`, JSON.stringify(result, null, 2));
-                    }else{
-                        fs.writeFileSync(`./public/notion_data/ogsData/${block.blockId}.json`, JSON.stringify(saveData, null, 2));
+                try{
+                    const url = match[0].slice(1, -1);
+                    const { result } = await ogs({url});
+                    const { ogTitle,ogDescription,ogSiteName,ogUrl,ogImage } = result;
+                    let favicon = result.favicon;
+                    console.log("favicon",favicon);
+                    if(favicon===undefined){
+                        const domain = new URL(url).origin;
+                        const {result:domain_result} = await ogs({url:domain});
+                        if(domain_result.favicon != undefined){
+                            if(domain_result.ogImage){
+                                const { url:image_url } = domain_result.ogImage[0];
+                                console.log("image_url",image_url);
+                                const image_domain = new URL(image_url).origin;
+                                console.log("image_domain",image_domain);
+                                const favicon_domain = domain_result.favicon;
+                                favicon = image_domain + "/" + (favicon_domain[0]==="/" ? favicon_domain.slice(1) : favicon_domain);
+                                console.log("favicon2",favicon);
+                            }
+                        }
                     }
-                }
+                    if(ogImage){
+                        const { url } = ogImage[0];
+                        const saveData = { ogTitle,ogDescription,ogSiteName,ogUrl,ImageUrl:url, favicon };
+                        fs.writeFileSync(`./public/notion_data/eachPage/${slug}/ogsData/${block.blockId}.json`, JSON.stringify(saveData, null, 2));
+                    }else{
+                        const saveData = { ogTitle,ogDescription,ogSiteName,ogUrl, favicon };
+                        const isAllUndefined = Object.values(saveData).every(value => value === undefined);
+                        if(isAllUndefined){
+                            fs.writeFileSync(`./public/notion_data/eachPage/${slug}/ogsData/${block.blockId}.json`, JSON.stringify(result, null, 2));
+                        }else{
+                            fs.writeFileSync(`./public/notion_data/eachPage/${slug}/ogsData/${block.blockId}.json`, JSON.stringify(saveData, null, 2));
+                        }
+                    }
+                }catch(e){console.warn(`⚠️ Open Graphの取得に失敗: ${e}`);}
             }
         }
         if (block.type === 'child_page' && block.children.length > 0) {
-            await fetchAllMdBlock(block.children);
+            await fetchAllMdBlock(block.children,slug);
         }
     }
 };
+
+function mkdir(dirPath){
+    if (!fs.existsSync(dirPath)) {
+        fs.mkdirSync(dirPath, { recursive: true });
+        console.log('📁 ディレクトリを作成しました:', dirPath);
+    } else {
+        console.log('✅ すでに存在しています:', dirPath);
+    }
+}
 
 function clearDirectorySync(dirPath) {
     try {
@@ -136,10 +178,7 @@ function clearDirectorySync(dirPath) {
 }
 
 const rm_data_list = [
-    "./public/notion_data/icon",
     "./public/notion_data/eachPage",
-    "./public/notion_data/ogsData",
-    "./public/notion_data/page_image"
 ];
 
 function clearAllDirectories() {
@@ -148,16 +187,26 @@ function clearAllDirectories() {
     }
 }
 
-clearAllDirectories()
+// clearAllDirectories()
 
-getAllData().then(data => {
-    fs.writeFileSync("./public/notion_data/notionDatabase.json", JSON.stringify(data, null, 2));
-    for (const d of data) {
-        downloadImage(d.icon, `./public/notion_data/icon/${d.slug}.png`).then(() =>
-            getSinglePage(d.slug).then(mdBlocks => {
-                fs.writeFileSync(`./public/notion_data/eachPage/${d.slug}.json`, JSON.stringify(mdBlocks, null, 2));
-                fetchAllMdBlock(mdBlocks);
-            })
-        );
-    }
-});
+getAllData()
+    .then(data => {
+        // fs.writeFileSync("./public/notion_data/notionDatabase.json", JSON.stringify(data, null, 2));
+        for (const d of data) {
+            downloadImage(d.icon, `./public/notion_data/eachPage/${d.slug}/icon.png`)
+                .then(() => getSinglePage(d.slug))
+                .then(mdBlocks => {
+                    fs.writeFileSync(`./public/notion_data/eachPage/${d.slug}/page.json`, JSON.stringify(mdBlocks, null, 2));
+                    const ogsDir = `./public/notion_data/eachPage/${d.slug}/ogsData/`;
+                    const imageDir = `./public/notion_data/eachPage/${d.slug}/image/`;
+                    mkdir(ogsDir);
+                    mkdir(imageDir);
+                    console.log(d.slug);
+                    return fetchAllMdBlock(mdBlocks, d.slug);
+                })
+                .catch(error => console.error(`❌ ${d.slug} の処理でエラー:`, error)); // 🔴 catch() 追加
+        }
+    })
+    .catch(error => console.error("❌ Notion API の取得でエラー:", error)); // 🔴 catch() 追加
+
+console.log("download completed");

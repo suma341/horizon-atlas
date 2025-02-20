@@ -30,13 +30,15 @@ export default function Bookmark(props: Props) {
         const data:ogsData = await res.json();
         console.log(data.favicon?.slice(0,8)==="https://")
         if(data.favicon?.slice(0,8)!=="https://"){
-          const url = data.ogUrl!;
+          let url = data.ogUrl!;
+          if(match)
+            url = match[0].slice(1,-1);
           const domain = new URL(url).origin;
           let datafa = data.favicon
           if(datafa!==undefined && datafa[0]!=="/"){
             datafa = "/" + datafa;
           }
-          const favi = domain + datafa;
+          const favi = data.favicon!==undefined ? domain + datafa : undefined;
           setOgpData({
             ogTitle: data.ogTitle,
             ogDescription: data.ogDescription,
