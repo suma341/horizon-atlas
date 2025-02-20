@@ -36,7 +36,7 @@ function UserBlock() {
                   event.stopPropagation(); // クリックイベントの伝播を防ぐ
                   setIsVisible((prev) => !prev); // 状態を切り替え
                 }} 
-                className='flex cursor-pointer gap-1.5 mt-2 border border-neutral-300 rounded p-1'>
+                className='flex cursor-pointer gap-1.5 border border-neutral-300 rounded p-1'>
                 <div>
                     <Image width={20} height={20} 
                     src={user?.picture || ""} alt={''}

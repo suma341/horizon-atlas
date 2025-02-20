@@ -13,7 +13,6 @@ type LayoutProps = {
   children: ReactNode;
   headerProps: {
     pageNavs: pageNav[];
-    searchKeyWord?: string;
     allTags: string[];
   };
   sideNavProps?: {
@@ -60,12 +59,12 @@ const Layout: React.FC<LayoutProps> = ({ children, headerProps, sideNavProps }) 
         <Head>
           <title>Horizon Atlas</title>
         </Head>
-        <Sidebar openbar={openbar} setOpenbar={setOpenbar} allTags={headerProps.allTags} pageNav={sideNavProps} />
+        <Sidebar openbar={openbar} setOpenbar={setOpenbar} pageNav={sideNavProps} />
         <div
           className="fixed top-0 z-50 w-full duration-500"
           style={isVisible ? { transform: "translateY(0px)" } : { transform: "translateY(-65%)" }}
         >
-          <Header searchKeyWord={headerProps.searchKeyWord} setOpenbar={setOpenbar} />
+          <Header setOpenbar={setOpenbar} />
           <Navbar pageNavs={headerProps.pageNavs} />
         </div>
         <div className="bg-gray-50">

@@ -1,15 +1,14 @@
 import Link from 'next/link';
 import React from 'react'
-import SearchField from './searchField/searchField';
 import HamburgerButton from './hamburgerButton./hamburgerButton';
 import UserIcon from './UserInfo/userIcon';
+import SearchIcon from './searchIcon/searchIcon';
 
 type Props={
-    searchKeyWord?:string;
     setOpenbar:React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function Header({searchKeyWord,setOpenbar}:Props){
+export default function Header({setOpenbar}:Props){
     
   return (
     <header className='w-full pb-1 bg-white'>
@@ -19,7 +18,7 @@ export default function Header({searchKeyWord,setOpenbar}:Props){
             </Link>
             <ul className="hidden md:flex items-center text-sm pt-2 duration-100">
                 <li className="mr-4">
-                    <SearchField searchKeyWord={searchKeyWord || ''} />
+                    <SearchIcon />
                 </li>
                 <li>
                     <UserIcon />

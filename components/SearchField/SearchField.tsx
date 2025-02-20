@@ -3,11 +3,11 @@ import React, { useState } from 'react';
 import { IoIosSearch } from 'react-icons/io';
 
 type Props = {
-    searchKeyWord: string;
+    searchKeyWord?: string;
 };
 
 function SearchField({ searchKeyWord }: Props) {
-    const [keyWord, setKeyWord] = useState<string>(searchKeyWord);
+    const [keyWord, setKeyWord] = useState<string>(searchKeyWord || "");
     const [isComposing, setIsComposing] = useState<boolean>(false);
 
     const router = useRouter();

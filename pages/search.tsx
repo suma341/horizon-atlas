@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import path from "path";
 import { useEffect, useState } from "react";
 import fs from "fs";
+import SearchField from "@/components/SearchField/SearchField";
 
 type Props = {
   allTags:string[];
@@ -44,10 +45,12 @@ export default function SearchPage({allTags, posts}:Props) {
   console.log(query);
   
   return (
-    <Layout headerProps={{pageNavs:[HOME_NAV,SEARCH_NAV],searchKeyWord:query,allTags}}>
+    <Layout headerProps={{pageNavs:[HOME_NAV,SEARCH_NAV],allTags}}>
       <div className="pt-20">
         <main className="w-full mt-16 px-8">
           <div>
+            <SearchField searchKeyWord={query} />
+            <div className="h-5"></div>
             <Tags allTags={allTags} />
             <div className="mt-5" />
             {matchPosts.length!==0 && matchPosts.map((post,i)=>
