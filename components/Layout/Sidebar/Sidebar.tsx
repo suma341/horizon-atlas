@@ -46,7 +46,7 @@ function Sidebar({openbar,setOpenbar,pageNav}:Props) {
                         </li>
                         <li className='mt-3 hover:bg-neutral-100'>
                             <Link href={'/search'}>
-                                <div className='flex items-center justify-between mr-5 py-2 px-5'>
+                                <div className='flex items-center justify-between mr-5 py-2 px-2'>
                                     <IoIosSearch size={25} className='text-neutral-600' />
                                     <div className='text-neutral-500 font-bold'>
                                         カリキュラム検索
