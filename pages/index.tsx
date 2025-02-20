@@ -26,8 +26,11 @@ export default function Home() {
         <section className="text-center py-16">
           <h2 className="text-4xl font-bold text-gray-800">Welcome to HorizonAtlas</h2>
           <p className="text-gray-600 mt-4">プログラミング部Horizonで使用する学習資料を簡単に閲覧、検索できます。</p>
-          <div className="mt-8">
+          <div className="mt-8 flex justify-center">
             <AuthButton />
+          </div>
+          <div className='mt-1 flex justify-center text-xs text-neutral-500'>
+            ⚠️Horizonサーバーのメンバーアカウントのみログインできます
           </div>
         </section>
 
