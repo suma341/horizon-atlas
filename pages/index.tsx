@@ -6,8 +6,9 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Head>
-        <title>Horizon TechShelf</title>
-        <meta name="description" content="Horizon TechShelf - 学習資料をまとめたWebアプリ" />
+        <title>HorizonAtlas</title>
+        <meta name="description" content="HorizonAtlas - Horizonの学習資料をまとめたWebアプリ" />
+        <meta property="og:image" content="/horizon-atlas/app_image.png"></meta>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
