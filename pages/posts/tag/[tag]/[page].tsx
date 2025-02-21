@@ -9,6 +9,8 @@ import Layout from "@/components/Layout/Layout";
 import fs from "fs";
 import path from "path";
 import Tags from "@/components/tag/Tags";
+import { RoleData } from "@/types/role";
+import { fetchRoleInfo } from "@/lib/fetchRoleInfo";
 
 type pagePath = {
     params: { tag:string, page:string }
@@ -44,6 +46,7 @@ type Props ={
     currentTag:string;
     currentPage:string;
     allTags:string[];
+    roleData:RoleData;
 }
 
 // getStaticProps関数
@@ -59,22 +62,24 @@ export const getStaticProps: GetStaticProps = async (context) => {
     // console.log(numberOfPages);
 
     const posts:PostMetaData[] = await getPostsByTagAndPage(currentTag, parseInt(currentPage, 10),allPosts);
+    const roleData = await fetchRoleInfo();
     return {
         props: {
           posts,
           numberOfPages,
           currentPage,
           currentTag,
-          allTags
+          allTags,
+          roleData
         },
         // revalidate: 600
     };
 };
 
-const blogTagPageList = ({ posts,numberOfPages,currentPage, currentTag,allTags}: Props)=> {
+const blogTagPageList = ({ posts,numberOfPages,currentPage, currentTag,allTags,roleData}: Props)=> {
     const tagSearchNav:pageNav = {title:`タグ検索：${currentTag}`,id:`/posts/tag/${currentTag}/${currentPage}`};
     return (
-        <Layout headerProps={{pageNavs:[HOME_NAV,tagSearchNav],allTags:allTags}}>
+        <Layout headerProps={{pageNavs:[HOME_NAV,tagSearchNav],allTags:allTags}} roleData={roleData}>
             <div className="h-full w-full mx-auto font-mono">
                 <main className="mt-20 mx-5 md:mx-16 mb-3 pt-4">
                     <Tags allTags={allTags} />

@@ -18,10 +18,13 @@ type Props = {
   mdBlocks:MdBlock[];
   pageNavs:pageNav[];
   allTags:string[];
+  roleData:RoleData;
 };
 
 import fs from "fs";
 import path from "path";
+import { fetchRoleInfo } from '@/lib/fetchRoleInfo';
+import { RoleData } from '@/types/role';
 
 export const getStaticPaths = async () => {
   const filePath = path.join(process.cwd(), "public", "notion_data", "notionDatabase.json");
@@ -70,21 +73,22 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     : post.metadata.category === ""
     ? [HOME_NAV, postNav]
     : [HOME_NAV, courseNav, postNav];
-
+  const roleData = await fetchRoleInfo();
   return {
     props: {
       metadata: post.metadata,
       mdBlocks: post.mdBlocks,
       pageNavs,
       allTags,
+      roleData
     },
   };
 };
 
 
-const Post =({ metadata, mdBlocks,pageNavs,allTags }: Props) => {
+const Post =({ metadata, mdBlocks,pageNavs,allTags,roleData }: Props) => {
   return (
-    <Layout headerProps={{pageNavs,allTags}}>
+    <Layout headerProps={{pageNavs,allTags}} roleData={roleData}>
       <div className='p-4 pt-24 pb-8'>
       <section className='p-5 bg-white pb-10'>
         <div className='flex'>

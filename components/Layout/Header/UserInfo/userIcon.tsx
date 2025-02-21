@@ -2,13 +2,27 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useAuth0 } from "@auth0/auth0-react";
 import { PiSignOut } from "react-icons/pi";
+import { RoleData } from "@/types/role";
+import { getUsersRole } from "@/lib/getUsersRole";
+import { CustomUser } from "@/global";
 
-export default function UserIcon() {
+type Props={
+  roleData:RoleData;
+}
+
+export default function UserIcon({roleData}:Props) {
   const { user,logout } = useAuth0();
   
   const [isVisible, setIsVisible] = useState(false); // トグルの状態を管理
   const toggleRef = useRef<HTMLDivElement>(null); // toggle要素への参照
   const toggleTargetRef = useRef<HTMLDivElement>(null); // toggleTarget要素への参照
+  const [usersRole,setUsersRole]=useState("");
+
+  useEffect(()=>{
+    const customUser = user as CustomUser;
+    const usersRole = getUsersRole(customUser, roleData);
+    setUsersRole(usersRole);
+  },[user])
 
   // ドキュメント全体のクリックを監視
   useEffect(() => {
@@ -43,11 +57,15 @@ export default function UserIcon() {
             }}
             className="cursor-pointer flex rounded-lg shadow-lx  hover:translate-y-1 hover:opacity-85 duration-200">
               <Image src={user?.picture || ""} alt="UserIcon" width={10} height={10}  className="h-auto w-9 rounded-full"/>
+              <div className="mt-0.5 ml-0.5">
+                <p className='text-xs text-neutral-500'>{user?.name}</p>
+                <p className="text-xs text-neutral-500">{usersRole}</p>
+              </div>
             </div>
             {isVisible && (
               <div
                 id="toggleTarget" ref={toggleTargetRef}
-                className="z-50 border-solid border-neutral-300 border-2 absolute bg-white p-2 rounded-md w-32 translate-y-1 translate-x-[-65%]">
+                className="z-50 border-solid border-neutral-300 border-2 absolute bg-white p-2 rounded-md w-32 translate-y-1 translate-x-[-15%]">
                 <ul>
                     <button onClick={() => logout({logoutParams:{returnTo:process.env.NEXT_PUBLIC_ROOT_PATH!}})} className="flex relative hover:bg-slate-200 rounded-sm p-1 pr-2">
                       <PiSignOut size={18} className="mt-0.5 mr-1.5 text-neutral-600" />

@@ -15,6 +15,7 @@ type Props = {
   childNavs:pageNav[];
   slug:string;
   allTags:string[];
+  roleData:RoleData;
 };
 
 type pagePath = {
@@ -23,6 +24,8 @@ type pagePath = {
 
 import path from 'path';
 import fs from "fs";
+import { fetchRoleInfo } from '@/lib/fetchRoleInfo';
+import { RoleData } from '@/types/role';
 
 export const getStaticPaths = async () => {
   const filePath = path.join(process.cwd(), "public", "notion_data", "notionDatabase.json");
@@ -96,7 +99,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
         child:true,
       }
     })
-
+    const roleData = await fetchRoleInfo();
     return {
         props: {
             mdBlocks:currentchild,
@@ -104,17 +107,18 @@ export const getStaticProps: GetStaticProps = async (context) => {
             parentTitle:post.metadata.title,
             childNavs,
             slug:currentSlug,
-            allTags
+            allTags,
+            roleData
         },
         // revalidate: 300
     };
 };
 
 const PostChildPage = ( props : Props) => {
-    const {mdBlocks, pageNavs,parentTitle,childNavs,slug,allTags} = props;
+    const {mdBlocks, pageNavs,parentTitle,childNavs,slug,allTags,roleData} = props;
 
     return (
-      <Layout headerProps={{pageNavs:pageNavs,allTags}} sideNavProps={{title:parentTitle,slug,childPages:childNavs}}>
+      <Layout headerProps={{pageNavs:pageNavs,allTags}} sideNavProps={{title:parentTitle,slug,childPages:childNavs}} roleData={roleData}>
         <div className='mt-24'>
           <section className="p-5 pb-10 md:w-3/4 bg-white">
             <h2 className="w-full text-2xl font-medium">

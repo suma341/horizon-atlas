@@ -8,6 +8,8 @@ import { pageNav } from "@/types/pageNav";
 import Layout from "@/components/Layout/Layout";
 import fs from "fs";
 import path from "path";
+import { RoleData } from "@/types/role";
+import { fetchRoleInfo } from "@/lib/fetchRoleInfo";
 
 type pagePath = {
     params: { course:string, page:string }
@@ -44,6 +46,7 @@ type Props={
     currentCourse:string;
     pageNavs:pageNav[];
     allTags:string[];
+    roleData:RoleData;
 }
 
 // getStaticProps関数
@@ -62,6 +65,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     // console.log(numberOfPages);
 
     const posts:PostMetaData[] = await getPostsByCourseAndPage(currentCourse, parseInt(currentPage, 10),allPosts);
+    const roleData = await fetchRoleInfo();
     return {
         props: {
           posts,
@@ -70,13 +74,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
           currentCourse,
           pageNavs,
           allTags,
+          roleData
         },
     };
 };
 
-const CoursePage = ({ posts,numberOfPages,currentPage, currentCourse,pageNavs,allTags}: Props)=> {
+const CoursePage = ({ posts,numberOfPages,currentPage, currentCourse,pageNavs,allTags,roleData}: Props)=> {
     return (
-        <Layout headerProps={{pageNavs,allTags:allTags}}> 
+        <Layout headerProps={{pageNavs,allTags:allTags}} roleData={roleData}> 
             <div className="h-full w-full mx-auto font-mono pt-20">
                 <main className="w-full mt-16 mb-3">
                     <h1 className="text-5xl font-medium text-center mb-16">{currentCourse}</h1>

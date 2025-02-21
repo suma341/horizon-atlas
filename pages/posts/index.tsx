@@ -9,6 +9,8 @@ import path from "path";
 import fs from "fs";
 import SearchField from "@/components/SearchField/SearchField";
 import Tags from "@/components/tag/Tags";
+import { RoleData } from "@/types/role";
+import { fetchRoleInfo } from "@/lib/fetchRoleInfo";
 
 type Props = {
   courseAndPosts:{
@@ -16,6 +18,7 @@ type Props = {
     posts:PostMetaData[];
   }[];
   allTags:string[];
+  roleData:RoleData;
 };
 
 export const getStaticProps: GetStaticProps = async () => {
@@ -33,18 +36,21 @@ export const getStaticProps: GetStaticProps = async () => {
     }
   }))
   const allTags = await getAllTags(allPosts);
+  const roleData:RoleData = await fetchRoleInfo();
   return {
       props: {
         courseAndPosts,
-        allTags
+        allTags,
+        roleData
       },
       // revalidate: 600
   };
 };
 
-const PostsPage = ({ courseAndPosts,allTags }: Props)=> {
+const PostsPage = ({ courseAndPosts,allTags,roleData }: Props)=> {
+  console.log(roleData)
     return (
-      <Layout headerProps={{pageNavs:[HOME_NAV],allTags:allTags}}>  
+      <Layout headerProps={{pageNavs:[HOME_NAV],allTags:allTags}} roleData={roleData}>  
         <div className="bg-gradient-to-b from-gray-50 to-white min-h-screen">
           <div className="container max-w-screen-lg mx-auto font-mono pt-20 px-5">
             <main className="mt-16 mb-3 flex flex-col gap-5">

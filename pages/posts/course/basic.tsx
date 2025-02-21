@@ -6,6 +6,8 @@ import { PostMetaData } from "@/types/postMetaData";
 import type { GetStaticProps,} from "next";
 import fs from "fs";
 import path from "path";
+import { RoleData } from "@/types/role";
+import { fetchRoleInfo } from "@/lib/fetchRoleInfo";
 
 type Props={
     courseAndPosts: {
@@ -13,6 +15,7 @@ type Props={
         posts: PostMetaData[];
     }[];
     allTags:string[];
+    roleData:RoleData;
 }
 
 // getStaticProps関数
@@ -30,18 +33,20 @@ export const getStaticProps: GetStaticProps = async () => {
             posts
         }
     }))
+    const roleData = await fetchRoleInfo();
 
     return {
         props: {
             courseAndPosts,
-            allTags
+            allTags,
+            roleData
         },
     };
 };
 
-const blogTagPageList = ({courseAndPosts,allTags}: Props)=> {
+const blogTagPageList = ({courseAndPosts,allTags,roleData}: Props)=> {
     return (
-        <Layout headerProps={{pageNavs:[HOME_NAV,BASIC_NAV],allTags}}>
+        <Layout headerProps={{pageNavs:[HOME_NAV,BASIC_NAV],allTags}} roleData={roleData}>
             <div className="h-full w-full mx-auto font-mono pt-20 ">
                 <main className="w-full mt-16 mb-3">
                     <h1 className="text-5xl font-medium text-center mb-16">基礎班カリキュラム</h1>

@@ -8,6 +8,7 @@ import Navbar from "./Navbar/navbar";
 import Sidebar from "./Sidebar/Sidebar";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useRouter } from "next/router";
+import { RoleData } from "@/types/role";
 
 type LayoutProps = {
   children: ReactNode;
@@ -20,9 +21,10 @@ type LayoutProps = {
     slug: string;
     childPages: pageNav[];
   };
+  roleData:RoleData;
 };
 
-const Layout: React.FC<LayoutProps> = ({ children, headerProps, sideNavProps }) => {
+const Layout: React.FC<LayoutProps> = ({ children, headerProps, sideNavProps,roleData }) => {
   const [isVisible, setIsVisible] = useState(true); // ヘッダーの表示状態
   const [lastScrollY, setLastScrollY] = useState(0); // 最後のスクロール位置
   const [openbar, setOpenbar] = useState(false);
@@ -59,12 +61,12 @@ const Layout: React.FC<LayoutProps> = ({ children, headerProps, sideNavProps }) 
         <Head>
           <title>Horizon Atlas</title>
         </Head>
-        <Sidebar openbar={openbar} setOpenbar={setOpenbar} pageNav={sideNavProps} />
+        <Sidebar openbar={openbar} setOpenbar={setOpenbar} pageNav={sideNavProps} roleData={roleData} />
         <div
           className="fixed top-0 z-50 w-full duration-500"
           style={isVisible ? { transform: "translateY(0px)" } : { transform: "translateY(-65%)" }}
         >
-          <Header setOpenbar={setOpenbar} />
+          <Header setOpenbar={setOpenbar} roleData={roleData} />
           <Navbar pageNavs={headerProps.pageNavs} />
         </div>
         <div className="bg-gray-50">

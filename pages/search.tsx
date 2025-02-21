@@ -11,10 +11,13 @@ import path from "path";
 import { useEffect, useState } from "react";
 import fs from "fs";
 import SearchField from "@/components/SearchField/SearchField";
+import { RoleData } from "@/types/role";
+import { fetchRoleInfo } from "@/lib/fetchRoleInfo";
 
 type Props = {
   allTags:string[];
   posts:PostMetaData[];
+  roleData:RoleData;
 }
 
 export const getStaticProps: GetStaticProps = async () => {
@@ -23,15 +26,17 @@ export const getStaticProps: GetStaticProps = async () => {
   const allPosts: PostMetaData[] = JSON.parse(jsonData);
   // const allPosts:PostMetaData[] = await getAllPosts();
   const allTags:string[] = await getAllTags(allPosts);
+  const roleData = await fetchRoleInfo();
   return {
     props:{
       allTags,
       posts:allPosts,
+      roleData
     },
   }
 }
 
-export default function SearchPage({allTags, posts}:Props) {
+export default function SearchPage({allTags, posts,roleData}:Props) {
   const [matchPosts, setMatchPosts] = useState<PostMetaData[]>(posts);
   const router = useRouter();
   const query = router.query.search!==undefined ? router.query.search as string : undefined;
@@ -45,7 +50,7 @@ export default function SearchPage({allTags, posts}:Props) {
   console.log(query);
   
   return (
-    <Layout headerProps={{pageNavs:[HOME_NAV,SEARCH_NAV],allTags}}>
+    <Layout headerProps={{pageNavs:[HOME_NAV,SEARCH_NAV],allTags}} roleData={roleData}>
       <div className="pt-20">
         <main className="w-full mt-16 px-8">
           <div>

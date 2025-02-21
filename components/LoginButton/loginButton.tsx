@@ -25,7 +25,6 @@ export default function AuthButton() {
         }
       }
       checkGuild();
-      console.log(user)
     }
   },[isAuthenticated])
 
@@ -34,14 +33,6 @@ export default function AuthButton() {
       router.push("/posts")
     }
   },[allowed])
-
-  if(isAuthenticated){
-    return(<button onClick={()=>{
-      logout({logoutParams:{returnTo:redirectUri}})
-    }}>
-      ログアウト
-    </button>)
-  }
 
   return (
     <div className="">

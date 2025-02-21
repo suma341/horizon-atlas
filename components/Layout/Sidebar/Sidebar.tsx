@@ -1,8 +1,12 @@
-import React from 'react';
+import React,{useEffect, useState} from 'react';
 import { pageNav } from '@/types/pageNav';
 import Link from 'next/link';
 import UserBlock from '../Header/UserInfo/userBlock';
 import { IoIosSearch } from 'react-icons/io';
+import { RoleData } from '@/types/role';
+import { useAuth0 } from '@auth0/auth0-react';
+import { CustomUser } from '@/global';
+import { getUsersRole } from '@/lib/getUsersRole';
 
 type Props={
     openbar:boolean;
@@ -12,9 +16,18 @@ type Props={
         slug:string;
         childPages:pageNav[];
     }
+    roleData:RoleData;
 }
 
-function Sidebar({openbar,setOpenbar,pageNav}:Props) {
+function Sidebar({openbar,setOpenbar,pageNav,roleData}:Props) {
+    const { user } = useAuth0();
+    const [role,setRole] = useState("");
+
+    useEffect(()=>{
+        const customUser = user as CustomUser;
+        const usersRole = getUsersRole(customUser, roleData);
+        setRole(usersRole);
+    },[user])
 
     const getPageHeight = () => {
         if(window!==undefined){
@@ -34,7 +47,7 @@ function Sidebar({openbar,setOpenbar,pageNav}:Props) {
                 </div>}
                 <div className='fixed w-7/12 top-0 right-0 block md:hidden bg-white duration-700 h-screen'
                 style={openbar ? { transform: "translateX(0px)", zIndex: "9999" } : { transform: "translateX(130%)" }}>
-                <div className="h-full overflow-y-auto p-5">
+                <div className="h-full overflow-y-auto p-3">
                     <ul>
                         <li className='flex items-center justify-between mr-5'>
                             <div></div>
@@ -42,7 +55,10 @@ function Sidebar({openbar,setOpenbar,pageNav}:Props) {
                         </li>
                         <li className='flex items-center justify-between mr-5 mt-3'>
                             <div></div>
-                            <UserBlock />
+                            <div className='flex'>
+                                <p className='mr-3 mt-3 text-neutral-500'>{role}</p>
+                                <UserBlock />
+                            </div>
                         </li>
                         <li className='mt-3 hover:bg-neutral-100'>
                             <Link href={'/search'}>
