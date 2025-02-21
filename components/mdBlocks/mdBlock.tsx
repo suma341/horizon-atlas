@@ -59,7 +59,7 @@ export default function MdBlockComponent(props:Props) {
     }else if(mdBlock.type === 'toggle'){
         return <ToggleBlock slug={slug} mdBlock={mdBlock} depth={depth} />
     }else if(mdBlock.type === 'embed'){
-        return <EmbedBlock mdBlock={mdBlock} depth={depth} />
+        return <EmbedBlock mdBlock={mdBlock} depth={depth} slug={slug} />
     }else if(mdBlock.type==='link_to_page'){
         return <Link_to_page mdBlock={mdBlock} />
     }else if(mdBlock.type==='table_of_contents'){

@@ -108,6 +108,7 @@ const Post =({ metadata, mdBlocks,pageNavs,allTags }: Props) => {
           </div>
       </section>
       </div>
+      <script async src="//cdn.iframe.ly/embed.js"></script>
     </Layout>
   )
 }

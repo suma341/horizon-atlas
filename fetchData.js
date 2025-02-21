@@ -9,6 +9,8 @@ import "dotenv/config"
 const NOTION_TOKEN = process.env.NOTION_TOKEN;
 const NOTION_DATABASE_ID = process.env.NOTION_DATABASE_ID;
 
+const IFRAMELY_API_KEY = process.env.IFRAMELY_API_KEY;
+
 const notion = new Client({ auth: NOTION_TOKEN });
 const n2m = new NotionToMarkdown({ notionClient: notion });
 
@@ -80,12 +82,14 @@ const downloadImage = async (imageUrl, savePath) => {
     }
 };
 
-async function isPathOk(url) {
-    try {
-        const res = await fetch(url, { method: "HEAD" }); // HEAD を使うとデータ取得せずに済む
-        return res.ok; // 200〜299 の場合は true、それ以外は false
-    } catch (error) {
-        return false; // ネットワークエラーなどが発生した場合は false
+async function useIframely(url) {
+    try{
+        const res = await fetch(`https://iframe.ly/api/oembed?url=${url}&api_key=${IFRAMELY_API_KEY}`);
+        const data = await res.json();
+        return data;
+    }catch(e){
+        console.warn(e);
+        return;
     }
 }
 
@@ -144,6 +148,17 @@ const fetchAllMdBlock = async (mdBlocks,slug) => {
                 }catch(e){console.warn(`⚠️ Open Graphの取得に失敗: ${e}`);}
             }
         }
+        if(block.type==="embed"){
+            const match = block.parent.match(/\((.*?)\)/g);
+            if(match){
+                const url = match[0].slice(1, -1);
+                const embedData = await useIframely(url);
+                if(embedData){
+                    const saveData = {title:embedData.title, html:embedData.html}
+                    fs.writeFileSync(`./public/notion_data/eachPage/${slug}/iframeData/${block.blockId}.json`, JSON.stringify(saveData, null, 2));
+                }
+            }
+        }
         if (block.type === 'child_page' && block.children.length > 0) {
             await fetchAllMdBlock(block.children,slug);
         }
@@ -199,8 +214,10 @@ getAllData()
                     fs.writeFileSync(`./public/notion_data/eachPage/${d.slug}/page.json`, JSON.stringify(mdBlocks, null, 2));
                     const ogsDir = `./public/notion_data/eachPage/${d.slug}/ogsData/`;
                     const imageDir = `./public/notion_data/eachPage/${d.slug}/image/`;
+                    const iframeDir = `./public/notion_data/eachPage/${d.slug}/iframeData/`;
                     mkdir(ogsDir);
                     mkdir(imageDir);
+                    mkdir(iframeDir);
                     console.log(d.slug);
                     return fetchAllMdBlock(mdBlocks, d.slug);
                 })
