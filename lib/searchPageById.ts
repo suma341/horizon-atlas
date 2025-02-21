@@ -11,7 +11,6 @@ type Page ={
 export async function searchPageById(id:string):Promise<Page>{
     const res_posts = await fetch("/horizon-atlas/notion_data/notionDatabase.json");
     const posts:PostMetaData[] = await res_posts.json();
-    console.log(posts)
     for(const post of posts){
         if(id === post.id || id===post.id.replaceAll("-", "")){
             return {

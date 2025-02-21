@@ -20,8 +20,6 @@ export const searchByKeyWord = (keyWords: string[],allPosts: PostMetaData[]) => 
                 score = score + (stringSimilarity.compareTwoStrings(normalize(tag),normalizedWord));
             }
         }
-        console.log(post.title);
-        console.log(score);
         return { post, score };
     });
 
