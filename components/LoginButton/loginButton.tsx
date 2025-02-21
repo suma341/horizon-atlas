@@ -16,6 +16,7 @@ export default function AuthButton() {
     if(isAuthenticated){
       const checkGuild = async()=>{
         const isMember = customUser.profile
+        console.log("roles",customUser.given_name);
         if (!isMember) {
           alert("Horizonメンバーアカウントのみログインできます");
           logout({ logoutParams: { returnTo: redirectUri } });
