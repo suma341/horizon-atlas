@@ -22,8 +22,9 @@ type Props={
 export const getStaticProps: GetStaticProps = async () => {
     const filePath = path.join(process.cwd(), "public", "notion_data", "notionDatabase.json");
     const jsonData = fs.readFileSync(filePath, "utf8");
-    const allPosts: PostMetaData[] = JSON.parse(jsonData);
-    // const allPosts = await getAllPosts();
+    const parsedData = JSON.parse(jsonData);
+
+    const allPosts: PostMetaData[] = Array.isArray(parsedData) ? parsedData : parsedData.posts || [];
     const allTags = await getAllTags(allPosts);
     const basicCourse = await getEitherCourses(true,allPosts);
     const courseAndPosts = await Promise.all(basicCourse.map(async(course)=>{

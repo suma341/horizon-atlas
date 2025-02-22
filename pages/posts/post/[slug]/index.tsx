@@ -54,10 +54,11 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const postData = fs.readFileSync(postPath, "utf8");
   const mdBlocks:MdBlock[] = JSON.parse(postData);
 
-  // 全ポストのJSONを読み込む
-  const allPostsPath = path.join(process.cwd(), "public", "notion_data", "notionDatabase.json");
-  const allPostsData = fs.readFileSync(allPostsPath, "utf8");
-  const allPosts: PostMetaData[] = JSON.parse(allPostsData);
+  const filePath = path.join(process.cwd(), "public", "notion_data", "notionDatabase.json");
+  const jsonData = fs.readFileSync(filePath, "utf8");
+  const parsedData = JSON.parse(jsonData);
+
+  const allPosts: PostMetaData[] = Array.isArray(parsedData) ? parsedData : parsedData.posts || [];
   const singlePost = allPosts.filter(item=>item.slug===slug);
   const post:post = {
     metadata:singlePost[0],

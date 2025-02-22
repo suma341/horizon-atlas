@@ -30,8 +30,9 @@ import { RoleData } from '@/types/role';
 export const getStaticPaths = async () => {
   const filePath = path.join(process.cwd(), "public", "notion_data", "notionDatabase.json");
   const jsonData = fs.readFileSync(filePath, "utf8");
-  const allPosts: PostMetaData[] = JSON.parse(jsonData);
-  // const allPosts: PostMetaData[] = await getAllPosts();
+  const parsedData = JSON.parse(jsonData);
+
+  const allPosts: PostMetaData[] = Array.isArray(parsedData) ? parsedData : parsedData.posts || [];
   const paths: pagePath[] = (
     await Promise.all(
       allPosts.map(async (post) => {
