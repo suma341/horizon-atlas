@@ -66,7 +66,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   const allTags = await getAllTags(allPosts);
 
-  const courseNav: pageNav = { title: post.metadata.category, id: `/posts/course/${post.metadata.category}/1` };
+  const courseNav: pageNav = { title: post.metadata.category, id: `/posts/course/${post.metadata.category}` };
   const postNav: pageNav = { title: post.metadata.title, id: `/posts/post/${slug}` };
   const pageNavs: pageNav[] = post.metadata.is_basic_curriculum
     ? [HOME_NAV, BASIC_NAV, courseNav, postNav]

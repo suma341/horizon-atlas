@@ -26,7 +26,7 @@ function Tags({ allTags }: Props) {
             <div className="font-semibold text-gray-800 mb-4 text-lg">タグ検索</div>
             <div className="flex flex-wrap gap-2">
                 {(visible ? allTags : allTags.slice(0, Math.trunc(windowWidth / 100))).map((tag, i) => (
-                    <Link key={i} href={`/posts/tag/${tag}/1`}>
+                    <Link key={i} href={`/posts/tag/${tag}`}>
                         <span className="px-3 py-1 text-sm bg-gray-100 text-gray-800 rounded-full cursor-pointer hover:bg-gray-200 transition-all">
                             {tag}
                         </span>

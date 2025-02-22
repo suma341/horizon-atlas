@@ -2,7 +2,7 @@ import type { GetStaticProps } from "next";
 import SinglePost from "@/components/Post/SinglePost";
 import { PostMetaData } from "@/types/postMetaData";
 import Pagenation from "@/components/pagenation/Pagenation";
-import { getAllTags, getNumberOfPages, getPostsByTagAndPage } from "@/lib/services/notionApiService";
+import { calculatePageNumber, getAllTags, getPostsByTag } from "@/lib/services/notionApiService";
 import { HOME_NAV } from "@/constants/pageNavs";
 import { pageNav } from "@/types/pageNav";
 import Layout from "@/components/Layout/Layout";
@@ -11,9 +11,11 @@ import path from "path";
 import Tags from "@/components/tag/Tags";
 import { RoleData } from "@/types/role";
 import { fetchRoleInfo } from "@/lib/fetchRoleInfo";
+import { useState } from "react";
+import { NUMBER_OF_POSTS_PER_PAGE } from "@/constants/constants";
 
 type pagePath = {
-    params: { tag:string, page:string }
+    params: { tag:string }
   }
 
 export const getStaticPaths = async() =>{
@@ -27,24 +29,19 @@ export const getStaticPaths = async() =>{
      const paramsList: pagePath[] = (
         await Promise.all(
             allTags.map(async (tag: string) => {
-                const numberOfPagesByTag = await getNumberOfPages(allPosts,tag);
-                return Array.from({ length: numberOfPagesByTag }, (_, i) => ({
-                    params: { tag: tag, page: (i + 1).toString() },
-                }));
+                return { params: { tag: tag } }
             })
         )
     ).flat();
     return {
         paths:paramsList,
-        fallback:'blocking'
+        fallback: "blocking",
     }
   }
 
 type Props ={
     posts:PostMetaData[];
-    numberOfPages:number;
     currentTag:string;
-    currentPage:string;
     allTags:string[];
     roleData:RoleData;
 }
@@ -54,37 +51,35 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const filePath = path.join(process.cwd(), "public", "notion_data", "notionDatabase.json");
     const jsonData = fs.readFileSync(filePath, "utf8");
     const allPosts: PostMetaData[] = JSON.parse(jsonData);
-    const currentPage:string = typeof context.params?.page == 'string' ? context.params.page : "1";
     const currentTag:string = typeof context.params?.tag == 'string' ? context.params.tag : "";
     // const allPosts = await getAllPosts();
     const allTags = await getAllTags(allPosts);
-    const numberOfPages:number = await getNumberOfPages(allPosts,currentTag);
     // console.log(numberOfPages);
 
-    const posts:PostMetaData[] = await getPostsByTagAndPage(currentTag, parseInt(currentPage, 10),allPosts);
+    const posts:PostMetaData[] = await getPostsByTag(currentTag, allPosts);
     const roleData = await fetchRoleInfo();
     return {
         props: {
           posts,
-          numberOfPages,
-          currentPage,
-          currentTag,
           allTags,
+          currentTag,
           roleData
         },
-        // revalidate: 600
     };
 };
 
-const blogTagPageList = ({ posts,numberOfPages,currentPage, currentTag,allTags,roleData}: Props)=> {
-    const tagSearchNav:pageNav = {title:`タグ検索：${currentTag}`,id:`/posts/tag/${currentTag}/${currentPage}`};
+const TagPageList = ({ posts, currentTag,allTags,roleData}: Props)=> {
+    const tagSearchNav:pageNav = {title:`タグ検索：${currentTag}`,id:`/posts/tag/${currentTag}`};
+    const [currentPage, setCurrentPage] = useState(1);
+    const numberOfPages = calculatePageNumber(posts);
+    const postsPerPage = NUMBER_OF_POSTS_PER_PAGE;
     return (
         <Layout headerProps={{pageNavs:[HOME_NAV,tagSearchNav],allTags:allTags}} roleData={roleData}>
             <div className="h-full w-full mx-auto font-mono">
                 <main className="mt-20 mx-5 md:mx-16 mb-3 pt-4">
                     <Tags allTags={allTags} />
                     <section className="pt-5">
-                        {posts.map((post:PostMetaData, i:number)=>(
+                        {posts.slice(postsPerPage * (currentPage - 1), postsPerPage * currentPage).map((post:PostMetaData, i:number)=>(
                         <div key={i}>
                             <SinglePost
                                 postData={post}
@@ -94,10 +89,10 @@ const blogTagPageList = ({ posts,numberOfPages,currentPage, currentTag,allTags,r
                         ))}
                     </section>
                 </main>
-                <Pagenation numberOfPage={numberOfPages} currentPage={currentPage} tag={currentTag} />
+                <Pagenation numberOfPage={numberOfPages} currentPage={currentPage} setPage={setCurrentPage} />
             </div>
         </Layout>
     );
 }
 
-export default blogTagPageList;
+export default TagPageList;

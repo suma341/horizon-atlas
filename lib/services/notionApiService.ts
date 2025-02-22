@@ -55,7 +55,7 @@ export const getPostsByPage=async(page:number,allPosts:PostMetaData[])=>{
     return allPosts.slice(startIndex, endIndex);
 };
 
-const calculatePageNumber = (posts:PostMetaData[]) => {
+export const calculatePageNumber = (posts:PostMetaData[]) => {
     const pageNumber = 
         (posts.length % NUMBER_OF_POSTS_PER_PAGE) != 0 ?
         Math.trunc(posts.length / NUMBER_OF_POSTS_PER_PAGE) + 1 :

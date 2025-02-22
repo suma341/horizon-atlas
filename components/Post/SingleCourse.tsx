@@ -14,7 +14,7 @@ const SingleCourse = ({ course, posts }: Props) => {
     const icons = getIconsByPosts(posts);
 
     return (
-        <Link href={`/posts/course/${course}/1`}>
+        <Link href={`/posts/course/${course}`}>
             <section className="bg-white border border-gray-200 rounded-md p-2 mb-4 mx-5 shadow-sm hover:bg-neutral-50 hover:shadow-md hover:-translate-y-1 transition-all duration-200">
                 <div className="flex justify-between items-center">
                     <h2 className="text-lg font-semibold text-gray-800">{course}</h2>
