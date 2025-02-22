@@ -14,6 +14,10 @@ const Pagenation =(props:Props)=> {
         pages.push(i + 1);
     }
 
+    if(numberOfPage===1){
+        return null;
+    }
+
     return (
         <section className='mb-12 lg:w-1/2 mx-auto rounded-md p-5'>
             <ul className='flex items-center justify-center gap-4'>
