@@ -4,8 +4,8 @@ interface Role {
 }
 
 export async function fetchRoleInfo(){
-    const BOT_TOKEN = process.env.BOT_TOKEN;
-    const GUILD_ID = process.env.NEXT_PUBLIC_GUILD_ID;
+    const BOT_TOKEN:string = process.env.BOT_TOKEN!;
+    const GUILD_ID:string = process.env.NEXT_PUBLIC_GUILD_ID!;
     const guildInfoUrl = `https://discord.com/api/guilds/${GUILD_ID}/roles`;
     const guildRequestOptions = {
       headers: {
@@ -14,6 +14,7 @@ export async function fetchRoleInfo(){
     };
     const res = await fetch(guildInfoUrl,guildRequestOptions);
     const guildInfo:Role[] = await res.json();
+    console.log("guildInfo",typeof guildInfo,guildInfo);
     const basic_group = guildInfo.filter(item=>item.name==="基礎班");
     const dev_group = guildInfo.filter(item=>item.name=="発展班");    
     return {

@@ -63,8 +63,6 @@ export const getStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async (context) => {
     const currentSlug = context.params?.slug as string;
     const childparam = (context.params?.childId as string[]) || [];
-    // const post = await getSinglePost(currentSlug);
-    // const allPosts = await getAllPosts();
     const postPath = path.join(process.cwd(), "public", "notion_data", "eachPage", `${currentSlug}`,"page.json");
     const postData = fs.readFileSync(postPath, "utf8");
     const mdBlocks:MdBlock[] = JSON.parse(postData);
@@ -115,7 +113,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
             allTags,
             roleData
         },
-        // revalidate: 300
     };
 };
 
