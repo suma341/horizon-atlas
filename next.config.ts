@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
     unoptimized: true,
   },
   reactStrictMode: true,
-  basePath: "/horizon-atlas", // GitHub Pages 用の Base Path（リポジトリ名にする）
+  basePath: "/horizon-atlas", 
   assetPrefix: "/horizon-atlas/",
 };
 

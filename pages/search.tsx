@@ -46,7 +46,7 @@ export default function SearchPage({allTags, posts,roleData}:Props) {
       const result = searchByKeyWord(searchKeyWords,posts)
       setMatchPosts(result)
     }
-  },[query])
+  },[query,posts])
   console.log(query);
   
   return (
