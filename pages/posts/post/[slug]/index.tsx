@@ -52,13 +52,17 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   // 各ページのJSONを読み込む
   const postPath = path.join(process.cwd(), "public", "notion_data", "eachPage", `${slug}`, "page.json");
   const postData = fs.readFileSync(postPath, "utf8");
-  const mdBlocks:MdBlock[] = JSON.parse(postData);
+  const parsedPostData = JSON.parse(postData);
+  const mdBlocks:MdBlock[] = Array.isArray(parsedPostData) ? parsedPostData : parsedPostData.posts || []
 
   const filePath = path.join(process.cwd(), "public", "notion_data", "notionDatabase.json");
   const jsonData = fs.readFileSync(filePath, "utf8");
   const parsedData = JSON.parse(jsonData);
 
   const allPosts: PostMetaData[] = Array.isArray(parsedData) ? parsedData : parsedData.posts || [];
+  if (!Array.isArray(allPosts)) {
+    throw new Error("notionDatabase.jsonのデータが配列ではありません！");
+  }
   const singlePost = allPosts.filter(item=>item.slug===slug);
   const post:post = {
     metadata:singlePost[0],

@@ -33,13 +33,17 @@ export const getStaticPaths = async () => {
   const parsedData = JSON.parse(jsonData);
 
   const allPosts: PostMetaData[] = Array.isArray(parsedData) ? parsedData : parsedData.posts || [];
+  if (!Array.isArray(allPosts)) {
+    throw new Error("notionDatabase.jsonのデータが配列ではありません！");
+  }
   const paths: pagePath[] = (
     await Promise.all(
       allPosts.map(async (post) => {
         // const postData = await getSinglePost(post.slug);
         const postPath = path.join(process.cwd(), "public", "notion_data", "eachPage", `${post.slug}`,"page.json");
         const postData = fs.readFileSync(postPath, "utf8");
-        const mdBlocks:MdBlock[] = JSON.parse(postData);
+        const parsedPostData = JSON.parse(postData);
+        const mdBlocks:MdBlock[] = Array.isArray(parsedPostData) ? parsedPostData : parsedPostData.posts || []
         const childPages = mdBlocks.filter((block)=>block.type==='child_page')
         return childPages.map((child) => ({
           params: {

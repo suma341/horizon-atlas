@@ -25,6 +25,9 @@ export const getStaticProps: GetStaticProps = async () => {
     const parsedData = JSON.parse(jsonData);
 
     const allPosts: PostMetaData[] = Array.isArray(parsedData) ? parsedData : parsedData.posts || [];
+    if (!Array.isArray(allPosts)) {
+        throw new Error("notionDatabase.jsonのデータが配列ではありません！");
+      }
     const allTags = await getAllTags(allPosts);
     const basicCourse = await getEitherCourses(true,allPosts);
     const courseAndPosts = await Promise.all(basicCourse.map(async(course)=>{

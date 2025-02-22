@@ -24,6 +24,9 @@ export const getStaticPaths = async() =>{
     const parsedData = JSON.parse(jsonData);
 
     const allPosts: PostMetaData[] = Array.isArray(parsedData) ? parsedData : parsedData.posts || [];
+    if (!Array.isArray(allPosts)) {
+        throw new Error("notionDatabase.jsonのデータが配列ではありません！");
+      }
 
     // const allPosts = await getAllPosts();
     const allTags = await getAllTags(allPosts);
