@@ -23,8 +23,14 @@ type Props = {
 export const getStaticProps: GetStaticProps = async () => {
   const filePath = path.join(process.cwd(), "public", "notion_data", "notionDatabase.json");
   const jsonData = fs.readFileSync(filePath, "utf8");
-  const allPosts: PostMetaData[] = JSON.parse(jsonData);
-  // const allPosts:PostMetaData[] = await getAllPosts();
+  const parsedData = JSON.parse(jsonData);
+
+  const allPosts: PostMetaData[] = Array.isArray(parsedData) ? parsedData : parsedData.posts || [];
+
+  if (!Array.isArray(allPosts)) {
+    throw new Error("notionDatabase.jsonのデータが配列ではありません！");
+  }
+
   const allTags:string[] = await getAllTags(allPosts);
   const roleData = await fetchRoleInfo();
   return {
@@ -33,8 +39,8 @@ export const getStaticProps: GetStaticProps = async () => {
       posts:allPosts,
       roleData
     },
-  }
-}
+  };
+};
 
 export default function SearchPage({allTags, posts,roleData}:Props) {
   const [matchPosts, setMatchPosts] = useState<PostMetaData[]>(posts);
