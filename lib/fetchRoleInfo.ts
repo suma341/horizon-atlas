@@ -14,7 +14,6 @@ export async function fetchRoleInfo(){
     };
     const res = await fetch(guildInfoUrl,guildRequestOptions);
     const guildInfo:Role[] = await res.json();
-    console.log("guildInfo",typeof guildInfo,guildInfo);
     const basic_group = guildInfo.filter(item=>item.name==="基礎班");
     const dev_group = guildInfo.filter(item=>item.name=="発展班");    
     return {
