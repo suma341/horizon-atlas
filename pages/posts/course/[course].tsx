@@ -11,7 +11,7 @@ import path from "path";
 import { RoleData } from "@/types/role";
 import { fetchRoleInfo } from "@/lib/fetchRoleInfo";
 import { useState } from "react";
-import { NUMBER_OF_POSTS_PER_PAGE } from "@/constants/constants";
+import { NUMBER_OF_POSTS_PER_PAGE } from "@/constants/numberOfPage";
 
 type pagePath = {
     params: { course:string }
