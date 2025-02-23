@@ -18,6 +18,11 @@ const Pagenation =(props:Props)=> {
         return null;
     }
 
+    function scrollToTop(page:number){
+        setPage(page);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
     return (
         <section className='mb-12 lg:w-1/2 mx-auto rounded-md p-5'>
             <ul className='flex items-center justify-center gap-4'>
@@ -30,7 +35,7 @@ const Pagenation =(props:Props)=> {
                 ):
                 (
                     <li className='rounded-lg w-6 h-8 relative shadow-xl' key={i}>
-                        <button onClick={()=>setPage(page)} className='absolute shadow-2xl top-2/4  left-1/4 -translate-y-2/4'>
+                        <button onClick={()=>scrollToTop(page)} className='absolute shadow-2xl top-2/4  left-1/4 -translate-y-2/4'>
                             {page}
                         </button>
                     </li>

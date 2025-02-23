@@ -16,7 +16,7 @@ function Navbar(props:Props) {
             <nav className='pl-4 bg-white duration-100 pt-1'>
                 {pageNavs.length>3 && <div className='flex'>
                     <div className='flex'>
-                        <Link href={pageNavs[0].id} className='pr-2 pt-0.5 pl-1 hover:bg-neutral-200 text-neutral-500'>
+                        <Link href={pageNavs[0].id} className='pr-2 py-0.5 pl-1 hover:bg-neutral-200 text-neutral-500'>
                             <IoHomeOutline size={18} />
                         </Link>
                         <p className='cursor-default text-neutral-500'>/</p>
