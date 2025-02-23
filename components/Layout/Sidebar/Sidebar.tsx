@@ -56,7 +56,7 @@ function Sidebar({openbar,setOpenbar,pageNav,roleData}:Props) {
                         <li className='flex items-center justify-between mr-5 mt-3'>
                             <div></div>
                             <div className='flex'>
-                                <p className='mr-1 mt-3 text-neutral-500'>{role}</p>
+                                <p className='mr-1 mt-3 text-neutral-500 text-sm'>{role}</p>
                                 <UserBlock />
                             </div>
                         </li>
