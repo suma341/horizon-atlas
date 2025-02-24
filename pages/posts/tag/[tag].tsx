@@ -11,20 +11,14 @@ import { RoleData } from "@/types/role";
 import { fetchRoleInfo } from "@/lib/fetchRoleInfo";
 import { useState } from "react";
 import { NUMBER_OF_POSTS_PER_PAGE } from "@/constants/numberOfPage";
-import { getCurriculum } from "@/lib/Gateways/CurriculumGateway";
+import { getAllCurriculum } from "@/lib/services/CurriculumService";
 
 type pagePath = {
     params: { tag:string }
   }
 
 export const getStaticPaths = async() =>{
-    const allPosts:PostMetaData[] = [];
-  const alldata = await getCurriculum();
-  for(const data of alldata){
-    const curriculumData = data.data;
-    const posts:PostMetaData = await JSON.parse(curriculumData);
-    allPosts.push(posts);
-  }
+    const allPosts:PostMetaData[] = await getAllCurriculum();
 
     // const allPosts = await getAllPosts();
     const allTags = await getAllTags(allPosts);
@@ -51,13 +45,7 @@ type Props ={
 
 // getStaticProps関数
 export const getStaticProps: GetStaticProps = async (context) => {
-    const allPosts:PostMetaData[] = [];
-    const alldata = await getCurriculum();
-    for(const data of alldata){
-        const curriculumData = data.data;
-        const posts:PostMetaData = await JSON.parse(curriculumData);
-        allPosts.push(posts);
-    }
+    const allPosts:PostMetaData[] = await getAllCurriculum();
     const currentTag:string = typeof context.params?.tag == 'string' ? context.params.tag : "";
     const allTags = await getAllTags(allPosts);
 

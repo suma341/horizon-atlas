@@ -6,7 +6,7 @@ import { PostMetaData } from "@/types/postMetaData";
 import type { GetStaticProps,} from "next";
 import { RoleData } from "@/types/role";
 import { fetchRoleInfo } from "@/lib/fetchRoleInfo";
-import { getCurriculum } from "@/lib/Gateways/CurriculumGateway";
+import { getAllCurriculum } from "@/lib/services/CurriculumService";
 
 type Props={
     courseAndPosts: {
@@ -19,13 +19,7 @@ type Props={
 
 // getStaticProps関数
 export const getStaticProps: GetStaticProps = async () => {
-    const allPosts:PostMetaData[] = [];
-    const alldata = await getCurriculum();
-    for(const data of alldata){
-        const curriculumData = data.data;
-        const posts:PostMetaData = await JSON.parse(curriculumData);
-        allPosts.push(posts);
-    }
+    const allPosts:PostMetaData[] = await getAllCurriculum();
     const allTags = await getAllTags(allPosts);
     const basicCourse = await getEitherCourses(true,allPosts);
     const courseAndPosts = await Promise.all(basicCourse.map(async(course)=>{

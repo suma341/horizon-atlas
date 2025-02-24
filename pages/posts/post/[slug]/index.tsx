@@ -10,8 +10,8 @@ import Image from 'next/image';
 import Layout from '@/components/Layout/Layout';
 import { fetchRoleInfo } from '@/lib/fetchRoleInfo';
 import { RoleData } from '@/types/role';
-import { getCurriculum } from '@/lib/Gateways/CurriculumGateway';
-import { getPageBySlug } from '@/lib/Gateways/PageGateway';
+import { getAllCurriculum } from '@/lib/services/CurriculumService';
+import { getPage } from '@/lib/services/PageService';
 
 type postPath = {
   params: { slug:string }
@@ -26,13 +26,7 @@ type Props = {
 };
 
 export const getStaticPaths = async () => {
-  const allPosts:PostMetaData[] = [];
-  const alldata = await getCurriculum();
-  for(const data of alldata){
-    const curriculumData = data.data;
-    const posts:PostMetaData = await JSON.parse(curriculumData);
-    allPosts.push(posts);
-  }
+  const allPosts:PostMetaData[] = await getAllCurriculum();
 
   const paths: postPath[] = allPosts.map(({ slug }) => {
     return { params: { slug: slug } };
@@ -52,16 +46,9 @@ type post ={
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const slug = params?.slug as string;
 
-  const targetPage = (await getPageBySlug(slug))[0].data;
-  const mdBlocks:MdBlock[] = await JSON.parse(targetPage);
+  const mdBlocks:MdBlock[] = await getPage(slug);
 
-  const allPosts:PostMetaData[] = [];
-  const alldata = await getCurriculum();
-  for(const data of alldata){
-    const curriculumData = data.data;
-    const posts:PostMetaData = await JSON.parse(curriculumData);
-    allPosts.push(posts);
-  }
+  const allPosts:PostMetaData[] = await getAllCurriculum();
 
   const singlePost = allPosts.filter(item=>item.slug===slug);
   const post:post = {

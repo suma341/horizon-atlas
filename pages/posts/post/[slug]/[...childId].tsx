@@ -9,8 +9,8 @@ import { GetStaticProps } from 'next';
 import { MdBlock } from 'notion-to-md/build/types';
 import { fetchRoleInfo } from '@/lib/fetchRoleInfo';
 import { RoleData } from '@/types/role';
-import { getCurriculum } from '@/lib/Gateways/CurriculumGateway';
-import { getPageBySlug } from '@/lib/Gateways/PageGateway';
+import { getAllCurriculum } from '@/lib/services/CurriculumService';
+import { getPage } from '@/lib/services/PageService';
 
 type Props = {
   mdBlocks:MdBlock[];
@@ -27,20 +27,12 @@ type pagePath = {
 }
 
 export const getStaticPaths = async () => {
-  const allPosts:PostMetaData[] = [];
-  const alldata = await getCurriculum();
-  for(const data of alldata){
-    const curriculumData = data.data;
-    const posts:PostMetaData = await JSON.parse(curriculumData);
-    allPosts.push(posts);
-  }
+  const allPosts:PostMetaData[] = await getAllCurriculum();
   
   const paths: pagePath[] = (
     await Promise.all(
       allPosts.map(async (post) => {
-        const targetData = await getPageBySlug(post.slug);
-        const pageData = targetData[0].data;
-        const mdBlocks:MdBlock[] = await JSON.parse(pageData);
+        const mdBlocks:MdBlock[] = await getPage(post.slug);
         const childPages = mdBlocks.filter((block)=>block.type==='child_page')
         return childPages.map((child) => ({
           params: {
@@ -60,16 +52,8 @@ export const getStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async (context) => {
     const currentSlug = context.params?.slug as string;
     const childparam = (context.params?.childId as string[]) || [];
-    const targetData = await getPageBySlug(currentSlug);
-    const pageData = targetData[0].data;
-    const mdBlocks:MdBlock[] = await JSON.parse(pageData);
-    const allPosts:PostMetaData[] = [];
-    const alldata = await getCurriculum();
-    for(const data of alldata){
-      const curriculumData = data.data;
-      const posts:PostMetaData = await JSON.parse(curriculumData);
-      allPosts.push(posts);
-    }
+    const mdBlocks:MdBlock[] = await getPage(currentSlug);
+    const allPosts:PostMetaData[] = await getAllCurriculum();
     const allTags = await getAllTags(allPosts);
     const singlePost = allPosts.filter(item=>item.slug===currentSlug)
     const post ={
