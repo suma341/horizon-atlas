@@ -5,12 +5,11 @@ import { HOME_NAV } from "@/constants/pageNavs";
 import {  getAllTags, getEitherCourses, getPostsByCourse } from "@/lib/services/notionApiService";
 import { PostMetaData } from "@/types/postMetaData";
 import { GetStaticProps } from "next";
-import path from "path";
-import fs from "fs";
 import SearchField from "@/components/SearchField/SearchField";
 import Tags from "@/components/tag/Tags";
 import { RoleData } from "@/types/role";
 import { fetchRoleInfo } from "@/lib/fetchRoleInfo";
+import { getCurriculum } from "@/lib/Gateways/CurriculumGateway";
 
 type Props = {
   courseAndPosts:{
@@ -22,13 +21,12 @@ type Props = {
 };
 
 export const getStaticProps: GetStaticProps = async () => {
-  const filePath = path.join(process.cwd(), "public", "notion_data", "notionDatabase.json");
-  const jsonData = fs.readFileSync(filePath, "utf8");
-  const parsedData = JSON.parse(jsonData);
-
-  const allPosts: PostMetaData[] = Array.isArray(parsedData) ? parsedData : parsedData.posts || [];
-  if (!Array.isArray(allPosts)) {
-    throw new Error("notionDatabase.jsonのデータが配列ではありません！");
+  const allPosts:PostMetaData[] = [];
+  const alldata = await getCurriculum();
+  for(const data of alldata){
+    const curriculumData = data.data;
+    const posts:PostMetaData = await JSON.parse(curriculumData);
+    allPosts.push(posts);
   }
   const notBasicCourses = await getEitherCourses(false,allPosts);
   const removeEmptyCourses = notBasicCourses.filter((course)=>course!=="")

@@ -7,6 +7,10 @@ import { pageNav } from '@/types/pageNav';
 import { PostMetaData } from '@/types/postMetaData';
 import { GetStaticProps } from 'next';
 import { MdBlock } from 'notion-to-md/build/types';
+import { fetchRoleInfo } from '@/lib/fetchRoleInfo';
+import { RoleData } from '@/types/role';
+import { getCurriculum } from '@/lib/Gateways/CurriculumGateway';
+import { getPageBySlug } from '@/lib/Gateways/PageGateway';
 
 type Props = {
   mdBlocks:MdBlock[];
@@ -22,28 +26,21 @@ type pagePath = {
   params: { slug:string, childId:string[] }
 }
 
-import path from 'path';
-import fs from "fs";
-import { fetchRoleInfo } from '@/lib/fetchRoleInfo';
-import { RoleData } from '@/types/role';
-
 export const getStaticPaths = async () => {
-  const filePath = path.join(process.cwd(), "public", "notion_data", "notionDatabase.json");
-  const jsonData = fs.readFileSync(filePath, "utf8");
-  const parsedData = JSON.parse(jsonData);
-
-  const allPosts: PostMetaData[] = Array.isArray(parsedData) ? parsedData : parsedData.posts || [];
-  if (!Array.isArray(allPosts)) {
-    throw new Error("notionDatabase.jsonのデータが配列ではありません！");
+  const allPosts:PostMetaData[] = [];
+  const alldata = await getCurriculum();
+  for(const data of alldata){
+    const curriculumData = data.data;
+    const posts:PostMetaData = await JSON.parse(curriculumData);
+    allPosts.push(posts);
   }
+  
   const paths: pagePath[] = (
     await Promise.all(
       allPosts.map(async (post) => {
-        // const postData = await getSinglePost(post.slug);
-        const postPath = path.join(process.cwd(), "public", "notion_data", "eachPage", `${post.slug}`,"page.json");
-        const postData = fs.readFileSync(postPath, "utf8");
-        const parsedPostData = JSON.parse(postData);
-        const mdBlocks:MdBlock[] = Array.isArray(parsedPostData) ? parsedPostData : parsedPostData.posts || []
+        const targetData = await getPageBySlug(post.slug);
+        const pageData = targetData[0].data;
+        const mdBlocks:MdBlock[] = await JSON.parse(pageData);
         const childPages = mdBlocks.filter((block)=>block.type==='child_page')
         return childPages.map((child) => ({
           params: {
@@ -63,12 +60,16 @@ export const getStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async (context) => {
     const currentSlug = context.params?.slug as string;
     const childparam = (context.params?.childId as string[]) || [];
-    const postPath = path.join(process.cwd(), "public", "notion_data", "eachPage", `${currentSlug}`,"page.json");
-    const postData = fs.readFileSync(postPath, "utf8");
-    const mdBlocks:MdBlock[] = JSON.parse(postData);
-    const filePath = path.join(process.cwd(), "public", "notion_data", "notionDatabase.json");
-    const jsonData = fs.readFileSync(filePath, "utf8");
-    const allPosts: PostMetaData[] = JSON.parse(jsonData);
+    const targetData = await getPageBySlug(currentSlug);
+    const pageData = targetData[0].data;
+    const mdBlocks:MdBlock[] = await JSON.parse(pageData);
+    const allPosts:PostMetaData[] = [];
+    const alldata = await getCurriculum();
+    for(const data of alldata){
+      const curriculumData = data.data;
+      const posts:PostMetaData = await JSON.parse(curriculumData);
+      allPosts.push(posts);
+    }
     const allTags = await getAllTags(allPosts);
     const singlePost = allPosts.filter(item=>item.slug===currentSlug)
     const post ={

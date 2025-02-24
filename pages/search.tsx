@@ -7,14 +7,13 @@ import { calculatePageNumber, getAllTags } from "@/lib/services/notionApiService
 import { PostMetaData } from "@/types/postMetaData";
 import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
-import path from "path";
 import {  useEffect, useState } from "react";
-import fs from "fs";
 import SearchField from "@/components/SearchField/SearchField";
 import { RoleData } from "@/types/role";
 import { fetchRoleInfo } from "@/lib/fetchRoleInfo";
 import Pagenation from "@/components/pagenation/Pagenation";
 import { NUMBER_OF_POSTS_PER_PAGE } from "@/constants/numberOfPage";
+import { getCurriculum } from "@/lib/Gateways/CurriculumGateway";
 
 type Props = {
   allTags:string[];
@@ -23,14 +22,13 @@ type Props = {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const filePath = path.join(process.cwd(), "public", "notion_data", "notionDatabase.json");
-  const jsonData = fs.readFileSync(filePath, "utf8");
-  const parsedData = JSON.parse(jsonData);
 
-  const allPosts: PostMetaData[] = Array.isArray(parsedData) ? parsedData : parsedData.posts || [];
-
-  if (!Array.isArray(allPosts)) {
-    throw new Error("notionDatabase.jsonのデータが配列ではありません！");
+  const allPosts:PostMetaData[] = [];
+  const alldata = await getCurriculum();
+  for(const data of alldata){
+    const curriculumData = data.data;
+    const posts:PostMetaData = await JSON.parse(curriculumData);
+    allPosts.push(posts);
   }
 
   const allTags:string[] = await getAllTags(allPosts);

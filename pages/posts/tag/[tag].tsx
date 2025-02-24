@@ -6,27 +6,25 @@ import { calculatePageNumber, getAllTags, getPostsByTag } from "@/lib/services/n
 import { HOME_NAV } from "@/constants/pageNavs";
 import { pageNav } from "@/types/pageNav";
 import Layout from "@/components/Layout/Layout";
-import fs from "fs";
-import path from "path";
 import Tags from "@/components/tag/Tags";
 import { RoleData } from "@/types/role";
 import { fetchRoleInfo } from "@/lib/fetchRoleInfo";
 import { useState } from "react";
 import { NUMBER_OF_POSTS_PER_PAGE } from "@/constants/numberOfPage";
+import { getCurriculum } from "@/lib/Gateways/CurriculumGateway";
 
 type pagePath = {
     params: { tag:string }
   }
 
 export const getStaticPaths = async() =>{
-    const filePath = path.join(process.cwd(), "public", "notion_data", "notionDatabase.json");
-    const jsonData = fs.readFileSync(filePath, "utf8");
-    const parsedData = JSON.parse(jsonData);
-
-    const allPosts: PostMetaData[] = Array.isArray(parsedData) ? parsedData : parsedData.posts || [];
-    if (!Array.isArray(allPosts)) {
-        throw new Error("notionDatabase.jsonのデータが配列ではありません！");
-      }
+    const allPosts:PostMetaData[] = [];
+  const alldata = await getCurriculum();
+  for(const data of alldata){
+    const curriculumData = data.data;
+    const posts:PostMetaData = await JSON.parse(curriculumData);
+    allPosts.push(posts);
+  }
 
     // const allPosts = await getAllPosts();
     const allTags = await getAllTags(allPosts);
@@ -53,13 +51,15 @@ type Props ={
 
 // getStaticProps関数
 export const getStaticProps: GetStaticProps = async (context) => {
-    const filePath = path.join(process.cwd(), "public", "notion_data", "notionDatabase.json");
-    const jsonData = fs.readFileSync(filePath, "utf8");
-    const allPosts: PostMetaData[] = JSON.parse(jsonData);
+    const allPosts:PostMetaData[] = [];
+    const alldata = await getCurriculum();
+    for(const data of alldata){
+        const curriculumData = data.data;
+        const posts:PostMetaData = await JSON.parse(curriculumData);
+        allPosts.push(posts);
+    }
     const currentTag:string = typeof context.params?.tag == 'string' ? context.params.tag : "";
-    // const allPosts = await getAllPosts();
     const allTags = await getAllTags(allPosts);
-    // console.log(numberOfPages);
 
     const posts:PostMetaData[] = await getPostsByTag(currentTag, allPosts);
     const roleData = await fetchRoleInfo();

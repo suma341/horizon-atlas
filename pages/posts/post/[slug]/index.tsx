@@ -8,6 +8,10 @@ import { pageNav } from '@/types/pageNav';
 import { BASIC_NAV, HOME_NAV } from '@/constants/pageNavs';
 import Image from 'next/image';
 import Layout from '@/components/Layout/Layout';
+import { fetchRoleInfo } from '@/lib/fetchRoleInfo';
+import { RoleData } from '@/types/role';
+import { getCurriculum } from '@/lib/Gateways/CurriculumGateway';
+import { getPageBySlug } from '@/lib/Gateways/PageGateway';
 
 type postPath = {
   params: { slug:string }
@@ -21,15 +25,14 @@ type Props = {
   roleData:RoleData;
 };
 
-import fs from "fs";
-import path from "path";
-import { fetchRoleInfo } from '@/lib/fetchRoleInfo';
-import { RoleData } from '@/types/role';
-
 export const getStaticPaths = async () => {
-  const filePath = path.join(process.cwd(), "public", "notion_data", "notionDatabase.json");
-  const jsonData = fs.readFileSync(filePath, "utf8");
-  const allPosts: PostMetaData[] = JSON.parse(jsonData);
+  const allPosts:PostMetaData[] = [];
+  const alldata = await getCurriculum();
+  for(const data of alldata){
+    const curriculumData = data.data;
+    const posts:PostMetaData = await JSON.parse(curriculumData);
+    allPosts.push(posts);
+  }
 
   const paths: postPath[] = allPosts.map(({ slug }) => {
     return { params: { slug: slug } };
@@ -49,20 +52,17 @@ type post ={
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const slug = params?.slug as string;
 
-  // 各ページのJSONを読み込む
-  const postPath = path.join(process.cwd(), "public", "notion_data", "eachPage", `${slug}`, "page.json");
-  const postData = fs.readFileSync(postPath, "utf8");
-  const parsedPostData = JSON.parse(postData);
-  const mdBlocks:MdBlock[] = Array.isArray(parsedPostData) ? parsedPostData : parsedPostData.posts || []
+  const targetPage = (await getPageBySlug(slug))[0].data;
+  const mdBlocks:MdBlock[] = await JSON.parse(targetPage);
 
-  const filePath = path.join(process.cwd(), "public", "notion_data", "notionDatabase.json");
-  const jsonData = fs.readFileSync(filePath, "utf8");
-  const parsedData = JSON.parse(jsonData);
-
-  const allPosts: PostMetaData[] = Array.isArray(parsedData) ? parsedData : parsedData.posts || [];
-  if (!Array.isArray(allPosts)) {
-    throw new Error("notionDatabase.jsonのデータが配列ではありません！");
+  const allPosts:PostMetaData[] = [];
+  const alldata = await getCurriculum();
+  for(const data of alldata){
+    const curriculumData = data.data;
+    const posts:PostMetaData = await JSON.parse(curriculumData);
+    allPosts.push(posts);
   }
+
   const singlePost = allPosts.filter(item=>item.slug===slug);
   const post:post = {
     metadata:singlePost[0],
