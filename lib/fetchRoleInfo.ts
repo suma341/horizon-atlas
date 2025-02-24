@@ -1,31 +1,14 @@
-interface Role {
-    id:string;
-    name:string;
-}
+import { RoleData } from "@/types/role";
 
 export async function fetchRoleInfo(){
-    const BOT_TOKEN:string = process.env.BOT_TOKEN!;
-    const GUILD_ID:string = process.env.NEXT_PUBLIC_GUILD_ID!;
-    const guildInfoUrl = `https://discord.com/api/guilds/${GUILD_ID}/roles`;
-    const guildRequestOptions = {
-      headers: {
-        'Authorization': `Bot ${BOT_TOKEN}`
-      }
-    };
-    const res = await fetch(guildInfoUrl,guildRequestOptions);
-    const guildInfo:Role[] = await res.json();
-    console.log((guildInfo.filter(item=>item.name==="基礎班"))[0]);
-    console.log((guildInfo.filter(item=>item.name=="発展班"))[0]);
-    const basic_group = guildInfo.filter(item=>item.name==="基礎班");
-    const dev_group = guildInfo.filter(item=>item.name=="発展班");    
-    return {
-        basic:{
-            id:basic_group[0].id,
-            name:basic_group[0].name
+    const API_KEY = process.env.SUPABASE_ANON_KEY!;
+    const res = await fetch("https://cyqgvoqlgqqkppsbahkn.supabase.co/functions/v1/get_role", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${API_KEY}`
         },
-        develop:{
-            id:dev_group[0].id,
-            name:dev_group[0].name
-        }
-    }
+    });
+    const result:RoleData = await res.json();
+    return result;
 }
