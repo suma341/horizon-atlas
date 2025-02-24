@@ -37,6 +37,7 @@ jobs:
           NEXT_PUBLIC_ROOT_PATH: ${{secrets.NEXT_PUBLIC_ROOT_PATH}}
           BOT_TOKEN: ${{secrets.BOT_TOKEN}}
           SUPABASE_ANON_KEY: ${{secrets.SUPABASE_ANON_KEY}}
+          SUPABASE_URL: ${{secrets.SUPABASE_URL}}
 
       - name: gh-pages ブランチにデプロイ
         uses: peaceiris/actions-gh-pages@v4
