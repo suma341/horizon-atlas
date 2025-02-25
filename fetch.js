@@ -36,6 +36,7 @@ export const getAllData = async () => {
 
 const getPageMetaData = (post) => {
     const getTags = (tags) => tags.map(tag => tag.name || "");
+    const getVisibilities = (visibilities) => visibilities.map(visibility=> visibility.name || "");
     const properties = post.properties;
     const date = properties.date?.date?.start || "";
     const icon = properties.icon?.files?.[0]?.file?.url || "";
@@ -49,6 +50,7 @@ const getPageMetaData = (post) => {
         category: properties.category?.select?.name || "",
         is_basic_curriculum: properties.is_basic_curriculum?.checkbox || false,
         icon,
+        visibility: properties.visibility?.multi_select ? getVisibilities(properties.visibility.multi_select) : []
     };
 };
 
