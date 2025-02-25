@@ -15,6 +15,7 @@
     "@tailwindcss/line-clamp": "^0.4.4",
     "axios": "^1.7.9",
     "dotenv": "^16.4.7",
+    "framer-motion": "^12.4.7",
     "next": "15.0.3",
     "notion-to-md": "^3.1.1",
     "open-graph-scraper": "^6.8.3",
