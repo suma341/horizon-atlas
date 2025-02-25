@@ -195,7 +195,7 @@ const fetchAllMdBlock = async (mdBlocks,slug) => {
                 }
             }
         }
-        if (block.type === 'child_page' && block.children.length > 0) {
+        if (block.children.length > 0) {
             await fetchAllMdBlock(block.children,slug);
         }
     }
@@ -213,7 +213,7 @@ function mkdir(dirPath){
 getAllData()
     .then(allData => {
         for(const data of allData){
-            console.log({slug:data.slug,curriculum_data:data})
+            downloadImage(data.icon, `./public/notion_data/eachPage/${data.slug}/icon.png`)
             upsertCurriculum(data.slug,data)
             getSinglePage(data.slug).then(mdBlocks=>{
                 upsertPage(data.slug,mdBlocks);
