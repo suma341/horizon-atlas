@@ -1,7 +1,7 @@
 import Layout from "@/components/Layout/Layout";
 import SingleCourse from "@/components/Post/SingleCourse";
 import { BASIC_NAV, HOME_NAV } from "@/constants/pageNavs";
-import {  getAllTags, getEitherCourses, getPostsByCourse } from "@/lib/services/notionApiService";
+import {  getEitherCourses, getPostsByCourse } from "@/lib/services/notionApiService";
 import { PostMetaData } from "@/types/postMetaData";
 import type { GetStaticProps,} from "next";
 import { RoleData } from "@/types/role";
@@ -13,14 +13,12 @@ type Props={
         course: string;
         posts: PostMetaData[];
     }[];
-    allTags:string[];
     roleData:RoleData;
 }
 
 // getStaticProps関数
 export const getStaticProps: GetStaticProps = async () => {
     const allPosts:PostMetaData[] = await getAllCurriculum();
-    const allTags = await getAllTags(allPosts);
     const basicCourse = await getEitherCourses(true,allPosts);
     const courseAndPosts = await Promise.all(basicCourse.map(async(course)=>{
         const posts = await getPostsByCourse(course,allPosts);
@@ -34,15 +32,14 @@ export const getStaticProps: GetStaticProps = async () => {
     return {
         props: {
             courseAndPosts,
-            allTags,
             roleData
         },
     };
 };
 
-const blogTagPageList = ({courseAndPosts,allTags,roleData}: Props)=> {
+const blogTagPageList = ({courseAndPosts,roleData}: Props)=> {
     return (
-        <Layout headerProps={{pageNavs:[HOME_NAV,BASIC_NAV],allTags}} roleData={roleData}>
+        <Layout headerProps={{pageNavs:[HOME_NAV,BASIC_NAV]}} roleData={roleData}>
             <div className="h-full w-full mx-auto font-mono pt-20 ">
                 <main className="w-full mt-16 mb-3">
                     <h1 className="text-5xl font-medium text-center mb-16">基礎班カリキュラム</h1>

@@ -14,7 +14,6 @@ type LayoutProps = {
   children: ReactNode;
   headerProps: {
     pageNavs: pageNav[];
-    allTags: string[];
   };
   sideNavProps?: {
     title: string;

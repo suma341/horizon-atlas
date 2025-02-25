@@ -67,7 +67,7 @@ const TagPageList = ({ posts, currentTag,allTags,roleData}: Props)=> {
     const numberOfPages = calculatePageNumber(posts);
     const postsPerPage = NUMBER_OF_POSTS_PER_PAGE;
     return (
-        <Layout headerProps={{pageNavs:[HOME_NAV,tagSearchNav],allTags:allTags}} roleData={roleData}>
+        <Layout headerProps={{pageNavs:[HOME_NAV,tagSearchNav]}} roleData={roleData}>
             <div className="h-full w-full mx-auto font-mono">
                 <main className="mt-20 mx-5 md:mx-16 mb-3 pt-4">
                     <Tags allTags={allTags} />

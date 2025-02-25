@@ -54,7 +54,7 @@ export default function SearchPage({allTags, posts,roleData}:Props) {
   const postsPerPage = NUMBER_OF_POSTS_PER_PAGE;
   
   return (
-    <Layout headerProps={{pageNavs:[HOME_NAV,SEARCH_NAV],allTags}} roleData={roleData}>
+    <Layout headerProps={{pageNavs:[HOME_NAV,SEARCH_NAV]}} roleData={roleData}>
       <div className="pt-20">
         <main className="w-full mt-16 px-8">
           <div>

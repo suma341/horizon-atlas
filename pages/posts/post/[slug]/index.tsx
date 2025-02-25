@@ -3,7 +3,6 @@ import React from 'react'
 import { PostMetaData } from '@/types/postMetaData';
 import { MdBlock } from 'notion-to-md/build/types';
 import MdBlockComponent from '@/components/mdBlocks/mdBlock';
-import { getAllTags } from '@/lib/services/notionApiService';
 import { pageNav } from '@/types/pageNav';
 import { BASIC_NAV, HOME_NAV } from '@/constants/pageNavs';
 import Image from 'next/image';
@@ -21,7 +20,6 @@ type Props = {
   metadata:PostMetaData;
   mdBlocks:MdBlock[];
   pageNavs:pageNav[];
-  allTags:string[];
   roleData:RoleData;
 };
 
@@ -56,8 +54,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     mdBlocks
   } 
 
-  const allTags = await getAllTags(allPosts);
-
   const courseNav: pageNav = { title: post.metadata.category, id: `/posts/course/${post.metadata.category}` };
   const postNav: pageNav = { title: post.metadata.title, id: `/posts/post/${slug}` };
   const pageNavs: pageNav[] = post.metadata.is_basic_curriculum
@@ -71,16 +67,15 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       metadata: post.metadata,
       mdBlocks: post.mdBlocks,
       pageNavs,
-      allTags,
       roleData
     },
   };
 };
 
 
-const Post =({ metadata, mdBlocks,pageNavs,allTags,roleData }: Props) => {
+const Post =({ metadata, mdBlocks,pageNavs,roleData }: Props) => {
   return (
-    <Layout headerProps={{pageNavs,allTags}} roleData={roleData}>
+    <Layout headerProps={{pageNavs}} roleData={roleData}>
       <div className='p-4 pt-24 pb-8'>
       <section className='p-5 bg-white pb-10'>
         <div className='flex'>

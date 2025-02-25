@@ -16,7 +16,7 @@ function App({ Component, pageProps }:AppProps) {
       clientId={process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID!}
       authorizationParams={typeof window!=="undefined" ? { redirect_uri: window.location.origin } :{}}
       cacheLocation="localstorage"
-      useRefreshTokens={true}
+      // useRefreshTokens={true}
     >
       <Component {...pageProps} />
     </Auth0Provider>

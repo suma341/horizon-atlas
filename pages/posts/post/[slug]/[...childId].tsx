@@ -2,7 +2,7 @@ import Layout from '@/components/Layout/Layout';
 import SideBlock from '@/components/SideBlock/SideBlock';
 import MdBlockComponent from '@/components/mdBlocks/mdBlock';
 import { BASIC_NAV, HOME_NAV } from '@/constants/pageNavs';
-import { getAllTags, getChildPage } from '@/lib/services/notionApiService';
+import { getChildPage } from '@/lib/services/notionApiService';
 import { pageNav } from '@/types/pageNav';
 import { PostMetaData } from '@/types/postMetaData';
 import { GetStaticProps } from 'next';
@@ -18,7 +18,6 @@ type Props = {
   parentTitle:string;
   childNavs:pageNav[];
   slug:string;
-  allTags:string[];
   roleData:RoleData;
 };
 
@@ -54,7 +53,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const childparam = (context.params?.childId as string[]) || [];
     const mdBlocks:MdBlock[] = await getPage(currentSlug);
     const allPosts:PostMetaData[] = await getAllCurriculum();
-    const allTags = await getAllTags(allPosts);
     const singlePost = allPosts.filter(item=>item.slug===currentSlug)
     const post ={
       mdBlocks,
@@ -95,17 +93,16 @@ export const getStaticProps: GetStaticProps = async (context) => {
             parentTitle:post.metadata.title,
             childNavs,
             slug:currentSlug,
-            allTags,
             roleData
         },
     };
 };
 
 const PostChildPage = ( props : Props) => {
-    const {mdBlocks, pageNavs,parentTitle,childNavs,slug,allTags,roleData} = props;
+    const {mdBlocks, pageNavs,parentTitle,childNavs,slug,roleData} = props;
 
     return (
-      <Layout headerProps={{pageNavs:pageNavs,allTags}} sideNavProps={{title:parentTitle,slug,childPages:childNavs}} roleData={roleData}>
+      <Layout headerProps={{pageNavs:pageNavs}} sideNavProps={{title:parentTitle,slug,childPages:childNavs}} roleData={roleData}>
         <div className='mt-24'>
           <section className="p-5 pb-10 md:w-3/4 bg-white">
             <h2 className="w-full text-2xl font-medium">
