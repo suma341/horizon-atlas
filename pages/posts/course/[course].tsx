@@ -10,14 +10,16 @@ import { RoleData } from "@/types/role";
 import { fetchRoleInfo } from "@/lib/fetchRoleInfo";
 import { useState } from "react";
 import { NUMBER_OF_POSTS_PER_PAGE } from "@/constants/numberOfPage";
-import { getAllCurriculum } from "@/lib/services/CurriculumService";
+import { CurriculumService } from "@/lib/services/CurriculumService";
 
 type pagePath = {
     params: { course:string }
   }
 
+const curriculumService = new CurriculumService();
+
 export const getStaticPaths = async() =>{
-    const allPosts:PostMetaData[] = await getAllCurriculum();
+    const allPosts:PostMetaData[] = await curriculumService.getAllCurriculum();
     const allCourses = await getAllCourses(allPosts);
     const removedEmptyCourses = allCourses.filter((course)=>course!=='');
 
@@ -43,7 +45,7 @@ type Props={
 
 // getStaticProps関数
 export const getStaticProps: GetStaticProps = async (context) => {
-    const allPosts:PostMetaData[] = await getAllCurriculum();
+    const allPosts:PostMetaData[] = await curriculumService.getAllCurriculum();
     const currentCourse:string = typeof context.params?.course == 'string' ? context.params.course: "";
     const isBasic = await courseIsBasic(currentCourse,allPosts);
     const currentNav:pageNav = {title:currentCourse,id:`/posts/course/${currentCourse}`};

@@ -13,7 +13,7 @@ import { RoleData } from "@/types/role";
 import { fetchRoleInfo } from "@/lib/fetchRoleInfo";
 import Pagenation from "@/components/pagenation/Pagenation";
 import { NUMBER_OF_POSTS_PER_PAGE } from "@/constants/numberOfPage";
-import { getAllCurriculum } from "@/lib/services/CurriculumService";
+import { CurriculumService } from "@/lib/services/CurriculumService";
 
 type Props = {
   allTags:string[];
@@ -21,9 +21,11 @@ type Props = {
   roleData:RoleData;
 }
 
+const curriculumService = new CurriculumService();
+
 export const getStaticProps: GetStaticProps = async () => {
 
-  const allPosts:PostMetaData[] = await getAllCurriculum();
+  const allPosts:PostMetaData[] = await curriculumService.getAllCurriculum();
 
   const allTags:string[] = await getAllTags(allPosts);
   const roleData = await fetchRoleInfo();

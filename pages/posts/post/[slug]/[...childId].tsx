@@ -9,7 +9,7 @@ import { GetStaticProps } from 'next';
 import { MdBlock } from 'notion-to-md/build/types';
 import { fetchRoleInfo } from '@/lib/fetchRoleInfo';
 import { RoleData } from '@/types/role';
-import { getAllCurriculum } from '@/lib/services/CurriculumService';
+import { CurriculumService } from '@/lib/services/CurriculumService';
 import { getPage } from '@/lib/services/PageService';
 
 type Props = {
@@ -25,8 +25,10 @@ type pagePath = {
   params: { slug:string, childId:string[] }
 }
 
+const curriculumService = new CurriculumService();
+
 export const getStaticPaths = async () => {
-  const allPosts:PostMetaData[] = await getAllCurriculum();
+  const allPosts:PostMetaData[] = await curriculumService.getAllCurriculum();
   
   const paths: pagePath[] = (
     await Promise.all(
@@ -52,11 +54,10 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const currentSlug = context.params?.slug as string;
     const childparam = (context.params?.childId as string[]) || [];
     const mdBlocks:MdBlock[] = await getPage(currentSlug);
-    const allPosts:PostMetaData[] = await getAllCurriculum();
-    const singlePost = allPosts.filter(item=>item.slug===currentSlug)
+    const singlePost:PostMetaData = await curriculumService.getCurriculumBySlug(currentSlug);
     const post ={
       mdBlocks,
-      metadata:singlePost[0]
+      metadata:singlePost
     }
 
     let currentchild = post.mdBlocks;

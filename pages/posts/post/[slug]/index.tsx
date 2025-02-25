@@ -9,7 +9,7 @@ import Image from 'next/image';
 import Layout from '@/components/Layout/Layout';
 import { fetchRoleInfo } from '@/lib/fetchRoleInfo';
 import { RoleData } from '@/types/role';
-import { getAllCurriculum } from '@/lib/services/CurriculumService';
+import { CurriculumService } from '@/lib/services/CurriculumService';
 import { getPage } from '@/lib/services/PageService';
 
 type postPath = {
@@ -23,8 +23,10 @@ type Props = {
   roleData:RoleData;
 };
 
+const curriculumService = new CurriculumService();
+
 export const getStaticPaths = async () => {
-  const allPosts:PostMetaData[] = await getAllCurriculum();
+  const allPosts:PostMetaData[] = await curriculumService.getAllCurriculum();
 
   const paths: postPath[] = allPosts.map(({ slug }) => {
     return { params: { slug: slug } };
@@ -45,12 +47,10 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const slug = params?.slug as string;
 
   const mdBlocks:MdBlock[] = await getPage(slug);
+  const singlePost:PostMetaData = await curriculumService.getCurriculumBySlug(slug);
 
-  const allPosts:PostMetaData[] = await getAllCurriculum();
-
-  const singlePost = allPosts.filter(item=>item.slug===slug);
   const post:post = {
-    metadata:singlePost[0],
+    metadata:singlePost,
     mdBlocks
   } 
 

@@ -9,7 +9,7 @@ import SearchField from "@/components/SearchField/SearchField";
 import Tags from "@/components/tag/Tags";
 import { RoleData } from "@/types/role";
 import { fetchRoleInfo } from "@/lib/fetchRoleInfo";
-import { getAllCurriculum } from "@/lib/services/CurriculumService";
+import { CurriculumService } from "@/lib/services/CurriculumService";
 
 type Props = {
   courseAndPosts:{
@@ -20,8 +20,10 @@ type Props = {
   roleData:RoleData;
 };
 
+const curriculumService = new CurriculumService();
+
 export const getStaticProps: GetStaticProps = async () => {
-  const allPosts:PostMetaData[] = await getAllCurriculum();
+  const allPosts:PostMetaData[] = await curriculumService.getAllCurriculum();
   const notBasicCourses = await getEitherCourses(false,allPosts);
   const removeEmptyCourses = notBasicCourses.filter((course)=>course!=="")
   const courseAndPosts = await Promise.all(removeEmptyCourses.map(async(course)=>{
