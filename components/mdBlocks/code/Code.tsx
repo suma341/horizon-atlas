@@ -21,26 +21,34 @@ export default function Code(props: Props) {
     const language: string = codeBlocks[0].slice(3);
 
     const [copied, setCopied] = useState(false);
+    const [isHovered, setIsHovered] = useState(false);
 
     const handleCopy = async () => {
         try {
             await navigator.clipboard.writeText(codeContent);
             setCopied(true);
-            setTimeout(() => setCopied(false), 2000); // コピー状態を2秒後にリセット
+            setTimeout(() => setCopied(false), 2000);
         } catch (error) {
             console.error('Failed to copy:', error);
         }
     };
 
     return (
-        <div id={mdBlock.blockId} className='mb-2 mt-2 relative'>
+        <div 
+            id={mdBlock.blockId} 
+            className='mb-2 mt-2 relative' 
+            onMouseEnter={() => setIsHovered(true)} 
+            onMouseLeave={() => setIsHovered(false)}
+        >
             <div className='mb-0' style={{backgroundColor:"rgb(250,250,250)"}}>
                 <p>
-                    <span className='text-neutral-600 text-sm px-3 py-1 rounded' style={{background: "rgb(235, 235, 235)"}}>{language}</span>
+                    <span className='text-neutral-600 text-sm px-3 py-1 rounded' style={{background: "rgb(235, 235, 235)"}}>
+                        {language}
+                    </span>
                 </p>
                 <button
                     onClick={handleCopy}
-                    className={'h-5 absolute top-1 right-2 px-2 text-sm rounded text-neutral-400 hover:text-neutral-500'}
+                    className={`h-5 absolute top-1 right-2 px-2 text-sm rounded text-neutral-400 hover:text-neutral-500 transition-opacity duration-200 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
                 >
                     {copied ? <span className='flex'>copied ! <IoCopy size={24} /></span> : <LuCopy size={24} />}
                 </button>
