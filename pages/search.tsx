@@ -3,7 +3,7 @@ import SinglePost from "@/components/Post/SinglePost";
 import Tags from "@/components/tag/Tags";
 import { HOME_NAV, SEARCH_NAV } from "@/constants/pageNavs";
 import { createSearchQuery, searchByKeyWord } from "@/lib/searchKeyWord";
-import { calculatePageNumber, getAllTags } from "@/lib/services/notionApiService";
+import { calculatePageNumber, getAllTags, getPostsByRole } from "@/lib/services/notionApiService";
 import { PostMetaData } from "@/types/postMetaData";
 import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
@@ -14,6 +14,9 @@ import { fetchRoleInfo } from "@/lib/fetchRoleInfo";
 import Pagenation from "@/components/pagenation/Pagenation";
 import { NUMBER_OF_POSTS_PER_PAGE } from "@/constants/numberOfPage";
 import { CurriculumService } from "@/lib/services/CurriculumService";
+import { useAuth0 } from "@auth0/auth0-react";
+import { CustomUser } from "@/global";
+import { getUsersRole } from "@/lib/getUsersRole";
 
 type Props = {
   allTags:string[];
@@ -42,17 +45,25 @@ export default function SearchPage({allTags, posts,roleData}:Props) {
   const [matchPosts, setMatchPosts] = useState<PostMetaData[]>(posts);
   const [currentPage, setCurrentPage] = useState(1);
   const [numberOfPage, setNumberOfPage] = useState(calculatePageNumber(posts));
+  const {user} = useAuth0();
   const router = useRouter();
   const query = router.query.search!==undefined ? router.query.search as string : undefined;
   useEffect(()=>{
-    if(query!==undefined){
-      const searchKeyWords = createSearchQuery(query);
-      const result = searchByKeyWord(searchKeyWords,posts)
-      setMatchPosts(result)
-      const numberOfPage = calculatePageNumber(result);
-      setNumberOfPage(numberOfPage);
+    async function setData(){
+      const customUser = user as CustomUser;
+      const usersRole = getUsersRole(customUser,roleData);
+      const postsByRole = await getPostsByRole(usersRole,posts);
+      setMatchPosts(postsByRole);
+      if(query!==undefined){
+        const searchKeyWords = createSearchQuery(query);
+        const result = searchByKeyWord(searchKeyWords,postsByRole)
+        setMatchPosts(result)
+        const numberOfPage = calculatePageNumber(result);
+        setNumberOfPage(numberOfPage);
+      }
     }
-  },[query,posts])
+    setData();
+  },[query,posts,user])
   const postsPerPage = NUMBER_OF_POSTS_PER_PAGE;
   
   return (

@@ -18,6 +18,13 @@ export const getPostsByTag=async(tagName:string, allPosts:PostMetaData[])=>{
     return posts;
 }
 
+export const getPostsByRole=async(roleName:string,allPosts:PostMetaData[])=>{
+    const posts:PostMetaData[] = allPosts.filter((post)=>{
+        return post.visibility.find((vis:string)=>vis===roleName);
+    })
+    return posts;
+}
+
 export const getAllTags = async(allPosts:PostMetaData[])=>{
     
     const allTagsDuplicationList = allPosts.flatMap((post)=>{
