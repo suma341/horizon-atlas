@@ -137,10 +137,9 @@ const fetchAllMdBlock = async (mdBlocks,slug) => {
             const match = block.parent.match(/!\[([^\]]+)\]\(([^\)]+)\)/);
             if (match) {
                 const url = match[2].endsWith(')') ? match[2].slice(0, -1) : match[2];
-                let exte = match[1].split(".")[1]
-                console.log(exte)
-                if(exte===undefined || (exte!=="png" && exte!="jpg")){
-                    exte = "png"
+                let exte = match[1].split(".")[1];
+                if(exte===undefined || (exte!=="png" && exte!="jpg" && exte!="gif")){
+                    exte = "png";
                 }
                 console.log("Downloading image:", block.blockId);
                 await downloadImage(url, `./public/notion_data/eachPage/${slug}/image/${block.blockId}.${exte}`);
@@ -215,18 +214,18 @@ function mkdir(dirPath){
 getAllData()
     .then(allData => {
         for(const data of allData){
-            downloadImage(data.icon, `./public/notion_data/eachPage/${data.slug}/icon.png`)
+            // downloadImage(data.icon, `./public/notion_data/eachPage/${data.slug}/icon.png`)
             upsertCurriculum(data.slug,data)
-            getSinglePage(data.slug).then(mdBlocks=>{
-                upsertPage(data.slug,mdBlocks);
-                const ogsDir = `./public/notion_data/eachPage/${data.slug}/ogsData/`;
-                const imageDir = `./public/notion_data/eachPage/${data.slug}/image/`;
-                const iframeDir = `./public/notion_data/eachPage/${data.slug}/iframeData/`;
-                mkdir(ogsDir);
-                mkdir(imageDir);
-                mkdir(iframeDir);
-                return fetchAllMdBlock(mdBlocks, data.slug);
-            })
+            // getSinglePage(data.slug).then(mdBlocks=>{
+            //     upsertPage(data.slug,mdBlocks);
+            //     const ogsDir = `./public/notion_data/eachPage/${data.slug}/ogsData/`;
+            //     const imageDir = `./public/notion_data/eachPage/${data.slug}/image/`;
+            //     const iframeDir = `./public/notion_data/eachPage/${data.slug}/iframeData/`;
+            //     mkdir(ogsDir);
+            //     mkdir(imageDir);
+            //     mkdir(iframeDir);
+            //     return fetchAllMdBlock(mdBlocks, data.slug);
+            // })
         }
     })
     .catch(error => console.error("❌ Notion API の取得でエラー:", error)); // 🔴 catch() 追加
