@@ -7,7 +7,7 @@ export default function Home() {
     <div className="min-h-screen bg-gray-50">
       <Head>
         <title>HorizonAtlas</title>
-        <meta name="description" content="HorizonAtlasは、学習カリキュラムをまとめたHorizon部員専用のサービスです。カリキュラムをカテゴリ別に整理し、検索機能もあるため、見たいカリキュラムを簡単に見つけられます。" />
+        <meta name="description" content="HorizonAtlasは、学習カリキュラムをまとめたHorizon部員専用のサービスです。" />
         <meta property="og:image" content="/horizon-atlas/app_image.png"></meta>
         <link rel="icon" href="/favicon.ico" />
       </Head>
