@@ -1,6 +1,7 @@
 // pages/index.js
 import AuthButton from '@/components/LoginButton/loginButton';
 import Head from 'next/head';
+import Image from 'next/image';
 
 export default function Home() {
   return (
@@ -9,12 +10,14 @@ export default function Home() {
         <title>HorizonAtlas</title>
         <meta name="description" content="HorizonAtlasは、学習カリキュラムをまとめたHorizon部員専用のサービスです。" />
         <meta property="og:image" content="/horizon-atlas/app_image.png"></meta>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/horizon-atlas/favicon.ico" />
       </Head>
 
       <header className="bg-neutral-300 text-white py-4">
         <div className="container mx-auto flex justify-between items-center px-4">
-          <h1 className="text-2xl font-bold">HorizonAtlas</h1>
+          <div>
+            <Image src={'/horizon-atlas/logo_.png'} alt={''} width={32} height={16} className='w-32 top-[-20px] h-auto absolute left-0' />
+          </div>
           <nav>
             <ul className="flex space-x-4">
               <li><a href="#features" className="hover:underline">Features</a></li>

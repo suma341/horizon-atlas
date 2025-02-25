@@ -4,6 +4,7 @@ import HamburgerButton from './hamburgerButton./hamburgerButton';
 import UserIcon from './UserInfo/userIcon';
 import SearchIcon from './searchIcon/searchIcon';
 import { RoleData } from '@/types/role';
+import Image from 'next/image';
 
 type Props={
     setOpenbar:React.Dispatch<React.SetStateAction<boolean>>;
@@ -13,12 +14,12 @@ type Props={
 export default function Header({setOpenbar,roleData}:Props){
     
   return (
-    <header className='w-full pb-1 bg-white'>
+    <header className='w-full bg-white'>
         <div className=" text-white px-5 mb-0 flex justify-between items-center">
-            <Link href="/posts" className="text-2xl font-semibold text-gray-700 hover:text-blue-500 transition-colors">
-                HorizonAtlas
+            <Link href="/posts">
+                <Image src={'/horizon-atlas/logo_.png'} alt={''} width={32} height={16} className='w-32 h-auto absolute top-[-30%] left-0' />
             </Link>
-            <ul className="hidden md:flex items-center text-sm pt-2 duration-100">
+            <ul className="hidden md:flex items-center pt-2 text-sm duration-100">
                 <li className="mr-4">
                     <SearchIcon />
                 </li>

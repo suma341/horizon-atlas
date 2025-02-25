@@ -59,7 +59,10 @@ const Layout: React.FC<LayoutProps> = ({ children, headerProps, sideNavProps,rol
     return (
       <div className="bg-white">
         <Head>
-          <title>Horizon Atlas</title>
+          <title>HorizonAtlas</title>
+          <meta name="description" content="HorizonAtlasは、学習カリキュラムをまとめたHorizon部員専用のサービスです。" />
+          <meta property="og:image" content="/horizon-atlas/app_image.png"></meta>
+          <link rel="icon" href="/horizon-atlas/favicon.ico" />
         </Head>
         <Sidebar openbar={openbar} setOpenbar={setOpenbar} pageNav={sideNavProps} roleData={roleData} />
         <div
