@@ -85,6 +85,39 @@ const downloadImage = async (imageUrl, savePath) => {
     }
 };
 
+async function upsertCurriculum(slug,curriculum_data){
+    const url = `${SUPABASE_URL}/functions/v1/upsert_curriculum`;
+    const res = await fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+        },
+        body:JSON.stringify({
+            curriculum_data,slug
+        }),
+    });
+    const result = await res.json();
+    console.log(result);
+}
+
+async function upsertPage(slug,page_data){
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/upsert_page`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+        },
+        body:JSON.stringify({
+            slug,
+            page_data
+        })
+    });
+    const result = await res.json();
+    console.log(result);
+}
+
+
 async function useIframely(url) {
     try{
         const res = await fetch(`https://iframe.ly/api/oembed?url=${url}&api_key=${IFRAMELY_API_KEY}`);
@@ -177,38 +210,6 @@ function mkdir(dirPath){
     }
 }
 
-async function upsertCurriculum(slug,curriculum_data){
-    const url = `${SUPABASE_URL}/functions/v1/upsert_curriculum`;
-    const res = await fetch(url, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
-        },
-        body:JSON.stringify({
-            curriculum_data,slug
-        }),
-    });
-    const result = await res.json();
-    console.log(result);
-}
-
-async function upsertPage(slug,page_data){
-    const res = await fetch("https://cyqgvoqlgqqkppsbahkn.supabase.co/functions/v1/upsert_page", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
-        },
-        body:JSON.stringify({
-            slug,
-            page_data
-        })
-    });
-    const result = await res.json();
-    console.log(result);
-}
-
 getAllData()
     .then(allData => {
         for(const data of allData){
@@ -216,6 +217,13 @@ getAllData()
             upsertCurriculum(data.slug,data)
             getSinglePage(data.slug).then(mdBlocks=>{
                 upsertPage(data.slug,mdBlocks);
+                const ogsDir = `./public/notion_data/eachPage/${data.slug}/ogsData/`;
+                const imageDir = `./public/notion_data/eachPage/${data.slug}/image/`;
+                const iframeDir = `./public/notion_data/eachPage/${data.slug}/iframeData/`;
+                mkdir(ogsDir);
+                mkdir(imageDir);
+                mkdir(iframeDir);
+                return fetchAllMdBlock(mdBlocks, data.slug);
             })
         }
     })
