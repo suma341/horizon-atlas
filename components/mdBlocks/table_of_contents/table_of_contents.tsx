@@ -1,11 +1,11 @@
 import { findHeadingBlock } from '@/lib/findHeadingBlock';
-import { searchPageById } from '@/lib/searchPageById';
 import Link from 'next/link';
 import { MdBlock } from 'notion-to-md/build/types';
 import React, { useEffect, useState } from 'react'
 
 type Props = {
     mdBlock: MdBlock;
+    page?:MdBlock[];
   };
 
   type HeadingType ={
@@ -14,25 +14,14 @@ type Props = {
     blockId:string;
 }
 
-function Table_of_contents({mdBlock}:Props) {
+function Table_of_contents({mdBlock,page}:Props) {
     const [headingList,setHeadingList]=useState<HeadingType[]>([])
-    const [loading,setLoading] = useState(false);
     useEffect(()=>{
-        async function getHeadingList(){
-            setLoading(true);
-            const { slug } = await searchPageById(mdBlock.blockId);
-            const res = await fetch(`/horizon-atlas/notion_data/eachPage/${slug}/page.json`);
-            const blocks:MdBlock[] = await res.json();
-            const findList = findHeadingBlock(blocks);
+        if(page!==undefined){
+            const findList = findHeadingBlock(page);
             setHeadingList(findList);
-            setLoading(false);
         }
-        getHeadingList();
     },[])
-
-    if(loading){
-        <div>...loading</div>
-    }
 
   return (
     <div id={mdBlock.blockId} className='w-full'>

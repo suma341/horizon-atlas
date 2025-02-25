@@ -24,10 +24,11 @@ type Props ={
     mdBlock:MdBlock;
     depth:number;
     slug:string;
+    page?:MdBlock[];
 }
 
 export default function MdBlockComponent(props:Props) {
-    const {mdBlock,depth,slug} = props;
+    const {mdBlock,depth,slug,page} = props;
     if(mdBlock.type==='paragraph'){
       return <Paragraph parent={mdBlock.parent} slug={slug} mdBlock={mdBlock} depth={depth} />
     }else if(mdBlock.type==='heading_1'){
@@ -63,7 +64,7 @@ export default function MdBlockComponent(props:Props) {
     }else if(mdBlock.type==='link_to_page'){
         return <Link_to_page mdBlock={mdBlock} />
     }else if(mdBlock.type==='table_of_contents'){
-        return <Table_of_contents mdBlock={mdBlock} />
+        return <Table_of_contents mdBlock={mdBlock} page={page} />
     }
     return (
         <>

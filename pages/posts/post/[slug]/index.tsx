@@ -98,7 +98,7 @@ const Post =({ metadata, mdBlocks,pageNavs,allTags,roleData }: Props) => {
           <div className='mt-10 font-medium'>
             <div>
               {mdBlocks.map((mdBlock, i)=>(
-                <MdBlockComponent mdBlock={mdBlock} slug={metadata.slug} depth={0} key={i} />
+                <MdBlockComponent mdBlock={mdBlock} slug={metadata.slug} depth={0} key={i} page={mdBlock.type==='table_of_contents' ? mdBlocks : undefined} />
               ))}
             </div>
           </div>
