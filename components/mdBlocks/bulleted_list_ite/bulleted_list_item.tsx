@@ -12,13 +12,14 @@ type Props={
 
 export default function BulletedListItem(props:Props) {
     const {mdBlock,depth,slug} =props;
-    const text = mdBlock.parent.split(" ")
+    const splitedText = mdBlock.parent.split(" ")
+    const text = splitedText.slice(1).join("");
 
     return (
         <div id={mdBlock.blockId}>
             <p className='my-2 flex'>
                 <span className='font-bold mr-1 text-xl'>・</span>
-                <Paragraph slug={slug}  quote={true} parent={text[1]} depth={depth + 1} mdBlock={mdBlock} />
+                <Paragraph slug={slug}  quote={true} parent={text} depth={depth + 1} mdBlock={mdBlock} />
             </p>
             {mdBlock.children.map((child,i)=>(
                 <div key={i} style={{marginLeft:(depth + 1) * 16}}>
