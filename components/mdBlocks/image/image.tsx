@@ -1,6 +1,8 @@
 "use client";
 import { MdBlock } from 'notion-to-md/build/types';
 import React, { useEffect, useState } from 'react';
+import { FaExpandAlt } from "react-icons/fa";
+import { RxCross2 } from "react-icons/rx";
 
 type Props = {
     mdBlock: MdBlock;
@@ -11,7 +13,8 @@ type Props = {
 export default function ImageBlock(props: Props) {
     const { mdBlock, slug } = props;
     const [imageSrc, setImageSrc] = useState<string | null>(null);
-    const [isOpen, setIsOpen] = useState(false); // モーダルの開閉状態
+    const [isOpen, setIsOpen] = useState(false); 
+    const [isHovered, setIsHovered] = useState(false);
 
     useEffect(() => {
         const checkImageExists = async (extension: string) => {
@@ -30,6 +33,9 @@ export default function ImageBlock(props: Props) {
             await checkImageExists("png");
             if (!imageSrc) {
                 await checkImageExists("jpg");
+                if(!imageSrc){
+                    await checkImageExists("gif");
+                }
             }
         })();
     }, [mdBlock.blockId]);
@@ -38,7 +44,9 @@ export default function ImageBlock(props: Props) {
 
     return (
         <>
-            <div id={mdBlock.blockId}>
+            <div id={mdBlock.blockId} className="relative"
+            onMouseEnter={() => setIsHovered(true)} 
+            onMouseLeave={() => setIsHovered(false)}>
                 <img
                     height={200}
                     width={200}
@@ -48,12 +56,22 @@ export default function ImageBlock(props: Props) {
                         width: 'auto',
                         height: '100%',
                         display: 'block',
-                        maxHeight: '200px',
+                        maxHeight: '350px',
                         cursor: 'pointer',
                     }}
                     onClick={() => setIsOpen(true)} 
                 />
+                
+                {/* 拡大ボタン */}
+                <button
+                    onClick={() => setIsOpen(true)}
+                    className="absolute top-1 right-1 bg-neutral-800 bg-opacity-60 text-white hover:bg-opacity-100 p-1 rounded-md shadow-md border border-gray-300"
+                    style={{ backdropFilter: 'blur(5px)',opacity:isHovered ? "100%" : "0%" }}
+                >
+                    <FaExpandAlt size={17} />
+                </button>
             </div>
+
 
             {isOpen && (
                 <div
@@ -78,17 +96,18 @@ export default function ImageBlock(props: Props) {
                                 style={{
                                     width: '80vw',
                                     height: 'auto',
+                                    maxHeight:'80vh'
                                 }}
                             />
                             
                         </div>
-                        <button
-                            className="flex absolute top-3 right-5 text-white text-2xl bg-slate-50 rounded-full px-0.5 border border-black"
-                            onClick={() => setIsOpen(false)}
-                        >
-                            ✖
-                        </button>
                     </div>
+                    <button
+                        className="flex absolute top-5 right-7 text-white rounded-md px-0.5"
+                        onClick={() => setIsOpen(false)}
+                    >
+                        <RxCross2 size={25} />
+                    </button>
                 </div>
             )}
         </>
