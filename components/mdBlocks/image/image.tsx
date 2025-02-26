@@ -95,8 +95,7 @@ export default function ImageBlock(props: Props) {
                                 alt="image_block_large"
                                 style={{
                                     width: '80vw',
-                                    height: 'auto',
-                                    maxHeight:'80vh'
+                                    height: 'auto'
                                 }}
                             />
                             
