@@ -14,9 +14,8 @@ export default function Heading2(props:Props) {
     const [textBlocks,setText] = useState<MdTypeAndText[]>([]);
     const text = mdBlock.parent.slice(3);
     useEffect(()=>{
-        searchMDKeyword(text).then(md=>{
-            setText(md);
-        })
+        const md = searchMDKeyword(text)
+        setText(md);
     },[])
     
     return (

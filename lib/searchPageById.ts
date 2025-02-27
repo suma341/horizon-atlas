@@ -1,5 +1,8 @@
 import { PostMetaData } from "@/types/postMetaData";
-import { MdBlock } from "notion-to-md/build/types";
+import { CurriculumService } from "./services/CurriculumService";
+import { PageDataService } from "./services/PageDataService";
+import { PageData } from "@/types/pageData";
+// import { getPage } from "./services/PageService";
 
 type Page ={
     pageId:string;
@@ -9,8 +12,9 @@ type Page ={
 }
 
 export async function searchPageById(id:string):Promise<Page>{
-    const res_posts = await fetch("/horizon-atlas/notion_data/notionDatabase.json");
-    const posts:PostMetaData[] = await res_posts.json();
+    const curriculumService = new CurriculumService();
+    const pageDataService = new PageDataService();
+    const posts:PostMetaData[] = await curriculumService.getAllCurriculum();
     for(const post of posts){
         if(id === post.id || id===post.id.replaceAll("-", "")){
             return {
@@ -20,14 +24,13 @@ export async function searchPageById(id:string):Promise<Page>{
                 slug:post.slug
             }
         }
-        const res_page = await fetch(`/horizon-atlas/notion_data/eachPage/${post.slug}/page.json`);
-        const page:MdBlock[] = await res_page.json();
+        const page:PageData[] = await pageDataService.getPageDataBySlug(post.slug);
         for(const block of page){
             if(block.blockId===id || id===block.blockId.replaceAll("-","")){
                 return {
                     pageId:block.blockId,
                     isChildPage:true,
-                    title:block.parent.slice(2),
+                    title:block.data.slice(2),
                     slug:post.slug
                 }
             }

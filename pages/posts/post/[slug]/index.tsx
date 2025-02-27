@@ -10,7 +10,7 @@ import Layout from '@/components/Layout/Layout';
 import { fetchRoleInfo } from '@/lib/fetchRoleInfo';
 import { RoleData } from '@/types/role';
 import { CurriculumService } from '@/lib/services/CurriculumService';
-import { getPage } from '@/lib/services/PageService';
+import { PageDataService } from '@/lib/services/PageDataService';
 
 type postPath = {
   params: { slug:string }
@@ -46,7 +46,9 @@ type post ={
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const slug = params?.slug as string;
 
-  const mdBlocks:MdBlock[] = await getPage(slug);
+  const pageDataService = new PageDataService();
+
+  const mdBlocks:MdBlock[] = await pageDataService.getPageDataByPageId(slug);
   const singlePost:PostMetaData = await curriculumService.getCurriculumBySlug(slug);
 
   const post:post = {
@@ -65,7 +67,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   return {
     props: {
       metadata: post.metadata,
-      mdBlocks: post.mdBlocks,
+      mdBlocks: mdBlocks,
       pageNavs,
       roleData
     },
@@ -93,7 +95,7 @@ const Post =({ metadata, mdBlocks,pageNavs,roleData }: Props) => {
           <div className='mt-10 font-medium'>
             <div>
               {mdBlocks.map((mdBlock, i)=>(
-                <MdBlockComponent mdBlock={mdBlock} slug={metadata.slug} depth={0} key={i} page={mdBlock.type==='table_of_contents' ? mdBlocks : undefined} />
+                <MdBlockComponent mdBlock={mdBlock} slug={metadata.slug} depth={0} key={i} />
               ))}
             </div>
           </div>

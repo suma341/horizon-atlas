@@ -2,7 +2,6 @@ import Layout from '@/components/Layout/Layout';
 import SideBlock from '@/components/SideBlock/SideBlock';
 import MdBlockComponent from '@/components/mdBlocks/mdBlock';
 import { BASIC_NAV, HOME_NAV } from '@/constants/pageNavs';
-import { getChildPage } from '@/lib/services/notionApiService';
 import { pageNav } from '@/types/pageNav';
 import { PostMetaData } from '@/types/postMetaData';
 import { GetStaticProps } from 'next';
@@ -10,7 +9,7 @@ import { MdBlock } from 'notion-to-md/build/types';
 import { fetchRoleInfo } from '@/lib/fetchRoleInfo';
 import { RoleData } from '@/types/role';
 import { CurriculumService } from '@/lib/services/CurriculumService';
-import { getPage } from '@/lib/services/PageService';
+import { PageDataService } from '@/lib/services/PageDataService';
 
 type Props = {
   mdBlocks:MdBlock[];
@@ -26,24 +25,25 @@ type pagePath = {
 }
 
 const curriculumService = new CurriculumService();
+const pageDataService = new PageDataService();
 
 export const getStaticPaths = async () => {
   const allPosts:PostMetaData[] = await curriculumService.getAllCurriculum();
-  
-  const paths: pagePath[] = (
-    await Promise.all(
-      allPosts.map(async (post) => {
-        const mdBlocks:MdBlock[] = await getPage(post.slug);
-        const childPages = mdBlocks.filter((block)=>block.type==='child_page')
-        return childPages.map((child) => ({
-          params: {
-            slug: post.slug,
-            childId: [child.blockId],
-          },
-        }));
-      })
-    )
-  ).flat();
+  const childPages = await pageDataService.getPageDataByType('child_page');
+
+  const paths:pagePath[]=(
+      allPosts.map((post)=>{
+        const children = childPages.filter((item)=>item.slug===post.slug);
+        return children.map((child)=>{
+          return {
+            params:{
+              slug:post.slug,
+              childId:[child.blockId]
+            }
+          }
+        })
+      }).flat()
+  )
 
   return {
     paths,
@@ -53,35 +53,33 @@ export const getStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async (context) => {
     const currentSlug = context.params?.slug as string;
     const childparam = (context.params?.childId as string[]) || [];
-    const mdBlocks:MdBlock[] = await getPage(currentSlug);
+    const mdBlocks:MdBlock[] = await pageDataService.getPageDataByPageId(childparam[0]);
     const singlePost:PostMetaData = await curriculumService.getCurriculumBySlug(currentSlug);
     const post ={
       mdBlocks,
       metadata:singlePost
     }
+    const childPagesBySlug = await pageDataService.getPageDataByTypeAndSlug('child_page',currentSlug);
 
-    let currentchild = post.mdBlocks;
     const links:string[] = [`/posts/post/${post.metadata.slug}`];
     const pageNavs:pageNav[] = post.metadata.is_basic_curriculum ?
       [HOME_NAV,BASIC_NAV,{title:post.metadata.category,id:`/posts/course/${post.metadata.category}`},{title:post.metadata.title,id:`/posts/post/${post.metadata.slug}`}]
       : [HOME_NAV,{title:post.metadata.category,id:`/posts/course/${post.metadata.category}`},{title:post.metadata.title,id:`/posts/post/${post.metadata.slug}`}];
     for (let i = 0; i < childparam.length; i++) {
-      const childpages = currentchild.filter((block)=>block.type==='child_page');
-      const child = childpages.filter((block)=>block.blockId===childparam[i]);
+      // const childpages = currentchild.filter((block)=>block.type==='child_page');
+      const child = childPagesBySlug.filter((item)=>item.blockId===childparam[i]);
       if(child[0]!==undefined){
         links.push(child[0].blockId);
         let link = "";
         for(let k=0;k<links.length;k++){
           link = link + links[k];
         }
-        pageNavs.push({title:child[0].parent.replace("## ",""), id:link});
-        currentchild = child[0].children;
+        pageNavs.push({title:child[0].data.replace("## ",""), id:link});
       }
     }
-    const childPages = getChildPage(post.mdBlocks);
-    const childNavs:pageNav[] = childPages.map((page)=>{
+    const childNavs:pageNav[] = childPagesBySlug.map((page)=>{
       return {
-        title:page.parent.split('## ')[1],
+        title:page.data.split('## ')[1],
         id:page.blockId,
         child:true,
       }
@@ -89,12 +87,12 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const roleData = await fetchRoleInfo();
     return {
         props: {
-            mdBlocks:currentchild,
+            mdBlocks:mdBlocks,
             pageNavs,
-            parentTitle:post.metadata.title,
+            parentTitle:singlePost.title,
             childNavs,
             slug:currentSlug,
-            roleData
+            roleData,
         },
     };
 };

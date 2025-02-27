@@ -1,10 +1,8 @@
-import { findHeadingBlock } from '@/lib/findHeadingBlock';
 import { MdBlock } from 'notion-to-md/build/types';
 import React, { useEffect, useState } from 'react'
 
 type Props = {
     mdBlock: MdBlock;
-    page?:MdBlock[];
   };
 
   type HeadingType ={
@@ -13,13 +11,11 @@ type Props = {
     blockId:string;
 }
 
-function Table_of_contents({mdBlock,page}:Props) {
+function Table_of_contents({mdBlock}:Props) {
     const [headingList,setHeadingList]=useState<HeadingType[]>([])
     useEffect(()=>{
-        if(page!==undefined){
-            const findList = findHeadingBlock(page);
-            setHeadingList(findList);
-        }
+        const heading:HeadingType[] = (JSON.parse(mdBlock.parent)).headingList;
+        setHeadingList(heading)
     },[])
 
     const scrollToSection = (targetId:string) => {

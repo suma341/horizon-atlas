@@ -34,6 +34,20 @@ export const getAllData = async () => {
     return allPosts.map(getPageMetaData);
 };
 
+export const getSingleData = async (slug) => {
+    const posts = await notion.databases.query({
+        database_id: NOTION_DATABASE_ID,
+        page_size: 100,
+        filter: {
+            property: 'slug',
+            formula: { string: { equals: slug } }
+        }
+    });
+
+    const allPosts = posts.results.filter(isFullPage);
+    return allPosts.map(getPageMetaData);
+};
+
 const getPageMetaData = (post) => {
     const getTags = (tags) => tags.map(tag => tag.name || "");
     const getVisibilities = (visibilities) => visibilities.map(visibility=> visibility.name || "");
@@ -66,7 +80,8 @@ export const getSinglePage = async (slug) => {
     const page = response.results.find(isFullPage);
     if (!page) throw new Error('Page not found');
 
-    return await n2m.pageToMarkdown(page.id);
+    const mdBlocks =  await n2m.pageToMarkdown(page.id);
+    return mdBlocks;
 };
 
 const downloadImage = async (imageUrl, savePath) => {
@@ -103,22 +118,22 @@ async function upsertCurriculum(slug,curriculum_data){
     console.log(result);
 }
 
-async function upsertPage(slug,page_data){
-    const res = await fetch(`${SUPABASE_URL}/functions/v1/upsert_page`, {
+async function upsertPage(slug,parentId,blockData,blockId,type,pageId,order){
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/upsertPageData`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
         },
         body:JSON.stringify({
-            slug,
-            page_data
+            slug,parentId,blockData,blockId,type,pageId,order
         })
     });
     const result = await res.json();
     console.log(result);
+    const { error } = result;
+    return error;
 }
-
 
 async function useIframely(url) {
     try{
@@ -128,6 +143,25 @@ async function useIframely(url) {
     }catch(e){
         console.warn(e);
         return;
+    }
+}
+
+function wait(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function insertblock(slug,parentId,blocks,pageId){
+    for(let i=1;i<(blocks.length + 1);i++){
+        await wait(90);
+        const k = i -1;
+        if(blocks[k].children.length!==0){
+            await insertblock(
+                slug,
+                blocks[k].blockId,
+                blocks[k].children,
+                blocks[k].type==="child_page" ? blocks[k].blockId : pageId);
+        }
+        await upsertPage(slug,parentId,blocks[k].parent,blocks[k].blockId,blocks[k].type,pageId,i);
     }
 }
 
@@ -211,23 +245,107 @@ function mkdir(dirPath){
     }
 }
 
+function cleardir(directory) {
+    try {
+        const files = fs.readdir(directory);
+        for (const file of files) {
+            const filePath = path.join(directory, file);
+            const stat = fs.stat(filePath);
+            if (stat.isFile()) {
+                fs.unlink(filePath);
+            } else if (stat.isDirectory()) {
+                fs.rm(filePath, { recursive: true, force: true });
+            }
+        }
+        console.log(`Directory "${directory}" has been cleared.`);
+    } catch (err) {
+        console.error(`Error clearing directory: ${err.message}`);
+    }
+}
+
 getAllData()
     .then(allData => {
         for(const data of allData){
-            // downloadImage(data.icon, `./public/notion_data/eachPage/${data.slug}/icon.png`)
-            upsertCurriculum(data.slug,data)
-            // getSinglePage(data.slug).then(mdBlocks=>{
-            //     upsertPage(data.slug,mdBlocks);
-            //     const ogsDir = `./public/notion_data/eachPage/${data.slug}/ogsData/`;
-            //     const imageDir = `./public/notion_data/eachPage/${data.slug}/image/`;
-            //     const iframeDir = `./public/notion_data/eachPage/${data.slug}/iframeData/`;
-            //     mkdir(ogsDir);
-            //     mkdir(imageDir);
-            //     mkdir(iframeDir);
-            //     return fetchAllMdBlock(mdBlocks, data.slug);
-            // })
+            wait(1000).then(data_=>{
+                downloadImage(data.icon, `./public/notion_data/eachPage/${data.slug}/icon.png`)
+                upsertCurriculum(data.slug,data)
+                getSinglePage(data.slug).then(mdBlocks=>{
+                    insertblock(data.slug,data.slug,mdBlocks,data.slug)
+                    const ogsDir = `./public/notion_data/eachPage/${data.slug}/ogsData/`;
+                    const imageDir = `./public/notion_data/eachPage/${data.slug}/image/`;
+                    const iframeDir = `./public/notion_data/eachPage/${data.slug}/iframeData/`;
+                    mkdir(ogsDir);
+                    mkdir(imageDir);
+                    mkdir(iframeDir);
+                    cleardir(ogsDir);
+                    cleardir(imageDir);
+                    cleardir(iframeDir);
+                    return fetchAllMdBlock(mdBlocks, data.slug);
+                })
+            })
         }
     })
     .catch(error => console.error("❌ Notion API の取得でエラー:", error)); // 🔴 catch() 追加
 
 console.log("download completed");
+
+// const slug="flet-1";
+// getSinglePage(slug).then(data=>{
+//     insertblock(slug,slug,data,slug)
+// })
+
+// async function get(pageId){
+//     const res = await fetch(`${SUPABASE_URL}/functions/v1/getPageDataByPageId`, {
+//         method: "POST",
+//         headers: {
+//             "Content-Type": "application/json",
+//             "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+//         },
+//         body:JSON.stringify({
+//             pageId
+//         })
+//     });
+//     const result = await res.json();
+//     result.sort((a,b)=>a.order-b.order);
+//     fs.writeFileSync(`./public/notion_data/class.json`, JSON.stringify(result, null, 2));
+// }
+
+class PageDataGateway{
+    getPageDataByPageId=async(pageId)=>{
+        const res = await fetch(`${SUPABASE_URL}/functions/v1/getPageDataByPageId`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+            },
+            body:JSON.stringify({
+                pageId
+            })
+        });
+        const pageDatas = await res.json();
+        const sortedData = pageDatas.sort((a,b)=>a.order-b.order);
+        return sortedData;
+    }
+}
+
+function buildTree(pageData, parentId) {
+    return pageData
+        .filter(item => item.parentId === parentId)
+        .map(item => ({
+            blockId: item.blockId,
+            type: item.type,
+            parent: item.data,
+            children: buildTree(pageData, item.blockId)
+        }));
+}
+
+const pageDataGateway = new PageDataGateway();
+
+const getPageDataByPageId=async(pageId)=>{
+    const pageDatas = await pageDataGateway.getPageDataByPageId(pageId);
+    const mdBlocks = buildTree(pageDatas, pageId);
+    return mdBlocks;
+}
+
+// const data = await getPageDataByPageId("16c2297f-7a72-805a-9ca7-df9d54f0b904")
+// fs.writeFileSync(`./public/notion_data/class.json`, JSON.stringify(data, null, 2));

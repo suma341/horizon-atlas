@@ -1,5 +1,4 @@
 import { MdTypeAndText } from "@/types/parent";
-import { searchPageById } from "./searchPageById";
 
 type TypeAndIndex = {
   startIndex: number;
@@ -12,7 +11,7 @@ type Patterns = {
   regex: RegExp;
 }
 
-export async function searchMDKeyword(text: string) {
+export function searchMDKeyword(text: string) {
   if (!text) {
     return [];
   }
@@ -66,20 +65,15 @@ export async function searchMDKeyword(text: string) {
         const innerText = match[1];
         link = match[2];
         if(typeof link ==="string"){
-          if(link.slice(0,8)==='https://' || link.slice(0,7)==='http://'){
+          if(link.startsWith("https://") || link.startsWith("http://") || link.startsWith("/posts") ){
             link=link;
           }else{
-            const page = await searchPageById(link.slice(1));
-            if(page.pageId===""){
-              link = "";
-            }else{
-              link = page.isChildPage ? `/posts/post/${page.slug}/${page.pageId}` : `/posts/post/${page.slug}`
-            }
+            link = '';
           }
         }
 
         // リンク内部を再解析
-        const innerDecorations = await searchMDKeyword(innerText);
+        const innerDecorations = searchMDKeyword(innerText);
 
         if (innerDecorations.length > 0) {
           // リンク内部の装飾を組み合わせて追加

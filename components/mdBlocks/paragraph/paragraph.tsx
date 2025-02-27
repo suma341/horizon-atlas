@@ -18,10 +18,12 @@ export default function Paragraph(props:Props){
     const {parent,mdBlock,depth,quote,slug} = props;
     const [mdTypeAndTextList,setMd]=useState<MdTypeAndText[]>([]);
     useEffect(()=>{
-        searchMDKeyword(parent).then(md=>{
-            setMd(md)
-        })
+        const md = searchMDKeyword(parent)
+        setMd(md)
     },[])
+    if(mdBlock.parent==="c"){
+        return null;
+    }
 
     return (
         <div className='mb-0.5 mt-1' id={mdBlock.blockId}>

@@ -1,6 +1,5 @@
 import { NUMBER_OF_POSTS_PER_PAGE } from "@/constants/numberOfPage";
 import { PostMetaData } from "@/types/postMetaData";
-import { MdBlock } from "notion-to-md/build/types";
 
 export const calculatePageNumber = (posts:PostMetaData[]) => {
     const pageNumber = 
@@ -89,9 +88,4 @@ export const courseIsBasic=async(course:string,allPosts:PostMetaData[])=>{
         return false;
     }
     return true;
-}
-
-export const getChildPage=(mdBlocks:MdBlock[])=>{
-    const childPages = mdBlocks.filter((block)=>block.type==='child_page');
-    return childPages;
 }
