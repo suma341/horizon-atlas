@@ -5,6 +5,7 @@ import UserBlock from '../Header/UserInfo/userBlock';
 import { IoIosSearch } from 'react-icons/io';
 import { useAuth0 } from '@auth0/auth0-react';
 import { FaArrowTrendUp } from "react-icons/fa6";
+import { PiSignOut } from "react-icons/pi";
 
 type Props={
     openbar:boolean;
@@ -17,7 +18,7 @@ type Props={
 }
 
 function Sidebar({openbar,setOpenbar,pageNav}:Props) {
-    const { user } = useAuth0();
+    const { user,logout } = useAuth0();
 
     const getPageHeight = () => {
         if(window!==undefined){
@@ -83,6 +84,14 @@ function Sidebar({openbar,setOpenbar,pageNav}:Props) {
                                     ))}
                                 </div>
                             )}
+                        </li>
+                        <li className='mt-3 hover:bg-neutral-100' onClick={()=>logout({logoutParams:{returnTo:process.env.NEXT_PUBLIC_ROOT_PATH!}})}>
+                            <div className='flex items-center justify-between mr-5 py-2 px-2'>
+                                <PiSignOut size={25} className='text-red-400' />
+                                <div className='text-red-400 font-bold'>
+                                    ログアウト
+                                </div>
+                            </div>
                         </li>
                     </ul>
                 </div>

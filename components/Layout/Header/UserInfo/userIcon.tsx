@@ -62,8 +62,8 @@ export default function UserIcon() {
                       <p className="text-neutral-600">進捗度</p>
                     </button>
                     <button onClick={() => logout({logoutParams:{returnTo:process.env.NEXT_PUBLIC_ROOT_PATH!}})} className="flex relative hover:bg-slate-200 rounded-sm p-1 pr-2">
-                      <PiSignOut size={18} className="mt-0.5 mr-1.5 text-neutral-600" />
-                      <p className="text-neutral-600">ログアウト</p>
+                      <PiSignOut size={18} className="mt-0.5 mr-1.5 text-red-400" />
+                      <p className="text-red-400">ログアウト</p>
                     </button>
                 </ul>
             </div>)}
