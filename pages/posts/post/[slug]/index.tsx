@@ -7,8 +7,6 @@ import { pageNav } from '@/types/pageNav';
 import { BASIC_NAV, HOME_NAV } from '@/constants/pageNavs';
 import Image from 'next/image';
 import Layout from '@/components/Layout/Layout';
-import { fetchRoleInfo } from '@/lib/fetchRoleInfo';
-import { RoleData } from '@/types/role';
 import { CurriculumService } from '@/lib/services/CurriculumService';
 import { PageDataService } from '@/lib/services/PageDataService';
 
@@ -20,7 +18,6 @@ type Props = {
   metadata:PostMetaData;
   mdBlocks:MdBlock[];
   pageNavs:pageNav[];
-  roleData:RoleData;
 };
 
 const curriculumService = new CurriculumService();
@@ -63,21 +60,19 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     : post.metadata.category === ""
     ? [HOME_NAV, postNav]
     : [HOME_NAV, courseNav, postNav];
-  const roleData = await fetchRoleInfo();
   return {
     props: {
       metadata: post.metadata,
       mdBlocks: mdBlocks,
       pageNavs,
-      roleData
     },
   };
 };
 
 
-const Post =({ metadata, mdBlocks,pageNavs,roleData }: Props) => {
+const Post =({ metadata, mdBlocks,pageNavs}: Props) => {
   return (
-    <Layout headerProps={{pageNavs}} roleData={roleData}>
+    <Layout headerProps={{pageNavs}}>
       <div className='p-4 pt-24 pb-8'>
       <section className='p-5 bg-white pb-10'>
         <div className='flex'>

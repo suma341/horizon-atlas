@@ -6,8 +6,6 @@ import { pageNav } from '@/types/pageNav';
 import { PostMetaData } from '@/types/postMetaData';
 import { GetStaticProps } from 'next';
 import { MdBlock } from 'notion-to-md/build/types';
-import { fetchRoleInfo } from '@/lib/fetchRoleInfo';
-import { RoleData } from '@/types/role';
 import { CurriculumService } from '@/lib/services/CurriculumService';
 import { PageDataService } from '@/lib/services/PageDataService';
 
@@ -17,7 +15,6 @@ type Props = {
   parentTitle:string;
   childNavs:pageNav[];
   slug:string;
-  roleData:RoleData;
 };
 
 type pagePath = {
@@ -66,7 +63,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
       [HOME_NAV,BASIC_NAV,{title:post.metadata.category,id:`/posts/course/${post.metadata.category}`},{title:post.metadata.title,id:`/posts/post/${post.metadata.slug}`}]
       : [HOME_NAV,{title:post.metadata.category,id:`/posts/course/${post.metadata.category}`},{title:post.metadata.title,id:`/posts/post/${post.metadata.slug}`}];
     for (let i = 0; i < childparam.length; i++) {
-      // const childpages = currentchild.filter((block)=>block.type==='child_page');
       const child = childPagesBySlug.filter((item)=>item.blockId===childparam[i]);
       if(child[0]!==undefined){
         links.push(child[0].blockId);
@@ -84,7 +80,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
         child:true,
       }
     })
-    const roleData = await fetchRoleInfo();
     return {
         props: {
             mdBlocks:mdBlocks,
@@ -92,16 +87,15 @@ export const getStaticProps: GetStaticProps = async (context) => {
             parentTitle:singlePost.title,
             childNavs,
             slug:currentSlug,
-            roleData,
         },
     };
 };
 
 const PostChildPage = ( props : Props) => {
-    const {mdBlocks, pageNavs,parentTitle,childNavs,slug,roleData} = props;
+    const {mdBlocks, pageNavs,parentTitle,childNavs,slug} = props;
 
     return (
-      <Layout headerProps={{pageNavs:pageNavs}} sideNavProps={{title:parentTitle,slug,childPages:childNavs}} roleData={roleData}>
+      <Layout headerProps={{pageNavs:pageNavs}} sideNavProps={{title:parentTitle,slug,childPages:childNavs}}>
         <div className='mt-24'>
           <section className="p-5 pb-10 md:w-3/4 bg-white">
             <h2 className="w-full text-2xl font-medium">

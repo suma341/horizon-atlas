@@ -6,14 +6,10 @@ import { calculatePageNumber, courseIsBasic, getAllCourses, getPostsByCourse, ge
 import { BASIC_NAV, HOME_NAV } from "@/constants/pageNavs";
 import { pageNav } from "@/types/pageNav";
 import Layout from "@/components/Layout/Layout";
-import { RoleData } from "@/types/role";
-import { fetchRoleInfo } from "@/lib/fetchRoleInfo";
 import { useEffect, useState } from "react";
 import { NUMBER_OF_POSTS_PER_PAGE } from "@/constants/numberOfPage";
 import { CurriculumService } from "@/lib/services/CurriculumService";
 import { useAuth0 } from "@auth0/auth0-react";
-import { CustomUser } from "@/global";
-import { getUsersRole } from "@/lib/getUsersRole";
 
 type pagePath = {
     params: { course:string }
@@ -43,7 +39,6 @@ type Props={
     posts:PostMetaData[];
     currentCourse:string;
     pageNavs:pageNav[];
-    roleData:RoleData;
 }
 
 // getStaticProps関数
@@ -56,18 +51,16 @@ export const getStaticProps: GetStaticProps = async (context) => {
     // console.log(numberOfPages);
 
     const posts:PostMetaData[] = await getPostsByCourse(currentCourse, allPosts);
-    const roleData = await fetchRoleInfo();
     return {
         props: {
           posts,
           currentCourse,
           pageNavs,
-          roleData
         },
     };
 };
 
-const CoursePage = ({ posts, currentCourse,pageNavs,roleData}: Props)=> {
+const CoursePage = ({ posts, currentCourse,pageNavs }: Props)=> {
     const [currentPage, setCurrentPage] = useState(1);
     const postsPerPage = NUMBER_OF_POSTS_PER_PAGE;
     const [postsByRole, setPostsByRole] = useState(posts);
@@ -76,8 +69,7 @@ const CoursePage = ({ posts, currentCourse,pageNavs,roleData}: Props)=> {
 
     useEffect(()=>{
         async function setData(){
-            const customUser = user as CustomUser;
-            const usersRole = getUsersRole(customUser,roleData);
+            const usersRole = user?.given_name ?? "体験入部"
             const postsByRole = await getPostsByRole(usersRole,posts);
             setPostsByRole(postsByRole);
             setNumberOfPages(calculatePageNumber(postsByRole));
@@ -86,7 +78,7 @@ const CoursePage = ({ posts, currentCourse,pageNavs,roleData}: Props)=> {
     },[posts])
 
     return (
-        <Layout headerProps={{pageNavs}} roleData={roleData}> 
+        <Layout headerProps={{pageNavs}}> 
             <div className="h-full w-full mx-auto font-mono pt-20">
                 <main className="w-full mt-16 mb-3">
                     <h1 className="text-5xl font-medium text-center mb-16">{currentCourse}</h1>

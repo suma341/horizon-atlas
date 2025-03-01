@@ -1,13 +1,9 @@
-import React,{useEffect, useState} from 'react';
+import React from 'react';
 import { pageNav } from '@/types/pageNav';
 import Link from 'next/link';
 import UserBlock from '../Header/UserInfo/userBlock';
 import { IoIosSearch } from 'react-icons/io';
-import { RoleData } from '@/types/role';
 import { useAuth0 } from '@auth0/auth0-react';
-import { CustomUser } from '@/global';
-import { getUsersRole } from '@/lib/getUsersRole';
-
 type Props={
     openbar:boolean;
     setOpenbar:React.Dispatch<React.SetStateAction<boolean>>;
@@ -16,18 +12,10 @@ type Props={
         slug:string;
         childPages:pageNav[];
     }
-    roleData:RoleData;
 }
 
-function Sidebar({openbar,setOpenbar,pageNav,roleData}:Props) {
+function Sidebar({openbar,setOpenbar,pageNav}:Props) {
     const { user } = useAuth0();
-    const [role,setRole] = useState("");
-
-    useEffect(()=>{
-        const customUser = user as CustomUser;
-        const usersRole = getUsersRole(customUser, roleData);
-        setRole(usersRole);
-    },[user])
 
     const getPageHeight = () => {
         if(window!==undefined){
@@ -56,7 +44,7 @@ function Sidebar({openbar,setOpenbar,pageNav,roleData}:Props) {
                         <li className='flex items-center justify-between mr-5 mt-3'>
                             <div></div>
                             <div className='flex'>
-                                <p className='mr-1 mt-3 text-neutral-500 text-sm'>{role}</p>
+                                <p className='mr-1 mt-3 text-neutral-500 text-sm'>{user?.given_name}</p>
                                 <UserBlock />
                             </div>
                         </li>

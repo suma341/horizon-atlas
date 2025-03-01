@@ -2,27 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useAuth0 } from "@auth0/auth0-react";
 import { PiSignOut } from "react-icons/pi";
-import { RoleData } from "@/types/role";
-import { getUsersRole } from "@/lib/getUsersRole";
-import { CustomUser } from "@/global";
 
-type Props={
-  roleData:RoleData;
-}
-
-export default function UserIcon({roleData}:Props) {
+export default function UserIcon() {
   const { user,logout } = useAuth0();
   
   const [isVisible, setIsVisible] = useState(false); // トグルの状態を管理
   const toggleRef = useRef<HTMLDivElement>(null); // toggle要素への参照
   const toggleTargetRef = useRef<HTMLDivElement>(null); // toggleTarget要素への参照
-  const [usersRole,setUsersRole]=useState("");
-
-  useEffect(()=>{
-    const customUser = user as CustomUser;
-    const usersRole = getUsersRole(customUser, roleData);
-    setUsersRole(usersRole);
-  },[user])
 
   // ドキュメント全体のクリックを監視
   useEffect(() => {
@@ -59,7 +45,7 @@ export default function UserIcon({roleData}:Props) {
               <Image src={user?.picture || ""} alt="UserIcon" width={10} height={10}  className="h-auto w-9 rounded-full"/>
               <div className="mt-0.5 ml-0.5">
                 <p className='text-xs text-neutral-500'>{user?.name}</p>
-                <p className="text-xs text-neutral-500">{usersRole}</p>
+                <p className="text-xs text-neutral-500">{user?.given_name}</p>
               </div>
             </div>
             {isVisible && (

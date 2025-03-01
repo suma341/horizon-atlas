@@ -9,19 +9,14 @@ import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import {  useEffect, useState } from "react";
 import SearchField from "@/components/SearchField/SearchField";
-import { RoleData } from "@/types/role";
-import { fetchRoleInfo } from "@/lib/fetchRoleInfo";
 import Pagenation from "@/components/pagenation/Pagenation";
 import { NUMBER_OF_POSTS_PER_PAGE } from "@/constants/numberOfPage";
 import { CurriculumService } from "@/lib/services/CurriculumService";
 import { useAuth0 } from "@auth0/auth0-react";
-import { CustomUser } from "@/global";
-import { getUsersRole } from "@/lib/getUsersRole";
 
 type Props = {
   allTags:string[];
   posts:PostMetaData[];
-  roleData:RoleData;
 }
 
 const curriculumService = new CurriculumService();
@@ -31,17 +26,15 @@ export const getStaticProps: GetStaticProps = async () => {
   const allPosts:PostMetaData[] = await curriculumService.getAllCurriculum();
 
   const allTags:string[] = await getAllTags(allPosts);
-  const roleData = await fetchRoleInfo();
   return {
     props:{
       allTags,
       posts:allPosts,
-      roleData
     },
   };
 };
 
-export default function SearchPage({allTags, posts,roleData}:Props) {
+export default function SearchPage({allTags, posts}:Props) {
   const [matchPosts, setMatchPosts] = useState<PostMetaData[]>(posts);
   const [currentPage, setCurrentPage] = useState(1);
   const [numberOfPage, setNumberOfPage] = useState(calculatePageNumber(posts));
@@ -50,8 +43,7 @@ export default function SearchPage({allTags, posts,roleData}:Props) {
   const query = router.query.search!==undefined ? router.query.search as string : undefined;
   useEffect(()=>{
     async function setData(){
-      const customUser = user as CustomUser;
-      const usersRole = getUsersRole(customUser,roleData);
+      const usersRole = user?.given_name ?? "体験入部"
       const postsByRole = await getPostsByRole(usersRole,posts);
       setMatchPosts(postsByRole);
       if(query!==undefined){
@@ -67,7 +59,7 @@ export default function SearchPage({allTags, posts,roleData}:Props) {
   const postsPerPage = NUMBER_OF_POSTS_PER_PAGE;
   
   return (
-    <Layout headerProps={{pageNavs:[HOME_NAV,SEARCH_NAV]}} roleData={roleData}>
+    <Layout headerProps={{pageNavs:[HOME_NAV,SEARCH_NAV]}}>
       <div className="pt-20">
         <main className="w-full mt-16 px-8">
           <div>

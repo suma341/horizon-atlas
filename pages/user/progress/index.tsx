@@ -28,7 +28,7 @@ export default function Progress() {
   }, [user]);
 
   return (
-    <Layout headerProps={{ pageNavs: [HOME_NAV, PROGRESS_NAV] }} roleData={{ basic: { id: "", name: "" }, develop: { id: "", name: "" } }}>
+    <Layout headerProps={{ pageNavs: [HOME_NAV, PROGRESS_NAV] }}>
       <div className="min-h-screen text-gray-900 diagonal-bg pt-20 px-5">
         <div className="text-center mb-10">
           <h1 className="text-3xl font-bold text-blue-500 animate-fadeIn">

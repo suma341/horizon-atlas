@@ -39,6 +39,7 @@ jobs:
           BOT_TOKEN: ${{secrets.BOT_TOKEN}}
           SUPABASE_ANON_KEY: ${{secrets.SUPABASE_ANON_KEY}}
           SUPABASE_URL: ${{secrets.SUPABASE_URL}}
+          NEXT_PUBLIC_RAILWAY_URL: ${{secrets.NEXT_PUBLIC_RAILWAY_URL}}
 
       - name: gh-pages ブランチにデプロイ
         uses: peaceiris/actions-gh-pages@v4

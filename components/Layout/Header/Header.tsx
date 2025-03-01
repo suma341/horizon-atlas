@@ -2,15 +2,13 @@ import React from 'react'
 import HamburgerButton from './hamburgerButton./hamburgerButton';
 import UserIcon from './UserInfo/userIcon';
 import SearchIcon from './searchIcon/searchIcon';
-import { RoleData } from '@/types/role';
 import Image from 'next/image';
 
 type Props={
     setOpenbar:React.Dispatch<React.SetStateAction<boolean>>;
-    roleData:RoleData;
 }
 
-export default function Header({setOpenbar,roleData}:Props){
+export default function Header({setOpenbar}:Props){
     
   return (
     <header className='w-full bg-white'>
@@ -23,7 +21,7 @@ export default function Header({setOpenbar,roleData}:Props){
                     <SearchIcon />
                 </li>
                 <li>
-                    <UserIcon roleData={roleData} />
+                    <UserIcon />
                 </li>
             </ul>
             <ul className='flex md:hidden items-center text-sm pt-2'>
