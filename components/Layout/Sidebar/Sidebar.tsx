@@ -76,23 +76,25 @@ function Sidebar({openbar,setOpenbar,pageNav}:Props) {
                                 <div className='p-1 border border-neutral-400 rounded'>
                                     <p className='text-base'>{pageNav.title}</p>
                                     {pageNav.childPages.map((nav, i) => (
-                                        <div key={i} className="p-0.5 mt-1 cursor-pointer hover:bg-neutral-100">
-                                            <Link href={`/posts/post/${pageNav.slug}/${nav.id}`} className="my-1.5 text-sm text-neutral-500 underline truncate">
+                                        <Link key={i} href={`/posts/post/${pageNav.slug}/${nav.id}`} className="my-1.5 text-sm text-neutral-500 underline truncate">
+                                            <div className="p-0.5 mt-1 cursor-pointer hover:bg-neutral-100">
                                                 {nav.title}
-                                            </Link>
-                                        </div>
+                                            </div>
+                                        </Link>
                                     ))}
                                 </div>
                             )}
                         </li>
-                        <li className='mt-3 hover:bg-neutral-100' onClick={()=>logout({logoutParams:{returnTo:process.env.NEXT_PUBLIC_ROOT_PATH!}})}>
-                            <div className='flex items-center justify-between mr-5 py-2 px-2'>
-                                <PiSignOut size={25} className='text-red-400' />
-                                <div className='text-red-400 font-bold'>
-                                    ログアウト
+                        <div>
+                            <li className='mt-3 hover:bg-neutral-100 cursor-pointer' onClick={()=>logout({logoutParams:{returnTo:process.env.NEXT_PUBLIC_ROOT_PATH!}})}>
+                                <div className='flex items-center justify-between mr-5 py-2 px-2'>
+                                    <PiSignOut size={25} className='text-red-400' />
+                                    <div className='text-red-400 font-bold'>
+                                        ログアウト
+                                    </div>
                                 </div>
-                            </div>
-                        </li>
+                            </li>
+                        </div>
                     </ul>
                 </div>
             </div>

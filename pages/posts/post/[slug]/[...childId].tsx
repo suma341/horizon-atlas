@@ -74,7 +74,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
       pageNavs.push({title:child[0].data.replace("## ",""), id:link});
     }
   }
-  const childNavs:pageNav[] = childPagesBySlug.map((page)=>{
+  const childNavs:pageNav[] = childPagesBySlug.sort((a,b)=>a.order - b.order).map((page)=>{
     return {
       title:page.data.split('## ')[1],
       id:page.blockId,
