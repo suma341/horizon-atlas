@@ -21,10 +21,9 @@ type pagePath = {
   params: { slug:string, childId:string[] }
 }
 
-const curriculumService = new CurriculumService();
-const pageDataService = new PageDataService();
-
 export const getStaticPaths = async () => {
+  const curriculumService = new CurriculumService();
+  const pageDataService = new PageDataService();
   const allPosts:PostMetaData[] = await curriculumService.getAllCurriculum();
   const childPages = await pageDataService.getPageDataByType('child_page');
 
@@ -48,47 +47,49 @@ export const getStaticPaths = async () => {
   };
 };
 export const getStaticProps: GetStaticProps = async (context) => {
-    const currentSlug = context.params?.slug as string;
-    const childparam = (context.params?.childId as string[]) || [];
-    const mdBlocks:MdBlock[] = await pageDataService.getPageDataByPageId(childparam[0]);
-    const singlePost:PostMetaData = await curriculumService.getCurriculumBySlug(currentSlug);
-    const post ={
-      mdBlocks,
-      metadata:singlePost
-    }
-    const childPagesBySlug = await pageDataService.getPageDataByTypeAndSlug('child_page',currentSlug);
+  const curriculumService = new CurriculumService();
+  const pageDataService = new PageDataService();
+  const currentSlug = context.params?.slug as string;
+  const childparam = (context.params?.childId as string[]) || [];
+  const mdBlocks:MdBlock[] = await pageDataService.getPageDataByPageId(childparam[0]);
+  const singlePost:PostMetaData = await curriculumService.getCurriculumBySlug(currentSlug);
+  const post ={
+    mdBlocks,
+    metadata:singlePost
+  }
+  const childPagesBySlug = await pageDataService.getPageDataByTypeAndSlug('child_page',currentSlug);
 
-    const links:string[] = [`/posts/post/${post.metadata.slug}`];
-    const pageNavs:pageNav[] = post.metadata.is_basic_curriculum ?
-      [HOME_NAV,BASIC_NAV,{title:post.metadata.category,id:`/posts/course/${post.metadata.category}`},{title:post.metadata.title,id:`/posts/post/${post.metadata.slug}`}]
-      : [HOME_NAV,{title:post.metadata.category,id:`/posts/course/${post.metadata.category}`},{title:post.metadata.title,id:`/posts/post/${post.metadata.slug}`}];
-    for (let i = 0; i < childparam.length; i++) {
-      const child = childPagesBySlug.filter((item)=>item.blockId===childparam[i]);
-      if(child[0]!==undefined){
-        links.push(child[0].blockId);
-        let link = "";
-        for(let k=0;k<links.length;k++){
-          link = link + links[k];
-        }
-        pageNavs.push({title:child[0].data.replace("## ",""), id:link});
+  const links:string[] = [`/posts/post/${post.metadata.slug}`];
+  const pageNavs:pageNav[] = post.metadata.is_basic_curriculum ?
+    [HOME_NAV,BASIC_NAV,{title:post.metadata.category,id:`/posts/course/${post.metadata.category}`},{title:post.metadata.title,id:`/posts/post/${post.metadata.slug}`}]
+    : [HOME_NAV,{title:post.metadata.category,id:`/posts/course/${post.metadata.category}`},{title:post.metadata.title,id:`/posts/post/${post.metadata.slug}`}];
+  for (let i = 0; i < childparam.length; i++) {
+    const child = childPagesBySlug.filter((item)=>item.blockId===childparam[i]);
+    if(child[0]!==undefined){
+      links.push(child[0].blockId);
+      let link = "";
+      for(let k=0;k<links.length;k++){
+        link = link + links[k];
       }
+      pageNavs.push({title:child[0].data.replace("## ",""), id:link});
     }
-    const childNavs:pageNav[] = childPagesBySlug.map((page)=>{
-      return {
-        title:page.data.split('## ')[1],
-        id:page.blockId,
-        child:true,
-      }
-    })
+  }
+  const childNavs:pageNav[] = childPagesBySlug.map((page)=>{
     return {
-        props: {
-            mdBlocks:mdBlocks,
-            pageNavs,
-            parentTitle:singlePost.title,
-            childNavs,
-            slug:currentSlug,
-        },
-    };
+      title:page.data.split('## ')[1],
+      id:page.blockId,
+      child:true,
+    }
+  })
+  return {
+      props: {
+          mdBlocks:mdBlocks,
+          pageNavs,
+          parentTitle:singlePost.title,
+          childNavs,
+          slug:currentSlug,
+      },
+  };
 };
 
 const PostChildPage = ( props : Props) => {
