@@ -46,6 +46,7 @@ export const getStaticProps: GetStaticProps = async () => {
 };
 
 const PostsPage = ({ courseAndPosts,allTags,roleData }: Props)=> {
+  
     return (
       <Layout headerProps={{pageNavs:[HOME_NAV]}} roleData={roleData}>  
         <div className="bg-gradient-to-b from-gray-50 to-white min-h-screen">
