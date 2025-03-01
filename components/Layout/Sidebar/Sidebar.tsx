@@ -4,6 +4,8 @@ import Link from 'next/link';
 import UserBlock from '../Header/UserInfo/userBlock';
 import { IoIosSearch } from 'react-icons/io';
 import { useAuth0 } from '@auth0/auth0-react';
+import { FaArrowTrendUp } from "react-icons/fa6";
+
 type Props={
     openbar:boolean;
     setOpenbar:React.Dispatch<React.SetStateAction<boolean>>;
@@ -54,6 +56,16 @@ function Sidebar({openbar,setOpenbar,pageNav}:Props) {
                                     <IoIosSearch size={25} className='text-neutral-600' />
                                     <div className='text-neutral-500 font-bold'>
                                         カリキュラム検索
+                                    </div>
+                                </div>
+                            </Link>
+                        </li>
+                        <li className='mt-3 hover:bg-neutral-100'>
+                            <Link href={'/user/progress'}>
+                                <div className='flex items-center justify-between mr-5 py-2 px-2'>
+                                    <FaArrowTrendUp size={25} className='text-neutral-600' />
+                                    <div className='text-neutral-500 font-bold'>
+                                        進捗度
                                     </div>
                                 </div>
                             </Link>
