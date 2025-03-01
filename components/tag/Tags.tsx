@@ -36,7 +36,7 @@ function Tags({ allTags }: Props) {
             {allTags.length > Math.trunc(windowWidth / 100) && (
                 <div className="mt-3 flex justify-end">
                     <button
-                        className="text-blue-600 hover:text-blue-700 text-sm font-medium transition-all"
+                        className="text-purple-600 hover:text-purple-700 text-sm font-medium transition-all"
                         onClick={() => setVisible(!visible)}
                     >
                         {visible ? "view less" : "view more..."}

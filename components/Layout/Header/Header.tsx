@@ -1,8 +1,10 @@
 import React from 'react'
 import HamburgerButton from './hamburgerButton./hamburgerButton';
 import UserIcon from './UserInfo/userIcon';
-import SearchIcon from './searchIcon/searchIcon';
 import Image from 'next/image';
+import Link from 'next/link';
+import { IoIosSearch } from 'react-icons/io';
+import { FaArrowTrendUp } from 'react-icons/fa6';
 
 type Props={
     setOpenbar:React.Dispatch<React.SetStateAction<boolean>>;
@@ -18,7 +20,20 @@ export default function Header({setOpenbar}:Props){
             </div>
             <ul className="hidden md:flex items-center pt-2 text-sm duration-100">
                 <li className="mr-4">
-                    <SearchIcon />
+                    <Link href={'/search'}>
+                        <div className="text-neutral-400 hover:text-purple-500">
+                            <IoIosSearch size={22} />
+                            <p>検索</p>
+                        </div>
+                    </Link>
+                </li>
+                <li className="mr-4">
+                    <Link href={'/user/progress'}>
+                        <div className="text-neutral-400 hover:text-purple-500">
+                            <FaArrowTrendUp size={22} />
+                            <p>進捗度</p>
+                        </div>
+                    </Link>
                 </li>
                 <li>
                     <UserIcon />

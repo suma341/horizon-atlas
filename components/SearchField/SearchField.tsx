@@ -30,7 +30,7 @@ function SearchField({ searchKeyWord }: Props) {
 
     return (
         <section>
-            <div className="flex items-center bg-white border border-gray-200 rounded-full shadow-lg px-4 py-2 focus-within:border-blue-500 focus-within:shadow-xl transition-all">
+            <div className="flex items-center bg-white border border-gray-200 rounded-full shadow-lg px-4 py-2 focus-within:border-purple-500 focus-within:shadow-xl transition-all">
                 <input
                     value={keyWord}
                     onChange={(e) => {
@@ -46,7 +46,7 @@ function SearchField({ searchKeyWord }: Props) {
                 />
                 <button
                     onClick={handleSearch}
-                    className="ml-2 p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-all duration-300"
+                    className="ml-2 p-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition-all duration-300"
                 >
                     <IoIosSearch size={22} />
                 </button>

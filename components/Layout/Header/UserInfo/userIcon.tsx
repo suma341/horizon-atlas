@@ -2,8 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useAuth0 } from "@auth0/auth0-react";
 import { PiSignOut } from "react-icons/pi";
-import { useRouter } from "next/router";
-import { FaArrowTrendUp } from "react-icons/fa6";
 
 export default function UserIcon() {
   const { user,logout } = useAuth0();
@@ -11,8 +9,6 @@ export default function UserIcon() {
   const [isVisible, setIsVisible] = useState(false); // トグルの状態を管理
   const toggleRef = useRef<HTMLDivElement>(null); // toggle要素への参照
   const toggleTargetRef = useRef<HTMLDivElement>(null); // toggleTarget要素への参照
-
-  const router = useRouter();
 
   // ドキュメント全体のクリックを監視
   useEffect(() => {
@@ -57,10 +53,6 @@ export default function UserIcon() {
                 id="toggleTarget" ref={toggleTargetRef}
                 className="z-50 border-solid border-neutral-300 border-2 absolute bg-white p-2 rounded-md w-32 translate-y-1 translate-x-[-15%]">
                 <ul>
-                    <button onClick={() => router.push("/user/progress")} className="flex relative hover:bg-slate-200 rounded-sm p-1 pr-2">
-                      <FaArrowTrendUp size={18} className="mt-0.5 mr-1.5 text-neutral-600" />
-                      <p className="text-neutral-600">進捗度</p>
-                    </button>
                     <button onClick={() => logout({logoutParams:{returnTo:process.env.NEXT_PUBLIC_ROOT_PATH!}})} className="flex relative hover:bg-slate-200 rounded-sm p-1 pr-2">
                       <PiSignOut size={18} className="mt-0.5 mr-1.5 text-red-400" />
                       <p className="text-red-400">ログアウト</p>

@@ -32,24 +32,24 @@ export default function Progress() {
 
   return (
     <Layout headerProps={{ pageNavs: [HOME_NAV, PROGRESS_NAV] }}>
-      <div className="min-h-screen text-gray-900 bg-gradient-to-b from-blue-50 to-white pt-20 px-5">
+      <div className="min-h-screen text-gray-900 pt-24 px-5">
         <div className="text-center mb-10 animate-fadeIn">
           <h1 className="text-4xl font-extrabold text-neutral-600">
             {user?.name!.split("-")[0]}さんの進捗度
           </h1>
-          <div className="w-40 mx-auto border-b-4 border-blue-400 mt-4"></div>
+          <div className="w-40 mx-auto border-b-4 border-purple-400 mt-4"></div>
         </div>
 
         {loading ? (
           <div className="flex flex-col items-center gap-4">
-            <Loader2 className="animate-spin text-blue-400" size={48} />
+            <Loader2 className="animate-spin text-purple-400" size={48} />
             <p className="text-lg font-semibold text-gray-700">読み込み中...</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-8">
             {progress.map((item, i) => (
               <div key={i} className="bg-white shadow-lg rounded-lg p-6 hover:shadow-xl transition-shadow">
-                <h2 className="text-xl font-bold text-blue-600 mb-4">{item.title}</h2>
+                <h2 className="text-xl font-bold text-neutral-500 mb-4">{item.title}</h2>
                 {item.progress.map((p, j) => (
                   <CurriculumItem key={j} {...p} />
                 ))}
@@ -64,9 +64,9 @@ export default function Progress() {
 
 const CurriculumItem = ({ title, achieved }: { title: string; achieved: boolean }) => {
   return (
-    <div className={`mt-3 p-3 rounded-lg ${achieved ? "bg-green-100 border-l-4 border-green-400" : "bg-red-100 border-l-4 border-red-400"} hover:shadow-md transition-shadow`}> 
+    <div className={`mt-3 p-3 rounded-lg ${achieved ? "bg-purple-100 border-l-4 border-purple-500" : "bg-gray-100 border-l-4 border-gray-400"} hover:shadow-md transition-shadow`}> 
       <div className="flex items-center gap-3">
-        {achieved ? <CheckCircle className="text-green-500" size={24} /> : <XCircle className="text-red-500" size={24} />}
+        {achieved ? <CheckCircle className="text-purple-700" size={24} /> : <XCircle className="text-gray-500" size={24} />}
         <span className="text-base font-medium text-gray-700">{title}</span>
       </div>
     </div>
