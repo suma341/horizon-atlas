@@ -58,7 +58,7 @@ export default function Bookmark(props: Props) {
   return (
     <div className="my-2 rounded-sm border-2 border-neutral-200 hover:bg-neutral-100" id={mdBlock.blockId}>
         
-      <Link href={ogpData && ogpData.ogUrl ? ogpData.ogUrl : match[0].slice(1,-1)}>
+      <Link href={ogpData && ogpData.ogUrl ? ogpData.ogUrl : match[0].slice(1,-1)} target='_brank' rel="noopener noreferrer">
           <div className="flex">
               <div className='m-3'>
                   <p className='text-neutral-800 line-clamp-1'>{ogpData && ogpData.ogTitle ? ogpData.ogTitle : match[0].slice(1, -1)}</p>
