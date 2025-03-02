@@ -53,7 +53,7 @@ export default function MdBlockComponent(props:Props) {
     }else if(mdBlock.type === 'image'){
         return <ImageBlock mdBlock={mdBlock} depth={depth} slug={slug} />
     }else if(mdBlock.type==='table'){
-        return <TableBlock slug={slug} mdBlock={mdBlock} depth={depth} />
+        return <TableBlock mdBlock={mdBlock} />
     }else if(mdBlock.type==='child_page'){
         return <ChildPage mdBlock={mdBlock} />
     }else if(mdBlock.type === 'bookmark'){

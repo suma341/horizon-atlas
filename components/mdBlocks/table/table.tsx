@@ -1,35 +1,51 @@
 "use client";
 import { MdBlock } from 'notion-to-md/build/types'
 import React from 'react'
-import Paragraph from '../paragraph/paragraph'
+import { searchMDKeyword } from '@/lib/mdBlockHelper';
 
 type Props={
     mdBlock:MdBlock;
-    depth:number;
-    slug:string;
 }
 
 export default function TableBlock(props:Props) {
-    const {mdBlock,depth,slug} = props;
-    const dividedRows = mdBlock.parent.split("\n");
-    const rows = dividedRows.map((row)=> row.slice(2,-2));
+    const {mdBlock} = props;
+    const dividedRows = mdBlock.parent.split("|\n|");
+    const rows = dividedRows.map((row)=> row.slice(1,-1));
+
   return (
     <div className='overflow-x-auto whitespace-nowrap my-2' id={mdBlock.blockId}>
-        <table className='table-auto border-collapse border border-neutral-500'>
+        <table className='table-auto border-collapse border border-neutral-300'>
             {rows.map((row,i)=>{
                 const columns = row.split(" | ");
                 return (
                     <tr key={i}>
                         {columns.map((column, j)=>{
                             if(i===0){
-                                return (<th key={j} className='border border-gray-500 px-4 py-2'>
-                                    <Paragraph slug={slug} quote={true} mdBlock={mdBlock} parent={column} depth={depth + 1} />
+                                const md = searchMDKeyword(column);
+                                return (<th key={j} className='border border-gray-300 bg-neutral-100 px-4 py-2'>
+                                    {md.map((text,k)=>(
+                                        <>
+                                        {text.text==="\n" && <br />}
+                                            <span key={k} style={text.style}>
+                                                {text.text}
+                                            </span>
+                                        </>
+                                    ))}
                                 </th>)
                             }else if(i===1){
                                 return null;
                             }else{
-                                return (<td key={j} className='border border-gray-500 px-4 py-2'>
-                                    <Paragraph slug={slug}  mdBlock={mdBlock} quote={true} parent={column} depth={depth + 1} />
+                                const md = searchMDKeyword(column);
+                                console.log("md",md)
+                                return (<td key={j} className='border border-gray-300 px-4 py-2'>
+                                    {md.map((text,k)=>(
+                                        <>
+                                        {text.text==="\n" && <br />}
+                                            <span key={k} style={text.style}>
+                                                {text.text}
+                                            </span>
+                                        </>
+                                    ))}
                                 </td>)
                             }
                         })}

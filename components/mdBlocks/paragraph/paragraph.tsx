@@ -29,6 +29,9 @@ export default function Paragraph(props:Props){
         <div className='mb-0.5 mt-1' id={mdBlock.blockId}>
             <p>
                 {mdTypeAndTextList.map((text, index) => {
+                    if(text.type.split(" ").length > 1){
+                        console.log(text)
+                    }
                     if(text.link === undefined){
                         return ( 
                             <span key={index} style={text.style}>
