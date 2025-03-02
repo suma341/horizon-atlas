@@ -4,7 +4,8 @@ import React, { useState } from 'react';
 import { atomOneLight } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 import SyntaxHighlighter from 'react-syntax-highlighter/dist/cjs/default-highlight';
 import { LuCopy } from "react-icons/lu";
-import { IoCopy } from "react-icons/io5";
+// import { IoCopy } from "react-icons/io5";
+import { FaCheck } from "react-icons/fa6";
 
 type Props = {
     mdBlock: MdBlock;
@@ -52,9 +53,9 @@ export default function Code(props: Props) {
                 </p>
                 <button
                     onClick={handleCopy}
-                    className={`h-5 absolute top-1 right-2 px-2 text-sm rounded text-neutral-400 hover:text-neutral-500 transition-opacity duration-200 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
+                    className={`h-5 absolute top-1 right-2 px-2 text-sm rounded transition-opacity duration-200 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
                 >
-                    {copied ? <span className='flex'>copied ! <IoCopy size={24} /></span> : <LuCopy size={24} />}
+                    {copied ? <span className='text-purple-500 flex'>copied ! <FaCheck size={24} /></span> : <LuCopy size={24} className='text-neutral-400 hover:text-neutral-500' />}
                 </button>
             </div>
             
