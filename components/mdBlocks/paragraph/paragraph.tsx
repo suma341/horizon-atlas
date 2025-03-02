@@ -1,10 +1,11 @@
 "use client";
-import { searchMDKeyword } from '@/lib/mdBlockHelper';
-import { MdTypeAndText } from '@/types/parent';
 import Link from 'next/link';
 import { MdBlock } from 'notion-to-md/build/types';
 import React, { useEffect, useState } from 'react';
 import MdBlockComponent from '../mdBlock';
+import { parseMarkdown } from '@/lib/parseMD';
+import { assignCssProperties } from '@/lib/assignCssProperties';
+import { MdTypeAndText } from '@/types/textAndType';
 
 type Props={
     mdBlock:MdBlock;
@@ -18,8 +19,13 @@ export default function Paragraph(props:Props){
     const {parent,mdBlock,depth,quote,slug} = props;
     const [mdTypeAndTextList,setMd]=useState<MdTypeAndText[]>([]);
     useEffect(()=>{
-        const md = searchMDKeyword(parent)
-        setMd(md)
+        const inputData:MdTypeAndText = {
+            text: parent,
+            type: [],
+            link:[]
+        }
+        const setData = parseMarkdown(inputData);
+        setMd(setData)
     },[])
     if(mdBlock.parent==="c"){
         return null;
@@ -29,22 +35,20 @@ export default function Paragraph(props:Props){
         <div className='mb-0.5 mt-1' id={mdBlock.blockId}>
             <p>
                 {mdTypeAndTextList.map((text, index) => {
-                    if(text.type.split(" ").length > 1){
-                        console.log(text)
-                    }
-                    if(text.link === undefined){
+                    const style = assignCssProperties(text);
+                    if(text.link.length === 0){
                         return ( 
-                            <span key={index} style={text.style}>
+                            <span key={index} style={style}>
                                 {text.text}
                             </span>)
                     }else{
-                        if(text.link===''){
-                            return (<span key={index} style={text.style}>
+                        if(text.link[0]===''){
+                            return (<span key={index} style={style}>
                                 <span className='text-neutral-500 underline'>{text.text}</span>
                             </span>)
                         }else{
-                            return (<span key={index} style={text.style}>
-                                <Link href={text.link} className='text-neutral-500 underline cursor-pointer hover:text-neutral-800'>{text.text}</Link>
+                            return (<span key={index} style={style}>
+                                <Link href={text.link[0]} className='text-neutral-500 underline cursor-pointer hover:text-neutral-800'>{text.text}</Link>
                             </span>)
                         }
                     }

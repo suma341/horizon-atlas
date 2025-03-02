@@ -1,7 +1,8 @@
 "use client";
+import { assignCssProperties } from '@/lib/assignCssProperties';
+import { parseMarkdown } from '@/lib/parseMD';
 import { MdBlock } from 'notion-to-md/build/types'
 import React from 'react'
-import { searchMDKeyword } from '@/lib/mdBlockHelper';
 
 type Props={
     mdBlock:MdBlock;
@@ -21,31 +22,35 @@ export default function TableBlock(props:Props) {
                     <tr key={i}>
                         {columns.map((column, j)=>{
                             if(i===0){
-                                const md = searchMDKeyword(column);
+                                const md = parseMarkdown({text:column,type:[],link:[]})
                                 return (<th key={j} className='border border-gray-300 bg-neutral-100 px-4 py-2'>
-                                    {md.map((text,k)=>(
+                                    {md.map((text,k)=>{
+                                        const style = assignCssProperties(text)
+                                        return (
                                         <>
                                         {text.text==="\n" && <br />}
-                                            <span key={k} style={text.style}>
+                                            <span key={k} style={style}>
                                                 {text.text}
                                             </span>
                                         </>
-                                    ))}
+                                    )})}
                                 </th>)
                             }else if(i===1){
                                 return null;
                             }else{
-                                const md = searchMDKeyword(column);
+                                const md = parseMarkdown({text:column,type:[],link:[]});
                                 console.log("md",md)
                                 return (<td key={j} className='border border-gray-300 px-4 py-2'>
-                                    {md.map((text,k)=>(
+                                    {md.map((text,k)=>{
+                                        const style = assignCssProperties(text)
+                                        return (
                                         <>
                                         {text.text==="\n" && <br />}
-                                            <span key={k} style={text.style}>
+                                            <span key={k} style={style}>
                                                 {text.text}
                                             </span>
                                         </>
-                                    ))}
+                                    )})}
                                 </td>)
                             }
                         })}

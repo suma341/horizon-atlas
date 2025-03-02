@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { IoIosSearch } from 'react-icons/io';
 import { FaArrowTrendUp } from 'react-icons/fa6';
+import { MdOutlineEmail } from "react-icons/md";
 
 type Props={
     setOpenbar:React.Dispatch<React.SetStateAction<boolean>>;
@@ -32,6 +33,14 @@ export default function Header({setOpenbar}:Props){
                         <div className="text-neutral-400 hover:text-purple-500">
                             <FaArrowTrendUp size={22} />
                             <p>進捗度</p>
+                        </div>
+                    </Link>
+                </li>
+                <li className="mr-4">
+                    <Link href={'/user/progress'}>
+                        <div className="text-neutral-400 hover:text-purple-500">
+                            <MdOutlineEmail size={22} />
+                            <p>改善要請</p>
                         </div>
                     </Link>
                 </li>

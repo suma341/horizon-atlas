@@ -1,6 +1,7 @@
 "use client";
-import { searchMDKeyword } from '@/lib/mdBlockHelper'
-import { MdTypeAndText } from '@/types/parent';
+import { assignCssProperties } from '@/lib/assignCssProperties';
+import { parseMarkdown } from '@/lib/parseMD';
+import { MdTypeAndText } from '@/types/textAndType';
 import { MdBlock } from 'notion-to-md/build/types'
 import React, { useEffect, useState } from 'react'
 
@@ -14,16 +15,18 @@ export default function Heading3(props:Props) {
     const [textBlocks,setText] = useState<MdTypeAndText[]>([]);
     const text = mdBlock.parent.slice(4);
     useEffect(()=>{
-        const md = searchMDKeyword(text)
+        const md = parseMarkdown({text,type:[],link:[]})
         setText(md);
     },[])
     
     return (
         <div id={mdBlock.blockId}>
             <h3 className='my-2 mt-4 font-bold text-xl'>
-                {textBlocks.map((block, i)=>(
-                    <span style={block.style} key={i}>{block.text}</span>
-                ))}    
+                {textBlocks.map((block, i)=>{
+                    const style = assignCssProperties(block)
+                    return(
+                    <span style={style} key={i}>{block.text}</span>
+                )})}    
             </h3>
         </div>
     )
