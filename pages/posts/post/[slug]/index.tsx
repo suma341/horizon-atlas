@@ -23,9 +23,9 @@ type Props = {
 const curriculumService = new CurriculumService();
 
 export const getStaticPaths = async () => {
-  const allPosts:PostMetaData[] = await curriculumService.getAllCurriculum();
+  const allSlug:{slug:string}[] = await curriculumService.getAllSlug();
 
-  const paths: postPath[] = allPosts.map(({ slug }) => {
+  const paths: postPath[] = allSlug.map(({ slug }) => {
     return { params: { slug: slug } };
   });
 

@@ -20,4 +20,9 @@ export class CurriculumService{
         const post:PostMetaData = await JSON.parse(data[0].data);
         return post;
     }
+
+    getAllSlug=async()=>{
+        const data = await curriculumGateway.getAllSlug()
+        return data;
+    }
 }

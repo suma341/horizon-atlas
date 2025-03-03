@@ -24,11 +24,11 @@ type pagePath = {
 export const getStaticPaths = async () => {
   const curriculumService = new CurriculumService();
   const pageDataService = new PageDataService();
-  const allPosts:PostMetaData[] = await curriculumService.getAllCurriculum();
+  const allSlug:{slug:string}[] = await curriculumService.getAllSlug();
   const childPages = await pageDataService.getPageDataByType('child_page');
 
   const paths:pagePath[]=(
-      allPosts.map((post)=>{
+      allSlug.map((post)=>{
         const children = childPages.filter((item)=>item.slug===post.slug);
         return children.map((child)=>{
           return {

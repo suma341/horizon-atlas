@@ -34,4 +34,16 @@ export class CurriculumGateway{
         const result:data = await res.json();
         return result;
     }
+
+    getAllSlug=async()=>{
+        const res = await fetch(`${SUPABASE_URL}/functions/v1/getAllSlug`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+            },
+        });
+        const pageDatas:{slug:string}[] = await res.json();
+        return pageDatas;
+    }    
 }
