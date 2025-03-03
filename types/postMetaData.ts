@@ -6,6 +6,5 @@ export type PostMetaData = {
   slug:string;
   category:string;
   is_basic_curriculum:boolean;
-  icon:string;
   visibility:string[];
 };

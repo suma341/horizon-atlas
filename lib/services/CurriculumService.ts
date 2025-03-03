@@ -21,7 +21,6 @@ const converseData =(data:data)=>{
         visibility:JSON.parse(data.visibility),
         tags:JSON.parse(data.tag),
         is_basic_curriculum:JSON.parse(data.is_basic_curriculum),
-        icon:"icon",
         id:`${data.id}`
     }
     return postMetaData;
