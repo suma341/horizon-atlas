@@ -41,6 +41,7 @@ const SingleCourse = ({ course, posts }: Props) => {
                             </div>
                         </div>
                     ))}
+                    {posts.length > 5 && <p className='text-neutral-400 text-sm'>  ...他{posts.length - 5}カリキュラム</p>}
                 </div>
             </section>
         </Link>
