@@ -6,6 +6,7 @@ import { IoIosSearch } from 'react-icons/io';
 import { useAuth0 } from '@auth0/auth0-react';
 import { FaArrowTrendUp } from "react-icons/fa6";
 import { PiSignOut } from "react-icons/pi";
+import { MdOutlineEmail } from 'react-icons/md';
 
 type Props={
     openbar:boolean;
@@ -67,6 +68,16 @@ function Sidebar({openbar,setOpenbar,pageNav}:Props) {
                                     <FaArrowTrendUp size={25} className='text-neutral-600' />
                                     <div className='text-neutral-500 font-bold'>
                                         進捗度
+                                    </div>
+                                </div>
+                            </Link>
+                        </li>
+                        <li className='mt-3 hover:bg-neutral-100'>
+                            <Link href={'https://docs.google.com/forms/d/e/1FAIpQLScW_wz_h2Yd5ij50k8vH91EPUn_0EenEOJ9M147bcVl8KTQLA/viewform?usp=dialog'} target='_brank' rel="noopener noreferrer">
+                                <div className='flex items-center justify-between mr-5 py-2 px-2'>
+                                    <MdOutlineEmail size={25} className='text-neutral-600' />
+                                    <div className='text-neutral-500 font-bold'>
+                                        改善要請
                                     </div>
                                 </div>
                             </Link>

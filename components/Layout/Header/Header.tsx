@@ -22,7 +22,7 @@ export default function Header({setOpenbar}:Props){
             <ul className="hidden md:flex items-center pt-2 text-sm duration-100">
                 <li className="mr-4">
                     <Link href={'/search'}>
-                        <div className="text-neutral-400 hover:text-purple-500">
+                        <div className="text-neutral-400 hover:text-purple-500 flex flex-col items-center text-center">
                             <IoIosSearch size={22} />
                             <p>検索</p>
                         </div>
@@ -30,15 +30,15 @@ export default function Header({setOpenbar}:Props){
                 </li>
                 <li className="mr-4">
                     <Link href={'/user/progress'}>
-                        <div className="text-neutral-400 hover:text-purple-500">
-                            <FaArrowTrendUp size={22} />
+                        <div className="text-neutral-400 hover:text-purple-500 flex flex-col items-center text-center">
+                            <FaArrowTrendUp size={22}/>
                             <p>進捗度</p>
                         </div>
                     </Link>
                 </li>
                 <li className="mr-4">
-                    <Link href={'/user/progress'}>
-                        <div className="text-neutral-400 hover:text-purple-500">
+                    <Link href={'https://docs.google.com/forms/d/e/1FAIpQLScW_wz_h2Yd5ij50k8vH91EPUn_0EenEOJ9M147bcVl8KTQLA/viewform?usp=dialog'} target='_brank' rel="noopener noreferrer">
+                        <div className="text-neutral-400 hover:text-purple-500 flex flex-col items-center text-center">
                             <MdOutlineEmail size={22} />
                             <p>改善要請</p>
                         </div>
