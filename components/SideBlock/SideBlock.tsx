@@ -56,7 +56,7 @@ const SideBlock = ({ title, childPages, slug }: Props) => {
     }, []); // 依存配列を空にして、マウント時のみ実行
 
     return (
-        <section className="w-1/4 pl-4 fixed right-0" style={{top:scrollY > getPageHeight() - 1000 ? `${(getPageHeight() - 1000) - scrollY + 128}px` : "128px"}}>
+        <section className="w-1/4 pl-4 fixed right-0" style={{top:scrollY > getPageHeight() - 850 ? `${(getPageHeight() - 850) - scrollY + 128}px` : "128px"}}>
             <div
                 className="border fixed overflow-y-scroll scrollbar-thin py-4 rounded-md bg-white"
                 style={{ opacity: "100", height: `${size.height / 1.5}px`, width:`${size.width / 5}px` }}
