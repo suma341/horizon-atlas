@@ -1,7 +1,7 @@
 import Layout from "@/components/Layout/Layout";
 import SingleCourse from "@/components/Post/SingleCourse";
 import { BASIC_NAV, HOME_NAV } from "@/constants/pageNavs";
-import {  getEitherCourses, getPostsByCourse, getPostsByRole } from "@/lib/services/notionApiService";
+import {  getBasicCourses, getPostsByCourse, getPostsByRole } from "@/lib/services/notionApiService";
 import { PostMetaData } from "@/types/postMetaData";
 import type { GetStaticProps,} from "next";
 import { CurriculumService } from "@/lib/services/CurriculumService";
@@ -19,10 +19,10 @@ const curriculumService = new CurriculumService();
 
 // getStaticProps関数
 export const getStaticProps: GetStaticProps = async () => {
-    const allPosts:PostMetaData[] = await curriculumService.getAllCurriculum();
-    const basicCourse = await getEitherCourses(true,allPosts);
+    const basicPosts = await curriculumService.getBasicCurriculum();
+    const basicCourse = await getBasicCourses(basicPosts);
     const courseAndPosts = await Promise.all(basicCourse.map(async(course)=>{
-        const posts = await getPostsByCourse(course,allPosts);
+        const posts = await getPostsByCourse(course,basicPosts);
         return {
             course,
             posts

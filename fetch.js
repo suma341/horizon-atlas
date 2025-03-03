@@ -102,7 +102,7 @@ const downloadImage = async (imageUrl, savePath) => {
     }
 };
 
-async function upsertCurriculum(slug,curriculum_data){
+async function upsertCurriculum(slug,title,is_basic_curriculum,visibility,category,date,tag){
     const url = `${SUPABASE_URL}/functions/v1/upsert_curriculum`;
     const res = await fetch(url, {
         method: "POST",
@@ -111,7 +111,7 @@ async function upsertCurriculum(slug,curriculum_data){
             "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
         },
         body:JSON.stringify({
-            curriculum_data,slug
+            slug,title,is_basic_curriculum,visibility,category,date,tag
         }),
     });
     const result = await res.json();
@@ -163,6 +163,16 @@ async function insertblock(slug,parentId,blocks,pageId){
         }
         await upsertPage(slug,parentId,blocks[k].parent,blocks[k].blockId,blocks[k].type,pageId,i);
     }
+}
+
+async function insertCurriculum(data){
+    upsertCurriculum(data.slug,
+        data.title,
+        data.is_basic_curriculum,
+        data.visibility,
+        data.category,
+        data.date,
+        data.tags);
 }
 
 const fetchAllMdBlock = async (mdBlocks,slug) => {
@@ -268,20 +278,20 @@ getAllData()
         for(const data of allData){
             wait(1000).then(data_=>{
                 downloadImage(data.icon, `./public/notion_data/eachPage/${data.slug}/icon.png`)
-                upsertCurriculum(data.slug,data)
-                getSinglePage(data.slug).then(mdBlocks=>{
-                    insertblock(data.slug,data.slug,mdBlocks,data.slug)
-                    const ogsDir = `./public/notion_data/eachPage/${data.slug}/ogsData/`;
-                    const imageDir = `./public/notion_data/eachPage/${data.slug}/image/`;
-                    const iframeDir = `./public/notion_data/eachPage/${data.slug}/iframeData/`;
-                    mkdir(ogsDir);
-                    mkdir(imageDir);
-                    mkdir(iframeDir);
-                    cleardir(ogsDir);
-                    cleardir(imageDir);
-                    cleardir(iframeDir);
-                    return fetchAllMdBlock(mdBlocks, data.slug);
-                })
+                insertCurriculum(data)
+                // getSinglePage(data.slug).then(mdBlocks=>{
+                //     insertblock(data.slug,data.slug,mdBlocks,data.slug)
+                //     const ogsDir = `./public/notion_data/eachPage/${data.slug}/ogsData/`;
+                //     const imageDir = `./public/notion_data/eachPage/${data.slug}/image/`;
+                //     const iframeDir = `./public/notion_data/eachPage/${data.slug}/iframeData/`;
+                //     mkdir(ogsDir);
+                //     mkdir(imageDir);
+                //     mkdir(iframeDir);
+                //     cleardir(ogsDir);
+                //     cleardir(imageDir);
+                //     cleardir(iframeDir);
+                //     return fetchAllMdBlock(mdBlocks, data.slug);
+                // })
             })
         }
     })

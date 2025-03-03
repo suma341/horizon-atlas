@@ -3,6 +3,7 @@ import { PageDataGateway } from "../Gateways/PageDataGateway";
 import { PageData } from "@/types/pageData";
 import { searchPageById } from "../searchPageById";
 import { findHeadingBlock } from "../findHeadingBlock";
+// import { CurriculumService } from "./CurriculumService";
 
 const pageDataGateway = new PageDataGateway();
 
@@ -87,4 +88,13 @@ export class PageDataService{
         const pageDatas = await pageDataGateway.getPageDataBySlug(slug);
         return pageDatas;
     }
+
+    // getAllPageId = async()=>{
+    //     const curriculumService = new CurriculumService();
+    //     const allSlug = await curriculumService.getAllSlug();
+    //     const allChild = (await Promise.all(allSlug.map(async(slug)=>{
+    //         return await this.getPageDataByTypeAndSlug("child_page",slug.slug)
+    //     }))).flat()
+
+    // }
 }

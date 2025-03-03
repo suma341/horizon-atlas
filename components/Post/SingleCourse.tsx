@@ -3,7 +3,6 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { PostMetaData } from '@/types/postMetaData';
-import { getIconsByPosts } from '@/lib/services/notionApiService';
 
 type Props = {
     course: string;
@@ -11,7 +10,6 @@ type Props = {
 };
 
 const SingleCourse = ({ course, posts }: Props) => {
-    const icons = getIconsByPosts(posts);
 
     return (
         <Link href={`/posts/course/${course}`}>
@@ -26,17 +24,13 @@ const SingleCourse = ({ course, posts }: Props) => {
                     {posts.slice(0, 5).map((post, i) => (
                         <div key={i} className="flex items-center text-gray-700 mb-0.5 text-sm border-l border-gray-300 pl-2">
                             <div className="flex">
-                                {icons[i] ? (
-                                    <Image
-                                        src={`/horizon-atlas/notion_data/eachPage/${post.slug}/icon.png`}
-                                        alt=""
-                                        height={20}
-                                        width={20}
-                                        className="h-5 w-5 rounded mr-2"
-                                    />
-                                ) : (
-                                    <span className="text-gray-400 mr-2">・</span>
-                                )}
+                                <Image
+                                    src={`/horizon-atlas/notion_data/eachPage/${post.slug}/icon.png`}
+                                    alt=""
+                                    height={20}
+                                    width={20}
+                                    className="h-5 w-5 rounded mr-2"
+                                />
                                 <span>{post.title}</span>
                             </div>
                         </div>

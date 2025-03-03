@@ -2,7 +2,7 @@ import type { GetStaticProps } from "next";
 import SinglePost from "@/components/Post/SinglePost";
 import { PostMetaData } from "@/types/postMetaData";
 import Pagenation from "@/components/pagenation/Pagenation";
-import { calculatePageNumber, courseIsBasic, getAllCourses, getPostsByCourse, getPostsByRole } from "@/lib/services/notionApiService";
+import { calculatePageNumber, courseIsBasic, getPostsByRole } from "@/lib/services/notionApiService";
 import { BASIC_NAV, HOME_NAV } from "@/constants/pageNavs";
 import { pageNav } from "@/types/pageNav";
 import Layout from "@/components/Layout/Layout";
@@ -18,9 +18,8 @@ type pagePath = {
 const curriculumService = new CurriculumService();
 
 export const getStaticPaths = async() =>{
-    const allPosts:PostMetaData[] = await curriculumService.getAllCurriculum();
-    const allCourses = await getAllCourses(allPosts);
-    const removedEmptyCourses = allCourses.filter((course)=>course!=='');
+    const allCategories = await curriculumService.getAllCategories();
+    const removedEmptyCourses = allCategories.filter((category)=>category!=='');
 
      const paramsList: pagePath[] = (
         await Promise.all(
@@ -43,14 +42,12 @@ type Props={
 
 // getStaticProps関数
 export const getStaticProps: GetStaticProps = async (context) => {
-    const allPosts:PostMetaData[] = await curriculumService.getAllCurriculum();
     const currentCourse:string = typeof context.params?.course == 'string' ? context.params.course: "";
-    const isBasic = await courseIsBasic(currentCourse,allPosts);
+    const posts = await curriculumService.getCurriculumByCategory(currentCourse);
+    const isBasic = await courseIsBasic(currentCourse,posts);
     const currentNav:pageNav = {title:currentCourse,id:`/posts/course/${currentCourse}`};
     const pageNavs = isBasic ? [HOME_NAV,BASIC_NAV,currentNav] :[HOME_NAV,currentNav];
-    // console.log(numberOfPages);
 
-    const posts:PostMetaData[] = await getPostsByCourse(currentCourse, allPosts);
     return {
         props: {
           posts,

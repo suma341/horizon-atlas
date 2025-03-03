@@ -17,9 +17,8 @@ type pagePath = {
 
 export const getStaticPaths = async() =>{
     const curriculumService = new CurriculumService();
-    const allPosts:PostMetaData[] = await curriculumService.getAllCurriculum();
 
-    const allTags = await getAllTags(allPosts);
+    const allTags = await curriculumService.getAllTags();
 
      const paramsList: pagePath[] = (
         await Promise.all(

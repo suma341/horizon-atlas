@@ -35,16 +35,6 @@ export const getAllTags = async(allPosts:PostMetaData[])=>{
     return allTags;
 }
 
-export const getIconsByPosts=(posts:PostMetaData[])=>{
-    const iconsDuplicationList = posts.map((post)=>{
-        return post.icon;
-    })
-    const set = new Set(iconsDuplicationList);
-    const icons = Array.from(set);
-
-    return icons;
-}
-
 const getClassifyPost=async(allPosts:PostMetaData[])=>{
 
     const basic = allPosts.filter((post)=>post.is_basic_curriculum);
@@ -81,8 +71,12 @@ export const getEitherCourses = async(isBasic:boolean,allPosts:PostMetaData[])=>
     return allCourses;
 }
 
-export const courseIsBasic=async(course:string,allPosts:PostMetaData[])=>{
-    const posts:PostMetaData[] = await getPostsByCourse(course,allPosts);
+export const getBasicCourses = async(basicPosts:PostMetaData[])=>{
+    const BasicCourses = getAllCourses(basicPosts);
+    return BasicCourses;
+}
+
+export const courseIsBasic=async(course:string,posts:PostMetaData[])=>{
     const filteredPost = posts.filter((post)=>post.is_basic_curriculum)
     if(filteredPost.length===0){
         return false;
