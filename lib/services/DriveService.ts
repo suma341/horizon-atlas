@@ -4,12 +4,6 @@ interface CurriculumProgress{
     [key: string]: string;
 }
 
-// type data = {
-//     name:string;
-//     title:string;
-//     isAchieved:boolean;
-// }
-
 type MetaData={
     title:string;
     fileId:string;
@@ -17,6 +11,7 @@ type MetaData={
     userName:string;
     notAchievedText:string;
     published: string;
+    type:"single" | "summary";
 }
 
 async function getMetaData(){
@@ -25,8 +20,7 @@ async function getMetaData(){
     return metaData;
 }
 
-export async function getCarriculumProgress(userName:string){
-    const metaData = await getMetaData();
+async function getSummaryData(metaData:MetaData[],userName:string){
     const progressData = await Promise.all(metaData.map(async(data)=>{
         const allProgress:CurriculumProgress[] = await getDriveFileByFileId(data.fileId);
         const progressByUser = allProgress.filter((item)=>item[data.userName]===userName)
@@ -55,39 +49,53 @@ export async function getCarriculumProgress(userName:string){
             progress:progress}
     }))
     return progressData;
-  }
+}
 
-// export async function getFletCarriculumProgress(userName:string){
-//     const fletCarriculumProgress:FletCurriculumProgress[] = await getDriveFileByFileId("1-HHH1HNuNVkyYN8T81xvXfVKez3rEje6yXiHREE7i_0");
-//     const keys = Object.keys(fletCarriculumProgress[0])
-//     const curriculums =  keys.slice(4).filter((item)=>item !== "");
-//     const data = fletCarriculumProgress.map((item)=>{
-//       const achievedList:data[] = [];
-//       for(const key of curriculums){
-//         if(item[key] !== ""){
-//           achievedList.push({
-//             title:key,
-//             isAchieved:true,
-//             name:item["名前"]
-//           })
-//         }
-//       }
-//       return achievedList
-//     })
-//     const userProgress = data.filter((item)=>item.find((d)=>d.name===userName)).flat();
-//     if(userProgress.length===0){
-//         return curriculums.map((item)=>{
-//             return {
-//                 title:item,
-//                 isAchieved:false
-//             }
-//         })
-//     }
-//     return curriculums.map((item)=>{
-//         const a = userProgress.find((i)=>i.title===item);
-//         return {
-//             title:item,
-//             isAchieved: a?.isAchieved ?? false,
-//         }
-//     })
-//   }
+async function getSingleData(metadata:Record<string, MetaData[]>,userName:string){
+    const key = (Object.keys(metadata))[0];
+    const progress: {
+        title: string;
+        achieved: boolean;
+    }[] = [];
+    await Promise.all(metadata[key].map(async(data)=>{
+        const allProgress:CurriculumProgress[] = await getDriveFileByFileId(data.fileId);
+        const isAchieved = allProgress.find((item)=>item[data.userName]===userName)
+        progress.push({
+            title:data.curriculums,
+            achieved:isAchieved!=undefined ? true : false
+        })
+    }))
+    return {
+        title:key,
+        progress
+    }
+}
+
+export async function getCarriculumProgress(userName:string){
+    const metaData = await getMetaData();
+    const summaryData = metaData.filter((item)=>item.type==="summary");
+    const singleData = metaData.filter((item)=>item.type==="single");
+    const grouped = Object.entries(singleData.reduce((acc, curr) => {
+        if (!acc[curr.title]) {
+          acc[curr.title] = [];
+        }
+        acc[curr.title].push(curr);
+        return acc;
+      }, {} as Record<string, MetaData[]>)).map(([title, items]) => ({
+        [title]: items
+      }));
+    const allProgressData:{
+        title: string;
+        progress: {
+            title: string;
+            achieved: boolean;
+        }[];
+    }[] = [];
+    for(const data of grouped){
+        const progress = await getSingleData(data,userName);
+        allProgressData.push(progress)
+    }
+    const sumarryData = await getSummaryData(summaryData,userName);
+    const result = allProgressData.concat(sumarryData);
+    return result;
+  }
