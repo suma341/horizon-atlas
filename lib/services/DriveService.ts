@@ -12,6 +12,7 @@ type MetaData={
     notAchievedText:string;
     published: string;
     type:"single" | "summary";
+    order:string;
 }
 
 async function getMetaData(){
@@ -51,24 +52,50 @@ async function getSummaryData(metaData:MetaData[],userName:string){
     return progressData;
 }
 
-async function getSingleData(metadata:Record<string, MetaData[]>,userName:string){
-    const key = (Object.keys(metadata))[0];
+async function getSingleData(groupedData:{[x: string]: MetaData[]}[],userName:string){
+    const allData = await Promise.all((groupedData.map(async(metadata)=>{
+        const key = (Object.keys(metadata))[0];
+        const progress: {
+            title: string;
+            achieved: boolean;
+            order:number;
+        }[] = [];
+        await Promise.all(metadata[key].map(async(data)=>{
+            const allProgress:CurriculumProgress[] = await getDriveFileByFileId(data.fileId);
+            const isAchieved = allProgress.find((item)=>item[data.userName]===userName)
+            progress.push({
+                title:data.curriculums,
+                achieved:isAchieved!=undefined ? true : false,
+                order:parseInt(data.order)
+            })
+        }))
+        return {
+            title:key,
+            progress
+        }
+    })))
     const progress: {
         title: string;
-        achieved: boolean;
+        progress: {
+            title: string;
+            achieved: boolean;
+        }[];
     }[] = [];
-    await Promise.all(metadata[key].map(async(data)=>{
-        const allProgress:CurriculumProgress[] = await getDriveFileByFileId(data.fileId);
-        const isAchieved = allProgress.find((item)=>item[data.userName]===userName)
-        progress.push({
-            title:data.curriculums,
-            achieved:isAchieved!=undefined ? true : false
+    for(const data of allData){
+        const sorted = data.progress.sort((a,b)=>a.order - b.order)
+        const prosessed = sorted.map((item)=>{
+            return {
+                title:item.title,
+                achieved:item.achieved
+            }
         })
-    }))
-    return {
-        title:key,
-        progress
+        const r = {
+            title:data.title,
+            progress:prosessed
+        }
+        progress.push(r)
     }
+    return progress
 }
 
 export async function getCarriculumProgress(userName:string){
@@ -84,18 +111,8 @@ export async function getCarriculumProgress(userName:string){
       }, {} as Record<string, MetaData[]>)).map(([title, items]) => ({
         [title]: items
       }));
-    const allProgressData:{
-        title: string;
-        progress: {
-            title: string;
-            achieved: boolean;
-        }[];
-    }[] = [];
-    for(const data of grouped){
-        const progress = await getSingleData(data,userName);
-        allProgressData.push(progress)
-    }
+    const progressData = await getSingleData(grouped,userName)
     const sumarryData = await getSummaryData(summaryData,userName);
-    const result = allProgressData.concat(sumarryData);
+    const result = progressData.concat(sumarryData);
     return result;
   }
