@@ -34,7 +34,7 @@ export class CurriculumService{
             const curriculumData:PostMetaData = converseData(data);
             allPosts.push(curriculumData);
         }
-        return allPosts;
+        return allPosts.sort((a,b)=>parseInt(a.id) -parseInt(b.id));
     }
     
     getCurriculumBySlug=async(slug:string)=>{
@@ -77,7 +77,7 @@ export class CurriculumService{
             const postMetaData = converseData(data);
             metaData.push(postMetaData)
         }
-        return metaData;
+        return metaData.sort((a,b)=>parseInt(a.id) -parseInt(b.id));
     }
 
     getBasicCurriculum=async()=>{
@@ -87,6 +87,6 @@ export class CurriculumService{
             const postMetaData = converseData(data);
             metaData.push(postMetaData)
         }
-        return metaData;
+        return metaData.sort((a,b)=>parseInt(a.id) -parseInt(b.id));
     }    
 }
