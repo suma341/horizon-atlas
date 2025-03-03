@@ -12,7 +12,7 @@ export default function BasicCurriculum() {
                     <PiArrowRightBold className="text-3xl text-gray-600 group-hover:text-purple-600 transition-colors duration-300" />
                 </div>
                 <p className='text-gray-600 mt-2 text-sm leading-relaxed'>
-                    PythonやFletライブラリを通してアプリ開発を学べるコースです。初心者向けに丁寧に解説！
+                    PythonやFletライブラリを通してアプリ開発を学べるカリキュラムです。初心者向けに丁寧に解説します！
                 </p>
             </section>
         </Link>

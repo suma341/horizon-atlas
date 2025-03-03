@@ -54,27 +54,28 @@ const Layout: React.FC<LayoutProps> = ({ children, headerProps, sideNavProps }) 
   }
 
     return (
-      <div className="bg-white">
-        <Head>
-          <title>HorizonAtlas</title>
-          <meta name="description" content="HorizonAtlasは、学習カリキュラムをまとめたHorizon部員専用のサービスです。" />
-          <meta property="og:image" content="/horizon-atlas/app_image.png"></meta>
-          <link rel="icon" href="/horizon-atlas/favicon.ico" />
-        </Head>
-        <Sidebar openbar={openbar} setOpenbar={setOpenbar} pageNav={sideNavProps} />
-        <div
-          className="fixed top-0 z-50 w-full duration-500"
-          style={isVisible ? { transform: "translateY(0px)" } : { transform: "translateY(-65%)" }}
-        >
-          <Header setOpenbar={setOpenbar} />
-          <Navbar pageNavs={headerProps.pageNavs} />
-        </div>
-        <div className="bg-gray-50">
-          {children}
-          <div className="h-5"></div>
-        </div>
-        <Footer />
+      <div className="bg-white min-h-screen flex flex-col">
+      <Head>
+        <title>HorizonAtlas</title>
+        <meta name="description" content="HorizonAtlasは、学習カリキュラムをまとめたHorizon部員専用のサービスです。" />
+        <meta property="og:image" content="/horizon-atlas/app_image.png" />
+        <link rel="icon" href="/horizon-atlas/favicon.ico" />
+      </Head>
+      <Sidebar openbar={openbar} setOpenbar={setOpenbar} pageNav={sideNavProps} />
+      <div
+        className="fixed top-0 z-50 w-full duration-500"
+        style={isVisible ? { transform: "translateY(0px)" } : { transform: "translateY(-65%)" }}
+      >
+        <Header setOpenbar={setOpenbar} />
+        <Navbar pageNavs={headerProps.pageNavs} />
       </div>
+      <div className="bg-gray-50 flex-grow">
+        {children}
+        <div className="h-5"></div>
+      </div>
+      <Footer />
+    </div>
+    
     );
 };
 
