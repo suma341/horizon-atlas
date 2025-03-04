@@ -1,7 +1,6 @@
 import { PostMetaData } from "@/types/postMetaData";
 import { CurriculumService } from "./services/CurriculumService";
 import { PageDataService } from "./services/PageDataService";
-import { PageData } from "@/types/pageData";
 // import { getPage } from "./services/PageService";
 
 type Page ={
@@ -12,9 +11,7 @@ type Page ={
 }
 
 export async function searchPageById(id:string):Promise<Page>{
-    const curriculumService = new CurriculumService();
-    const pageDataService = new PageDataService();
-    const posts:PostMetaData[] = await curriculumService.getAllCurriculum();
+    const posts:PostMetaData[] = await CurriculumService.getAllCurriculum();
     for(const post of posts){
         if(id === post.id || id===post.id.replaceAll("-", "")){
             return {
@@ -24,8 +21,8 @@ export async function searchPageById(id:string):Promise<Page>{
                 slug:post.slug
             }
         }
-        const page:PageData[] = await pageDataService.getPageDataBySlug(post.slug);
-        for(const block of page){
+        const blockIdAndData = await PageDataService.getBlockIdBySlug(post.slug);
+        for(const block of blockIdAndData){
             if(block.blockId===id || id===block.blockId.replaceAll("-","")){
                 return {
                     pageId:block.blockId,

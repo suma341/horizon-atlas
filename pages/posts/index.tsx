@@ -17,10 +17,8 @@ type Props = {
   allTags:string[];
 };
 
-const curriculumService = new CurriculumService();
-
 export const getStaticProps: GetStaticProps = async () => {
-  const allPosts:PostMetaData[] = await curriculumService.getAllCurriculum();
+  const allPosts:PostMetaData[] = await CurriculumService.getAllCurriculum();
   const notBasicCourses = await getEitherCourses(false,allPosts);
   const removeEmptyCourses = notBasicCourses.filter((course)=>course!=="")
   const courseAndPosts = await Promise.all(removeEmptyCourses.map(async(course)=>{

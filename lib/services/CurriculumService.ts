@@ -16,7 +16,6 @@ const converseData =(data:data)=>{
     const postMetaData:PostMetaData = {
         title:data.title,
         slug:data.slug,
-        date:data.date,
         category:data.category,
         visibility:JSON.parse(data.visibility),
         tags:JSON.parse(data.tag),
@@ -27,7 +26,7 @@ const converseData =(data:data)=>{
 }
 
 export class CurriculumService{
-    getAllCurriculum=async()=>{
+    static getAllCurriculum=async()=>{
         const allPosts:PostMetaData[] = [];
         const alldata = await CurriculumGateway.getAllCurriculum();
         for(const data of alldata){
@@ -37,18 +36,18 @@ export class CurriculumService{
         return allPosts.sort((a,b)=>parseInt(a.id) -parseInt(b.id));
     }
     
-    getCurriculumBySlug=async(slug:string)=>{
+    static getCurriculumBySlug=async(slug:string)=>{
         const data = await CurriculumGateway.getCurriculumBySlug(slug);
         const post:PostMetaData = converseData(data[0])
         return post;
     }
 
-    getAllSlug=async()=>{
+    static getAllSlug=async()=>{
         const data = await CurriculumGateway.getAllSlug()
         return data;
     }
 
-    getAllTags=async()=>{
+    static getAllTags=async()=>{
         const tags = await CurriculumGateway.getAllTags();
         const allTagDuplicate:string[] = [];
         for(const tag of tags){
@@ -59,7 +58,7 @@ export class CurriculumService{
         return allTags
     }
 
-    getAllCategories=async()=>{
+    static getAllCategories=async()=>{
         const categories = await CurriculumGateway.getAllCategories();
         const allCategoriesDuplicate:string[] = [];
         for(const category of categories){
@@ -70,7 +69,7 @@ export class CurriculumService{
         return allCategories
     }
 
-    getCurriculumByCategory=async(category:string)=>{
+    static getCurriculumByCategory=async(category:string)=>{
         const datas = await CurriculumGateway.getCurriculumByCategory(category);
         const metaData:PostMetaData[] = [];
         for(const data of datas){
@@ -80,7 +79,7 @@ export class CurriculumService{
         return metaData.sort((a,b)=>parseInt(a.id) -parseInt(b.id));
     }
 
-    getBasicCurriculum=async()=>{
+    static getBasicCurriculum=async()=>{
         const datas = await CurriculumGateway.getBasicCurriculum();
         const metaData:PostMetaData[] = [];
         for(const data of datas){

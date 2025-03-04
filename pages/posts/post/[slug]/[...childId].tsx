@@ -22,10 +22,8 @@ type pagePath = {
 }
 
 export const getStaticPaths = async () => {
-  const curriculumService = new CurriculumService();
-  const pageDataService = new PageDataService();
-  const allSlug:{slug:string}[] = await curriculumService.getAllSlug();
-  const childPages = await pageDataService.getPageDataByType('child_page');
+  const allSlug:{slug:string}[] = await CurriculumService.getAllSlug();
+  const childPages = await PageDataService.getPageDataByType('child_page');
 
   const paths:pagePath[]=(
       allSlug.map((post)=>{
@@ -47,17 +45,15 @@ export const getStaticPaths = async () => {
   };
 };
 export const getStaticProps: GetStaticProps = async (context) => {
-  const curriculumService = new CurriculumService();
-  const pageDataService = new PageDataService();
   const currentSlug = context.params?.slug as string;
   const childparam = (context.params?.childId as string[]) || [];
-  const mdBlocks:MdBlock[] = await pageDataService.getPageDataByPageId(childparam[0]);
-  const singlePost:PostMetaData = await curriculumService.getCurriculumBySlug(currentSlug);
+  const mdBlocks:MdBlock[] = await PageDataService.getPageDataByPageId(childparam[0]);
+  const singlePost:PostMetaData = await CurriculumService.getCurriculumBySlug(currentSlug);
   const post ={
     mdBlocks,
     metadata:singlePost
   }
-  const childPagesBySlug = await pageDataService.getPageDataByTypeAndSlug('child_page',currentSlug);
+  const childPagesBySlug = await PageDataService.getPageDataByTypeAndSlug('child_page',currentSlug);
 
   const links:string[] = [`/posts/post/${post.metadata.slug}`];
   const pageNavs:pageNav[] = post.metadata.is_basic_curriculum ?

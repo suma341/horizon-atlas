@@ -20,10 +20,8 @@ type Props = {
   pageNavs:pageNav[];
 };
 
-const curriculumService = new CurriculumService();
-
 export const getStaticPaths = async () => {
-  const allSlug:{slug:string}[] = await curriculumService.getAllSlug();
+  const allSlug:{slug:string}[] = await CurriculumService.getAllSlug();
 
   const paths: postPath[] = allSlug.map(({ slug }) => {
     return { params: { slug: slug } };
@@ -43,10 +41,8 @@ type post ={
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const slug = params?.slug as string;
 
-  const pageDataService = new PageDataService();
-
-  const mdBlocks:MdBlock[] = await pageDataService.getPageDataByPageId(slug);
-  const singlePost:PostMetaData = await curriculumService.getCurriculumBySlug(slug);
+  const mdBlocks:MdBlock[] = await PageDataService.getPageDataByPageId(slug);
+  const singlePost:PostMetaData = await CurriculumService.getCurriculumBySlug(slug);
 
   const post:post = {
     metadata:singlePost,
@@ -80,7 +76,6 @@ const Post =({ metadata, mdBlocks,pageNavs}: Props) => {
           <h2 className='w-full text-2xl font-medium'>{metadata.title}</h2>
         </div>
           <div className='border-b mt-2'></div>
-          <span className='text-gray-500'>created at {metadata.date}</span>
           <br />
           {metadata.tags.map((tag:string,i:number)=>(
             <p className='text-white bg-sky-500 rounded-xl font-medium mt-2 px-2 inline-block mr-2' key={i}>

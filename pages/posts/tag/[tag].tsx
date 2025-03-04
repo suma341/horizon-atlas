@@ -16,9 +16,8 @@ type pagePath = {
   }
 
 export const getStaticPaths = async() =>{
-    const curriculumService = new CurriculumService();
 
-    const allTags = await curriculumService.getAllTags();
+    const allTags = await CurriculumService.getAllTags();
 
      const paramsList: pagePath[] = (
         await Promise.all(
@@ -41,8 +40,7 @@ type Props ={
 
 // getStaticProps関数
 export const getStaticProps: GetStaticProps = async (context) => {
-    const curriculumService = new CurriculumService();
-    const allPosts:PostMetaData[] = await curriculumService.getAllCurriculum();
+    const allPosts:PostMetaData[] = await CurriculumService.getAllCurriculum();
     const currentTag:string = typeof context.params?.tag == 'string' ? context.params.tag : "";
     const allTags = await getAllTags(allPosts);
 

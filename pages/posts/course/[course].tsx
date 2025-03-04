@@ -15,10 +15,8 @@ type pagePath = {
     params: { course:string }
   }
 
-const curriculumService = new CurriculumService();
-
 export const getStaticPaths = async() =>{
-    const allCategories = await curriculumService.getAllCategories();
+    const allCategories = await CurriculumService.getAllCategories();
     const removedEmptyCourses = allCategories.filter((category)=>category!=='');
 
      const paramsList: pagePath[] = (
@@ -43,7 +41,7 @@ type Props={
 // getStaticProps関数
 export const getStaticProps: GetStaticProps = async (context) => {
     const currentCourse:string = typeof context.params?.course == 'string' ? context.params.course: "";
-    const posts = await curriculumService.getCurriculumByCategory(currentCourse);
+    const posts = await CurriculumService.getCurriculumByCategory(currentCourse);
     const isBasic = await courseIsBasic(currentCourse,posts);
     const currentNav:pageNav = {title:currentCourse,id:`/posts/course/${currentCourse}`};
     const pageNavs = isBasic ? [HOME_NAV,BASIC_NAV,currentNav] :[HOME_NAV,currentNav];

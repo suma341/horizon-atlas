@@ -19,11 +19,9 @@ type Props = {
   posts:PostMetaData[];
 }
 
-const curriculumService = new CurriculumService();
-
 export const getStaticProps: GetStaticProps = async () => {
 
-  const allPosts:PostMetaData[] = await curriculumService.getAllCurriculum();
+  const allPosts:PostMetaData[] = await CurriculumService.getAllCurriculum();
 
   const allTags:string[] = await getAllTags(allPosts);
   return {

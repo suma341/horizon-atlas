@@ -15,11 +15,9 @@ type Props={
     }[];
 }
 
-const curriculumService = new CurriculumService();
-
 // getStaticProps関数
 export const getStaticProps: GetStaticProps = async () => {
-    const basicPosts = await curriculumService.getBasicCurriculum();
+    const basicPosts = await CurriculumService.getBasicCurriculum();
     const basicCourse = await getBasicCourses(basicPosts);
     const courseAndPosts = await Promise.all(basicCourse.map(async(course)=>{
         const posts = await getPostsByCourse(course,basicPosts);

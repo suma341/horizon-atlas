@@ -3,9 +3,6 @@ import { PageDataGateway } from "../Gateways/PageDataGateway";
 import { PageData } from "@/types/pageData";
 import { searchPageById } from "../searchPageById";
 import { findHeadingBlock } from "../findHeadingBlock";
-// import { CurriculumService } from "./CurriculumService";
-
-const pageDataGateway = new PageDataGateway();
 
 function buildTree(pageData:PageData[], parentId:string):MdBlock[] {
     const mdBlocks:MdBlock[] = pageData
@@ -46,8 +43,8 @@ async function rewriteLinks(text: string) {
   
 
 export class PageDataService{
-    getPageDataByPageId=async(pageId:string)=>{
-        const pageDatas = await pageDataGateway.getPageDataByPageId(pageId);
+    static getPageDataByPageId=async(pageId:string)=>{
+        const pageDatas = await PageDataGateway.getPageDataByPageId(pageId);
         const mdBlocks = buildTree(pageDatas, pageId);
         const processedData = await Promise.all(mdBlocks.map(async(block)=>{
             if(block.type==="paragraph"){
@@ -74,19 +71,24 @@ export class PageDataService{
         return processedData;
     }
 
-    getPageDataByType = async(type:string)=>{
-        const pageDatas = await pageDataGateway.getPageDataByType(type);
+    static getPageDataByType = async(type:string)=>{
+        const pageDatas = await PageDataGateway.getPageDataByType(type);
         return pageDatas;
     }
 
-    getPageDataByTypeAndSlug = async(type:string,slug:string)=>{
-        const pageDatas = await pageDataGateway.getPageDataByTypeAndSlug(type,slug);
+    static getPageDataByTypeAndSlug = async(type:string,slug:string)=>{
+        const pageDatas = await PageDataGateway.getPageDataByTypeAndSlug(type,slug);
         return pageDatas;
     }
 
-    getPageDataBySlug = async(slug:string)=>{
-        const pageDatas = await pageDataGateway.getPageDataBySlug(slug);
+    static getPageDataBySlug = async(slug:string)=>{
+        const pageDatas = await PageDataGateway.getPageDataBySlug(slug);
         return pageDatas;
+    }
+
+    static getBlockIdBySlug = async(slug:string)=>{
+        const blockIdAndData = await PageDataGateway.getBlockIdAndDataBySlug(slug);
+        return blockIdAndData;
     }
 
     // getAllPageId = async()=>{
