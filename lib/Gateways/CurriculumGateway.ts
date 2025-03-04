@@ -102,4 +102,20 @@ export class CurriculumGateway{
         const result:data = await res.json();
         return result;
     }
+
+    static getCurriculumByCondition=async(select:string,match?:{[key:string]:string})=>{
+        const res = await fetch(`${SUPABASE_URL}/functions/v1/getCurriculumWithSelect`,{
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+            },
+            body:JSON.stringify({
+                match,
+                select
+            })
+        })
+        const blockId = await res.json()
+        return blockId;
+    }
 }

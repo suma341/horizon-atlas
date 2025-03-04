@@ -88,4 +88,13 @@ export class CurriculumService{
         }
         return metaData.sort((a,b)=>parseInt(a.id) -parseInt(b.id));
     }    
+
+    static getIdAndTitleAndSlug=async()=>{
+        const datas:{
+            curriculumId:string;
+            slug:string;
+            title:string;    
+        }[] = await CurriculumGateway.getCurriculumByCondition("curriculumId,title,slug");
+        return datas;
+    }    
 }

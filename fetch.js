@@ -101,7 +101,7 @@ const downloadImage = async (imageUrl, savePath) => {
     }
 };
 
-async function upsertCurriculum(slug,title,is_basic_curriculum,visibility,category,tag){
+async function upsertCurriculum(slug,title,is_basic_curriculum,visibility,category,tag,curriculumId){
     const url = `${SUPABASE_URL}/functions/v1/upsert_curriculum`;
     const res = await fetch(url, {
         method: "POST",
@@ -110,7 +110,7 @@ async function upsertCurriculum(slug,title,is_basic_curriculum,visibility,catego
             "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
         },
         body:JSON.stringify({
-            slug,title,is_basic_curriculum,visibility,category,tag
+            slug,title,is_basic_curriculum,visibility,category,tag,curriculumId
         }),
     });
     const result = await res.json();
@@ -170,7 +170,8 @@ async function insertCurriculum(data){
         data.is_basic_curriculum,
         data.visibility,
         data.category,
-        data.tags);
+        data.tags,
+        data.id);
 }
 
 const fetchAllMdBlock = async (mdBlocks,slug) => {
@@ -271,34 +272,34 @@ function cleardir(directory) {
     }
 }
 
-// getAllData()
-//     .then(allData => {
-//         for(const data of allData){
-//             wait(1000).then(data_=>{
-//                 downloadImage(data.icon, `./public/notion_data/eachPage/${data.slug}/icon.png`)
-//                 insertCurriculum(data)
-//                 getSinglePage(data.slug).then(mdBlocks=>{
-//                     insertblock(data.slug,data.slug,mdBlocks,data.slug)
-//                     const ogsDir = `./public/notion_data/eachPage/${data.slug}/ogsData/`;
-//                     const imageDir = `./public/notion_data/eachPage/${data.slug}/image/`;
-//                     const iframeDir = `./public/notion_data/eachPage/${data.slug}/iframeData/`;
-//                     mkdir(ogsDir);
-//                     mkdir(imageDir);
-//                     mkdir(iframeDir);
-//                     cleardir(ogsDir);
-//                     cleardir(imageDir);
-//                     cleardir(iframeDir);
-//                     return fetchAllMdBlock(mdBlocks, data.slug);
-//                 })
-//             })
-//         }
-//     })
-//     .catch(error => console.error("❌ Notion API の取得でエラー:", error)); // 🔴 catch() 追加
+getAllData()
+    .then(allData => {
+        for(const data of allData){
+            wait(1000).then(data_=>{
+                // downloadImage(data.icon, `./public/notion_data/eachPage/${data.slug}/icon.png`)
+                insertCurriculum(data)
+                // getSinglePage(data.slug).then(mdBlocks=>{
+                //     insertblock(data.slug,data.slug,mdBlocks,data.slug)
+                //     const ogsDir = `./public/notion_data/eachPage/${data.slug}/ogsData/`;
+                //     const imageDir = `./public/notion_data/eachPage/${data.slug}/image/`;
+                //     const iframeDir = `./public/notion_data/eachPage/${data.slug}/iframeData/`;
+                //     mkdir(ogsDir);
+                //     mkdir(imageDir);
+                //     mkdir(iframeDir);
+                //     cleardir(ogsDir);
+                //     cleardir(imageDir);
+                //     cleardir(iframeDir);
+                //     return fetchAllMdBlock(mdBlocks, data.slug);
+                // })
+            })
+        }
+    })
+    .catch(error => console.error("❌ Notion API の取得でエラー:", error)); // 🔴 catch() 追加
 
 console.log("download completed");
 
-const slug="python-basic-1";
-getSinglePage(slug).then(data=>{
-    insertblock(slug,slug,data,slug)
-})
+// const slug="python-basic-1";
+// getSinglePage(slug).then(data=>{
+//     insertblock(slug,slug,data,slug)
+// })
 
