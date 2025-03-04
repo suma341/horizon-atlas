@@ -13,6 +13,16 @@ type Props={
 export default function Callout(props:Props) {
     const {mdBlock,depth,slug} = props;
     const parent = mdBlock.parent.split("> ")[1];
+    if(mdBlock.children.length > 0 && parent.includes(mdBlock.children[0].parent)){
+        return (
+            <div className='bg-white p-2 px-3 mb-3 mt-4 border border-neutral-300 rounded' id={mdBlock.blockId}>
+                <Paragraph slug={slug}  mdBlock={mdBlock} quote={true} parent={parent.replaceAll("#","")} depth={depth +1} />
+                {mdBlock.children.slice(1).map((child, i)=>(
+                    <MdBlockComponent slug={slug} mdBlock={child} key={i} depth={depth +1} />
+                ))}
+            </div>
+        )
+    }
 
     return (
         <div className='bg-white p-2 px-3 mb-3 mt-4 border border-neutral-300 rounded' id={mdBlock.blockId}>
