@@ -31,7 +31,7 @@ async function rewriteLinks(text: string) {
         if (page.pageId === "") {
           newUrl = "";
         } else {
-          newUrl = page.isChildPage ? `/posts/post/${page.slug}/${page.pageId}` : `/posts/post/${page.slug}`;
+          newUrl = page.isChildPage ? `/posts/post/${page.curriculumId}/${page.pageId}` : `/posts/post/${page.curriculumId}`;
         }
       }
   
@@ -76,21 +76,6 @@ export class PageDataService{
         return pageDatas;
     }
 
-    static getPageDataByTypeAndSlug = async(type:string,slug:string)=>{
-        const pageDatas = await PageDataGateway.getPageDataByTypeAndSlug(type,slug);
-        return pageDatas;
-    }
-
-    static getPageDataBySlug = async(slug:string)=>{
-        const pageDatas = await PageDataGateway.getPageDataBySlug(slug);
-        return pageDatas;
-    }
-
-    static getBlockIdBySlug = async(slug:string)=>{
-        const blockIdAndData = await PageDataGateway.getBlockIdAndDataBySlug(slug);
-        return blockIdAndData;
-    }
-
     // getAllPageId = async()=>{
     //     const curriculumService = new CurriculumService();
     //     const allSlug = await curriculumService.getAllSlug();
@@ -99,4 +84,18 @@ export class PageDataService{
     //     }))).flat()
 
     // }
+
+    static getBlockIdAndDataByCurriculumId=async(curriculumId:string)=>{
+        const data:{blockId:string,data:string}[] = await PageDataGateway.getPageDataByConditions("blockId,data",{"curriculumId":curriculumId})
+        return data
+    }
+
+    static getPageDataByTypeAndCurriculumId=async(type:string,curriculumId:string)=>{
+        const datas:{
+            blockId:string,
+            order:number,
+            data:string
+        }[] = await PageDataGateway.getPageDataByConditions("blockId,data,order",{"type":type,"curriculumId":curriculumId})
+        return datas;
+    }
 }

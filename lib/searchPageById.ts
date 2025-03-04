@@ -6,7 +6,7 @@ type Page ={
     pageId:string;
     isChildPage:boolean;
     title:string;
-    slug:string;
+    curriculumId:string;
 }
 
 export async function searchPageById(id:string):Promise<Page>{
@@ -14,20 +14,20 @@ export async function searchPageById(id:string):Promise<Page>{
     for(const post of posts){
         if(id === post.curriculumId || id===post.curriculumId.replaceAll("-", "")){
             return {
-                pageId:post.slug,
+                pageId:post.curriculumId,
                 isChildPage:false,
                 title:post.title,
-                slug:post.slug
+                curriculumId:post.curriculumId
             }
         }
-        const blockIdAndData = await PageDataService.getBlockIdBySlug(post.slug);
+        const blockIdAndData = await PageDataService.getBlockIdAndDataByCurriculumId(post.curriculumId);
         for(const block of blockIdAndData){
             if(block.blockId===id || id===block.blockId.replaceAll("-","")){
                 return {
                     pageId:block.blockId,
                     isChildPage:true,
                     title:block.data.slice(2),
-                    slug:post.slug
+                    curriculumId:post.curriculumId
                 }
             }
         }
@@ -36,7 +36,7 @@ export async function searchPageById(id:string):Promise<Page>{
         pageId:"",
         isChildPage:false,
         title:"",
-        slug:""
+        curriculumId:""
     }
     
 }

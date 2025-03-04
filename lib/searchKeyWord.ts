@@ -15,7 +15,6 @@ export const searchByKeyWord = (keyWords: string[],allPosts: PostMetaData[]) => 
             const lowerWord = word.toLowerCase();
             const normalizedWord = normalize(lowerWord);
             score = score + stringSimilarity.compareTwoStrings(normalize(post.title), normalizedWord) * 1.2;
-            score = score +  stringSimilarity.compareTwoStrings(normalize(post.slug), normalizedWord) * 1.2;
             for(const tag of post.tags){
                 score = score + (stringSimilarity.compareTwoStrings(normalize(tag),normalizedWord));
             }

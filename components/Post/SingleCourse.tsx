@@ -25,7 +25,7 @@ const SingleCourse = ({ course, posts }: Props) => {
                         <div key={i} className="flex items-center text-gray-700 mb-0.5 text-sm border-l border-gray-300 pl-2">
                             <div className="flex">
                                 <Image
-                                    src={`/horizon-atlas/notion_data/eachPage/${post.slug}/icon.png`}
+                                    src={`/horizon-atlas/notion_data/eachPage/${post.curriculumId}/icon.png`}
                                     alt=""
                                     height={20}
                                     width={20}

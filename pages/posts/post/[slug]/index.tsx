@@ -21,10 +21,10 @@ type Props = {
 };
 
 export const getStaticPaths = async () => {
-  const allSlug:{slug:string}[] = await CurriculumService.getAllSlug();
+  const allSlug:string[] = await CurriculumService.getAllCurriculumId();
 
-  const paths: postPath[] = allSlug.map(({ slug }) => {
-    return { params: { slug: slug } };
+  const paths: postPath[] = allSlug.map((id) => {
+    return { params: { slug: id } };
   });
 
   return {
@@ -42,7 +42,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const slug = params?.slug as string;
 
   const mdBlocks:MdBlock[] = await PageDataService.getPageDataByPageId(slug);
-  const singlePost:PostMetaData = await CurriculumService.getCurriculumBySlug(slug);
+  const singlePost:PostMetaData = await CurriculumService.getCurriculumById(slug);
 
   const post:post = {
     metadata:singlePost,
@@ -72,7 +72,7 @@ const Post =({ metadata, mdBlocks,pageNavs}: Props) => {
       <div className='p-4 pt-24 pb-8'>
       <section className='p-5 bg-white pb-10'>
         <div className='flex'>
-        <Image src={`/horizon-atlas/notion_data/eachPage/${metadata.slug}/icon.png`} alt={''} width={20} height={20} className='relative w-auto h-8 m-0 mr-2 top-0.5' />
+        <Image src={`/horizon-atlas/notion_data/eachPage/${metadata.curriculumId}/icon.png`} alt={''} width={20} height={20} className='relative w-auto h-8 m-0 mr-2 top-0.5' />
           <h2 className='w-full text-2xl font-medium'>{metadata.title}</h2>
         </div>
           <div className='border-b mt-2'></div>
@@ -85,7 +85,7 @@ const Post =({ metadata, mdBlocks,pageNavs}: Props) => {
           <div className='mt-10 font-medium'>
             <div>
               {mdBlocks.map((mdBlock, i)=>(
-                <MdBlockComponent mdBlock={mdBlock} slug={metadata.slug} depth={0} key={i} />
+                <MdBlockComponent mdBlock={mdBlock} slug={metadata.curriculumId} depth={0} key={i} />
               ))}
             </div>
           </div>

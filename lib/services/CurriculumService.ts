@@ -3,9 +3,8 @@ import { CurriculumGateway } from "../Gateways/CurriculumGateway";
 
 type data ={
     id:number;
-    slug:string;
+    curriculumId:string;
     title:string;
-    date:string;
     category:string;
     is_basic_curriculum:string;
     visibility:string;
@@ -15,7 +14,7 @@ type data ={
 const converseData =(data:data)=>{
     const postMetaData:PostMetaData = {
         title:data.title,
-        slug:data.slug,
+        curriculumId:data.curriculumId,
         category:data.category,
         visibility:JSON.parse(data.visibility),
         tags:JSON.parse(data.tag),
@@ -35,23 +34,15 @@ export class CurriculumService{
         }
         return allPosts.sort((a,b)=>parseInt(a.id) -parseInt(b.id));
     }
-    
-    static getCurriculumBySlug=async(slug:string)=>{
-        const data = await CurriculumGateway.getCurriculumBySlug(slug);
-        const post:PostMetaData = converseData(data[0])
-        return post;
-    }
-
-    static getAllSlug=async()=>{
-        const data = await CurriculumGateway.getAllSlug()
-        return data;
-    }
 
     static getAllTags=async()=>{
         const tags = await CurriculumGateway.getAllTags();
         const allTagDuplicate:string[] = [];
         for(const tag of tags){
-            JSON.parse(tag.tag).map((item:string)=>{allTagDuplicate.push(item)})
+            const tagList = await JSON.parse(tag.tag)
+            for(const t of tagList){
+                allTagDuplicate.push(t)
+            }
         }
         const set = new Set(allTagDuplicate);
         const allTags = Array.from(set);
@@ -92,9 +83,26 @@ export class CurriculumService{
     static getIdAndTitleAndSlug=async()=>{
         const datas:{
             curriculumId:string;
-            slug:string;
             title:string;    
-        }[] = await CurriculumGateway.getCurriculumByCondition("curriculumId,title,slug");
+        }[] = await CurriculumGateway.getCurriculumByCondition("curriculumId,title");
         return datas;
+    }    
+
+    static getAllCurriculumId=async()=>{
+        const datas:{curriculumId:string}[] = await CurriculumGateway.getCurriculumByCondition("curriculumId")
+        const idList:string[] = []
+        for(const data of datas){
+            idList.push(data.curriculumId)
+        }
+        return idList;
+    }    
+
+    static getCurriculumById=async(id:string)=>{
+        const datas:data[] = await CurriculumGateway.getCurriculumByCondition("*",{"curriculumId":id})
+        const metadatas:PostMetaData[] = []
+        for(const data of datas){
+            metadatas.push(converseData(data))
+        }
+        return metadatas[0]
     }    
 }

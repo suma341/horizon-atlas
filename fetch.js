@@ -59,7 +59,6 @@ const getPageMetaData = (post) => {
         title: properties.title?.title?.[0]?.plain_text || "untitled",
         date,
         tags: properties.tag?.multi_select ? getTags(properties.tag.multi_select) : [],
-        slug: properties.slug?.rich_text?.[0]?.plain_text || "untitled",
         category: properties.category?.select?.name || "",
         is_basic_curriculum: properties.is_basic_curriculum?.checkbox || false,
         icon,
@@ -67,12 +66,12 @@ const getPageMetaData = (post) => {
     };
 };
 
-export const getSinglePage = async (slug) => {
+export const getSinglePage = async (title) => {
     const response = await notion.databases.query({
         database_id: NOTION_DATABASE_ID,
         filter: {
-            property: 'slug',
-            formula: { string: { equals: slug } }
+            property: 'title',
+            formula: { string: { equals: title } }
         }
     });
 
@@ -101,7 +100,7 @@ const downloadImage = async (imageUrl, savePath) => {
     }
 };
 
-async function upsertCurriculum(slug,title,is_basic_curriculum,visibility,category,tag,curriculumId){
+async function upsertCurriculum(title,is_basic_curriculum,visibility,category,tag,curriculumId){
     const url = `${SUPABASE_URL}/functions/v1/upsert_curriculum`;
     const res = await fetch(url, {
         method: "POST",
@@ -110,14 +109,14 @@ async function upsertCurriculum(slug,title,is_basic_curriculum,visibility,catego
             "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
         },
         body:JSON.stringify({
-            slug,title,is_basic_curriculum,visibility,category,tag,curriculumId
+            title,is_basic_curriculum,visibility,category,tag,curriculumId
         }),
     });
     const result = await res.json();
     console.log(result);
 }
 
-async function upsertPage(slug,parentId,blockData,blockId,type,pageId,order){
+async function upsertPage(curriculumId,parentId,blockData,blockId,type,pageId,order){
     const res = await fetch(`${SUPABASE_URL}/functions/v1/upsertPageData`, {
         method: "POST",
         headers: {
@@ -125,7 +124,7 @@ async function upsertPage(slug,parentId,blockData,blockId,type,pageId,order){
             "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
         },
         body:JSON.stringify({
-            slug,parentId,blockData,blockId,type,pageId,order
+            curriculumId,parentId,blockData,blockId,type,pageId,order
         })
     });
     const result = await res.json();
@@ -149,23 +148,23 @@ function wait(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function insertblock(slug,parentId,blocks,pageId){
+async function insertblock(curriculumId,parentId,blocks,pageId){
     for(let i=1;i<(blocks.length + 1);i++){
         await wait(90);
         const k = i -1;
         if(blocks[k].children.length!==0){
             await insertblock(
-                slug,
+                curriculumId,
                 blocks[k].blockId,
                 blocks[k].children,
                 blocks[k].type==="child_page" ? blocks[k].blockId : pageId);
         }
-        await upsertPage(slug,parentId,blocks[k].parent,blocks[k].blockId,blocks[k].type,pageId,i);
+        await upsertPage(curriculumId,parentId,blocks[k].parent,blocks[k].blockId,blocks[k].type,pageId,i);
     }
 }
 
 async function insertCurriculum(data){
-    upsertCurriculum(data.slug,
+    upsertCurriculum(
         data.title,
         data.is_basic_curriculum,
         data.visibility,
@@ -174,7 +173,7 @@ async function insertCurriculum(data){
         data.id);
 }
 
-const fetchAllMdBlock = async (mdBlocks,slug) => {
+const fetchAllMdBlock = async (mdBlocks,id) => {
     for (const block of mdBlocks) {
         if (block.type === 'image') {
             const match = block.parent.match(/!\[([^\]]+)\]\(([^\)]+)\)/);
@@ -185,7 +184,7 @@ const fetchAllMdBlock = async (mdBlocks,slug) => {
                     exte = "png";
                 }
                 console.log("Downloading image:", block.blockId);
-                await downloadImage(url, `./public/notion_data/eachPage/${slug}/image/${block.blockId}.${exte}`);
+                await downloadImage(url, `./public/notion_data/eachPage/${id}/image/${block.blockId}.${exte}`);
             }
         }
         if(block.type==='bookmark'){
@@ -215,14 +214,14 @@ const fetchAllMdBlock = async (mdBlocks,slug) => {
                     if(ogImage){
                         const { url } = ogImage[0];
                         const saveData = { ogTitle,ogDescription,ogSiteName,ogUrl,ImageUrl:url, favicon };
-                        fs.writeFileSync(`./public/notion_data/eachPage/${slug}/ogsData/${block.blockId}.json`, JSON.stringify(saveData, null, 2));
+                        fs.writeFileSync(`./public/notion_data/eachPage/${id}/ogsData/${block.blockId}.json`, JSON.stringify(saveData, null, 2));
                     }else{
                         const saveData = { ogTitle,ogDescription,ogSiteName,ogUrl, favicon };
                         const isAllUndefined = Object.values(saveData).every(value => value === undefined);
                         if(isAllUndefined){
-                            fs.writeFileSync(`./public/notion_data/eachPage/${slug}/ogsData/${block.blockId}.json`, JSON.stringify(result, null, 2));
+                            fs.writeFileSync(`./public/notion_data/eachPage/${id}/ogsData/${block.blockId}.json`, JSON.stringify(result, null, 2));
                         }else{
-                            fs.writeFileSync(`./public/notion_data/eachPage/${slug}/ogsData/${block.blockId}.json`, JSON.stringify(saveData, null, 2));
+                            fs.writeFileSync(`./public/notion_data/eachPage/${id}/ogsData/${block.blockId}.json`, JSON.stringify(saveData, null, 2));
                         }
                     }
                 }catch(e){console.warn(`⚠️ Open Graphの取得に失敗: ${e}`);}
@@ -235,12 +234,12 @@ const fetchAllMdBlock = async (mdBlocks,slug) => {
                 const embedData = await useIframely(url);
                 if(embedData){
                     const saveData = {title:embedData.title, html:embedData.html}
-                    fs.writeFileSync(`./public/notion_data/eachPage/${slug}/iframeData/${block.blockId}.json`, JSON.stringify(saveData, null, 2));
+                    fs.writeFileSync(`./public/notion_data/eachPage/${id}/iframeData/${block.blockId}.json`, JSON.stringify(saveData, null, 2));
                 }
             }
         }
         if (block.children.length > 0) {
-            await fetchAllMdBlock(block.children,slug);
+            await fetchAllMdBlock(block.children,id);
         }
     }
 };
@@ -256,14 +255,14 @@ function mkdir(dirPath){
 
 function cleardir(directory) {
     try {
-        const files = fs.readdir(directory);
+        const files = fs.readdirSync(directory);
         for (const file of files) {
             const filePath = path.join(directory, file);
-            const stat = fs.stat(filePath);
+            const stat = fs.statSync(filePath);
             if (stat.isFile()) {
-                fs.unlink(filePath);
+                fs.unlinkSync(filePath);
             } else if (stat.isDirectory()) {
-                fs.rm(filePath, { recursive: true, force: true });
+                fs.rmSync(filePath, { recursive: true, force: true });
             }
         }
         console.log(`Directory "${directory}" has been cleared.`);
@@ -276,20 +275,20 @@ getAllData()
     .then(allData => {
         for(const data of allData){
             wait(1000).then(data_=>{
-                // downloadImage(data.icon, `./public/notion_data/eachPage/${data.slug}/icon.png`)
+                downloadImage(data.icon, `./public/notion_data/eachPage/${data.id}/icon.png`)
                 insertCurriculum(data)
-                // getSinglePage(data.slug).then(mdBlocks=>{
-                //     insertblock(data.slug,data.slug,mdBlocks,data.slug)
-                //     const ogsDir = `./public/notion_data/eachPage/${data.slug}/ogsData/`;
-                //     const imageDir = `./public/notion_data/eachPage/${data.slug}/image/`;
-                //     const iframeDir = `./public/notion_data/eachPage/${data.slug}/iframeData/`;
+                // getSinglePage(data.title).then(mdBlocks=>{
+                //     insertblock(data.id,data.id,mdBlocks,data.id)
+                //     const ogsDir = `./public/notion_data/eachPage/${data.id}/ogsData/`;
+                //     const imageDir = `./public/notion_data/eachPage/${data.id}/image/`;
+                //     const iframeDir = `./public/notion_data/eachPage/${data.id}/iframeData/`;
                 //     mkdir(ogsDir);
                 //     mkdir(imageDir);
                 //     mkdir(iframeDir);
                 //     cleardir(ogsDir);
                 //     cleardir(imageDir);
                 //     cleardir(iframeDir);
-                //     return fetchAllMdBlock(mdBlocks, data.slug);
+                //     return fetchAllMdBlock(mdBlocks, data.id);
                 // })
             })
         }

@@ -5,7 +5,7 @@ type ChildPageData={
     type:string,
     blockId:string,
     parent:string,
-    slug:string
+    curriculumId:string
 }
 
 export async function getAllChildPage(){
@@ -13,7 +13,7 @@ export async function getAllChildPage(){
     const posts:PostMetaData[] = await res_posts.json();
     const childPageData:ChildPageData[] = [];
     for(const post of posts){
-        const res_page = await fetch(`/horizon-atlas/notion_data/eachPage/${post.slug}.json`)
+        const res_page = await fetch(`/horizon-atlas/notion_data/eachPage/${post.curriculumId}.json`)
         const page:MdBlock[] = await res_page.json();
         const child_pages = page.filter(item=>item.type==="child_page");
         const child_page_metadata = child_pages.map((page)=>{
@@ -21,7 +21,7 @@ export async function getAllChildPage(){
                 type:page.type!,
                 blockId:page.blockId,
                 parent:page.parent,
-                slug:post.slug
+                curriculumId:post.curriculumId
             }
         })
         child_page_metadata.map((child)=>{

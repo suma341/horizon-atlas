@@ -43,7 +43,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const allPosts:PostMetaData[] = await CurriculumService.getAllCurriculum();
     const currentTag:string = typeof context.params?.tag == 'string' ? context.params.tag : "";
     const allTags = await getAllTags(allPosts);
-
+    
     const posts:PostMetaData[] = await getPostsByTag(currentTag, allPosts);
     return {
         props: {

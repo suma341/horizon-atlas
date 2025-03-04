@@ -35,52 +35,7 @@ export class PageDataGateway{
         return pageDatas;
     }
 
-    static getPageDataByTypeAndSlug=async(type:string,slug:string)=>{
-        const res = await fetch(`${SUPABASE_URL}/functions/v1/getPageDataByTypeAndSlug`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
-            },
-            body:JSON.stringify({
-                type,slug
-            })
-        });
-        const pageDatas:PageData[] = await res.json();
-        return pageDatas;
-    }
-
-    static getPageDataBySlug=async(slug:string)=>{
-        const res = await fetch(`${SUPABASE_URL}/functions/v1/getPageDataBySlug`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
-            },
-            body:JSON.stringify({
-                slug
-            })
-        });
-        const pageDatas:PageData[] = await res.json();
-        return pageDatas;
-    }
-
-    static getBlockIdAndDataBySlug=async(slug:string)=>{
-        const res = await fetch(`${SUPABASE_URL}/functions/v1/getBlockIdBySlug`,{
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
-            },
-            body:JSON.stringify({
-                slug
-            })
-        })
-        const blockIdAndData:{blockId:string,data:string}[] = await res.json()
-        return blockIdAndData;
-    }
-
-    static getPageDataByConditions=async(match:{[key:string]:string},select:string)=>{
+    static getPageDataByConditions=async(select:string,match?:{[key:string]:string})=>{
         const res = await fetch(`${SUPABASE_URL}/functions/v1/getPageDataWithSelect`,{
             method: "POST",
             headers: {

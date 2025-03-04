@@ -22,16 +22,16 @@ type pagePath = {
 }
 
 export const getStaticPaths = async () => {
-  const allSlug:{slug:string}[] = await CurriculumService.getAllSlug();
+  const allId:string[] = await CurriculumService.getAllCurriculumId();
   const childPages = await PageDataService.getPageDataByType('child_page');
 
   const paths:pagePath[]=(
-      allSlug.map((post)=>{
-        const children = childPages.filter((item)=>item.slug===post.slug);
+      allId.map((post)=>{
+        const children = childPages.filter((item)=>item.curriculumId===post);
         return children.map((child)=>{
           return {
             params:{
-              slug:post.slug,
+              slug:post,
               childId:[child.blockId]
             }
           }
@@ -48,17 +48,17 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const currentSlug = context.params?.slug as string;
   const childparam = (context.params?.childId as string[]) || [];
   const mdBlocks:MdBlock[] = await PageDataService.getPageDataByPageId(childparam[0]);
-  const singlePost:PostMetaData = await CurriculumService.getCurriculumBySlug(currentSlug);
+  const singlePost:PostMetaData = await CurriculumService.getCurriculumById(currentSlug);
   const post ={
     mdBlocks,
     metadata:singlePost
   }
-  const childPagesBySlug = await PageDataService.getPageDataByTypeAndSlug('child_page',currentSlug);
+  const childPagesBySlug = await PageDataService.getPageDataByTypeAndCurriculumId('child_page',currentSlug);
 
-  const links:string[] = [`/posts/post/${post.metadata.slug}`];
+  const links:string[] = [`/posts/post/${post.metadata.curriculumId}`];
   const pageNavs:pageNav[] = post.metadata.is_basic_curriculum ?
-    [HOME_NAV,BASIC_NAV,{title:post.metadata.category,id:`/posts/course/${post.metadata.category}`},{title:post.metadata.title,id:`/posts/post/${post.metadata.slug}`}]
-    : [HOME_NAV,{title:post.metadata.category,id:`/posts/course/${post.metadata.category}`},{title:post.metadata.title,id:`/posts/post/${post.metadata.slug}`}];
+    [HOME_NAV,BASIC_NAV,{title:post.metadata.category,id:`/posts/course/${post.metadata.category}`},{title:post.metadata.title,id:`/posts/post/${post.metadata.curriculumId}`}]
+    : [HOME_NAV,{title:post.metadata.category,id:`/posts/course/${post.metadata.category}`},{title:post.metadata.title,id:`/posts/post/${post.metadata.curriculumId}`}];
   for (let i = 0; i < childparam.length; i++) {
     const child = childPagesBySlug.filter((item)=>item.blockId===childparam[i]);
     if(child[0]!==undefined){

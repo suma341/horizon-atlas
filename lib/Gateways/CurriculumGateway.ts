@@ -3,31 +3,15 @@ const SUPABASE_URL = process.env.SUPABASE_URL;
 
 type data ={
     id:number;
-    slug:string;
+    curriculumId:string;
     title:string;
-    date:string;
     category:string;
     is_basic_curriculum:string;
     visibility:string;
     tag:string;
 }[]
 
-export class CurriculumGateway{
-    static getCurriculumBySlug=async(slug:string)=>{
-        const res = await fetch(`${SUPABASE_URL}/functions/v1/get_curriculum_bySlug`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
-            },
-            body:JSON.stringify({
-                slug
-            }),
-        });
-        const result:data = await res.json();
-        return result;
-    };
-    
+export class CurriculumGateway{    
     static getAllCurriculum=async()=>{
         const res = await fetch(`${SUPABASE_URL}/functions/v1/get_curriculum`, {
             method: "GET",
@@ -39,18 +23,6 @@ export class CurriculumGateway{
         const result:data = await res.json();
         return result;
     }
-
-    static getAllSlug=async()=>{
-        const res = await fetch(`${SUPABASE_URL}/functions/v1/getAllSlug`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
-            },
-        });
-        const pageDatas:{slug:string}[] = await res.json();
-        return pageDatas;
-    }    
 
     static getAllTags=async()=>{
         const res = await fetch(`${SUPABASE_URL}/functions/v1/getAllTags`, {

@@ -1,6 +1,6 @@
 export type PageData={
     id:number;
-    slug:string;
+    curriculumId:string;
     blockId:string;
     data:string;
     parentId:string;
