@@ -32,7 +32,7 @@ const SideBlock = ({ title, childPages, slug }: Props) => {
       }, []);
 
     const getPageHeight = () => {
-        if (typeof window === "undefined") return 0; // サーバーサイドで実行されないようにする
+        if (typeof window === "undefined") return 0;
         return Math.max(
             document.body.scrollHeight,
             document.documentElement.scrollHeight
@@ -54,12 +54,12 @@ const SideBlock = ({ title, childPages, slug }: Props) => {
             window.removeEventListener("scroll", handleScroll);
         };
     }, []); // 依存配列を空にして、マウント時のみ実行
-
+    
     return (
-        <section className="w-1/4 pl-4 fixed right-0" style={{top:scrollY > getPageHeight() - 850 ? `${(getPageHeight() - 850) - scrollY + 128}px` : "128px"}}>
+        <section className="w-1/4 pl-4 fixed right-0" style={{top:scrollY > getPageHeight() - 720 ? `${(getPageHeight() - 720) - scrollY + 128}px` : "128px"}}>
             <div
                 className="border fixed overflow-y-scroll scrollbar-thin py-4 rounded-md bg-white"
-                style={{ opacity: "100", height: `${size.height / 1.5}px`, width:`${size.width / 5}px` }}
+                style={{ opacity: "100", height: `${size.height / 1.75}px`, width:`${size.width / 5}px` }}
             >
                 <p className="truncate text-sm px-1">{title}</p>
                 <div className="pl-3">
