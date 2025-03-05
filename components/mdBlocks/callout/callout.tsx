@@ -16,9 +16,11 @@ export default function Callout(props:Props) {
     if(mdBlock.children.length > 0 && parent.includes(mdBlock.children[0].parent)){
         return (
             <div className='bg-white p-2 px-3 mb-3 mt-4 border border-neutral-300 rounded' id={mdBlock.blockId}>
-                <Paragraph slug={slug}  mdBlock={mdBlock} quote={true} parent={parent.replaceAll("#","")} depth={depth +1} />
+                <Paragraph slug={slug}  mdBlock={mdBlock} quote={true} parent={parent.replaceAll("#","")} depth={depth} />
                 {mdBlock.children.slice(1).map((child, i)=>(
-                    <MdBlockComponent slug={slug} mdBlock={child} key={i} depth={depth +1} />
+                    <div className='ml-4'>
+                        <MdBlockComponent slug={slug} mdBlock={child} key={i} depth={depth +1} />
+                    </div>
                 ))}
             </div>
         )
@@ -26,7 +28,7 @@ export default function Callout(props:Props) {
 
     return (
         <div className='bg-white p-2 px-3 mb-3 mt-4 border border-neutral-300 rounded' id={mdBlock.blockId}>
-            <Paragraph slug={slug}  mdBlock={mdBlock} quote={true} parent={parent} depth={depth +1} />
+            <Paragraph slug={slug}  mdBlock={mdBlock} quote={true} parent={parent} depth={depth} />
             {mdBlock.children.map((child, i)=>(
                 <MdBlockComponent slug={slug} mdBlock={child} key={i} depth={depth +1} />
             ))}

@@ -33,13 +33,13 @@ export const getAllData = async () => {
     return allPosts.map(getPageMetaData);
 };
 
-export const getSingleData = async (slug) => {
+export const getSingleData = async (title) => {
     const posts = await notion.databases.query({
         database_id: NOTION_DATABASE_ID,
         page_size: 100,
         filter: {
-            property: 'slug',
-            formula: { string: { equals: slug } }
+            property: 'title',
+            formula: { string: { equals: title } }
         }
     });
 
@@ -51,17 +51,13 @@ const getPageMetaData = (post) => {
     const getTags = (tags) => tags.map(tag => tag.name || "");
     const getVisibilities = (visibilities) => visibilities.map(visibility=> visibility.name || "");
     const properties = post.properties;
-    const date = properties.date?.date?.start || "";
-    const icon = properties.icon?.files?.[0]?.file?.url || "";
 
     return {
         id: post.id,
         title: properties.title?.title?.[0]?.plain_text || "untitled",
-        date,
         tags: properties.tag?.multi_select ? getTags(properties.tag.multi_select) : [],
         category: properties.category?.select?.name || "",
         is_basic_curriculum: properties.is_basic_curriculum?.checkbox || false,
-        icon,
         visibility: properties.visibility?.multi_select ? getVisibilities(properties.visibility.multi_select) : []
     };
 };
@@ -131,6 +127,26 @@ async function upsertPage(curriculumId,parentId,blockData,blockId,type,pageId,or
     console.log(result);
     const { error } = result;
     return error;
+}
+
+async function deleteData(table,where,value){
+    const url = `${SUPABASE_URL}/functions/v1/deleteData`;
+    const res = await fetch(url, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+        },
+        body:JSON.stringify({
+            table,where,value
+        }),
+    });
+    const result = await res.json();
+    console.log(result);
+}
+
+async function deletePage(curriculumId){
+    await deleteData("PageData","curriculumId","19c2297f-7a72-8010-a6d2-c35d1f460328")
 }
 
 async function useIframely(url) {
@@ -271,34 +287,55 @@ function cleardir(directory) {
     }
 }
 
-getAllData()
-    .then(allData => {
-        for(const data of allData){
-            wait(1000).then(data_=>{
-                downloadImage(data.icon, `./public/notion_data/eachPage/${data.id}/icon.png`)
-                insertCurriculum(data)
-                // getSinglePage(data.title).then(mdBlocks=>{
-                //     insertblock(data.id,data.id,mdBlocks,data.id)
-                //     const ogsDir = `./public/notion_data/eachPage/${data.id}/ogsData/`;
-                //     const imageDir = `./public/notion_data/eachPage/${data.id}/image/`;
-                //     const iframeDir = `./public/notion_data/eachPage/${data.id}/iframeData/`;
-                //     mkdir(ogsDir);
-                //     mkdir(imageDir);
-                //     mkdir(iframeDir);
-                //     cleardir(ogsDir);
-                //     cleardir(imageDir);
-                //     cleardir(iframeDir);
-                //     return fetchAllMdBlock(mdBlocks, data.id);
-                // })
-            })
-        }
-    })
-    .catch(error => console.error("❌ Notion API の取得でエラー:", error)); // 🔴 catch() 追加
+function mkAndClearDir(dirs){
+    for(const dir of dirs){
+        mkdir(dir).then(a=>cleardir(dir))
+    }
+}
+
+// getSingleData("Notionについて")
+//     .then(allData => {
+//         for(const data of allData){
+//             wait(1000).then(data_=>{
+//                 downloadImage(data.icon, `./public/notion_data/eachPage/${data.id}/icon.png`)
+//                 insertCurriculum(data)
+//                 getSinglePage(data.title).then(mdBlocks=>{
+//                     deletePage(data.id).then(data__=>{
+//                         insertblock(data.id,data.id,mdBlocks,data.id)
+//                     })
+//                     const ogsDir = `./public/notion_data/eachPage/${data.id}/ogsData/`;
+//                     const imageDir = `./public/notion_data/eachPage/${data.id}/image/`;
+//                     const iframeDir = `./public/notion_data/eachPage/${data.id}/iframeData/`;
+//                     mkdir(ogsDir);
+//                     mkdir(imageDir);
+//                     mkdir(iframeDir);
+//                     cleardir(ogsDir);
+//                     cleardir(imageDir);
+//                     cleardir(iframeDir);
+//                     return fetchAllMdBlock(mdBlocks, data.id);
+//                 })
+//             })
+//         }
+//     })
+//     .catch(error => console.error("❌ Notion API の取得でエラー:", error)); // 🔴 catch() 追加
 
 console.log("download completed");
 
-// const slug="python-basic-1";
-// getSinglePage(slug).then(data=>{
-//     insertblock(slug,slug,data,slug)
-// })
-
+const title = "Notionについて"
+getSingleData(title).then(data=>{
+    getSinglePage(title).then(mdBlocks=>{
+        deletePage(data[0].id).then(data_=>{
+            insertblock(data[0].id,data[0].id,mdBlocks,data[0].id)
+        })
+        const ogsDir = `./public/notion_data/eachPage/${data.id}/ogsData/`;
+        const imageDir = `./public/notion_data/eachPage/${data.id}/image/`;
+        const iframeDir = `./public/notion_data/eachPage/${data.id}/iframeData/`;
+        const dirList = [ogsDir,imageDir,iframeDir]
+        mkAndClearDir(dirList).then(a=>{
+            fetchAllMdBlock(mdBlocks, data.id);
+        })
+    })
+})
+getSingleData(title).then(data=>{
+    deletePage(data[0].id)
+})
