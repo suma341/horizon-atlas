@@ -70,7 +70,7 @@ export default function Home() {
       </main>
 
       <footer className="bg-gray-200 text-gray-700 py-4 text-center">
-        <p className="text-sm">&copy; 2024 Horizon Programming Club. All rights reserved.</p>
+        <p className="text-sm">&copy; 20245 Ryukoku Horizon</p>
       </footer>
     </div>
   );

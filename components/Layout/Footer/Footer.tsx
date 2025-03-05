@@ -4,7 +4,7 @@ const Footer = () => {
   return (
     <footer className="bg-gray-700 text-white py-8">
       <div className='container text-5xl mx-auto gap-4 mb-5'>HorizonAtlas</div>
-      <p className="mt-4">©2025 Ryukoku University Programming Club Horizon</p>
+      <p className="mt-4">©2025 Ryukoku Horizon</p>
     </footer>
   );
 };
