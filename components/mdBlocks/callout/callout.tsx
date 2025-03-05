@@ -18,8 +18,8 @@ export default function Callout(props:Props) {
             <div className='bg-white p-2 px-3 mb-3 mt-4 border border-neutral-300 rounded' id={mdBlock.blockId}>
                 <Paragraph slug={slug}  mdBlock={mdBlock} quote={true} parent={parent.replaceAll("#","")} depth={depth} />
                 {mdBlock.children.slice(1).map((child, i)=>(
-                    <div className='ml-4'>
-                        <MdBlockComponent slug={slug} mdBlock={child} key={i} depth={depth +1} />
+                    <div className='ml-4' key={i}>
+                        <MdBlockComponent slug={slug} mdBlock={child} depth={depth +1} />
                     </div>
                 ))}
             </div>
