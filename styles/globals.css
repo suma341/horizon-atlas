@@ -42,3 +42,8 @@ p{
   clip-path: polygon(0 0, 100% 40%, 100% 100%, 0 100%);
   z-index: -1;
 }
+
+.bg-hero {
+  background: linear-gradient(135deg, #6B46C1 0%, #B794F4 100%);
+  clip-path: polygon(0 0, 100% 0, 100% 80%, 0 100%);
+}

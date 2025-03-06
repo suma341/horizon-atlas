@@ -37,7 +37,8 @@ export default function AuthButton() {
   return (
     <div className="">
         <button
-        className="flex items-center justify-center px-4 py-3 bg-white text-gray-700 border border-gray-300 rounded-lg shadow-sm transition duration-300 hover:bg-gray-100"
+        className="flex items-center justify-center border border-gray-300
+        bg-purple-700 hover:bg-purple-800 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition duration-300 transform hover:scale-105"
           onClick={() =>
             loginWithRedirect({
               authorizationParams: {
