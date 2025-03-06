@@ -12,7 +12,7 @@ const SinglePost = (props:Props) => {
     const {title, tags, curriculumId} = props.postData;
     const isPagenationPage = props.isPagenationPage;
     return (
-        <Link href={`/posts/post/${curriculumId}`}>
+        <Link href={`/posts/curriculums/${curriculumId}/${curriculumId}`}>
             {isPagenationPage ? (
                 <section className='mb-4 mx-5 rounded-md p-3 shadow-md hover:shadow-none hover:translate-y-1 hover:bg-neutral-50 transition-all duration-200 border'>
                     <div className='flex w-auto h-9 my-1'>

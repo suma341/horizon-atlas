@@ -31,7 +31,7 @@ async function rewriteLinks(text: string) {
         if (page.pageId === "") {
           newUrl = "";
         } else {
-          newUrl = page.isChildPage ? `/posts/post/${page.curriculumId}/${page.pageId}` : `/posts/post/${page.curriculumId}`;
+          newUrl = `/posts/curriculums/${page.curriculumId}/${page.pageId}`;
         }
       }
   

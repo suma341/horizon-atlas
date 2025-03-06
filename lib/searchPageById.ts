@@ -4,7 +4,6 @@ import { PageDataService } from "./services/PageDataService";
 
 type Page ={
     pageId:string;
-    isChildPage:boolean;
     title:string;
     curriculumId:string;
 }
@@ -15,7 +14,6 @@ export async function searchPageById(id:string):Promise<Page>{
         if(id === post.curriculumId || id===post.curriculumId.replaceAll("-", "")){
             return {
                 pageId:post.curriculumId,
-                isChildPage:false,
                 title:post.title,
                 curriculumId:post.curriculumId
             }
@@ -25,7 +23,6 @@ export async function searchPageById(id:string):Promise<Page>{
             if(block.blockId===id || id===block.blockId.replaceAll("-","")){
                 return {
                     pageId:block.blockId,
-                    isChildPage:true,
                     title:block.data.slice(2),
                     curriculumId:post.curriculumId
                 }
@@ -34,7 +31,6 @@ export async function searchPageById(id:string):Promise<Page>{
     }
     return {
         pageId:"",
-        isChildPage:false,
         title:"",
         curriculumId:""
     }

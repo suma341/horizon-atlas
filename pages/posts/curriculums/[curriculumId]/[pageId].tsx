@@ -12,7 +12,7 @@ import { PageDataService } from '@/lib/services/PageDataService';
 import useCurriculumIdStore from '@/stores/curriculumIdStore';
 
 type postPath = {
-  params: { slug:string }
+  params: { curriculumId:string,pageId:string }
 }
 
 type Props = {
@@ -22,10 +22,21 @@ type Props = {
 };
 
 export const getStaticPaths = async () => {
-  const allSlug:string[] = await CurriculumService.getAllCurriculumId();
+  const allCurriculumid:string[] = await CurriculumService.getAllCurriculumId();
+  const rootPages = allCurriculumid.map((id)=>{
+    return {
+        curriculumId:id,
+        pageId:id
+    }
+  })
+  const allChildId = await PageDataService.getChildPageIds();
+  const allPageId = [...rootPages,...allChildId]
 
-  const paths: postPath[] = allSlug.map((id) => {
-    return { params: { slug: id } };
+  const paths: postPath[] = allPageId.map((data) => {
+    return { params: { 
+      curriculumId:data.curriculumId,
+      pageId:data.pageId }
+     };
   });
 
   return {
@@ -40,10 +51,11 @@ type post ={
 }
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const slug = params?.slug as string;
+  const pageId = params?.pageId as string;
+  const curriculumId = params?.curriculumId as string;
 
-  const mdBlocks:MdBlock[] = await PageDataService.getPageDataByPageId(slug);
-  const singlePost:PostMetaData = await CurriculumService.getCurriculumById(slug);
+  const mdBlocks:MdBlock[] = await PageDataService.getPageDataByPageId(pageId);
+  const singlePost:PostMetaData = await CurriculumService.getCurriculumById(curriculumId);
 
   const post:post = {
     metadata:singlePost,
@@ -51,7 +63,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   } 
 
   const courseNav: pageNav = { title: post.metadata.category, id: `/posts/course/${post.metadata.category}` };
-  const postNav: pageNav = { title: post.metadata.title, id: `/posts/post/${slug}` };
+  const postNav: pageNav = { title: post.metadata.title, id: `/posts/curriculums/${curriculumId}/${pageId}` };
   const pageNavs: pageNav[] = post.metadata.is_basic_curriculum
     ? [HOME_NAV, BASIC_NAV, courseNav, postNav]
     : post.metadata.category === ""
@@ -65,6 +77,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     },
   };
 };
+
 
 const Post =({ metadata, mdBlocks,pageNavs}: Props) => {
   const { setCurriculumId } = useCurriculumIdStore();

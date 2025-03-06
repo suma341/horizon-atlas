@@ -19,7 +19,7 @@ export default function Link_to_page(props: Props) {
         if(match){
             const id = match[0].slice(1, -1);
             const page = await searchPageById(id);
-            const _url = page.isChildPage ? `/posts/post/${page.curriculumId}/${page.pageId}` : `/posts/post/${page.curriculumId}`
+            const _url = `/posts/curriculums/${page.curriculumId}/${page.pageId}`
             setUrl(_url);
             setTitle(page.title);
         }
