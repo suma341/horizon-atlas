@@ -8,13 +8,15 @@ import { GetStaticProps } from 'next';
 import { MdBlock } from 'notion-to-md/build/types';
 import { CurriculumService } from '@/lib/services/CurriculumService';
 import { PageDataService } from '@/lib/services/PageDataService';
+import useCurriculumIdStore from '@/stores/curriculumIdStore';
+import { useEffect } from 'react';
 
 type Props = {
   mdBlocks:MdBlock[];
   pageNavs:pageNav[];
   parentTitle:string;
   childNavs:pageNav[];
-  slug:string;
+  curriculumId:string;
 };
 
 type pagePath = {
@@ -83,16 +85,21 @@ export const getStaticProps: GetStaticProps = async (context) => {
           pageNavs,
           parentTitle:singlePost.title,
           childNavs,
-          slug:currentSlug,
+          curriculumId:currentSlug,
       },
   };
 };
 
 const PostChildPage = ( props : Props) => {
-    const {mdBlocks, pageNavs,parentTitle,childNavs,slug} = props;
+    const {mdBlocks, pageNavs,parentTitle,childNavs,curriculumId} = props;
+    const { setCurriculumId } = useCurriculumIdStore();
+
+    useEffect(()=>{
+      setCurriculumId(curriculumId);
+    },[])
 
     return (
-      <Layout headerProps={{pageNavs:pageNavs}} sideNavProps={{title:parentTitle,slug,childPages:childNavs}}>
+      <Layout headerProps={{pageNavs:pageNavs}} sideNavProps={{title:parentTitle,slug:curriculumId,childPages:childNavs}}>
         <div className='mt-24'>
           <section className="p-5 pb-10 md:w-3/4 bg-white">
             <h2 className="w-full text-2xl font-medium">
@@ -100,11 +107,11 @@ const PostChildPage = ( props : Props) => {
             </h2>
             <div className='border-b-2 mt-2'></div>
             {mdBlocks.map((mdBlock, i) => (
-                <MdBlockComponent mdBlock={mdBlock} depth={0} slug={slug} key={i} />
+                <MdBlockComponent mdBlock={mdBlock} depth={0} key={i} />
             ))}
           </section>
           <div className='hidden md:block md:w-1/4 mt-5'>
-            <SideBlock title={parentTitle} slug={slug} childPages={childNavs} />
+            <SideBlock title={parentTitle} slug={curriculumId} childPages={childNavs} />
           </div>
         </div>
     </Layout>

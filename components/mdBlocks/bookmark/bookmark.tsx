@@ -1,4 +1,5 @@
 "use client";
+import useCurriculumIdStore from '@/stores/curriculumIdStore';
 import Link from 'next/link';
 import { MdBlock } from 'notion-to-md/build/types';
 import React, { useEffect, useState } from 'react';
@@ -6,7 +7,6 @@ import React, { useEffect, useState } from 'react';
 type Props = {
   mdBlock: MdBlock;
   depth: number;
-  slug:string;
 };
   
 type ogsData ={
@@ -20,13 +20,14 @@ type ogsData ={
 }
 
 export default function Bookmark(props: Props) {
-  const { mdBlock,slug } = props;
+  const { mdBlock } = props;
   const [ogpData, setOgpData] = useState<ogsData>();
   const match = mdBlock.parent.match(/\((.*?)\)/g);
+  const { curriculumId } = useCurriculumIdStore();
 
   useEffect(() => {
     const fetchOgpData = async () => {
-        const res = await fetch(`/horizon-atlas/notion_data/eachPage/${slug}/ogsData/${mdBlock.blockId}.json`);
+        const res = await fetch(`/horizon-atlas/notion_data/eachPage/${curriculumId}/ogsData/${mdBlock.blockId}.json`);
         const data:ogsData = await res.json();
         console.log(data.favicon?.slice(0,8)==="https://")
         if(data.favicon?.slice(0,8)!=="https://"){

@@ -5,10 +5,9 @@ import MdBlockComponent from '../mdBlock';
 type Props ={
     mdBlock:MdBlock;
     depth:number;
-    slug:string;
 }
 
-function Column_list({mdBlock,depth,slug}:Props) {
+function Column_list({mdBlock,depth}:Props) {
     const columns:MdBlock[] = mdBlock.children
 
   return (
@@ -16,7 +15,7 @@ function Column_list({mdBlock,depth,slug}:Props) {
         {columns.map((column,i)=>(
             <div key={i} className='md:flex-1 md:px-2'>
                 {column.children.map((child,j)=>(
-                    <MdBlockComponent mdBlock={child} depth={depth} slug={slug} key={j} />
+                    <MdBlockComponent mdBlock={child} depth={depth} key={j} />
                 ))}
             </div>
         ))}

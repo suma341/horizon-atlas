@@ -76,14 +76,16 @@ export class PageDataService{
         return pageDatas;
     }
 
-    // getAllPageId = async()=>{
-    //     const curriculumService = new CurriculumService();
-    //     const allSlug = await curriculumService.getAllSlug();
-    //     const allChild = (await Promise.all(allSlug.map(async(slug)=>{
-    //         return await this.getPageDataByTypeAndSlug("child_page",slug.slug)
-    //     }))).flat()
-
-    // }
+    static getChildPageIds = async(type:string="child_page")=>{
+        const pageDatas:{curriculumId:string,blockId:string}[] = await PageDataGateway.getPageDataByConditions("curriculumId,blockId",{"type":type});
+        const pageIds = pageDatas.map((data)=>{
+            return {
+                curriculumId:data.curriculumId,
+                pageId:data.blockId
+            }
+        })
+        return pageIds;
+    }
 
     static getBlockIdAndDataByCurriculumId=async(curriculumId:string)=>{
         const data:{blockId:string,data:string}[] = await PageDataGateway.getPageDataByConditions("blockId,data",{"curriculumId":curriculumId})

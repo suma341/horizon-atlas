@@ -10,7 +10,7 @@ type Page ={
 }
 
 export async function searchPageById(id:string):Promise<Page>{
-    const posts = await CurriculumService.getIdAndTitleAndSlug();
+    const posts = await CurriculumService.getIdAndTitle();
     for(const post of posts){
         if(id === post.curriculumId || id===post.curriculumId.replaceAll("-", "")){
             return {

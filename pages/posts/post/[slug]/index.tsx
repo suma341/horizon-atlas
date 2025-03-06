@@ -1,5 +1,5 @@
 import { GetStaticProps } from 'next';
-import React from 'react'
+import React, { useEffect } from 'react'
 import { PostMetaData } from '@/types/postMetaData';
 import { MdBlock } from 'notion-to-md/build/types';
 import MdBlockComponent from '@/components/mdBlocks/mdBlock';
@@ -9,6 +9,7 @@ import Image from 'next/image';
 import Layout from '@/components/Layout/Layout';
 import { CurriculumService } from '@/lib/services/CurriculumService';
 import { PageDataService } from '@/lib/services/PageDataService';
+import useCurriculumIdStore from '@/stores/curriculumIdStore';
 
 type postPath = {
   params: { slug:string }
@@ -65,8 +66,13 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   };
 };
 
-
 const Post =({ metadata, mdBlocks,pageNavs}: Props) => {
+  const { setCurriculumId } = useCurriculumIdStore();
+  
+  useEffect(()=>{
+    setCurriculumId(metadata.curriculumId);
+  },[])
+
   return (
     <Layout headerProps={{pageNavs}}>
       <div className='p-4 pt-24 pb-8'>
@@ -85,7 +91,7 @@ const Post =({ metadata, mdBlocks,pageNavs}: Props) => {
           <div className='mt-10 font-medium'>
             <div>
               {mdBlocks.map((mdBlock, i)=>(
-                <MdBlockComponent mdBlock={mdBlock} slug={metadata.curriculumId} depth={0} key={i} />
+                <MdBlockComponent mdBlock={mdBlock} depth={0} key={i} />
               ))}
             </div>
           </div>

@@ -1,10 +1,10 @@
+import useCurriculumIdStore from '@/stores/curriculumIdStore';
 import { MdBlock } from 'notion-to-md/build/types';
 import React,{ useEffect, useState,useRef } from 'react'
 
 type Props = {
     mdBlock: MdBlock;
     depth: number;
-    slug:string;
 };
 
 type IframeData={
@@ -13,16 +13,17 @@ type IframeData={
 }
 
 function EmbedBlock(props: Props) {
-    const {mdBlock,slug} = props;
+    const {mdBlock} = props;
     const match = mdBlock.parent.match(/\((.*?)\)/g);
     const [html,setHtml] = useState("");
     const [title,setTitle] = useState("");
     const [appHeight,setAppHeight] = useState("500px");
     const iframeRef = useRef<HTMLIFrameElement>(null);
+    const { curriculumId } = useCurriculumIdStore()
 
     useEffect(()=>{
         async function fetchIframeData(){
-            const res = await fetch(`/horizon-atlas/notion_data/eachPage/${slug}/iframeData/${mdBlock.blockId}.json`);
+            const res = await fetch(`/horizon-atlas/notion_data/eachPage/${curriculumId}/iframeData/${mdBlock.blockId}.json`);
             const iframeData:IframeData = await res.json();
             setHtml(iframeData.html);
             setTitle(iframeData.title);

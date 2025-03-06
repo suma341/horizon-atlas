@@ -1,4 +1,5 @@
 "use client";
+import useCurriculumIdStore from '@/stores/curriculumIdStore';
 import { MdBlock } from 'notion-to-md/build/types';
 import React, { useEffect, useState } from 'react';
 import { FaExpandAlt } from "react-icons/fa";
@@ -7,18 +8,18 @@ import { RxCross2 } from "react-icons/rx";
 type Props = {
     mdBlock: MdBlock;
     depth: number;
-    slug: string;
 };
 
 export default function ImageBlock(props: Props) {
-    const { mdBlock, slug } = props;
+    const { mdBlock } = props;
     const [imageSrc, setImageSrc] = useState<string | null>(null);
     const [isOpen, setIsOpen] = useState(false); 
     const [isHovered, setIsHovered] = useState(false);
+    const { curriculumId } = useCurriculumIdStore();
 
     useEffect(() => {
         const checkImageExists = async (extension: string) => {
-            const url = `/horizon-atlas/notion_data/eachPage/${slug}/image/${mdBlock.blockId}.${extension}`;
+            const url = `/horizon-atlas/notion_data/eachPage/${curriculumId}/image/${mdBlock.blockId}.${extension}`;
             try {
                 const response = await fetch(url, { method: 'HEAD' });
                 if (response.ok) {

@@ -80,7 +80,7 @@ export class CurriculumService{
         return metaData.sort((a,b)=>parseInt(a.id) -parseInt(b.id));
     }    
 
-    static getIdAndTitleAndSlug=async()=>{
+    static getIdAndTitle=async()=>{
         const datas:{
             curriculumId:string;
             title:string;    
