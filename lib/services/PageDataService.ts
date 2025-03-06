@@ -3,6 +3,8 @@ import { PageDataGateway } from "../Gateways/PageDataGateway";
 import { PageData } from "@/types/pageData";
 import { searchPageById } from "../searchPageById";
 import { findHeadingBlock } from "../findHeadingBlock";
+import { CurriculumGateway } from "../Gateways/CurriculumGateway";
+import { pageNav } from "@/types/pageNav";
 
 function buildTree(pageData:PageData[], parentId:string):MdBlock[] {
     const mdBlocks:MdBlock[] = pageData
@@ -99,5 +101,35 @@ export class PageDataService{
             data:string
         }[] = await PageDataGateway.getPageDataByConditions("blockId,data,order",{"type":type,"curriculumId":curriculumId})
         return datas;
+    }
+
+    static getChildrenData=async(pageId:string)=>{
+        const pageId_:{pageId:string,curriculumId:string}[] = await PageDataGateway.getPageDataByConditions("pageId,curriculumId",{"blockId":pageId,"type":"child_page"});
+        const children :{data:string,blockId:string}[]= await PageDataGateway.getPageDataByConditions("data,blockId",{"type":"child_page","pageId":pageId_[0].pageId});
+        const parentTitle:string = pageId_[0].pageId === pageId_[0].curriculumId ?
+        (await CurriculumGateway.getCurriculumByCondition("title",{"curriculumId":pageId_[0].curriculumId}))[0].title :
+         (await PageDataGateway.getPageDataByConditions("data",{"blockId":pageId_[0].pageId}))[0].data.slice(3)
+        const childrenData = children.map((child)=>{
+            return {
+                title:child.data.slice(3),
+                id:child.blockId
+            }
+        })
+        return {title:parentTitle,childPages:childrenData};
+    }
+
+    static getPageNavs=async(pageId:string)=>{
+        const curriculumId:string = (await PageDataGateway.getPageDataByConditions("curriculumId",{"blockId":pageId}))[0].curriculumId
+        if(curriculumId===pageId){
+            return []
+        }
+        let currentPage = pageId;
+        const pages:pageNav[] = [];
+        while(currentPage!==curriculumId){
+            const parentPage:{blockId:string,data:string,pageId:string}[] = await PageDataGateway.getPageDataByConditions("pageId,blockId,data",{"blockId":currentPage})
+            pages.push({id:`/posts/curriculums/${curriculumId}/${parentPage[0].blockId}`,title:parentPage[0].data.slice(3)})
+            currentPage = parentPage[0].pageId;
+        }
+        return pages
     }
 }

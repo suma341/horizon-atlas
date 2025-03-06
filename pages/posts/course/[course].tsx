@@ -73,7 +73,7 @@ const CoursePage = ({ posts, currentCourse,pageNavs }: Props)=> {
     },[posts])
 
     return (
-        <Layout headerProps={{pageNavs}}> 
+        <Layout pageNavs={pageNavs}> 
             <div className="h-full w-full mx-auto font-mono pt-20">
                 <main className="w-full mt-16 mb-3">
                     <h1 className="text-5xl font-medium text-center mb-16">{currentCourse}</h1>

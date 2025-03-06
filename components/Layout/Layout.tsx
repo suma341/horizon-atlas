@@ -11,17 +11,14 @@ import { useRouter } from "next/router";
 
 type LayoutProps = {
   children: ReactNode;
-  headerProps: {
-    pageNavs: pageNav[];
-  };
+  pageNavs: pageNav[];
   sideNavProps?: {
     title: string;
-    slug: string;
-    childPages: pageNav[];
+    childPages?: pageNav[];
   };
 };
 
-const Layout: React.FC<LayoutProps> = ({ children, headerProps, sideNavProps }) => {
+const Layout: React.FC<LayoutProps> = ({ children, pageNavs, sideNavProps }) => {
   const [isVisible, setIsVisible] = useState(true); // ヘッダーの表示状態
   const [lastScrollY, setLastScrollY] = useState(0); // 最後のスクロール位置
   const [openbar, setOpenbar] = useState(false);
@@ -67,7 +64,7 @@ const Layout: React.FC<LayoutProps> = ({ children, headerProps, sideNavProps }) 
         style={isVisible ? { transform: "translateY(0px)" } : { transform: "translateY(-65%)" }}
       >
         <Header setOpenbar={setOpenbar} />
-        <Navbar pageNavs={headerProps.pageNavs} />
+        <Navbar pageNavs={pageNavs} />
       </div>
       <div className="bg-gray-50 flex-grow">
         {children}

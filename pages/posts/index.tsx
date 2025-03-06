@@ -41,7 +41,7 @@ export const getStaticProps: GetStaticProps = async () => {
 const PostsPage = ({ courseAndPosts,allTags }: Props)=> {
   
     return (
-      <Layout headerProps={{pageNavs:[HOME_NAV]}}>  
+      <Layout pageNavs={[HOME_NAV]}>  
         <div className="bg-gradient-to-b from-gray-50 to-white min-h-screen">
           <div className="container max-w-screen-lg mx-auto font-mono pt-20 px-5">
             <main className="mt-16 mb-3 flex flex-col gap-5">

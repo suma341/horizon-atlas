@@ -54,7 +54,7 @@ export default function BasicCoursePageList({courseAndPosts}: Props){
     },[courseAndPosts])
 
     return (
-        <Layout headerProps={{pageNavs:[HOME_NAV,BASIC_NAV]}}>
+        <Layout pageNavs={[HOME_NAV,BASIC_NAV]}>
             <div className="h-full w-full mx-auto font-mono pt-20 ">
                 <main className="w-full mt-16 mb-3">
                     <h1 className="text-5xl font-medium text-center mb-16">基礎班カリキュラム</h1>

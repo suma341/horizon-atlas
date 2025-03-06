@@ -31,7 +31,7 @@ export default function Progress() {
   }, [user]);
 
   return (
-    <Layout headerProps={{ pageNavs: [HOME_NAV, PROGRESS_NAV] }}>
+    <Layout pageNavs={[HOME_NAV, PROGRESS_NAV]}>
       <div className="min-h-screen text-gray-900 pt-24 px-5">
         <div className="text-center mb-10 animate-fadeIn">
           <h1 className="text-4xl font-extrabold text-neutral-600">

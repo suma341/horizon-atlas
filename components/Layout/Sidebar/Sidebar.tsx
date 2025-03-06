@@ -7,19 +7,20 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { FaArrowTrendUp } from "react-icons/fa6";
 import { PiSignOut } from "react-icons/pi";
 import { MdOutlineEmail } from 'react-icons/md';
+import useCurriculumIdStore from '@/stores/curriculumIdStore';
 
 type Props={
     openbar:boolean;
     setOpenbar:React.Dispatch<React.SetStateAction<boolean>>;
     pageNav?:{
         title:string;
-        slug:string;
-        childPages:pageNav[];
+        childPages?:pageNav[];
     }
 }
 
 function Sidebar({openbar,setOpenbar,pageNav}:Props) {
     const { user,logout } = useAuth0();
+    const { curriculumId } = useCurriculumIdStore();
 
     const getPageHeight = () => {
         if(window!==undefined){
@@ -86,8 +87,8 @@ function Sidebar({openbar,setOpenbar,pageNav}:Props) {
                             {pageNav !== undefined && (
                                 <div className='p-1 border border-neutral-400 rounded'>
                                     <p className='text-base'>{pageNav.title}</p>
-                                    {pageNav.childPages.map((nav, i) => (
-                                        <Link key={i} href={`/posts/post/${pageNav.slug}/${nav.id}`} className="my-1.5 text-sm text-neutral-500 underline truncate">
+                                    {pageNav.childPages!==undefined && pageNav.childPages.map((nav, i) => (
+                                        <Link key={i} href={`/posts/curriculums/${curriculumId}/${nav.id}`} className="my-1.5 text-sm text-neutral-500 underline truncate">
                                             <div className="p-0.5 mt-1 cursor-pointer hover:bg-neutral-100">
                                                 {nav.title}
                                             </div>
