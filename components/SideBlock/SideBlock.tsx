@@ -1,15 +1,16 @@
 "use client";
+import useCurriculumIdStore from '@/stores/curriculumIdStore';
 import { pageNav } from '@/types/pageNav';
 import Link from 'next/link';
 import { useEffect, useState } from "react";
 
 type Props = {
     title: string;
-    slug: string;
     childPages: pageNav[];
 };
 
-const SideBlock = ({ title, childPages, slug }: Props) => {
+const SideBlock = ({ title, childPages }: Props) => {
+    const { curriculumId } = useCurriculumIdStore();
     const [scrollY, setScrollY] = useState(window.scrollY); // スクロール量を管理
     const [size, setSize] = useState({
         width: window.innerWidth,
@@ -66,7 +67,7 @@ const SideBlock = ({ title, childPages, slug }: Props) => {
                     {childPages.map((page, i) => (
                         <div key={i} className="p-0.5 mt-1 cursor-pointer w-48 hover:bg-neutral-100"
                         style={{width:`${size.width / 5}px`}}>
-                            <Link href={`/posts/post/${slug}/${page.id}`} className="text-sm text-neutral-500 underline truncate">
+                            <Link href={`/posts/curriculums/${curriculumId}/${page.id}`} className="text-sm text-neutral-500 underline truncate">
                                 <p>
                                     {page.title}
                                 </p>

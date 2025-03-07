@@ -10,6 +10,7 @@ import Layout from '@/components/Layout/Layout';
 import { CurriculumService } from '@/lib/services/CurriculumService';
 import { PageDataService } from '@/lib/services/PageDataService';
 import useCurriculumIdStore from '@/stores/curriculumIdStore';
+import SideBlock from '@/components/SideBlock/SideBlock';
 
 type postPath = {
   params: { curriculumId:string,pageId:string }
@@ -21,6 +22,7 @@ type Props = {
   pageNavs:pageNav[];
   pageId:string;
   childrenData?:{title:string;childPages:pageNav[]};
+  title:string;
 };
 
 export const getStaticPaths = async () => {
@@ -75,13 +77,15 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     if(curriculumId!==pageId){
       const childrenData = await PageDataService.getChildrenData(pageId);
       const childPageNavs = await PageDataService.getPageNavs(pageId);
+      const title = await PageDataService.getPageTitle(pageId);
       return {
         props:{
           metadata: post.metadata,
           mdBlocks: mdBlocks,
           pageNavs:[...pageNavs,...childPageNavs],
           childrenData,
-          pageId
+          pageId,
+          title
         }
       }
     }
@@ -91,14 +95,14 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       metadata: post.metadata,
       mdBlocks: mdBlocks,
       pageNavs,
-      pageId
+      pageId,
+      title:post.metadata.title
     },
   };
 };
 
-const Post =({ metadata, mdBlocks,pageNavs,childrenData,pageId}: Props) => {
+const Post =({ metadata, mdBlocks,pageNavs,childrenData,pageId,title}: Props) => {
   const { setCurriculumId } = useCurriculumIdStore();
-  console.log(pageNavs);
   useEffect(()=>{
     setCurriculumId(metadata.curriculumId);
   },[])
@@ -106,14 +110,13 @@ const Post =({ metadata, mdBlocks,pageNavs,childrenData,pageId}: Props) => {
   return (
     <Layout pageNavs={pageNavs} sideNavProps={childrenData}>
       <div className='p-4 pt-24 pb-8'>
-        <section className='p-5 bg-white pb-10'>
-          {pageId === metadata.curriculumId && <>
-            <div className='flex'>
-              <Image src={`/horizon-atlas/notion_data/eachPage/${metadata.curriculumId}/icon.png`} alt={''} width={20} height={20} className='relative w-auto h-8 m-0 mr-2 top-0.5' />
-              <h2 className='w-full text-2xl font-medium'>{metadata.title}</h2>
-            </div>
-            <div className='border-b mt-2'></div>
-            <br />
+        <section className={childrenData ? 'p-5 bg-white pb-10 md:w-3/4' : "p-5 bg-white pb-10"}>
+          <div className='flex'>
+          {pageId === metadata.curriculumId && <Image src={`/horizon-atlas/notion_data/eachPage/${metadata.curriculumId}/icon.png`} alt={''} width={20} height={20} className='relative w-auto h-8 m-0 mr-2 top-0.5' />}
+            <h2 className='w-full text-2xl font-medium'>{title}</h2>
+          </div>
+          <div className='border-b mt-2'></div>
+          {pageId === metadata.curriculumId && <><br />
             {metadata.tags.map((tag:string,i:number)=>(
               <p className='text-white bg-sky-500 rounded-xl font-medium mt-2 px-2 inline-block mr-2' key={i}>
                 {tag}
@@ -128,6 +131,9 @@ const Post =({ metadata, mdBlocks,pageNavs,childrenData,pageId}: Props) => {
             </div>
           </div>
         </section>
+        {childrenData && <div className='hidden md:block md:w-1/4 mt-5'>
+          <SideBlock title={childrenData.title} childPages={childrenData.childPages} />
+        </div>}
       </div>
       <script async src="//cdn.iframe.ly/embed.js"></script>
     </Layout>

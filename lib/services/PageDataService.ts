@@ -132,4 +132,9 @@ export class PageDataService{
         }
         return pages
     }
+
+    static getPageTitle=async(pageId:string)=>{
+        const title:{data:string}[] = await PageDataGateway.getPageDataByConditions("data",{"blockId":pageId})
+        return title[0].data.slice(3);
+    }
 }
