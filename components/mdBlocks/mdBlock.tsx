@@ -20,6 +20,7 @@ import EmbedBlock from './embed/embed';
 import Link_to_page from './link_to_page/link_to_page';
 import Table_of_contents from './table_of_contents/table_of_contents';
 import Column_list from './column_list/column_list';
+import To_do from './to_do/to_do';
 
 type Props ={
     mdBlock:MdBlock;
@@ -67,6 +68,8 @@ export default function MdBlockComponent(props:Props) {
         return <Table_of_contents mdBlock={mdBlock} />
     }else if(mdBlock.type==='column_list'){
         return <Column_list mdBlock={mdBlock} depth={depth} />
+    }else if(mdBlock.type==='to_do'){
+        return <To_do mdBlock={mdBlock} depth={depth} />
     }
     return (
         <>
