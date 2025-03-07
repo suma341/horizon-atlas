@@ -89,7 +89,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
         }
       }
     }
-
   return {
     props: {
       metadata: post.metadata,
@@ -109,7 +108,7 @@ const Post =({ metadata, mdBlocks,pageNavs,childrenData,pageId,title}: Props) =>
 
   return (
     <Layout pageNavs={pageNavs} sideNavProps={childrenData}>
-      <div className='p-4 pt-24 pb-8'>
+      <div className='p-4 pt-24 pb-8' key={pageId}>
         <section className={childrenData ? 'p-5 bg-white pb-10 md:w-3/4' : "p-5 bg-white pb-10"}>
           <div className='flex'>
           {pageId === metadata.curriculumId && <Image src={`/horizon-atlas/notion_data/eachPage/${metadata.curriculumId}/icon.png`} alt={''} width={20} height={20} className='relative w-auto h-8 m-0 mr-2 top-0.5' />}
