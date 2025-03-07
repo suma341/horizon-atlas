@@ -70,7 +70,7 @@ const CoursePage = ({ posts, currentCourse,pageNavs }: Props)=> {
             setNumberOfPages(calculatePageNumber(postsByRole));
         }
         setData()
-    },[posts])
+    },[posts,user])
 
     return (
         <Layout pageNavs={pageNavs}> 

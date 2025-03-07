@@ -51,7 +51,7 @@ export default function BasicCoursePageList({courseAndPosts}: Props){
             setDataByRole(dataByRole);
         }
         setData();
-    },[courseAndPosts])
+    },[courseAndPosts,user])
 
     return (
         <Layout pageNavs={[HOME_NAV,BASIC_NAV]}>
