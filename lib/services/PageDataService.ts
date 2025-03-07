@@ -105,11 +105,12 @@ export class PageDataService{
 
     static getChildrenData=async(pageId:string)=>{
         const pageId_:{pageId:string,curriculumId:string}[] = await PageDataGateway.getPageDataByConditions("pageId,curriculumId",{"blockId":pageId,"type":"child_page"});
-        const children :{data:string,blockId:string}[]= await PageDataGateway.getPageDataByConditions("data,blockId",{"type":"child_page","pageId":pageId_[0].pageId});
+        const children :{data:string,blockId:string,order:number}[]= await PageDataGateway.getPageDataByConditions("data,blockId,order",{"type":"child_page","pageId":pageId_[0].pageId});
         const parentTitle:string = pageId_[0].pageId === pageId_[0].curriculumId ?
         (await CurriculumGateway.getCurriculumByCondition("title",{"curriculumId":pageId_[0].curriculumId}))[0].title :
          (await PageDataGateway.getPageDataByConditions("data",{"blockId":pageId_[0].pageId}))[0].data.slice(3)
-        const childrenData = children.map((child)=>{
+         const sortedChildren = children.sort((a,b)=>a.order - b.order)
+        const childrenData = sortedChildren.map((child)=>{
             return {
                 title:child.data.slice(3),
                 id:child.blockId
