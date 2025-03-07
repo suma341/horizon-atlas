@@ -54,7 +54,7 @@ export default function Bookmark(props: Props) {
         }
         }
     fetchOgpData();
-  }, []);
+  }, [curriculumId]);
   if(match)
   return (
     <div className="my-2 rounded-sm border-2 border-neutral-200 hover:bg-neutral-100" id={mdBlock.blockId}>

@@ -25,7 +25,7 @@ export default function Paragraph(props:Props){
         }
         const setData = parseMarkdown(inputData);
         setMd(setData)
-    },[])
+    },[mdBlock])
     if(mdBlock.parent==="c"){
         return null;
     }

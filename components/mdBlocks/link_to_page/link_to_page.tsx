@@ -25,7 +25,7 @@ export default function Link_to_page(props: Props) {
         }
     }
     setPage();
-  },[])
+  },[mdBlock])
 
   return (
     <div className='my-2' id={mdBlock.blockId}>

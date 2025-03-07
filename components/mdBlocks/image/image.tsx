@@ -39,7 +39,7 @@ export default function ImageBlock(props: Props) {
                 }
             }
         })();
-    }, [mdBlock.blockId]);
+    }, [mdBlock.blockId,curriculumId]);
 
     if (!imageSrc) return null;
 

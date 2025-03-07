@@ -6,7 +6,7 @@ type State = {
 };
 
 const useCurriculumIdStore = create<State>((set) => ({
-  curriculumId: "0",
+  curriculumId: "",
   setCurriculumId:(id)=>set({curriculumId:id})
 }));
 

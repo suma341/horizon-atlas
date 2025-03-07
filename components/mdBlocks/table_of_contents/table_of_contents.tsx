@@ -16,7 +16,7 @@ function Table_of_contents({mdBlock}:Props) {
     useEffect(()=>{
         const heading:HeadingType[] = (JSON.parse(mdBlock.parent)).headingList;
         setHeadingList(heading)
-    },[])
+    },[mdBlock])
 
     const scrollToSection = (targetId:string) => {
         const element = document.getElementById(targetId);

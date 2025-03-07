@@ -17,7 +17,7 @@ export default function Heading3(props:Props) {
     useEffect(()=>{
         const md = parseMarkdown({text,type:[],link:[]})
         setText(md);
-    },[])
+    },[mdBlock])
     
     return (
         <div id={mdBlock.blockId}>

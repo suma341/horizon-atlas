@@ -29,7 +29,7 @@ function EmbedBlock(props: Props) {
             setTitle(iframeData.title);
         }
         fetchIframeData();
-    },[mdBlock.blockId])
+    },[mdBlock.blockId,curriculumId])
 
     useEffect(() => {
         if(match && title==="Flet"){
