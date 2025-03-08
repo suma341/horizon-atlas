@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { MdBlock } from 'notion-to-md/build/types';
 import React, { useEffect, useState } from 'react';
+import Image from "next/image"
+import { MdOutlineArrowOutward } from "react-icons/md";
 
 type Props = {
   mdBlock: MdBlock;
@@ -10,6 +12,7 @@ export default function Link_to_page(props: Props) {
   const { mdBlock } = props;
   const [url,setUrl] = useState("");
   const [title,setTitle] = useState("");
+  
   useEffect(()=>{
     async function setPage(){
       const TitleRegex = /\[([^\]]+)\]/g;
@@ -27,11 +30,16 @@ export default function Link_to_page(props: Props) {
   },[mdBlock.blockId])
 
   return (
-    <div className='my-2' id={mdBlock.blockId}>
-      <Link href={url} target='_brank' rel="noopener noreferrer" 
-      className="text-neutral-500 underline hover:text-neutral-600">
+    <Link href={url} target='_brank' rel="noopener noreferrer" 
+     className='my-2 flex hover:bg-neutral-100 hover:text-neutral-600 p-0.5' id={mdBlock.blockId}>
+      <div className='relative m-0 ml-0.5 mr-1.5 bottom-0.5'>
+        <Image src={`/horizon-atlas/notion_data/eachPage/${url.split("/")[4]}/icon.png`} 
+        alt={title} width={3.3} height={3.3} className='w-6 h-auto' />
+        <MdOutlineArrowOutward size={18} className='absolute w-4 h-auto bg-white text-neutral-700 right-[-3px] bottom-[-3px]' style={{clipPath:"inset(3.5px 3.8px 3.8px 3.8px)"}} />
+      </div>
+      <span className="text-neutral-500 underline">
         {title}
-      </Link>
-    </div>
+      </span>
+    </Link>
   );
 }
