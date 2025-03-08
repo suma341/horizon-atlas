@@ -1,4 +1,3 @@
-"use client";
 import { MdBlock } from 'notion-to-md/build/types'
 import React from 'react'
 import Paragraph from './paragraph/paragraph';

@@ -49,28 +49,19 @@ export const getStaticPaths = async () => {
   };
 };
 
-type post ={
-  metadata:PostMetaData,
-  mdBlocks:MdBlock[]
-}
-
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const pageId = params?.pageId as string;
   const curriculumId = params?.curriculumId as string;
 
   const mdBlocks:MdBlock[] = await PageDataService.getPageDataByPageId(pageId);
+
   const singlePost:PostMetaData = await CurriculumService.getCurriculumById(curriculumId);
 
-  const post:post = {
-    metadata:singlePost,
-    mdBlocks
-  } 
-
-  const courseNav: pageNav = { title: post.metadata.category, id: `/posts/course/${post.metadata.category}` };
-  const postNav: pageNav = { title: post.metadata.title, id: `/posts/curriculums/${curriculumId}/${curriculumId}` };
-  const pageNavs: pageNav[] = post.metadata.is_basic_curriculum
+  const courseNav: pageNav = { title: singlePost.category, id: `/posts/course/${singlePost.category}` };
+  const postNav: pageNav = { title: singlePost.title, id: `/posts/curriculums/${curriculumId}/${curriculumId}` };
+  const pageNavs: pageNav[] = singlePost.is_basic_curriculum
     ? [HOME_NAV, BASIC_NAV, courseNav, postNav]
-    : post.metadata.category === ""
+    : singlePost.category === ""
     ? [HOME_NAV, postNav]
     : [HOME_NAV, courseNav, postNav];
 
@@ -80,8 +71,8 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       const title = await PageDataService.getPageTitle(pageId);
       return {
         props:{
-          metadata: post.metadata,
-          mdBlocks: mdBlocks,
+          metadata:singlePost,
+          mdBlocks,
           pageNavs:[...pageNavs,...childPageNavs],
           childrenData,
           pageId,
@@ -91,11 +82,11 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     }
   return {
     props: {
-      metadata: post.metadata,
-      mdBlocks: mdBlocks,
+      metadata: singlePost,
+      mdBlocks,
       pageNavs,
       pageId,
-      title:post.metadata.title
+      title:singlePost.title
     },
   };
 };
@@ -105,7 +96,6 @@ const Post =({ metadata, mdBlocks,pageNavs,childrenData,pageId,title}: Props) =>
   useEffect(()=>{
     setCurriculumId(metadata.curriculumId);
   },[metadata.curriculumId])
-
   return (
     <Layout pageNavs={pageNavs} sideNavProps={childrenData}>
       <div className='p-4 pt-24 pb-8'>

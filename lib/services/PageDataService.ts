@@ -9,23 +9,22 @@ import { pageNav } from "@/types/pageNav";
 function buildTree(pageData:PageData[], parentId:string):MdBlock[] {
     const mdBlocks:MdBlock[] = pageData
         .filter(item => item.parentId === parentId)
-        .map(item => ({
-            blockId: item.blockId,
-            type: item.type,
-            parent: item.data,
-            children: buildTree(pageData, item.blockId) 
-        }));
+        .map(item =>{
+            return({
+                blockId: item.blockId,
+                type: item.type,
+                parent: item.data,
+                children: buildTree(pageData, item.blockId) 
+        })});
     return mdBlocks;
 }
 
 async function rewriteLinks(text: string) {
     const regex = /\[([^\]]+)\]\(([^)]+)\)/g;
-    const matches = [...text.matchAll(regex)];
-  
+    const matches = [...text.matchAll(regex)]; 
     for (const match of matches) {
       const [fullMatch, label, url] = match;
       let newUrl = url;
-  
       if (url.startsWith("https://") || url.startsWith("http://")) {
         newUrl = url;
       } else {
@@ -36,39 +35,71 @@ async function rewriteLinks(text: string) {
           newUrl = `/posts/curriculums/${page.curriculumId}/${page.pageId}`;
         }
       }
-  
       text = text.replace(fullMatch, `[${label}](${newUrl})`);
     }
   
     return text;
   }
-  
+
+async function rewriteLinkTopage(text:string){
+    const regex = /\(([^)]+)\)/g;
+    const match = text.match(regex);
+    if(match){
+        const [fullMatch] = match;
+        const page = await searchPageById(fullMatch.slice(1,-1))
+        text = `[${page.title}](/posts/curriculums/${page.curriculumId}/${page.pageId})`
+    }
+    return text;
+}
+
+async function processBlock(block:MdBlock,mdBlocks:MdBlock[]):Promise<MdBlock>{
+    if(block.type==="link_to_page"){
+        const parent = await rewriteLinkTopage(block.parent);
+        return {
+            ...block,
+            parent,
+            children: block.children.length===0 ? [] :
+                await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks)))
+        }
+    }
+    if(block.type==="paragraph"){
+        const linkRewrited = await rewriteLinks(block.parent);
+        return {
+            ...block,
+            parent:linkRewrited,
+            children: block.children.length===0 ? [] :
+                await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks)))
+        }
+    }
+    if(block.type==="table_of_contents"){
+        const headingList = findHeadingBlock(mdBlocks);
+        const stringfyData = JSON.stringify({headingList});
+        return {
+            ...block,
+            parent:stringfyData,
+            children: block.children.length===0 ? [] :
+                await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks)))
+        }
+    }
+    if(block.type==="child_page"){
+        return {
+            ...block,
+            children:[]
+        }
+    }
+    return {
+        ...block,
+        children: block.children.length===0 ? [] :
+                await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks)))
+    };
+}
 
 export class PageDataService{
     static getPageDataByPageId=async(pageId:string)=>{
         const pageDatas = await PageDataGateway.getPageDataByPageId(pageId);
         const mdBlocks = buildTree(pageDatas, pageId);
         const processedData = await Promise.all(mdBlocks.map(async(block)=>{
-            if(block.type==="paragraph"){
-                const linkRewrited = await rewriteLinks(block.parent);
-                return {
-                    type:block.type,
-                    blockId:block.blockId,
-                    parent:linkRewrited,
-                    children:block.children
-                }
-            }
-            if(block.type==="table_of_contents"){
-                const headingList = findHeadingBlock(mdBlocks);
-                const stringfyData = JSON.stringify({headingList});
-                return {
-                    type:block.type,
-                    blockId:block.blockId,
-                    parent:stringfyData,
-                    children:block.children
-                }
-            }
-            return block;
+            return processBlock(block,mdBlocks);
         }))
         return processedData;
     }
