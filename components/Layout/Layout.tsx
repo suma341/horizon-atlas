@@ -8,6 +8,7 @@ import Navbar from "./Navbar/navbar";
 import Sidebar from "./Sidebar/Sidebar";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useRouter } from "next/router";
+import { CustomUser } from "@/global";
 
 type LayoutProps = {
   children: ReactNode;
@@ -22,7 +23,23 @@ const Layout: React.FC<LayoutProps> = ({ children, pageNavs, sideNavProps }) => 
   const [isVisible, setIsVisible] = useState(true); // ヘッダーの表示状態
   const [lastScrollY, setLastScrollY] = useState(0); // 最後のスクロール位置
   const [openbar, setOpenbar] = useState(false);
-  const { isAuthenticated } = useAuth0();
+  const { isAuthenticated,user,logout } = useAuth0();
+
+  useEffect(()=>{
+    if(isAuthenticated){
+      const customUser = user! as CustomUser;
+      const checkGuild = async()=>{
+        const isMember = customUser.profile
+        if (!isMember) {
+          alert("Horizonメンバーアカウント以外はログインできません");
+          logout({ logoutParams: { returnTo: process.env.NEXT_PUBLIC_ROOT_PATH } });
+        } else {
+          // setAllowed(true);
+        }
+      }
+      checkGuild();
+    }
+  },[isAuthenticated,user])
 
   useEffect(() => {
     if (window !== undefined) {
