@@ -20,7 +20,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const pageNum = allCurriculumid.length + allChildId.length
   return {
     props:{
-      pageNum
+      pageNum,
     },
   };
 };

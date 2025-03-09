@@ -1,22 +1,29 @@
 import React from 'react'
 import Image from "next/image";
 import { motion } from 'framer-motion';
-
+import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 function Header() {
+    const router = useRouter();
+
     const scrollToSection = (targetId:string) => {
-        const element = document.getElementById(targetId);
-        if (element) {
-            element.scrollIntoView({ behavior: "smooth" });
+        if(router.pathname==="/"){
+            const element = document.getElementById(targetId);
+            if (element) {
+                element.scrollIntoView({ behavior: "smooth" });
+            }
+        }else{
+            router.push(`/${targetId}`)
         }
       };
 
     return (
         <header className="bg-neutral-50 text-white py-4 min-h-14">
             <div className="container mx-auto flex justify-between items-center px-4">
-            <div>
+            <Link href={'/'}>
                 <Image src={'/horizon-atlas/logo_.png'} alt={''} width={32} height={16} className='w-32 top-[-20px] h-auto absolute left-0' />
-            </div>
+            </Link>
             <nav className="hidden md:flex space-x-6">
                 {['about', 'curriculums'].map((section) => (
                 <motion.button

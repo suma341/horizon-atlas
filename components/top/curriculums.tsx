@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 import React from 'react'
 
 type Props = {
-  pageNum: number
+  pageNum: number;
 }
 
 function Curriculums({ pageNum }: Props) {
