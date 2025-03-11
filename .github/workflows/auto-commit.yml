@@ -22,4 +22,5 @@ jobs:
           echo "$(date)" > dummy.txt  # 日時を書き込む
           git add dummy.txt
           git commit -m "chore: dummy commit $(date)"
-          git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/sakiyamamamama/horizon-atlas.git
+          git remote set-url origin https://x-access-token:${{ secrets.GH_PAT }}@github.com/sakiyamamamama/horizon-atlas.git
+          git push origin main
