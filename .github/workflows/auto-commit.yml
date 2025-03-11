@@ -12,6 +12,11 @@ jobs:
       - name: Gitリポジトリをチェックアウト
         uses: actions/checkout@v4
 
+      - name: ユーザー情報
+        run: |
+          git config --global user.email "sasasanono@outlook.jp"
+          git config --global user.name "sakiyamamamama"
+
       - name: ダミー変更を追加
         run: |
           echo "$(date)" > dummy.txt  # 日時を書き込む
