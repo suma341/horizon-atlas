@@ -1,0 +1,23 @@
+name: Auto Dummy Commit
+
+on:
+  schedule:
+    - cron: "0 0 * * *"  # 毎日UTC 0時（日本時間9時）に実行
+  workflow_dispatch:  # 手動実行も可能
+
+jobs:
+  commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Gitリポジトリをチェックアウト
+        uses: actions/checkout@v4
+
+      - name: ダミー変更を追加
+        run: |
+          echo "$(date)" > dummy.txt  # 日時を書き込む
+          git add dummy.txt
+          git commit -m "chore: dummy commit $(date)"
+          git push
+        env:
+          GIT_COMMITTER_NAME: GitHub Actions
+          GIT_COMMITTER_EMAIL: actions@github.com
