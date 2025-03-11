@@ -12,7 +12,7 @@ jobs:
       - name: Gitリポジトリをチェックアウト
         uses: actions/checkout@v4
 
-      - name: ユーザー情報
+      - name: ユーザー情報追加
         run: |
           git config --global user.email "sasasanono@outlook.jp"
           git config --global user.name "sakiyamamamama"
@@ -22,7 +22,4 @@ jobs:
           echo "$(date)" > dummy.txt  # 日時を書き込む
           git add dummy.txt
           git commit -m "chore: dummy commit $(date)"
-          git push
-        env:
-          GIT_COMMITTER_NAME: GitHub Actions
-          GIT_COMMITTER_EMAIL: actions@github.com
+          git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/sakiyamamamama/horizon-atlas.git
