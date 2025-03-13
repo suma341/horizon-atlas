@@ -1,6 +1,10 @@
 import "dotenv/config"
 import { upsertCurriculum,upsertPage } from "./supabaseDBGateway.js"
 
+function wait(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 export async function insertblock(curriculumId,parentId,blocks,pageId){
     for(let i=1;i<(blocks.length + 1);i++){
         await wait(90);
@@ -17,7 +21,7 @@ export async function insertblock(curriculumId,parentId,blocks,pageId){
 }
 
 export async function insertCurriculum(data){
-    upsertCurriculum(
+    await upsertCurriculum(
         data.title,
         data.is_basic_curriculum,
         data.visibility,

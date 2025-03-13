@@ -1,4 +1,8 @@
 import "dotenv/config"
+import path from "path";
+import axios from "axios";
+import ogs from "open-graph-scraper";
+import fs from "fs";
 
 const IFRAMELY_API_KEY = process.env.IFRAMELY_API_KEY;
 

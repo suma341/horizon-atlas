@@ -3,6 +3,7 @@ import { getEditTimeData,getAllData,getSinglePage } from "./lib/notionGateway.js
 import { insertCurriculum,insertblock } from "./lib/insert.js";
 import {fetchAllMdBlock} from "./lib/dataSave.js"
 import { deletePage,deleteCurriculum } from "./lib/delete.js";
+import path from "path";
 
 
 const getCurrentData=async()=>{
@@ -51,7 +52,8 @@ function cleardir(directory) {
 
 function mkAndClearDir(dirs){
     for(const dir of dirs){
-        mkdir(dir).then(a=>cleardir(dir))
+        mkdir(dir);
+        cleardir(dir);
     }
 }
 
@@ -66,11 +68,9 @@ const insertDatas=async(data)=>{
     const iframeDir = `./public/notion_data/eachPage/${data.id}/iframeData/`;
     const dirList = [ogsDir,imageDir,iframeDir]
     mkAndClearDir(dirList)
-    getSinglePage(data.title).then(async(mdBlocks)=>{
-        wait(90)
-        await insertblock(data.id,data.id,mdBlocks,data.id)
-        await fetchAllMdBlock(mdBlocks,data.id)
-    })
+    const mdBlocks =await getSinglePage(data.title)
+    await insertblock(data.id,data.id,mdBlocks,data.id)
+    await fetchAllMdBlock(mdBlocks,data.id)
 }
 
 const editDatas=async(data)=>{
@@ -79,14 +79,11 @@ const editDatas=async(data)=>{
     const imageDir = `./public/notion_data/eachPage/${data.id}/image/`;
     const iframeDir = `./public/notion_data/eachPage/${data.id}/iframeData/`;
     const dirList = [ogsDir,imageDir,iframeDir]
-    mkAndClearDir(dirList)
-    await deletePage(data.id).then(data_=>{
-        getSinglePage(data.title).then(async(mdBlocks)=>{
-            wait(90)
-            await insertblock(data.id,data.id,mdBlocks,data.id)
-            await fetchAllMdBlock(mdBlocks,data.id)
-        })
-    })
+    mkAndClearDir(dirList);
+    await deletePage(data.id);
+    const mdBlocks = await getSinglePage(data.title)
+    await insertblock(data.id,data.id,mdBlocks,data.id)
+    await fetchAllMdBlock(mdBlocks,data.id)
 }
 
 const deleteDatas=async(data)=>{
@@ -101,17 +98,17 @@ getCurrentData().then(async(data)=>{
     }
     try{
         const allData = await getAllData();
-        const insertData =  allData.filter((item)=>item.id===data.newData.id)
+        const insertData =  allData.filter((item1)=>data.newData.some((item2)=>item1.id===item2.id))
         for(const item of insertData){
             wait(90)
             await insertDatas(item)
         }
-        const editData = allData.filter((item)=>item.id===data.editedData.id)
+        const editData = allData.filter((item1)=>data.editedData.some((item2)=>item1.id===item2.id))
         for(const item of editData){
             wait(90)
             await editDatas(item)
         }
-        const deleteData = allData.filter((item)=>item.id===data.deleteData.id)
+        const deleteData = allData.filter((item1)=>data.deleteData.some((item2)=>item1.id===item2.id))
         for(const item of deleteData){
             wait(90)
             await deleteDatas(item)

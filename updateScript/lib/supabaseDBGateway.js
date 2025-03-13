@@ -16,7 +16,7 @@ export async function upsertCurriculum(title,is_basic_curriculum,visibility,cate
         }),
     });
     const result = await res.json();
-    console.log(result);
+    console.log("upsertCurriculum",result);
 }
 
 export async function upsertPage(curriculumId,parentId,blockData,blockId,type,pageId,order){
@@ -31,7 +31,7 @@ export async function upsertPage(curriculumId,parentId,blockData,blockId,type,pa
         })
     });
     const result = await res.json();
-    console.log(result);
+    console.log("upsertPage",result);
     const { error } = result;
     return error;
 }
@@ -49,5 +49,5 @@ export async function deleteData(table,where,value){
         }),
     });
     const result = await res.json();
-    console.log(result);
+    return result;
 }
