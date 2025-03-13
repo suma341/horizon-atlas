@@ -32,15 +32,9 @@ jobs:
         if: success()
         run: npm run build
         env:
-          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
-          NEXT_PUBLIC_GUILD_ID: ${{ secrets.NEXT_PUBLIC_GUILD_ID}}
-          DISCORD_CLIENT_SECRET: ${{ secrets.DISCORD_CLIENT_SECRET}}
-          DISCORD_CLIENT_ID: ${{ secrets.DISCORD_CLIENT_ID}}
-          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET}}
           NEXT_PUBLIC_AUTH0_DOMAIN: ${{secrets.NEXT_PUBLIC_AUTH0_DOMAIN}}
           NEXT_PUBLIC_AUTH0_CLIENT_ID: ${{secrets.NEXT_PUBLIC_AUTH0_CLIENT_ID}}
           NEXT_PUBLIC_ROOT_PATH: ${{secrets.NEXT_PUBLIC_ROOT_PATH}}
-          BOT_TOKEN: ${{secrets.BOT_TOKEN}}
           SUPABASE_ANON_KEY: ${{secrets.SUPABASE_ANON_KEY}}
           SUPABASE_URL: ${{secrets.SUPABASE_URL}}
           NEXT_PUBLIC_RAILWAY_URL: ${{secrets.NEXT_PUBLIC_RAILWAY_URL}}

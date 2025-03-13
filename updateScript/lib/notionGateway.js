@@ -5,6 +5,8 @@ import { Client, isFullPage } from "@notionhq/client";
 const token = process.env.NOTION_TOKEN_HORIZON
 const db = process.env.NOTION_DB_ID_HORIZON
 
+console.log("token",token)
+
 const notion = new Client({ auth:token });
 const n2m = new NotionToMarkdown({ notionClient: notion });
 
