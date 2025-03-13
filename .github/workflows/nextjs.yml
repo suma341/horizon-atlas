@@ -25,7 +25,11 @@ jobs:
       - name: 依存関係をインストール
         run: npm install
 
+      - name: Run script
+        run: node updateScript/checkEdited.js
+
       - name: Next.js をビルド
+        if: success()
         run: npm run build
         env:
           NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
