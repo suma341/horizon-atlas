@@ -20,12 +20,12 @@ export async function insertblock(curriculumId,parentId,blocks,pageId){
     }
 }
 
-export async function insertCurriculum(data){
+export async function insertCurriculum(data,pageId){
     await upsertCurriculum(
         data.title,
         data.is_basic_curriculum,
         data.visibility,
         data.category,
         data.tags,
-        data.id);
+        pageId);
 }

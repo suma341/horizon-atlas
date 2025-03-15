@@ -74,9 +74,24 @@ export const getSinglePage = async (title) => {
         }
     });
 
+    const pageIds = response.results.map(page => page.id);
     const page = response.results.find(isFullPage);
     if (!page) throw new Error('Page not found');
 
     const mdBlocks =  await n2m.pageToMarkdown(page.id);
-    return mdBlocks;
+    return {
+        mdBlocks,
+        pageId:pageIds[0]
+    }
+};
+
+export const getSinglePageBlock = async (pageId) => {
+    const response = await notion.pages.retrieve({
+        page_id: pageId,
+      });
+
+    return {
+        icon:response.icon,
+        cover:response.cover
+    };
 };

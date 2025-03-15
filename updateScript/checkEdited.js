@@ -3,6 +3,7 @@ import { getEditTimeData,getAllData,getSinglePage } from "./lib/notionGateway.js
 import { insertCurriculum,insertblock } from "./lib/insert.js";
 import {fetchAllMdBlock} from "./lib/dataSave.js"
 import { deletePage,deleteCurriculum } from "./lib/delete.js";
+import { getPageIcon } from "./lib/dataSave.js"
 import path from "path";
 
 
@@ -61,27 +62,30 @@ function wait(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+const initDir=(pageId)=>{
+    const ogsDir = `./public/notion_data/eachPage/${pageId}/ogsData/`;
+    const imageDir = `./public/notion_data/eachPage/${pageId}/image/`;
+    const iframeDir = `./public/notion_data/eachPage/${pageId}/iframeData/`;
+    const pageImageDir = `./public/notion_data/eachPage/${pageId}/pageImageData/`;
+    const dirList = [ogsDir,imageDir,iframeDir,pageImageDir]
+    mkAndClearDir(dirList);
+}
+
 const insertDatas=async(data)=>{
-    await insertCurriculum(data);
-    const ogsDir = `./public/notion_data/eachPage/${data.id}/ogsData/`;
-    const imageDir = `./public/notion_data/eachPage/${data.id}/image/`;
-    const iframeDir = `./public/notion_data/eachPage/${data.id}/iframeData/`;
-    const dirList = [ogsDir,imageDir,iframeDir]
-    mkAndClearDir(dirList)
-    const mdBlocks =await getSinglePage(data.title)
-    await insertblock(data.id,data.id,mdBlocks,data.id)
-    await fetchAllMdBlock(mdBlocks,data.id)
+    const {mdBlocks,pageId} =await getSinglePage(data.title)
+    await insertCurriculum(data,pageId);
+    initDir(data);
+    getPageIcon(pageId,pageId)
+    await insertblock(pageId,pageId,mdBlocks,pageId)
+    await fetchAllMdBlock(mdBlocks,pageId)
 }
 
 const editDatas=async(data)=>{
-    await insertCurriculum(data);
-    const ogsDir = `./public/notion_data/eachPage/${data.id}/ogsData/`;
-    const imageDir = `./public/notion_data/eachPage/${data.id}/image/`;
-    const iframeDir = `./public/notion_data/eachPage/${data.id}/iframeData/`;
-    const dirList = [ogsDir,imageDir,iframeDir]
-    mkAndClearDir(dirList);
+    const {mdBlocks,pageId} = await getSinglePage(data.title)
+    await insertCurriculum(data,pageId);
+    initDir(data);
+    getPageIcon(data.id,data.id)
     await deletePage(data.id);
-    const mdBlocks = await getSinglePage(data.title)
     await insertblock(data.id,data.id,mdBlocks,data.id)
     await fetchAllMdBlock(mdBlocks,data.id)
 }

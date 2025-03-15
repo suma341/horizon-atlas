@@ -49,5 +49,5 @@ export async function deleteData(table,where,value){
         }),
     });
     const result = await res.json();
-    return result;
+    return result.message;
 }
