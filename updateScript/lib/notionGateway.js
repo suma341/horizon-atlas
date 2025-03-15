@@ -95,3 +95,11 @@ export const getSinglePageBlock = async (pageId) => {
         cover:response.cover
     };
 };
+
+export const getSingleblock = async (blockId) => {
+    const response = await notion.blocks.retrieve({
+        block_id:blockId
+      });
+    
+    return response;
+};

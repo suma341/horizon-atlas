@@ -84,7 +84,7 @@ export default function SearchPage({allTags, posts}:Props) {
             <div className="mt-5" />
             {matchPosts.length!==0 && matchPosts.slice(postsPerPage * (currentPage - 1), postsPerPage * currentPage).map((post)=>{
               const targetIcon = icon.filter((item)=>item.postId===post.curriculumId)
-              return (<SinglePost postData={post} isPagenationPage={false} key={post.curriculumId} icon={targetIcon[0]!==undefined ? targetIcon[0].icon : {type:"",url:"/horizon-atlas/file_icon.svg"}} />)
+              return (<SinglePost postData={post} key={post.curriculumId} icon={targetIcon[0]!==undefined ? targetIcon[0].icon : {type:"",url:"/horizon-atlas/file_icon.svg"}} />)
             })}
             {matchPosts.length===0 && <div className="text-xl">カリキュラムが見つかりませんでした</div>}
           </div>

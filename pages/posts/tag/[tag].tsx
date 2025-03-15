@@ -88,7 +88,6 @@ const TagPageList = ({ posts, currentTag,allTags}: Props)=> {
                                 <div key={post.curriculumId}>
                                     <SinglePost
                                         postData={post}
-                                        isPagenationPage={true}
                                         icon= {(targetIcon[0] !==undefined && targetIcon[0].icon !== undefined) ? targetIcon[0].icon : {type:"",url:"/horizon-atlas/file_icon.svg"}}
                                     />
                                 </div>

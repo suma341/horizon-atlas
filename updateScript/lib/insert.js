@@ -1,8 +1,29 @@
 import "dotenv/config"
 import { upsertCurriculum,upsertPage } from "./supabaseDBGateway.js"
+import {getSingleblock} from "./notionGateway.js"
 
 function wait(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function insertCallout(block,parentId,curriculumId,pageId,i){
+    const res = await getSingleblock(block.blockId)
+    if(res.icon && res.icon.emoji){
+        const parent = block.parent.replace(`${item.icon.emoji} `,"")
+        const data = {
+            icon:res.callout.icon,
+            color:res.callout.color,
+            parent
+        }
+        await upsertPage(curriculumId,parentId,JSON.stringify(data),block.blockId,block.type,pageId,i);
+    }else{
+        const data = {
+            icon:res.callout.icon,
+            color:res.callout.color,
+            parent:block.parent
+        }
+        await upsertPage(curriculumId,parentId,JSON.stringify(data),block.blockId,block.type,pageId,i);
+    }
 }
 
 export async function insertblock(curriculumId,parentId,blocks,pageId){
@@ -16,7 +37,11 @@ export async function insertblock(curriculumId,parentId,blocks,pageId){
                 blocks[k].children,
                 blocks[k].type==="child_page" ? blocks[k].blockId : pageId);
         }
-        await upsertPage(curriculumId,parentId,blocks[k].parent,blocks[k].blockId,blocks[k].type,pageId,i);
+        if(blocks[k].type==="callout"){
+            await insertCallout(blocks[k],parentId,curriculumId,pageId,i)
+        }else{
+            await upsertPage(curriculumId,parentId,blocks[k].parent,blocks[k].blockId,blocks[k].type,pageId,i);
+        }
     }
 }
 

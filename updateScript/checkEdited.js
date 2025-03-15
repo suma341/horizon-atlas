@@ -82,17 +82,19 @@ const insertDatas=async(data)=>{
 
 const editDatas=async(data)=>{
     const {mdBlocks,pageId} = await getSinglePage(data.title)
+    console.log(pageId)
     await insertCurriculum(data,pageId);
     initDir(data);
-    getPageIcon(data.id,data.id)
-    await deletePage(data.id);
-    await insertblock(data.id,data.id,mdBlocks,data.id)
-    await fetchAllMdBlock(mdBlocks,data.id)
+    getPageIcon(pageId,pageId)
+    await deletePage(pageId);
+    await insertblock(pageId,pageId,mdBlocks,pageId)
+    await fetchAllMdBlock(mdBlocks,pageId)
 }
 
 const deleteDatas=async(data)=>{
-    await deleteCurriculum(data.id);
-    await deletePage(data.id);
+    const {pageId} = await getSinglePage(data.title)
+    await deleteCurriculum(pageId);
+    await deletePage(pageId);
 }
 
 getCurrentData().then(async(data)=>{
@@ -110,6 +112,7 @@ getCurrentData().then(async(data)=>{
         const editData = allData.filter((item1)=>data.editedData.some((item2)=>item1.id===item2.id))
         for(const item of editData){
             wait(90)
+            console.log(item)
             await editDatas(item)
         }
         const deleteData = allData.filter((item1)=>data.deleteData.some((item2)=>item1.id===item2.id))
