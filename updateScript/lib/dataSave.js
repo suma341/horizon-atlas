@@ -4,6 +4,7 @@ import axios from "axios";
 import ogs from "open-graph-scraper";
 import fs from "fs";
 import { getSinglePageBlock } from "./notionGateway.js";
+import { upsertPageInfo } from "./supabaseDBGateway.js"
 
 const IFRAMELY_API_KEY = process.env.IFRAMELY_API_KEY;
 
@@ -36,25 +37,41 @@ async function useIframely(url) {
     }
 }
 
-export async function getPageIcon(curriculumId,pageId){
+export async function savePageInfo(title,curriculumId,pageId){
     let res = await getSinglePageBlock(pageId);
-    if(res.icon && res.icon.type==="file"){
-        let exte = res.icon.file.url.split(".")[1];
-        if(exte===undefined || (exte!=="png" && exte!="jpg"  && exte!="svg")){
-            exte = "png";
+    let iconType = "";
+    let iconUrl = "";
+    if(res.icon){
+        iconType = res.icon.type;
+        if(iconType==="file"){
+            let exte = res.icon.file.url.split(".")[1];
+            if(exte===undefined || (exte!=="png" && exte!="jpg"  && exte!="svg")){
+                exte = "png";
+            }
+            await downloadImage(res.icon.file.url, `./public/notion_data/eachPage/${curriculumId}/pageImageData/icon/${pageId}.${exte}`)
+            iconUrl = `/horizon-atlas/notion_data/eachPage/${curriculumId}/pageImageData/icon/${pageId}.${exte}`
+        }else if(iconType==="external"){
+            iconUrl = res.icon.external.url
+        }else if(iconType==="emoji"){
+            iconUrl = res.icon.emoji
         }
-        await downloadImage(res.icon.file.url, `./public/notion_data/eachPage/${curriculumId}/pageImageData/icon/${pageId}.${exte}`)
-        res.icon.file.url = `./public/notion_data/eachPage/${curriculumId}/pageImageData/icon/${pageId}.${exte}`
     }
-    if(res.cover && res.cover.type==="file"){
-        let exte = res.cover.file.url.split(".")[1];
-        if(exte===undefined || (exte!=="png" && exte!="jpg")){
-            exte = "png";
+    let coverUrl = "";
+    if(res.cover){
+        if(res.cover.type==="file"){
+            let exte = res.cover.file.url.split(".")[1];
+            if(exte===undefined || (exte!=="png" && exte!="jpg")){
+                exte = "png";
+            }
+            await downloadImage(res.cover.file.url, `./public/notion_data/eachPage/${curriculumId}/pageImageData/cover/${pageId}.${exte}`)
+            coverUrl = `/horizon-atlas/notion_data/eachPage/${curriculumId}/pageImageData/cover/${pageId}.${exte}`
+        }else if(res.cover.type==="external"){
+            coverUrl = res.cover.external.url
+        }else if(res.cover.type==="emoji"){
+            coverUrl = res.cover.emoji
         }
-        await downloadImage(res.cover.file.url, `./public/notion_data/eachPage/${curriculumId}/pageImageData/cover/${pageId}.${exte}`)
-        res.cover.file.url = `./public/notion_data/eachPage/${curriculumId}/pageImageData/cover/${pageId}.${exte}`
     }
-    fs.writeFileSync(`./public/notion_data/eachPage/${curriculumId}/pageImageData/${pageId}.json`, JSON.stringify(res, null, 2));    
+    await upsertPageInfo(title,iconType,iconUrl,pageId,coverUrl,curriculumId)
 }
 
 export const fetchAllMdBlock = async (mdBlocks,id) => {
@@ -123,7 +140,7 @@ export const fetchAllMdBlock = async (mdBlocks,id) => {
             }
         }
         if(block.type=="child_page"){
-            await getPageIcon(id,block.blockId);
+            await savePageInfo(block.parent,id,block.blockId);
         }
         if (block.children.length > 0) {
             await fetchAllMdBlock(block.children,id);

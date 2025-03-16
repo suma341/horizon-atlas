@@ -7,11 +7,10 @@ import { HOME_NAV } from "@/constants/pageNavs";
 import { pageNav } from "@/types/pageNav";
 import Layout from "@/components/Layout/Layout";
 import Tags from "@/components/tag/Tags";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { NUMBER_OF_POSTS_PER_PAGE } from "@/constants/numberOfPage";
 import { CurriculumService } from "@/lib/services/CurriculumService";
-import { getIcon } from "@/lib/getIconAndCover";
-import { IconData } from "@/types/iconData";
+import { PageInfoService } from "@/lib/services/PageInfoService";
 
 type pagePath = {
     params: { tag:string }
@@ -38,6 +37,11 @@ type Props ={
     posts:PostMetaData[];
     currentTag:string;
     allTags:string[];
+    icons: {
+        iconType: string;
+        iconUrl: string;
+        pageId: string;
+    }[];
 }
 
 // getStaticProps関数
@@ -47,34 +51,25 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const allTags = await getAllTags(allPosts);
     
     const posts:PostMetaData[] = await getPostsByTag(currentTag, allPosts);
+    const icons = await Promise.all(posts.map(async(post)=>{
+        const icon = await PageInfoService.getIconByPageId(post.curriculumId)
+        return icon;
+    }))
     return {
         props: {
           posts,
           allTags,
           currentTag,
+          icons
         },
     };
 };
 
-const TagPageList = ({ posts, currentTag,allTags}: Props)=> {
+const TagPageList = ({ posts, currentTag,allTags,icons}: Props)=> {
     const tagSearchNav:pageNav = {title:`タグ検索：${currentTag}`,id:`/posts/tag/${currentTag}`};
     const [currentPage, setCurrentPage] = useState(1);
-    const [icon,setIcon] = useState<IconData[]>([]);
     const numberOfPages = calculatePageNumber(posts);
     const postsPerPage = NUMBER_OF_POSTS_PER_PAGE;
-    useEffect(()=>{
-        async function setIconData(){
-            const icon= await Promise.all(posts.map(async(post)=>{
-                const icon = await getIcon(post.curriculumId,post.curriculumId)
-                return {
-                    postId:post.curriculumId,
-                    icon
-                }
-            }))
-            setIcon(icon)
-        }
-        setIconData();
-    },[posts])
 
     return (
         <Layout pageNavs={[HOME_NAV,tagSearchNav]}>
@@ -83,12 +78,12 @@ const TagPageList = ({ posts, currentTag,allTags}: Props)=> {
                     <Tags allTags={allTags} />
                     <section className="pt-5">
                         {posts.slice(postsPerPage * (currentPage - 1), postsPerPage * currentPage).map((post)=>{
-                            const targetIcon = icon.filter((item)=>item.postId===post.curriculumId)
+                            const targetIcon = icons.find((item)=>item.pageId===post.curriculumId)
                             return (
                                 <div key={post.curriculumId}>
                                     <SinglePost
                                         postData={post}
-                                        icon= {(targetIcon[0] !==undefined && targetIcon[0].icon !== undefined) ? targetIcon[0].icon : {type:"",url:"/horizon-atlas/file_icon.svg"}}
+                                        icon= {targetIcon}
                                     />
                                 </div>
                         )})}

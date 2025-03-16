@@ -84,25 +84,22 @@ export const getSinglePage = async (title) => {
     };
 };
 
-// const getSingleblock = async (pageId) => {
-//     const response = await notion.pages.retrieve({
-//         page_id: pageId,
-//       });
-//     const filteredData = {
-//         icon:response.icon
-//     }
-//     return response;
-// };
+const getSinglePageData = async (pageId) => {
+    const response = await notion.pages.retrieve({
+        page_id: pageId,
+      });
+    return {
+        icon:response.icon,
+        cover:response.cover
+    };
+};
 
 const getSingleblock = async (pageId) => {
     const response = await notion.blocks.retrieve({
         block_id:pageId
       });
     
-    return {
-        icon:response.callout.icon,
-        color:response.callout.color,
-    };
+    return response
 };
 
 // getAllData().then(data=>{console.log(data)})
@@ -140,26 +137,13 @@ function writeBlock(block){
 //     })
 // })
 
+
 getSinglePage("test").then(async({mdBlocks})=>{
     const a = [];
     for(const block of mdBlocks){
         const item = await getSingleblock(block.blockId)
-        if(item.icon && item.icon.emoji){
-            const parent = block.parent.replace(`${item.icon.emoji} `,"")
-            const data = {
-                ...item, 
-                parent}
-                a.push(data)
-        }else{
-            const data = {
-                ...item, 
-                parent:block.parent}
-            a.push(data)
-        }
+        a.push(item)
     }
     fs.writeFileSync(`./public/notion_data/class.json`, JSON.stringify(a, null, 2))
 })
 
-// getSingleblock("1b7a501ef33780988739fe7c1d839004").then(item=>{
-//     fs.writeFileSync(`./public/notion_data/class.json`, JSON.stringify(item, null, 2))
-// })

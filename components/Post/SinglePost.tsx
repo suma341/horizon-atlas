@@ -6,9 +6,10 @@ import Image from 'next/image';
 type Props = {
     postData:PostMetaData;
     icon:{
-        type:string;
-        url:string;
-    }
+        iconType:string;
+        iconUrl:string;
+        pageId:string;
+    } | undefined
 }
 
 const SinglePost = (props:Props) => {
@@ -18,8 +19,9 @@ const SinglePost = (props:Props) => {
         <Link href={`/posts/curriculums/${curriculumId}/${curriculumId}`}>
             <section className='mb-4 mx-5 rounded-md p-3 shadow-md hover:shadow-none hover:translate-y-1 hover:bg-neutral-50 transition-all duration-200 border'>
                 <div className='flex w-auto h-9 my-1'>
-                    {icon.type !=="emoji" &&<Image src={icon.url} alt={title} width={30} height={30} className='relative w-8 h-8 m-0 mr-1 bottom-1' />}
-                    {icon.type ==="emoji" &&<p className='relative w-8 h-8 m-0 mr-1 bottom-1 text-3xl align-middle'>{icon.url}</p>}
+                    {(!icon || icon.iconType==="") && <Image src={"/horizon-atlas/file_icon.svg"} alt={title} width={30} height={30} className='relative w-8 h-8 m-0 mr-1 bottom-1' />}
+                    {icon && icon.iconType !=="emoji" && icon.iconType!=="" &&<Image src={icon.iconUrl} alt={title} width={30} height={30} className='relative w-8 h-8 m-0 mr-1 bottom-1' />}
+                    {icon && icon.iconType ==="emoji" &&<p className='relative w-8 h-8 m-0 mr-1 bottom-1 text-3xl align-middle'>{icon.iconUrl}</p>}
                     <h2 className='text-xl font-medium mb-2 line-clamp-1'>
                         {title}
                     </h2>

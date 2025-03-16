@@ -33,6 +33,7 @@ async function rewriteLinks(text: string) {
           newUrl = "";
         } else {
           newUrl = `/posts/curriculums/${page.curriculumId}/${page.pageId}`;
+          
         }
       }
       text = text.replace(fullMatch, `[${label}](${newUrl})`);

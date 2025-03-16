@@ -8,12 +8,10 @@ type Props = {
     course: string;
     posts: PostMetaData[];
     icons: {
-        postId: string;
-        icon: {
-            type: string;
-            url: string;
-        };
-    }[]
+        iconType: string;
+        iconUrl: string;
+        pageId: string;
+    }[];
 };
 
 const SingleCourse = ({ course, posts,icons }: Props) => {
@@ -28,21 +26,28 @@ const SingleCourse = ({ course, posts,icons }: Props) => {
                 </div>
                 <div className="mt-2">
                     {posts.slice(0, 5).map((post) => {
-                        const targetIcon = icons.filter((item)=>item.postId===post.curriculumId)
-
+                        const targetIcon = icons.find((item)=>item.pageId===post.curriculumId)
                         return (
                             <div key={post.curriculumId} className="flex items-center text-gray-700 mb-0.5 text-sm border-l border-gray-300 pl-2">
                                 <div className="flex">
-                                    {targetIcon[0] !==undefined && targetIcon[0].icon.type !=="emoji" && <Image
-                                        src={(targetIcon[0].icon !== undefined) ? targetIcon[0].icon.url : "/horizon-atlas/file_icon.svg"}
+                                    {targetIcon !==undefined && targetIcon.iconType !=="emoji" && targetIcon.iconType!=="" &&
+                                     <Image
+                                        src={targetIcon.iconUrl}
                                         alt=""
                                         height={20}
                                         width={20}
                                         className="h-5 w-5 rounded mr-2"
                                     />}
-                                    {targetIcon[0] !==undefined && targetIcon[0].icon.type ==="emoji" && <p
+                                    {(targetIcon ===undefined || targetIcon.iconType==="") &&  <Image
+                                        src={"/horizon-atlas/file_icon.svg"}
+                                        alt=""
+                                        height={20}
+                                        width={20}
+                                        className="h-5 w-5 rounded mr-2"
+                                    />}
+                                    {targetIcon !==undefined && targetIcon.iconType ==="emoji" && <p
                                         className="h-5 w-5 rounded mr-2 text-lg"
-                                    >{targetIcon[0].icon.url}</p>}
+                                    >{targetIcon.iconUrl}</p>}
                                     <span>{post.title}</span>
                                 </div>
                             </div>

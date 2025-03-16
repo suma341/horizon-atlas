@@ -13,12 +13,16 @@ import Pagenation from "@/components/pagenation/Pagenation";
 import { NUMBER_OF_POSTS_PER_PAGE } from "@/constants/numberOfPage";
 import { CurriculumService } from "@/lib/services/CurriculumService";
 import { useAuth0 } from "@auth0/auth0-react";
-import { getIcon } from "@/lib/getIconAndCover";
-import { IconData } from "@/types/iconData";
+import { PageInfoService } from "@/lib/services/PageInfoService";
 
 type Props = {
   allTags:string[];
   posts:PostMetaData[];
+  allIcon:{
+    iconType: string;
+    iconUrl: string;
+    pageId: string;
+  }[]
 }
 
 export const getStaticProps: GetStaticProps = async () => {
@@ -26,20 +30,21 @@ export const getStaticProps: GetStaticProps = async () => {
   const allPosts:PostMetaData[] = await CurriculumService.getAllCurriculum();
 
   const allTags:string[] = await getAllTags(allPosts);
+  const allIcon = await PageInfoService.getAllIcon();
 
   return {
     props:{
       allTags,
       posts:allPosts,
+      allIcon
     },
   };
 };
 
-export default function SearchPage({allTags, posts}:Props) {
+export default function SearchPage({allTags, posts,allIcon}:Props) {
   const [matchPosts, setMatchPosts] = useState<PostMetaData[]>(posts);
   const [currentPage, setCurrentPage] = useState(1);
   const [numberOfPage, setNumberOfPage] = useState(calculatePageNumber(posts));
-  const [icon,setIcon] = useState<IconData[]>([])
   const {user} = useAuth0();
   const router = useRouter();
   const query = router.query.search!==undefined ? router.query.search as string : undefined;
@@ -58,19 +63,7 @@ export default function SearchPage({allTags, posts}:Props) {
     }
     setData();
   },[query,posts,user])
-  useEffect(()=>{
-    async function setIconData(){
-      const icon = await Promise.all(matchPosts.map(async(post)=>{
-        const icon = await getIcon(post.curriculumId,post.curriculumId)
-        return {
-          postId:post.curriculumId,
-          icon
-        }
-      }))
-      setIcon(icon)
-    }
-    setIconData()
-  },[matchPosts])
+  
   const postsPerPage = NUMBER_OF_POSTS_PER_PAGE;
   
   return (
@@ -83,8 +76,8 @@ export default function SearchPage({allTags, posts}:Props) {
             <Tags allTags={allTags} />
             <div className="mt-5" />
             {matchPosts.length!==0 && matchPosts.slice(postsPerPage * (currentPage - 1), postsPerPage * currentPage).map((post)=>{
-              const targetIcon = icon.filter((item)=>item.postId===post.curriculumId)
-              return (<SinglePost postData={post} key={post.curriculumId} icon={targetIcon[0]!==undefined ? targetIcon[0].icon : {type:"",url:"/horizon-atlas/file_icon.svg"}} />)
+              const targetIcon = allIcon.find((item)=>item.pageId===post.curriculumId)
+              return (<SinglePost postData={post} key={post.curriculumId} icon={targetIcon} />)
             })}
             {matchPosts.length===0 && <div className="text-xl">カリキュラムが見つかりませんでした</div>}
           </div>

@@ -10,8 +10,7 @@ import { useEffect, useState } from "react";
 import { NUMBER_OF_POSTS_PER_PAGE } from "@/constants/numberOfPage";
 import { CurriculumService } from "@/lib/services/CurriculumService";
 import { useAuth0 } from "@auth0/auth0-react";
-import { getIcon } from "@/lib/getIconAndCover";
-import { IconData } from "@/types/iconData";
+import { PageInfoService } from "@/lib/services/PageInfoService";
 
 type pagePath = {
     params: { course:string }
@@ -38,6 +37,11 @@ type Props={
     posts:PostMetaData[];
     currentCourse:string;
     pageNavs:pageNav[];
+    icons: {
+        iconType: string;
+        iconUrl: string;
+        pageId: string;
+    }[]
 }
 
 // getStaticProps関数
@@ -47,22 +51,26 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const isBasic = await courseIsBasic(currentCourse,posts);
     const currentNav:pageNav = {title:currentCourse,id:`/posts/course/${currentCourse}`};
     const pageNavs = isBasic ? [HOME_NAV,BASIC_NAV,currentNav] :[HOME_NAV,currentNav];
+    const icons = await Promise.all(posts.map(async(post)=>{
+        const icon = await PageInfoService.getIconByPageId(post.curriculumId);
+        return icon
+    }))
 
     return {
         props: {
           posts,
           currentCourse,
           pageNavs,
+          icons
         },
     };
 };
 
-const CoursePage = ({ posts, currentCourse,pageNavs }: Props)=> {
+const CoursePage = ({ posts, currentCourse,pageNavs,icons }: Props)=> {
     const [currentPage, setCurrentPage] = useState(1);
     const postsPerPage = NUMBER_OF_POSTS_PER_PAGE;
     const [postsByRole, setPostsByRole] = useState(posts);
     const [numberOfPages,setNumberOfPages] = useState(1);
-    const [icon, setIcon] = useState<IconData[]>([]);
     const {user} = useAuth0();
 
     useEffect(()=>{
@@ -74,19 +82,7 @@ const CoursePage = ({ posts, currentCourse,pageNavs }: Props)=> {
         }
         setData()
     },[posts,user])
-    useEffect(()=>{
-        async function setIconData(){
-            const icon= await Promise.all(posts.map(async(post)=>{
-                const icon = await getIcon(post.curriculumId,post.curriculumId)
-                return {
-                    postId:post.curriculumId,
-                    icon
-                }
-            }))
-            setIcon(icon)
-        }
-        setIconData()
-    },[posts,postsByRole])
+
 
     return (
         <Layout pageNavs={pageNavs}> 
@@ -95,12 +91,12 @@ const CoursePage = ({ posts, currentCourse,pageNavs }: Props)=> {
                     <h1 className="text-5xl font-medium text-center mb-16">{currentCourse}</h1>
                     <section className="mx-auto">
                         {postsByRole.slice(postsPerPage * (currentPage - 1), postsPerPage * currentPage).map((post)=>{
-                            const targetIcon = icon.filter((item)=>item.postId===post.curriculumId)
+                            const targetIcon = icons.find((item)=>item.pageId===post.curriculumId)
                             return (
                                 <div key={post.curriculumId}>
                                     <SinglePost
                                     postData={post}
-                                    icon={(targetIcon[0] !==undefined && targetIcon[0].icon !== undefined) ? targetIcon[0].icon : {type:"",url:"/horizon-atlas/file_icon.svg"}}
+                                    icon={targetIcon}
                                     />
                                 </div>
                         )})}

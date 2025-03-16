@@ -3,7 +3,8 @@ import { MdBlock } from 'notion-to-md/build/types';
 import React, { useEffect, useState } from 'react';
 import Image from "next/image"
 import { MdOutlineArrowOutward } from "react-icons/md";
-import { getIcon } from '@/lib/getIconAndCover';
+import useIconStore from '@/stores/iconStore';
+import { IconInfo } from '@/types/iconInfo';
 
 type Props = {
   mdBlock: MdBlock;
@@ -13,7 +14,8 @@ export default function Link_to_page(props: Props) {
   const { mdBlock } = props;
   const [url,setUrl] = useState("");
   const [title,setTitle] = useState("");
-  const [icon,setIcon] = useState({type:"",url:""});
+  const {icons} = useIconStore();
+  const [icon,setIcon] = useState<IconInfo | undefined>()
   
   useEffect(()=>{
     async function setPage(){
@@ -26,13 +28,14 @@ export default function Link_to_page(props: Props) {
       const urlMatch = mdBlock.parent.match(UrlRegex);
         if(urlMatch){
           const url = urlMatch[0].slice(1,-1)
+          console.log("url",url)
           setUrl(url)
           const pageId = url.split("/")[4]
-          const curriculumId = url.split("/")[3]
-          const icon_ = await getIcon(pageId,curriculumId);
+          console.log("pageId",pageId)
+          const icon_ = icons.find((item)=>item.pageId===pageId)
           setIcon(icon_)
         }
-    }
+      }
     setPage();
   },[mdBlock.blockId])
 
@@ -40,8 +43,9 @@ export default function Link_to_page(props: Props) {
     <Link href={url} target='_brank' rel="noopener noreferrer" 
      className='my-2 flex hover:bg-neutral-100 hover:text-neutral-600 p-0.5' id={mdBlock.blockId}>
       <div className='relative m-0 ml-0.5 mr-1.5 bottom-0.5'>
-        {icon.type !=="emoji" &&<Image src={icon.url} alt={title} width={20} height={20} className='relative w-5 h-5 m-0 mr-1' />}
-        {icon.type ==="emoji" &&<p className='relative w-5 h-5 m-0 mr-1 align-middle ml-0.5'>{icon.url}</p>}
+        {!icon &&<Image src={"/horizon-atlas/file_icon.svg"} alt={title} width={20} height={20} className='relative w-5 h-5 m-0 mr-1' />}
+        {icon && icon.iconType !=="emoji" &&<Image src={icon.iconUrl} alt={title} width={20} height={20} className='relative w-5 h-5 m-0 mr-1' />}
+        {icon && icon.iconType ==="emoji" &&<p className='relative w-5 h-5 m-0 mr-1 align-middle ml-0.5'>{icon.iconUrl}</p>}
         <MdOutlineArrowOutward size={18} className='absolute w-4 h-auto text-neutral-700 right-[-2.3px] bottom-[-3px] stroke-1 stroke-white' style={{clipPath:"inset(1px 1px 1px 1px)"}} />
       </div>
       <span className="text-neutral-500 underline">

@@ -2,8 +2,8 @@ import fs from "fs";
 import { getEditTimeData,getAllData,getSinglePage } from "./lib/notionGateway.js";
 import { insertCurriculum,insertblock } from "./lib/insert.js";
 import {fetchAllMdBlock} from "./lib/dataSave.js"
-import { deletePage,deleteCurriculum } from "./lib/delete.js";
-import { getPageIcon } from "./lib/dataSave.js"
+import { deletePage,deleteCurriculum,deletePageInfo } from "./lib/delete.js";
+import { savePageInfo } from "./lib/dataSave.js"
 import path from "path";
 
 
@@ -75,7 +75,7 @@ const insertDatas=async(data)=>{
     const {mdBlocks,pageId} =await getSinglePage(data.title)
     await insertCurriculum(data,pageId);
     initDir(data);
-    getPageIcon(pageId,pageId)
+    await savePageInfo(data.title,pageId,pageId)
     await insertblock(pageId,pageId,mdBlocks,pageId)
     await fetchAllMdBlock(mdBlocks,pageId)
 }
@@ -85,7 +85,8 @@ const editDatas=async(data)=>{
     console.log(pageId)
     await insertCurriculum(data,pageId);
     initDir(data);
-    getPageIcon(pageId,pageId)
+    await deletePageInfo(pageId);
+    await savePageInfo(data.title,pageId,pageId)
     await deletePage(pageId);
     await insertblock(pageId,pageId,mdBlocks,pageId)
     await fetchAllMdBlock(mdBlocks,pageId)
@@ -95,6 +96,7 @@ const deleteDatas=async(data)=>{
     const {pageId} = await getSinglePage(data.title)
     await deleteCurriculum(pageId);
     await deletePage(pageId);
+    await deletePageInfo(pageId);
 }
 
 getCurrentData().then(async(data)=>{

@@ -56,7 +56,6 @@ function EmbedBlock(props: Props) {
               allowFullScreen />
         </div>)
     }
-        console.log("html",html)
         return (
             <div className='mx-1.5 my-1.5' id={mdBlock.blockId}>
                 <div

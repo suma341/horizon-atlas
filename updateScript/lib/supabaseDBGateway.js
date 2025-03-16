@@ -36,6 +36,23 @@ export async function upsertPage(curriculumId,parentId,blockData,blockId,type,pa
     return error;
 }
 
+export async function upsertPageInfo(title,iconType,iconUrl,pageId,coverUrl,curriculumId){
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/upsertPageInfo`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+        },
+        body:JSON.stringify({
+            title,iconType,iconUrl,pageId,coverUrl,curriculumId
+        })
+    });
+    const result = await res.json();
+    console.log("upsertPage",result);
+    const { error } = result;
+    return error;
+}
+
 export async function deleteData(table,where,value){
     const url = `${SUPABASE_URL}/functions/v1/deleteData`;
     const res = await fetch(url, {
