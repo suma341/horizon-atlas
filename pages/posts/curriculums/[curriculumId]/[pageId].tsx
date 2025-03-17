@@ -133,7 +133,6 @@ const Post =({ metadata, mdBlocks,pageNavs,childrenData,pageId,iconInfo,title,ic
     setIcons(iconInfo);
     setCurriculumId(metadata.curriculumId);
   },[metadata.curriculumId,pageId,iconInfo])
-  console.log(iconType,iconUrl)
   return (
     <Layout pageNavs={pageNavs} sideNavProps={childrenData}>
       <div className='p-4 pt-24 pb-8'>

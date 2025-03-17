@@ -1,0 +1,40 @@
+name: auto build and Deploy Next.js
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write  
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+
+      - name: Node.js をセットアップ
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: 依存関係をインストール
+        run: npm install
+
+      - name: Next.js をビルド
+        run: npm run build
+        env:
+          NEXT_PUBLIC_AUTH0_DOMAIN: ${{secrets.NEXT_PUBLIC_AUTH0_DOMAIN}}
+          NEXT_PUBLIC_AUTH0_CLIENT_ID: ${{secrets.NEXT_PUBLIC_AUTH0_CLIENT_ID}}
+          NEXT_PUBLIC_ROOT_PATH: ${{secrets.NEXT_PUBLIC_ROOT_PATH}}
+          SUPABASE_ANON_KEY: ${{secrets.SUPABASE_ANON_KEY}}
+          SUPABASE_URL: ${{secrets.SUPABASE_URL}}
+          NEXT_PUBLIC_RAILWAY_URL: ${{secrets.NEXT_PUBLIC_RAILWAY_URL}}
+
+      - name: gh-pages ブランチにデプロイ
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./out
+          publish_branch: gh-pages
