@@ -11,23 +11,23 @@ import { CurriculumService } from '@/lib/services/CurriculumService';
 import { PageDataService } from '@/lib/services/PageDataService';
 import useCurriculumIdStore from '@/stores/curriculumIdStore';
 import SideBlock from '@/components/SideBlock/SideBlock';
-import { PageInfoService } from '@/lib/services/PageInfoService';
-import { PageInfo } from '@/types/PageInfo';
-import useIconStore from '@/stores/iconStore';
 import { IconInfo } from '@/types/iconInfo';
+import useIconStore from '@/stores/iconStore';
 
 type postPath = {
   params: { curriculumId:string,pageId:string }
 }
 
 type Props = {
+  title:string;
   metadata:PostMetaData;
   mdBlocks:MdBlock[];
   pageNavs:pageNav[];
   pageId:string;
   childrenData?:{title:string;childPages:pageNav[]};
-  pageInfo:PageInfo;
-  childIcons:IconInfo[]
+  iconInfo:IconInfo[];
+  iconType:string;
+  iconUrl:string;
 };
 
 export const getStaticPaths = async () => {
@@ -61,39 +61,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const mdBlocks:MdBlock[] = await PageDataService.getPageDataByPageId(pageId);
   const singlePost:PostMetaData = await CurriculumService.getCurriculumById(curriculumId);
 
-  const childIcons:IconInfo[] = [];
-  const pageInfo = await PageInfoService.getPageInfoByPageId(pageId);
-
-  const checkBlock=(blocks:MdBlock[],type:string)=>{
-    const targetBlock:MdBlock[] = [];
-    for(const block of blocks){
-      if(block.children.length!==0){
-          const childTarget = checkBlock(block.children,type)
-          targetBlock.push(...childTarget)
-      }
-      if(block.type===type){
-        targetBlock.push(block)
-      }
-    }
-    return targetBlock;
-  }
-  const linkToPageBlocks = checkBlock(mdBlocks,"link_to_page")
-  const UrlRegex = /\(([^)]+)\)/g;
-  for(const block of linkToPageBlocks){
-    const urlMatch = block.parent.match(UrlRegex);
-    if(urlMatch){
-      const url = urlMatch[0].slice(1,-1);
-      const pageId_ = url.split("/")[4]
-      const icon = await PageInfoService.getIconByPageId(pageId_);
-      childIcons.push(icon)
-    } 
-  }
-  const childPageBlocks = checkBlock(mdBlocks,"child_page");
-  for(const block of childPageBlocks){
-    const icon = await PageInfoService.getIconByPageId(block.blockId);
-    childIcons.push(icon)
-  }
-
   const courseNav: pageNav = { title: singlePost.category, id: `/posts/course/${singlePost.category}` };
   const postNav: pageNav = { title: singlePost.title, id: `/posts/curriculums/${curriculumId}/${curriculumId}` };
   const pageNavs: pageNav[] = singlePost.is_basic_curriculum
@@ -102,50 +69,80 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     ? [HOME_NAV, postNav]
     : [HOME_NAV, courseNav, postNav];
 
+  const getListToPage =(blocks:MdBlock[])=>{
+    const link_to_pageBlocks:MdBlock[] = [];
+    for(const block of blocks){
+      if(block.type==="link_to_page"){
+        link_to_pageBlocks.push(block)
+      }
+      if(block.children.length!==0){
+        link_to_pageBlocks.push(...getListToPage(block.children))
+      }
+    }
+    return link_to_pageBlocks;
+  }
+  const listToPageBlocks = getListToPage(mdBlocks);
+  const UrlRegex = /\(([^)]+)\)/g;
+  const iconInfoList:IconInfo[] = [];
+  for(const block of listToPageBlocks){
+    const urlMatch = block.parent.match(UrlRegex);
+    if(urlMatch){
+      const url = urlMatch[0].slice(1,-1)
+      const pageId_ = url.split("/")[4]
+      const iconInfo:IconInfo = await PageDataService.getPageIcon(pageId_)
+      iconInfoList.push(iconInfo)
+    }
+  }
+
     if(curriculumId!==pageId){
       const childrenData = await PageDataService.getChildrenData(pageId);
       const childPageNavs = await PageDataService.getPageNavs(pageId);
+      const titleAndIcon = await PageDataService.getTitleAndIcon(pageId);
       return {
         props:{
+          title:titleAndIcon.title,
           metadata:singlePost,
           mdBlocks,
           pageNavs:[...pageNavs,...childPageNavs],
           childrenData,
           pageId,
-          pageInfo,
-          childIcons
+          iconInfo:iconInfoList,
+          iconUrl:titleAndIcon.iconUrl,
+          iconType:titleAndIcon.iconType
         }
       }
     }
   return {
     props: {
+      title:singlePost.title,
       metadata: singlePost,
       mdBlocks,
       pageNavs,
       pageId,
-      pageInfo,
-      childIcons
+      iconInfo:iconInfoList,
+      iconUrl:singlePost.iconUrl,
+      iconType:singlePost.iconType
     },
   };
 };
 
-const Post =({ metadata, mdBlocks,pageNavs,childrenData,pageId,pageInfo,childIcons}: Props) => {
+const Post =({ metadata, mdBlocks,pageNavs,childrenData,pageId,iconInfo,title,iconType,iconUrl}: Props) => {
   const { setCurriculumId } = useCurriculumIdStore();
-  const { setIcons } = useIconStore()
+  const { setIcons } = useIconStore();
   useEffect(()=>{
+    setIcons(iconInfo);
     setCurriculumId(metadata.curriculumId);
-    setIcons(childIcons)
-  },[metadata.curriculumId,childIcons,pageId])
-
+  },[metadata.curriculumId,pageId,iconInfo])
+  console.log(iconType,iconUrl)
   return (
     <Layout pageNavs={pageNavs} sideNavProps={childrenData}>
       <div className='p-4 pt-24 pb-8'>
         <section className={childrenData ? 'p-5 bg-white pb-10 md:w-3/4' : "p-5 bg-white pb-10"}>
           <div className='flex'>
-          {pageInfo.iconType==="" && <Image src={"/horizon-atlas/file_icon.svg"} alt={''} width={20} height={20} className='relative w-auto h-8 m-0 mr-2 top-0.5' />}
-          {pageInfo.iconType !== "emoji" && pageInfo.iconType!=="" && <Image src={pageInfo.iconUrl} alt={''} width={20} height={20} className='relative w-auto h-8 m-0 mr-2 top-0.5' />}
-          {pageInfo.iconType === "emoji" && <p className='relative w-auto h-8 m-0 mr-2 top-0.5 text-3xl'>{pageInfo.iconUrl}</p>}
-            <h2 className='w-full text-2xl font-medium'>{pageInfo.title.replace("##","")}</h2>
+          {iconType==="" && <Image src={"/horizon-atlas/file_icon.svg"} alt={''} width={20} height={20} className='relative w-auto h-8 m-0 mr-2 top-0.5' />}
+          {iconType !== "emoji" && iconType!=="" && <Image src={iconUrl} alt={''} width={20} height={20} className='relative w-auto h-8 m-0 mr-2 top-0.5' />}
+          {iconType === "emoji" && <p className='relative w-auto h-8 m-0 mr-2 top-0.5 text-3xl'>{iconUrl}</p>}
+            <h2 className='w-full text-2xl font-medium'>{title}</h2>
           </div>
           <div className='border-b mt-2'></div>
           {pageId === metadata.curriculumId && <>

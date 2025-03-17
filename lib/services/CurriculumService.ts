@@ -9,6 +9,9 @@ type data ={
     is_basic_curriculum:string;
     visibility:string;
     tag:string;
+    iconType:string;
+    iconUrl:string;
+    coverUrl:string;
 }
 
 const converseData =(data:data)=>{
@@ -19,7 +22,10 @@ const converseData =(data:data)=>{
         visibility:JSON.parse(data.visibility),
         tags:JSON.parse(data.tag),
         is_basic_curriculum:JSON.parse(data.is_basic_curriculum),
-        id:`${data.id}`
+        id:`${data.id}`,
+        iconType:data.iconType,
+        iconUrl:data.iconUrl,
+        coverUrl:data.coverUrl
     }
     return postMetaData;
 }

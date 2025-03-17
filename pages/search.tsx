@@ -13,16 +13,10 @@ import Pagenation from "@/components/pagenation/Pagenation";
 import { NUMBER_OF_POSTS_PER_PAGE } from "@/constants/numberOfPage";
 import { CurriculumService } from "@/lib/services/CurriculumService";
 import { useAuth0 } from "@auth0/auth0-react";
-import { PageInfoService } from "@/lib/services/PageInfoService";
 
 type Props = {
   allTags:string[];
   posts:PostMetaData[];
-  allIcon:{
-    iconType: string;
-    iconUrl: string;
-    pageId: string;
-  }[]
 }
 
 export const getStaticProps: GetStaticProps = async () => {
@@ -30,18 +24,16 @@ export const getStaticProps: GetStaticProps = async () => {
   const allPosts:PostMetaData[] = await CurriculumService.getAllCurriculum();
 
   const allTags:string[] = await getAllTags(allPosts);
-  const allIcon = await PageInfoService.getAllIcon();
 
   return {
     props:{
       allTags,
       posts:allPosts,
-      allIcon
     },
   };
 };
 
-export default function SearchPage({allTags, posts,allIcon}:Props) {
+export default function SearchPage({allTags, posts}:Props) {
   const [matchPosts, setMatchPosts] = useState<PostMetaData[]>(posts);
   const [currentPage, setCurrentPage] = useState(1);
   const [numberOfPage, setNumberOfPage] = useState(calculatePageNumber(posts));
@@ -76,8 +68,7 @@ export default function SearchPage({allTags, posts,allIcon}:Props) {
             <Tags allTags={allTags} />
             <div className="mt-5" />
             {matchPosts.length!==0 && matchPosts.slice(postsPerPage * (currentPage - 1), postsPerPage * currentPage).map((post)=>{
-              const targetIcon = allIcon.find((item)=>item.pageId===post.curriculumId)
-              return (<SinglePost postData={post} key={post.curriculumId} icon={targetIcon} />)
+              return (<SinglePost postData={post} key={post.curriculumId} />)
             })}
             {matchPosts.length===0 && <div className="text-xl">カリキュラムが見つかりませんでした</div>}
           </div>

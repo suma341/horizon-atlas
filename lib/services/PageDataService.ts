@@ -5,6 +5,9 @@ import { searchPageById } from "../searchPageById";
 import { findHeadingBlock } from "../findHeadingBlock";
 import { CurriculumGateway } from "../Gateways/CurriculumGateway";
 import { pageNav } from "@/types/pageNav";
+import { CurriculumService } from "./CurriculumService";
+import { IconInfo } from "@/types/iconInfo";
+import { PageBlockData } from "@/types/pageBlockData";
 
 function buildTree(pageData:PageData[], parentId:string):MdBlock[] {
     const mdBlocks:MdBlock[] = pageData
@@ -134,19 +137,28 @@ export class PageDataService{
         }[] = await PageDataGateway.getPageDataByConditions("blockId,data,order",{"type":type,"curriculumId":curriculumId})
         return datas;
     }
+    
+    static getTitleAndIcon=async(pageId:string)=>{
+        const data:{data:string}[] = await PageDataGateway.getPageDataByConditions("data",{blockId:pageId})
+        const pageBlockData:PageBlockData = JSON.parse(data[0].data)
+        const title = pageBlockData.parent.replace("##","")
+        const iconUrl = pageBlockData.iconUrl;
+        const iconType = pageBlockData.iconType;
+        return {title,iconUrl,iconType};
+    }
 
     static getChildrenData=async(pageId:string)=>{
         const pageId_:{pageId:string,curriculumId:string}[] = await PageDataGateway.getPageDataByConditions("pageId,curriculumId",{"blockId":pageId,"type":"child_page"});
         const children :{data:string,blockId:string,order:number}[]= await PageDataGateway.getPageDataByConditions("data,blockId,order",{"type":"child_page","pageId":pageId_[0].pageId});
         const parentTitle:string = pageId_[0].pageId === pageId_[0].curriculumId ?
         (await CurriculumGateway.getCurriculumByCondition("title",{"curriculumId":pageId_[0].curriculumId}))[0].title :
-         (await PageDataGateway.getPageDataByConditions("data",{"blockId":pageId_[0].pageId}))[0].data.slice(3)
+         JSON.parse((await PageDataGateway.getPageDataByConditions("data",{"blockId":pageId_[0].pageId}))[0].data).parent.replace("##","")
          const sortedChildren = children.sort((a,b)=>a.order - b.order)
         const childrenData = sortedChildren.map((child)=>{
             return {
-                title:child.data.slice(3),
+                title:JSON.parse(child.data).parent.replace("##",""),
                 id:child.blockId
-            }
+            };
         })
         return {title:parentTitle,childPages:childrenData};
     }
@@ -160,7 +172,7 @@ export class PageDataService{
         const pages:pageNav[] = [];
         while(currentPage!==curriculumId){
             const parentPage:{blockId:string,data:string,pageId:string}[] = await PageDataGateway.getPageDataByConditions("pageId,blockId,data",{"blockId":currentPage})
-            pages.push({id:`/posts/curriculums/${curriculumId}/${parentPage[0].blockId}`,title:parentPage[0].data.slice(3)})
+            pages.push({id:`/posts/curriculums/${curriculumId}/${parentPage[0].blockId}`,title:JSON.parse(parentPage[0].data).parent.replace("##","")})
             currentPage = parentPage[0].pageId;
         }
         return pages
@@ -169,5 +181,34 @@ export class PageDataService{
     static getPageTitle=async(pageId:string)=>{
         const title:{data:string}[] = await PageDataGateway.getPageDataByConditions("data",{"blockId":pageId})
         return title[0].data.slice(3);
+    }
+
+    static getPageIcon=async(pageId:string):Promise<IconInfo>=>{
+        const allCurriculum = await CurriculumService.getAllCurriculum()
+        for(const curriculum of allCurriculum){
+            if(curriculum.curriculumId===pageId){
+                return {
+                    iconType:curriculum.iconType,
+                    iconUrl:curriculum.iconUrl,
+                    pageId
+                }
+            }
+        }
+        const blocks:{data:string,pageId:string}[] = await PageDataGateway.getPageDataByConditions("data,pageId",{type:"child_page"})
+        for(const block of blocks){
+            if(block.pageId===pageId){
+                const data:PageBlockData = JSON.parse(block.data)
+                return {
+                    iconType:data.iconType,
+                    iconUrl:data.iconUrl,
+                    pageId
+                }
+            }
+        }
+        return {
+            iconType:"",
+            iconUrl:"",
+            pageId
+        }
     }
 }

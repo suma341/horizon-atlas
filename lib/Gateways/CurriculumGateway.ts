@@ -9,6 +9,9 @@ type data ={
     is_basic_curriculum:string;
     visibility:string;
     tag:string;
+    iconType:string;
+    iconUrl:string;
+    coverUrl:string;
 }[]
 
 export class CurriculumGateway{    

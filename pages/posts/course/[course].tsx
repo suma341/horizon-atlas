@@ -10,7 +10,6 @@ import { useEffect, useState } from "react";
 import { NUMBER_OF_POSTS_PER_PAGE } from "@/constants/numberOfPage";
 import { CurriculumService } from "@/lib/services/CurriculumService";
 import { useAuth0 } from "@auth0/auth0-react";
-import { PageInfoService } from "@/lib/services/PageInfoService";
 
 type pagePath = {
     params: { course:string }
@@ -37,11 +36,6 @@ type Props={
     posts:PostMetaData[];
     currentCourse:string;
     pageNavs:pageNav[];
-    icons: {
-        iconType: string;
-        iconUrl: string;
-        pageId: string;
-    }[]
 }
 
 // getStaticProps関数
@@ -51,22 +45,17 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const isBasic = await courseIsBasic(currentCourse,posts);
     const currentNav:pageNav = {title:currentCourse,id:`/posts/course/${currentCourse}`};
     const pageNavs = isBasic ? [HOME_NAV,BASIC_NAV,currentNav] :[HOME_NAV,currentNav];
-    const icons = await Promise.all(posts.map(async(post)=>{
-        const icon = await PageInfoService.getIconByPageId(post.curriculumId);
-        return icon
-    }))
 
     return {
         props: {
           posts,
           currentCourse,
           pageNavs,
-          icons
         },
     };
 };
 
-const CoursePage = ({ posts, currentCourse,pageNavs,icons }: Props)=> {
+const CoursePage = ({ posts, currentCourse,pageNavs }: Props)=> {
     const [currentPage, setCurrentPage] = useState(1);
     const postsPerPage = NUMBER_OF_POSTS_PER_PAGE;
     const [postsByRole, setPostsByRole] = useState(posts);
@@ -91,12 +80,10 @@ const CoursePage = ({ posts, currentCourse,pageNavs,icons }: Props)=> {
                     <h1 className="text-5xl font-medium text-center mb-16">{currentCourse}</h1>
                     <section className="mx-auto">
                         {postsByRole.slice(postsPerPage * (currentPage - 1), postsPerPage * currentPage).map((post)=>{
-                            const targetIcon = icons.find((item)=>item.pageId===post.curriculumId)
                             return (
                                 <div key={post.curriculumId}>
                                     <SinglePost
                                     postData={post}
-                                    icon={targetIcon}
                                     />
                                 </div>
                         )})}

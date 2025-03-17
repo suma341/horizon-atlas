@@ -3,7 +3,8 @@ import "dotenv/config"
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
 
-export async function upsertCurriculum(title,is_basic_curriculum,visibility,category,tag,curriculumId){
+export async function upsertCurriculum(
+    title,is_basic_curriculum,visibility,category,tag,curriculumId,iconType,iconUrl,coverUrl){
     const url = `${SUPABASE_URL}/functions/v1/upsert_curriculum`;
     const res = await fetch(url, {
         method: "POST",
@@ -12,7 +13,7 @@ export async function upsertCurriculum(title,is_basic_curriculum,visibility,cate
             "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
         },
         body:JSON.stringify({
-            title,is_basic_curriculum,visibility,category,tag,curriculumId
+            title,is_basic_curriculum,visibility,category,tag,curriculumId,iconType,iconUrl,coverUrl
         }),
     });
     const result = await res.json();
@@ -28,23 +29,6 @@ export async function upsertPage(curriculumId,parentId,blockData,blockId,type,pa
         },
         body:JSON.stringify({
             curriculumId,parentId,blockData,blockId,type,pageId,order
-        })
-    });
-    const result = await res.json();
-    console.log("upsertPage",result);
-    const { error } = result;
-    return error;
-}
-
-export async function upsertPageInfo(title,iconType,iconUrl,pageId,coverUrl,curriculumId){
-    const res = await fetch(`${SUPABASE_URL}/functions/v1/upsertPageInfo`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
-        },
-        body:JSON.stringify({
-            title,iconType,iconUrl,pageId,coverUrl,curriculumId
         })
     });
     const result = await res.json();

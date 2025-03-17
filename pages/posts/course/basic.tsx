@@ -7,18 +7,12 @@ import type { GetStaticProps,} from "next";
 import { CurriculumService } from "@/lib/services/CurriculumService";
 import { useEffect, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import { PageInfoService } from "@/lib/services/PageInfoService";
 
 type Props={
     courseAndPosts: {
         course: string;
         posts: PostMetaData[];
     }[];
-    icons: {
-        iconType: string;
-        iconUrl: string;
-        pageId: string;
-    }[]
 }
 
 // getStaticProps関数
@@ -32,20 +26,15 @@ export const getStaticProps: GetStaticProps = async () => {
             posts
         }
     }))
-    const icons = await Promise.all(basicPosts.map(async(post)=>{
-        const icon = await PageInfoService.getIconByPageId(post.curriculumId)
-        return icon;
-    }))
 
     return {
         props: {
             courseAndPosts,
-            icons
         },
     };
 };
 
-export default function BasicCoursePageList({courseAndPosts,icons}: Props){
+export default function BasicCoursePageList({courseAndPosts}: Props){
     const [dataByRole,setDataByRole] = useState(courseAndPosts);
     const { user } = useAuth0();
     useEffect(()=>{
@@ -71,7 +60,7 @@ export default function BasicCoursePageList({courseAndPosts,icons}: Props){
                     <h1 className="text-5xl font-medium text-center mb-16">基礎班カリキュラム</h1>
                     <section className="gap-3 mx-auto">
                         {dataByRole.map((courseAndPosts,i)=>{
-                            return (<SingleCourse course={courseAndPosts.course} posts={courseAndPosts.posts} key={i} icons={icons} />)
+                            return (<SingleCourse course={courseAndPosts.course} posts={courseAndPosts.posts} key={i} />)
                         })}
                     </section>
                 </main>

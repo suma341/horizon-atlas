@@ -2,8 +2,7 @@ import fs from "fs";
 import { getEditTimeData,getAllData,getSinglePage } from "./lib/notionGateway.js";
 import { insertCurriculum,insertblock } from "./lib/insert.js";
 import {fetchAllMdBlock} from "./lib/dataSave.js"
-import { deletePage,deleteCurriculum,deletePageInfo } from "./lib/delete.js";
-import { savePageInfo } from "./lib/dataSave.js"
+import { deletePage,deleteCurriculum } from "./lib/delete.js";
 import path from "path";
 
 
@@ -75,18 +74,14 @@ const insertDatas=async(data)=>{
     const {mdBlocks,pageId} =await getSinglePage(data.title)
     await insertCurriculum(data,pageId);
     initDir(data);
-    await savePageInfo(data.title,pageId,pageId)
     await insertblock(pageId,pageId,mdBlocks,pageId)
     await fetchAllMdBlock(mdBlocks,pageId)
 }
 
 const editDatas=async(data)=>{
     const {mdBlocks,pageId} = await getSinglePage(data.title)
-    console.log(pageId)
     await insertCurriculum(data,pageId);
     initDir(data);
-    await deletePageInfo(pageId);
-    await savePageInfo(data.title,pageId,pageId)
     await deletePage(pageId);
     await insertblock(pageId,pageId,mdBlocks,pageId)
     await fetchAllMdBlock(mdBlocks,pageId)
@@ -96,7 +91,6 @@ const deleteDatas=async(data)=>{
     const {pageId} = await getSinglePage(data.title)
     await deleteCurriculum(pageId);
     await deletePage(pageId);
-    await deletePageInfo(pageId);
 }
 
 getCurrentData().then(async(data)=>{
@@ -114,7 +108,6 @@ getCurrentData().then(async(data)=>{
         const editData = allData.filter((item1)=>data.editedData.some((item2)=>item1.id===item2.id))
         for(const item of editData){
             wait(90)
-            console.log(item)
             await editDatas(item)
         }
         const deleteData = allData.filter((item1)=>data.deleteData.some((item2)=>item1.id===item2.id))

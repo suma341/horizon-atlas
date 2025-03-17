@@ -28,12 +28,6 @@ export const getAllData = async () => {
     const posts = await notion.databases.query({
         database_id:db,
         page_size: 100,
-        filter: {
-            property: "published",
-            checkbox: {
-                equals: true,
-            },
-        }
     });
 
     const allPosts = posts.results.filter(isFullPage);

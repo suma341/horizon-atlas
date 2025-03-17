@@ -12,19 +12,19 @@ export function findHeadingBlock(mdBlocks:MdBlock[]){
         if(block.type==="heading_1"){
             findList.push({
                 type:1,
-                parent:block.parent,
+                parent:block.parent.replaceAll("**",""),
                 blockId:block.blockId
             })
         }else if(block.type==="heading_2"){
             findList.push({
                 type:2,
-                parent:block.parent,
+                parent:block.parent.replaceAll("**",""),
                 blockId:block.blockId
             })
         }else if(block.type==="heading_3"){
             findList.push({
                 type:3,
-                parent:block.parent,
+                parent:block.parent.replaceAll("**",""),
                 blockId:block.blockId
             })
         }

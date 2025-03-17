@@ -8,6 +8,10 @@ type Page ={
     curriculumId:string;
 }
 
+interface data{
+    parent:string;
+}
+
 export async function searchPageById(id:string):Promise<Page>{
     const posts = await CurriculumService.getIdAndTitle();
     for(const post of posts){
@@ -21,9 +25,10 @@ export async function searchPageById(id:string):Promise<Page>{
         const blockIdAndData = await PageDataService.getBlockIdAndDataByCurriculumId(post.curriculumId);
         for(const block of blockIdAndData){
             if(block.blockId===id || id===block.blockId.replaceAll("-","")){
+                const title:data = JSON.parse(block.data)
                 return {
                     pageId:block.blockId,
-                    title:block.data.slice(2),
+                    title:title.parent.replace("##",""),
                     curriculumId:post.curriculumId
                 }
             }
