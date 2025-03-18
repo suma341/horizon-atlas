@@ -10,7 +10,6 @@ import Layout from '@/components/Layout/Layout';
 import { CurriculumService } from '@/lib/services/CurriculumService';
 import { PageDataService } from '@/lib/services/PageDataService';
 import useCurriculumIdStore from '@/stores/curriculumIdStore';
-import SideBlock from '@/components/SideBlock/SideBlock';
 import { IconInfo } from '@/types/iconInfo';
 import useIconStore from '@/stores/iconStore';
 
