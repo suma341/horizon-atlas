@@ -12,6 +12,7 @@ type data ={
     iconType:string;
     iconUrl:string;
     coverUrl:string;
+    order: number;
 }[]
 
 export class CurriculumGateway{    

@@ -39,7 +39,6 @@ export default function TableBlock(props:Props) {
                                 return null;
                             }else{
                                 const md = parseMarkdown({text:column,type:[],link:[]});
-                                console.log("md",md)
                                 return (<td key={j} className='border border-gray-300 px-4 py-2'>
                                     {md.map((text,k)=>{
                                         const style = assignCssProperties(text)

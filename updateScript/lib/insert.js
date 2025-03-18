@@ -7,6 +7,15 @@ function wait(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+async function insertParagragh(curriculumId,pageId,parentId,block,i){
+    const res = await getSingleblock(block.blockId)
+    const data = {
+        parent:block.parent,
+        color:res.paragraph.color
+    }
+    await upsertPage(curriculumId,parentId,JSON.stringify(data),block.blockId,block.type,pageId,i);
+}
+
 async function insertPageInfo(curriculumId,pageId,parentId,block,i){
     const res = await getSinglePageBlock(block.blockId);
     const pageImage = await getPageImage(curriculumId,pageId,res)
@@ -54,6 +63,8 @@ export async function insertblock(curriculumId,parentId,blocks,pageId){
             await insertCallout(blocks[k],parentId,curriculumId,pageId,i)
         }else if(blocks[k].type==="child_page"){
             await insertPageInfo(curriculumId,pageId,parentId,blocks[k],i)
+        }else if(blocks[k].type==="paragraph"){
+            await insertParagragh(curriculumId,pageId,parentId,blocks[k],i)
         }else{
             await upsertPage(curriculumId,parentId,blocks[k].parent,blocks[k].blockId,blocks[k].type,pageId,i);
         }
@@ -73,5 +84,6 @@ export async function insertCurriculum(data,pageId){
         pageId,
         pageImage.iconType,
         pageImage.iconUrl,
-        pageImage.coverUrl);
+        pageImage.coverUrl,
+        data.order);
 }

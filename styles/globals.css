@@ -47,3 +47,8 @@ p{
   background: linear-gradient(135deg, #6B46C1 0%, #B794F4 100%);
   clip-path: polygon(0 0, 100% 0, 100% 80%, 0 100%);
 }
+
+.highlight{
+  background-color: rgb(238, 251, 255);
+  transition-duration: 75ms;
+}

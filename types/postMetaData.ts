@@ -9,4 +9,5 @@ export type PostMetaData = {
   iconType:string;
   iconUrl:string;
   coverUrl:string;
+  order: number;
 };

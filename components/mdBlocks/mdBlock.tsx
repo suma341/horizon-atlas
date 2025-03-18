@@ -30,7 +30,7 @@ export default function MdBlockComponent(props:Props) {
     const {mdBlock,depth } = props;
 
     if(mdBlock.type==='paragraph'){
-      return <Paragraph parent={mdBlock.parent} mdBlock={mdBlock} depth={depth} />
+      return <Paragraph mdBlock={mdBlock} depth={depth} />
     }else if(mdBlock.type==='heading_1'){
         return <Heading1 mdBlock={mdBlock} depth={depth} />
     }else if(mdBlock.type === 'heading_2'){

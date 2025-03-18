@@ -1,10 +1,10 @@
-import "dotenv/config"
+import "dotenv/config";
 
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
 
 export async function upsertCurriculum(
-    title,is_basic_curriculum,visibility,category,tag,curriculumId,iconType,iconUrl,coverUrl){
+    title,is_basic_curriculum,visibility,category,tag,curriculumId,iconType,iconUrl,coverUrl,order){
     const url = `${SUPABASE_URL}/functions/v1/upsert_curriculum`;
     const res = await fetch(url, {
         method: "POST",
@@ -13,7 +13,7 @@ export async function upsertCurriculum(
             "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
         },
         body:JSON.stringify({
-            title,is_basic_curriculum,visibility,category,tag,curriculumId,iconType,iconUrl,coverUrl
+            title,is_basic_curriculum,visibility,category,tag,curriculumId,iconType,iconUrl,coverUrl,order
         }),
     });
     const result = await res.json();

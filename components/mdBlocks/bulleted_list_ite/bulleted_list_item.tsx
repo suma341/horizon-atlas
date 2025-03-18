@@ -1,8 +1,10 @@
 "use client";
 import { MdBlock } from 'notion-to-md/build/types'
-import React from 'react'
-import Paragraph from '../paragraph/paragraph';
+import React, { useEffect, useState } from 'react'
 import MdBlockComponent from '../mdBlock';
+import { MdTypeAndText } from '@/types/textAndType';
+import { parseMarkdown } from '@/lib/parseMD';
+import TextBlock from '../text';
 
 type Props={
     mdBlock:MdBlock;
@@ -13,13 +15,21 @@ export default function BulletedListItem(props:Props) {
     const {mdBlock,depth} =props;
     const splitedText = mdBlock.parent.split(" ")
     const text = splitedText.slice(1).join("");
+    const [mdTypeAndTextList,setMd]=useState<MdTypeAndText[]>([]);
+
+    useEffect(()=>{
+        const inputData:MdTypeAndText = {
+            text,
+            type: [],
+            link:[]
+        };
+        const setData = parseMarkdown(inputData);
+        setMd(setData)
+    },[mdBlock.blockId])
 
     return (
         <div id={mdBlock.blockId}>
-            <p className='my-2 flex'>
-                <span className='font-bold mr-1 text-xl'>・</span>
-                <Paragraph  quote={true} parent={text} depth={depth + 1} mdBlock={mdBlock} />
-            </p>
+            <TextBlock mdTypeAndTextList={mdTypeAndTextList} />
             {mdBlock.children.map((child,i)=>(
                 <div key={i} style={{marginLeft:(depth + 1) * 16}}>
                     <MdBlockComponent mdBlock={child} depth={depth +1} />

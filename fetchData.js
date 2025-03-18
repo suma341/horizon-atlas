@@ -27,11 +27,11 @@ const getAllData = async () => {
                 equals: true,
             },
         },
-        sorts: [{ property: "date", direction: "ascending" }],
     });
 
     const allPosts = posts.results.filter(isFullPage);
-    return allPosts.map(getPageMetaData);
+    // return allPosts.map(getPageMetaData);
+    return allPosts
 };
 
 const getSingleData = async (title) => {
@@ -46,22 +46,22 @@ const getSingleData = async (title) => {
 
     const allPosts = posts.results.filter(isFullPage);
     return allPosts.map(getPageMetaData);
+    // return allPosts
 };
 
 const getPageMetaData = (post) => {
     const getTags = (tags) => tags.map(tag => tag.name || "");
     const getVisibilities = (visibilities) => visibilities.map(visibility=> visibility.name || "");
     const properties = post.properties;
-    const date = properties.date?.date?.start || "";
 
     return {
         id: post.id,
         title: properties.title?.title?.[0]?.plain_text || "untitled",
-        date,
         tags: properties.tag?.multi_select ? getTags(properties.tag.multi_select) : [],
         category: properties.category?.select?.name || "",
         is_basic_curriculum: properties.is_basic_curriculum?.checkbox || false,
-        visibility: properties.visibility?.multi_select ? getVisibilities(properties.visibility.multi_select) : []
+        visibility: properties.visibility?.multi_select ? getVisibilities(properties.visibility.multi_select) : [],
+        order:properties.order.number
     };
 };
 
@@ -74,32 +74,39 @@ export const getSinglePage = async (title) => {
         }
     });
 
-    const pageIds = response.results.map(page => page.id);
     const page = response.results.find(isFullPage);
     if (!page) throw new Error('Page not found');
     const mdBlocks =  await n2m.pageToMarkdown(page.id);
     return {
         mdBlocks,
-        pageId:pageIds[0]
+        pageId:page.id
     };
+    // return page
 };
 
 const getSinglePageData = async (pageId) => {
     const response = await notion.pages.retrieve({
         page_id: pageId,
       });
-    return {
-        icon:response.icon,
-        cover:response.cover
-    };
+      const utcDate = new Date(response.last_edited_time);
+    return utcDate.toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" })
 };
 
-const getSingleblock = async (pageId) => {
+const getSingleblock = async (blockId) => {
     const response = await notion.blocks.retrieve({
-        block_id:pageId
+        block_id:blockId
       });
     
-    return response
+    return {
+        color:response.paragraph.color,
+        parent:response.paragraph.rich_text.map((text)=>{
+            return {
+                annotations:text.annotations,
+                plain_text:text.plain_text,
+                href:text.href
+            }
+        })
+    }
 };
 
 // getAllData().then(data=>{console.log(data)})
@@ -127,16 +134,21 @@ function writeBlock(block){
     }
 }
 
-// getSinglePage("test").then(data=>{
-//     data.map((item)=>{
-//         console.log(item.blockId)
-//         writeBlock(item)
-//     })
-//     wait(1000).then(_=>{
-//         fs.writeFileSync(`./public/notion_data/page.json`, JSON.stringify(l, null, 2));
-//     })
+// getSinglePage("test").then(async(data)=>{
+//     const blocks = [];
+//     for(const block of data.mdBlocks){
+//         const blockdata = await getSingleblock(block.blockId)
+//         blocks.push(blockdata)
+//     }
+//     fs.writeFileSync(`./public/notion_data/page.json`, JSON.stringify(blocks, null, 2));
 // })
 
+// getSinglePage("test").then(async({pageId})=>{
+//     console.log(pageId)
+//     const data = await getSinglePageData(pageId)
+//     console.log(data)
+//     fs.writeFileSync(`./public/notion_data/page.json`, JSON.stringify(data, null, 2))
+// })
 
 getSinglePage("test").then(async({mdBlocks})=>{
     const a = [];
@@ -147,3 +159,4 @@ getSinglePage("test").then(async({mdBlocks})=>{
     fs.writeFileSync(`./public/notion_data/class.json`, JSON.stringify(a, null, 2))
 })
 
+// getAllData().then(data=>fs.writeFileSync(`./public/notion_data/class.json`, JSON.stringify(data, null, 2)))

@@ -55,7 +55,8 @@ const getPageMetaData = (post) => {
         tags: properties.tag?.multi_select ? getTags(properties.tag.multi_select) : [],
         category: properties.category?.select?.name || "",
         is_basic_curriculum: properties.is_basic_curriculum?.checkbox || false,
-        visibility: properties.visibility?.multi_select ? getVisibilities(properties.visibility.multi_select) : []
+        visibility: properties.visibility?.multi_select ? getVisibilities(properties.visibility.multi_select) : [],
+        order:properties.order.number
     };
 };
 

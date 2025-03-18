@@ -12,6 +12,7 @@ type data ={
     iconType:string;
     iconUrl:string;
     coverUrl:string;
+    order:number;
 }
 
 const converseData =(data:data)=>{
@@ -25,7 +26,8 @@ const converseData =(data:data)=>{
         id:`${data.id}`,
         iconType:data.iconType,
         iconUrl:data.iconUrl,
-        coverUrl:data.coverUrl
+        coverUrl:data.coverUrl,
+        order: data.order
     }
     return postMetaData;
 }
@@ -38,7 +40,7 @@ export class CurriculumService{
             const curriculumData:PostMetaData = converseData(data);
             allPosts.push(curriculumData);
         }
-        return allPosts.sort((a,b)=>parseInt(a.id) -parseInt(b.id));
+        return allPosts.sort((a,b)=>a.order - b.order);
     }
 
     static getAllTags=async()=>{
@@ -73,7 +75,7 @@ export class CurriculumService{
             const postMetaData = converseData(data);
             metaData.push(postMetaData)
         }
-        return metaData.sort((a,b)=>parseInt(a.id) -parseInt(b.id));
+        return metaData.sort((a,b)=>a.order -b.order);
     }
 
     static getBasicCurriculum=async()=>{
@@ -83,7 +85,7 @@ export class CurriculumService{
             const postMetaData = converseData(data);
             metaData.push(postMetaData)
         }
-        return metaData.sort((a,b)=>parseInt(a.id) -parseInt(b.id));
+        return metaData.sort((a,b)=>a.order -b.order);
     }    
 
     static getIdAndTitle=async()=>{
