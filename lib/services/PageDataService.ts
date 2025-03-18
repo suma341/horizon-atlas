@@ -144,7 +144,8 @@ export class PageDataService{
         const title = pageBlockData.parent.replace("##","")
         const iconUrl = pageBlockData.iconUrl;
         const iconType = pageBlockData.iconType;
-        return {title,iconUrl,iconType};
+        const coverUrl = pageBlockData.coverUrl;
+        return {title,iconUrl,iconType,coverUrl};
     }
 
     static getChildrenData=async(pageId:string)=>{

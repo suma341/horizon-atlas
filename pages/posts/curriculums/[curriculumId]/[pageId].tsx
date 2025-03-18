@@ -28,6 +28,7 @@ type Props = {
   iconInfo:IconInfo[];
   iconType:string;
   iconUrl:string;
+  coverUrl:string;
 };
 
 export const getStaticPaths = async () => {
@@ -108,7 +109,8 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
           pageId,
           iconInfo:iconInfoList,
           iconUrl:titleAndIcon.iconUrl,
-          iconType:titleAndIcon.iconType
+          iconType:titleAndIcon.iconType,
+          coverUrl:titleAndIcon.coverUrl
         }
       }
     }
@@ -121,12 +123,13 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       pageId,
       iconInfo:iconInfoList,
       iconUrl:singlePost.iconUrl,
-      iconType:singlePost.iconType
+      iconType:singlePost.iconType,
+      coverUrl:singlePost.coverUrl
     },
   };
 };
 
-const Post =({ metadata, mdBlocks,pageNavs,childrenData,pageId,iconInfo,title,iconType,iconUrl}: Props) => {
+const Post =({ metadata, mdBlocks,pageNavs,childrenData,pageId,iconInfo,title,iconType,iconUrl,coverUrl}: Props) => {
   const { setCurriculumId } = useCurriculumIdStore();
   const { setIcons } = useIconStore();
   useEffect(()=>{
@@ -136,12 +139,13 @@ const Post =({ metadata, mdBlocks,pageNavs,childrenData,pageId,iconInfo,title,ic
   return (
     <Layout pageNavs={pageNavs} sideNavProps={childrenData}>
       <div className='p-4 pt-24 pb-8'>
-        <section className={childrenData ? 'p-5 bg-white pb-10 md:w-3/4' : "p-5 bg-white pb-10"}>
-          <div className='flex'>
-          {iconType==="" && <Image src={"/horizon-atlas/file_icon.svg"} alt={''} width={20} height={20} className='relative w-auto h-8 m-0 mr-2 top-0.5' />}
-          {iconType !== "emoji" && iconType!=="" && <Image src={iconUrl} alt={''} width={20} height={20} className='relative w-auto h-8 m-0 mr-2 top-0.5' />}
-          {iconType === "emoji" && <p className='relative w-auto h-8 m-0 mr-2 top-0.5 text-3xl'>{iconUrl}</p>}
-            <h2 className='w-full text-2xl font-medium'>{title}</h2>
+      {coverUrl!=="" && <Image src={coverUrl} alt={''} width={100} height={100} className='h-48 top-0' style={{width:"100vw"}} />}
+        <section className={childrenData ? 'px-3 bg-white pb-10 md:w-3/4' : "px-3 bg-white pb-10"} style={coverUrl!=="" ? {} : {paddingTop:"1.25rem"}}>
+          <div>
+          {iconType==="" && <Image src={"/horizon-atlas/file_icon.svg"} alt={''} width={20} height={20} className='relative w-14 h-14 m-0' style={coverUrl!=="" ? {top:"-25px",left:"3px"} : {marginBottom:"1.25rem"}} />}
+          {iconType !== "emoji" && iconType!=="" && <Image src={iconUrl} alt={''} width={20} height={20} className='relative w-14 h-14 m-0' style={coverUrl!=="" ? {top:"-25px",left:"3px"} : {marginBottom:"1.25rem"}} />}
+          {iconType === "emoji" && <p className='relative w-14 h-14 text-6xl' style={coverUrl!=="" ? {top:"-25px",left:"3px"} : {marginBottom:"1.25rem"}}>{iconUrl}</p>}
+            <h2 className='w-full text-3xl font-bold'>{title}</h2>
           </div>
           <div className='border-b mt-2'></div>
           {pageId === metadata.curriculumId && <>
