@@ -37,11 +37,11 @@ function Table_of_contents({mdBlock}:Props) {
             return (
                 <div key={i} onClick={()=>scrollToSection(heading.blockId)} className='mt-0.5 w-full py-1 rounded-md cursor-pointer hover:bg-neutral-100'>
                     {heading.type===1 && <p className='ml-0.5 text-neutral-500 underline'>
-                        {heading.parent.slice(2)}</p>}
+                        {heading.parent}</p>}
                     {heading.type===2 && <p className='ml-5 mt-1 text-neutral-500 underline'>
-                        {heading.parent.slice(3)}</p>}
+                        {heading.parent}</p>}
                     {heading.type===3 && <p className='ml-8 text-neutral-500 underline'>
-                        {heading.parent.slice(4)}</p>}
+                        {heading.parent}</p>}
                 </div>)
         })}
     </div>

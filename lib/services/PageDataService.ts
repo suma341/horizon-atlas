@@ -8,6 +8,10 @@ import { pageNav } from "@/types/pageNav";
 import { CurriculumService } from "./CurriculumService";
 import { IconInfo } from "@/types/iconInfo";
 import { PageBlockData } from "@/types/pageBlockData";
+import { ParagraphData } from "@/types/paragraph";
+import { Parent } from "@/types/Parent";
+import { CalloutData } from "@/types/callout";
+import { HeadingData } from "@/types/headingData";
 
 function buildTree(pageData:PageData[], parentId:string):MdBlock[] {
     const mdBlocks:MdBlock[] = pageData
@@ -22,27 +26,31 @@ function buildTree(pageData:PageData[], parentId:string):MdBlock[] {
     return mdBlocks;
 }
 
-async function rewriteLinks(text: string) {
-    const regex = /\[([^\]]+)\]\(([^)]+)\)/g;
-    const matches = [...text.matchAll(regex)]; 
-    for (const match of matches) {
-      const [fullMatch, label, url] = match;
-      let newUrl = url;
-      if (url.startsWith("https://") || url.startsWith("http://")) {
-        newUrl = url;
-      } else {
-        const page = await searchPageById(url.slice(1));
-        if (page.pageId === "") {
-          newUrl = "";
-        } else {
-          newUrl = `/posts/curriculums/${page.curriculumId}/${page.pageId}`;
-          
+async function rewriteLinks(parent: Parent[]) {
+    const rewritedData = await Promise.all(parent.map(async(data)=>{
+        if(data.href){
+            if (data.href.startsWith("https://") || data.href.startsWith("http://")){
+                return data
+            }else{
+                const page = await searchPageById(data.href.slice(1))
+                if(page.pageId===""){
+                    return {
+                        ...data,
+                        href:""
+                    }
+                }else{
+                    const url =  `/horizon-atlas/posts/curriculums/${page.curriculumId}/${page.pageId}`;
+                    return {
+                        ...data,
+                        href:url
+                    }
+                }
+            }
+        }else{
+            return data
         }
-      }
-      text = text.replace(fullMatch, `[${label}](${newUrl})`);
-    }
-  
-    return text;
+    }))
+    return rewritedData
   }
 
 async function rewriteLinkTopage(text:string){
@@ -65,17 +73,20 @@ async function processBlock(block:MdBlock,mdBlocks:MdBlock[]):Promise<MdBlock>{
             children: block.children.length===0 ? [] :
                 await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks)))
         }
-    }
-    if(block.type==="paragraph"){
-        const linkRewrited = await rewriteLinks(block.parent);
+    }else if(block.type==="paragraph"){
+        const data:ParagraphData = JSON.parse(block.parent);
+        const linkRewrited = await rewriteLinks(data.parent);
+        const parent = {
+            ...data,
+            parent:linkRewrited
+        }
         return {
             ...block,
-            parent:linkRewrited,
+            parent:JSON.stringify(parent),
             children: block.children.length===0 ? [] :
                 await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks)))
         }
-    }
-    if(block.type==="table_of_contents"){
+    }else if(block.type==="table_of_contents"){
         const headingList = findHeadingBlock(mdBlocks);
         const stringfyData = JSON.stringify({headingList});
         return {
@@ -84,11 +95,36 @@ async function processBlock(block:MdBlock,mdBlocks:MdBlock[]):Promise<MdBlock>{
             children: block.children.length===0 ? [] :
                 await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks)))
         }
-    }
-    if(block.type==="child_page"){
+    }else if(block.type==="child_page"){
         return {
             ...block,
             children:[]
+        }
+    }else if(block.type === "callout"){
+        const data:CalloutData = JSON.parse(block.parent);
+        const linkRewrited = await rewriteLinks(data.parent);
+        const parent = {
+            ...data,
+            parent:linkRewrited
+        }
+        return {
+            ...block,
+            parent:JSON.stringify(parent),
+            children: block.children.length===0 ? [] :
+                await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks)))
+        }
+    }else if(block.type==='heading_1' || block.type==='heading_2' || block.type==='heading_3'){
+        const data:HeadingData = JSON.parse(block.parent);
+        const linkRewrited = await rewriteLinks(data.parent);
+        const parent = {
+            ...data,
+            parent:linkRewrited
+        }
+        return {
+            ...block,
+            parent:JSON.stringify(parent),
+            children: block.children.length===0 ? [] :
+                await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks)))
         }
     }
     return {

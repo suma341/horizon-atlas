@@ -65,7 +65,7 @@ const getPageMetaData = (post) => {
     };
 };
 
-export const getSinglePage = async (title) => {
+const getSinglePage = async (title) => {
     const response = await notion.databases.query({
         database_id: NOTION_DATABASE_ID,
         filter: {
@@ -84,6 +84,14 @@ export const getSinglePage = async (title) => {
     // return page
 };
 
+const getPageData = async (title) => {
+    const res = await notion.databases.retrieve({
+        database_id: NOTION_DATABASE_ID,
+    });
+
+    return res.id
+};
+
 const getSinglePageData = async (pageId) => {
     const response = await notion.pages.retrieve({
         page_id: pageId,
@@ -96,16 +104,16 @@ const getSingleblock = async (blockId) => {
     const response = await notion.blocks.retrieve({
         block_id:blockId
       });
-    
-    return {
-        color:response.paragraph.color,
-        parent:response.paragraph.rich_text.map((text)=>{
+      return {
+        parent:response[response.type].rich_text.map((text)=>{
             return {
                 annotations:text.annotations,
                 plain_text:text.plain_text,
                 href:text.href
             }
-        })
+        }),
+        color:response[response.type].color,
+        is_toggleable:response[response.type].is_toggleable
     }
 };
 

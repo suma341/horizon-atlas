@@ -8,6 +8,10 @@ const db = process.env.NOTION_DB_ID_HORIZON
 const notion = new Client({ auth:token });
 const n2m = new NotionToMarkdown({ notionClient: notion });
 
+function wait(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 export const getEditTimeData = async () => {
     const posts = await notion.databases.query({
         database_id:db,
@@ -80,21 +84,42 @@ export const getSinglePage = async (title) => {
     }
 };
 
-export const getSinglePageBlock = async (pageId) => {
-    const response = await notion.pages.retrieve({
-        page_id: pageId,
-      });
-
-    return {
-        icon:response.icon,
-        cover:response.cover
-    };
+export const getSinglePageBlock = async (pageId, retries=10) => {
+    for (let attempt = 0; attempt < retries; attempt++) {
+        try {
+            const response = await notion.pages.retrieve({
+                page_id: pageId,
+              });
+        
+            return {
+                icon:response.icon,
+                cover:response.cover
+            };
+        } catch (error) {
+            if (error.status === 429) {
+                console.warn(`Rate limit exceeded. Retrying in ${10} seconds...`);
+                await wait(1000)
+            } else {
+                throw error;
+            }
+        }
+    }
+    throw new Error("Failed to retrieve block after multiple attempts.");
 };
 
-export const getSingleblock = async (blockId) => {
-    const response = await notion.blocks.retrieve({
-        block_id:blockId
-      });
-    
-    return response;
+export const getSingleblock = async (blockId, retries = 5) => {
+    for (let attempt = 0; attempt < retries; attempt++) {
+        try {
+            const response = await notion.blocks.retrieve({ block_id: blockId });
+            return response;
+        } catch (error) {
+            if (error.status === 429) {
+                console.warn(`Rate limit exceeded. Retrying in ${10} seconds...`);
+                await wait(1000)
+            } else {
+                throw error;
+            }
+        }
+    }
+    throw new Error("Failed to retrieve block after multiple attempts.");
 };

@@ -23,7 +23,7 @@ export default function TableBlock(props:Props) {
                         {columns.map((column, j)=>{
                             if(i===0){
                                 const md = parseMarkdown({text:column,type:[],link:[]})
-                                return (<th key={j} className='border border-gray-300 bg-neutral-100 px-4 py-2'>
+                                return (<th key={j} className='border border-gray-300 px-4 py-2'>
                                     {md.map((text,k)=>{
                                         const style = assignCssProperties(text)
                                         return (

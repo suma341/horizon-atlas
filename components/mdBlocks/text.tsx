@@ -23,7 +23,6 @@ function TextBlock({mdTypeAndTextList}:Props) {
                 }
                 return (<span key={index} style={style}>{text.text}</span>)
             }else{
-                console.log("text.link",text.text)
                 if(text.link[0]===''){
                     return (<span key={index} style={style} className='text-neutral-500 underline'>
                         {text.text}

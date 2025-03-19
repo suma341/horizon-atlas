@@ -2,7 +2,7 @@ import { CSSProperties } from "react"
 
 export const getColorProperty=(color:string):CSSProperties=>{
     if(color==="default_background"){
-        return {backgroundColor:"white"}
+        return {}
     }else if(color==="gray_background"){
         return {backgroundColor:"rgb(248, 248, 247)"}
     }else if(color==="brown_background"){
@@ -22,5 +22,5 @@ export const getColorProperty=(color:string):CSSProperties=>{
     }else if(color==="red_background"){
         return {backgroundColor:"rgb(253, 235, 236)"}
     }
-    return {backgroundColor:"white"}
+    return {}
 }

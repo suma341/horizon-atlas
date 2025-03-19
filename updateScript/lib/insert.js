@@ -7,11 +7,33 @@ function wait(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+async function insertHeading(curriculumId,pageId,parentId,block,i){
+    const res = await getSingleblock(block.blockId)
+    const data = {
+        parent:res[res.type].rich_text.map((text)=>{
+            return {
+                annotations:text.annotations,
+                plain_text:text.plain_text,
+                href:text.href
+            }
+        }),
+        color:res[res.type].color,
+        is_toggleable:res[res.type].is_toggleable
+    }
+    await upsertPage(curriculumId,parentId,JSON.stringify(data),block.blockId,block.type,pageId,i);
+}
+
 async function insertParagragh(curriculumId,pageId,parentId,block,i){
     const res = await getSingleblock(block.blockId)
     const data = {
-        parent:block.parent,
-        color:res.paragraph.color
+        color:res.paragraph.color,
+        parent:res.paragraph.rich_text.map((text)=>{
+            return {
+                annotations:text.annotations,
+                plain_text:text.plain_text,
+                href:text.href
+            }
+        })
     }
     await upsertPage(curriculumId,parentId,JSON.stringify(data),block.blockId,block.type,pageId,i);
 }
@@ -30,8 +52,14 @@ async function insertPageInfo(curriculumId,pageId,parentId,block,i){
 
 async function insertCallout(block,parentId,curriculumId,pageId,i){
     const res = await getSingleblock(block.blockId)
+    const parent = res.callout.rich_text.map((text)=>{
+        return {
+            annotations:text.annotations,
+            plain_text:text.plain_text,
+            href:text.href
+        }
+    })
     if(res.icon && res.icon.emoji){
-        const parent = block.parent.replace(`${item.icon.emoji} `,"")
         const data = {
             icon:res.callout.icon,
             color:res.callout.color,
@@ -42,7 +70,7 @@ async function insertCallout(block,parentId,curriculumId,pageId,i){
         const data = {
             icon:res.callout.icon,
             color:res.callout.color,
-            parent:block.parent
+            parent
         }
         await upsertPage(curriculumId,parentId,JSON.stringify(data),block.blockId,block.type,pageId,i);
     }
@@ -65,6 +93,8 @@ export async function insertblock(curriculumId,parentId,blocks,pageId){
             await insertPageInfo(curriculumId,pageId,parentId,blocks[k],i)
         }else if(blocks[k].type==="paragraph"){
             await insertParagragh(curriculumId,pageId,parentId,blocks[k],i)
+        }else if(blocks[k].type ==='heading_1' || blocks[k].type ==='heading_2' || blocks[k].type ==='heading_3'){
+            await insertHeading(curriculumId,pageId,parentId,blocks[k],i)
         }else{
             await upsertPage(curriculumId,parentId,blocks[k].parent,blocks[k].blockId,blocks[k].type,pageId,i);
         }
