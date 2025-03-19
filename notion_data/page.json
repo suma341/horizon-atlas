@@ -1,1 +1,45 @@
-"2025/3/18 23:47:00"
+{
+  "icon": {
+    "type": "emoji",
+    "emoji": "🆕"
+  },
+  "color": "yellow_background",
+  "parent": [
+    {
+      "annotations": {
+        "bold": false,
+        "italic": false,
+        "strikethrough": false,
+        "underline": false,
+        "code": false,
+        "color": "orange"
+      },
+      "plain_text": "ああ",
+      "href": null
+    },
+    {
+      "annotations": {
+        "bold": false,
+        "italic": false,
+        "strikethrough": false,
+        "underline": false,
+        "code": true,
+        "color": "orange"
+      },
+      "plain_text": "あ",
+      "href": null
+    },
+    {
+      "annotations": {
+        "bold": true,
+        "italic": false,
+        "strikethrough": false,
+        "underline": false,
+        "code": false,
+        "color": "orange"
+      },
+      "plain_text": "ああ",
+      "href": null
+    }
+  ]
+}

@@ -1,203 +1,56 @@
 [
   {
-    "color": "default",
     "parent": [
       {
         "annotations": {
-          "bold": true,
-          "italic": false,
-          "strikethrough": false,
-          "underline": false,
-          "code": false,
-          "color": "pink"
-        },
-        "plain_text": "あ",
-        "href": null
-      },
-      {
-        "annotations": {
           "bold": false,
-          "italic": true,
+          "italic": false,
           "strikethrough": false,
           "underline": false,
           "code": false,
           "color": "default"
         },
-        "plain_text": "あ",
+        "plain_text": "ああああ",
         "href": null
-      },
-      {
-        "annotations": {
-          "bold": false,
-          "italic": false,
-          "strikethrough": false,
-          "underline": true,
-          "code": false,
-          "color": "default"
-        },
-        "plain_text": "あ",
-        "href": null
-      },
-      {
-        "annotations": {
-          "bold": false,
-          "italic": false,
-          "strikethrough": true,
-          "underline": true,
-          "code": false,
-          "color": "default"
-        },
-        "plain_text": "あ",
-        "href": null
-      },
-      {
-        "annotations": {
-          "bold": false,
-          "italic": false,
-          "strikethrough": true,
-          "underline": false,
-          "code": true,
-          "color": "default"
-        },
-        "plain_text": "あ",
-        "href": null
-      },
-      {
-        "annotations": {
-          "bold": false,
-          "italic": false,
-          "strikethrough": false,
-          "underline": false,
-          "code": true,
-          "color": "default"
-        },
-        "plain_text": "あ",
-        "href": null
-      },
-      {
-        "annotations": {
-          "bold": false,
-          "italic": false,
-          "strikethrough": false,
-          "underline": false,
-          "code": false,
-          "color": "gray"
-        },
-        "plain_text": "あ",
-        "href": null
-      },
-      {
-        "annotations": {
-          "bold": false,
-          "italic": false,
-          "strikethrough": false,
-          "underline": false,
-          "code": false,
-          "color": "brown"
-        },
-        "plain_text": "あ",
-        "href": null
-      },
-      {
-        "annotations": {
-          "bold": false,
-          "italic": false,
-          "strikethrough": false,
-          "underline": false,
-          "code": false,
-          "color": "orange"
-        },
-        "plain_text": "あ",
-        "href": null
-      },
-      {
-        "annotations": {
-          "bold": false,
-          "italic": false,
-          "strikethrough": false,
-          "underline": false,
-          "code": false,
-          "color": "yellow"
-        },
-        "plain_text": "あ",
-        "href": null
-      },
-      {
-        "annotations": {
-          "bold": false,
-          "italic": false,
-          "strikethrough": false,
-          "underline": false,
-          "code": false,
-          "color": "green"
-        },
-        "plain_text": "あ",
-        "href": null
-      },
-      {
-        "annotations": {
-          "bold": false,
-          "italic": false,
-          "strikethrough": false,
-          "underline": false,
-          "code": false,
-          "color": "blue"
-        },
-        "plain_text": "あ",
-        "href": null
-      },
-      {
-        "annotations": {
-          "bold": false,
-          "italic": false,
-          "strikethrough": false,
-          "underline": false,
-          "code": false,
-          "color": "purple"
-        },
-        "plain_text": "あ",
-        "href": null
-      },
-      {
-        "annotations": {
-          "bold": false,
-          "italic": false,
-          "strikethrough": false,
-          "underline": false,
-          "code": false,
-          "color": "pink"
-        },
-        "plain_text": "あ",
-        "href": null
-      },
-      {
-        "annotations": {
-          "bold": false,
-          "italic": false,
-          "strikethrough": false,
-          "underline": false,
-          "code": false,
-          "color": "red"
-        },
-        "plain_text": "あ",
-        "href": null
-      },
-      {
-        "annotations": {
-          "bold": false,
-          "italic": false,
-          "strikethrough": false,
-          "underline": false,
-          "code": false,
-          "color": "red"
-        },
-        "plain_text": "ああ",
-        "href": "/1ada501ef33780e7afabc3917c00a689"
       }
-    ]
+    ],
+    "color": "default",
+    "is_toggleable": false
   },
   {
+    "parent": [
+      {
+        "annotations": {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "underline": false,
+          "code": false,
+          "color": "default"
+        },
+        "plain_text": "ああああ",
+        "href": null
+      }
+    ],
     "color": "default",
-    "parent": []
+    "is_toggleable": false
+  },
+  {
+    "parent": [
+      {
+        "annotations": {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "underline": false,
+          "code": false,
+          "color": "default"
+        },
+        "plain_text": "ああああ",
+        "href": null
+      }
+    ],
+    "color": "default",
+    "is_toggleable": false
   }
 ]
