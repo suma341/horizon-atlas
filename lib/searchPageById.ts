@@ -1,6 +1,5 @@
 import { CurriculumService } from "./services/CurriculumService";
 import { PageDataService } from "./services/PageDataService";
-// import { getPage } from "./services/PageService";
 
 type Page ={
     pageId:string;

@@ -90,7 +90,6 @@ export const getSinglePageBlock = async (pageId, retries=10) => {
             const response = await notion.pages.retrieve({
                 page_id: pageId,
               });
-        
             return {
                 icon:response.icon,
                 cover:response.cover

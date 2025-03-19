@@ -5,6 +5,7 @@ import MdBlockComponent from '../mdBlock';
 import { getColorProperty } from '@/lib/backgroundCorlor';
 import { ParagraphData } from '@/types/paragraph';
 import { assignCss } from '@/lib/assignCssProperties';
+import { useRouter } from 'next/router';
 
 type Props={
     mdBlock:MdBlock;
@@ -17,10 +18,33 @@ export default function Paragraph(props:Props){
     const textData:ParagraphData = JSON.parse(mdBlock.parent)
     const colorProperty = getColorProperty(textData.color);
 
-    const handleClick =(href:string | null)=>{
+    const router = useRouter()
+
+    const scrollToSection = (targetId: string) => {
+        const element = document.getElementById(targetId);
+        if (element) {
+            const yOffset = -100; 
+            const y = element.getBoundingClientRect().top + window.scrollY + yOffset;
+            window.scrollTo({ top: y, behavior: "smooth" });
+        }
+        element?.classList.add("highlight")
+        setTimeout(()=>{
+            element?.classList.remove("highlight");
+        },1600)
+    };
+
+    const handleClick =(href:string | null, scroll:string | undefined)=>{
         if(href && href!==""){
-            if(window!==undefined){
-                window.location.href = href
+            if(router.asPath===href){
+                if(scroll){
+                    scrollToSection(scroll)
+                }
+            }else{
+                if(scroll){
+                    router.push(`${href}#${scroll}`)
+                }else{
+                    router.push(href)
+                }
             }
         }
     }
@@ -35,7 +59,7 @@ export default function Paragraph(props:Props){
                 {textData.parent.map((text,i)=>{
                     const style = assignCss(text)
                     return (
-                    <span key={i} style={style} onClick={()=>handleClick(text.href)}>{text.plain_text}</span>
+                    <span key={i} style={style} onClick={()=>handleClick(text.href,text.scroll)}>{text.plain_text}</span>
                 )})}
                 {textData.parent.length===0 && <span className='opacity-0' >a</span>}
             </p>

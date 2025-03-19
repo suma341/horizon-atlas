@@ -5,6 +5,7 @@ import React, { useState } from 'react'
 import MdBlockComponent from '../mdBlock';
 import { HeadingData } from '@/types/headingData';
 import { getColorProperty } from '@/lib/backgroundCorlor';
+import { useRouter } from 'next/router';
 
 type Props={
     mdBlock:MdBlock
@@ -17,10 +18,33 @@ export default function Heading1(props:Props) {
     const data:HeadingData = JSON.parse(mdBlock.parent)
     const colorProperty = getColorProperty(data.color);
 
-    const handleClick =(href:string | null)=>{
+    const router = useRouter()
+
+    const scrollToSection = (targetId: string) => {
+        const element = document.getElementById(targetId);
+        if (element) {
+            const yOffset = -100; 
+            const y = element.getBoundingClientRect().top + window.scrollY + yOffset;
+            window.scrollTo({ top: y, behavior: "smooth" });
+        }
+        element?.classList.add("highlight")
+        setTimeout(()=>{
+            element?.classList.remove("highlight");
+        },1600)
+    };
+
+    const handleClick =(href:string | null, scroll:string | undefined)=>{
         if(href && href!==""){
-            if(window!==undefined){
-                window.location.href = href
+            if(router.asPath===href){
+                if(scroll){
+                    scrollToSection(scroll)
+                }
+            }else{
+                if(scroll){
+                    router.push(`${href}#${scroll}`)
+                }else{
+                    router.push(href)
+                }
             }
         }
     }
@@ -30,7 +54,7 @@ export default function Heading1(props:Props) {
             {!data.is_toggleable && <h1 className='mb-1 mt-8 font-bold text-3xl' style={colorProperty}>
                 {data.parent.map((text,i)=>{
                     const style = assignCss(text)
-                    return (<span style={style} key={i} onClick={()=>handleClick(text.href)}>{text.plain_text}</span>)
+                    return (<span style={style} key={i} onClick={()=>handleClick(text.href,text.scroll)}>{text.plain_text}</span>)
                 })}
             </h1>}
             {data.is_toggleable && <div className='flex'>
@@ -43,7 +67,7 @@ export default function Heading1(props:Props) {
                 <h1 className='mb-1 mt-8 font-bold text-3xl' style={colorProperty}>
                     {data.parent.map((text,i)=>{
                         const style = assignCss(text)
-                        return (<span style={style} key={i} onClick={()=>handleClick(text.href)}>{text.plain_text}</span>)
+                        return (<span style={style} key={i} onClick={()=>handleClick(text.href,text.scroll)}>{text.plain_text}</span>)
                     })}
                 </h1>
             </div>}

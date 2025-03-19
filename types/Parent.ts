@@ -8,5 +8,6 @@ export type Parent={
         color:string;
     };
     plain_text:string;
-    href:string | null
+    href:string | null;
+    scroll:string | undefined;
 };

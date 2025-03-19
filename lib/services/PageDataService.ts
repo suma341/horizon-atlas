@@ -12,6 +12,7 @@ import { ParagraphData } from "@/types/paragraph";
 import { Parent } from "@/types/Parent";
 import { CalloutData } from "@/types/callout";
 import { HeadingData } from "@/types/headingData";
+import { searchBlock } from "../searchBlock";
 
 function buildTree(pageData:PageData[], parentId:string):MdBlock[] {
     const mdBlocks:MdBlock[] = pageData
@@ -32,6 +33,31 @@ async function rewriteLinks(parent: Parent[]) {
             if (data.href.startsWith("https://") || data.href.startsWith("http://")){
                 return data
             }else{
+                if(data.href.split("#")[1]){
+                    const page = await searchPageById(data.href.split("#")[0].slice(1))
+                    if(page.pageId===""){
+                        return {
+                            ...data,
+                            href:""
+                        }
+                    }else{
+                        const targetId = await searchBlock(data.href.split("#")[1]);
+                        if(targetId){
+                            const url = `/posts/curriculums/${page.curriculumId}/${page.pageId}`
+                            return {
+                                ...data,
+                                href:url,
+                                scroll:targetId
+                            }
+                        }else{
+                            const url = `/posts/curriculums/${page.curriculumId}/${page.pageId}`;
+                            return {
+                                ...data,
+                                href:url,
+                            }
+                        }
+                    }
+                }
                 const page = await searchPageById(data.href.slice(1))
                 if(page.pageId===""){
                     return {
@@ -39,7 +65,7 @@ async function rewriteLinks(parent: Parent[]) {
                         href:""
                     }
                 }else{
-                    const url =  `/horizon-atlas/posts/curriculums/${page.curriculumId}/${page.pageId}`;
+                    const url =  `/posts/curriculums/${page.curriculumId}/${page.pageId}`;
                     return {
                         ...data,
                         href:url
@@ -218,6 +244,11 @@ export class PageDataService{
     static getPageTitle=async(pageId:string)=>{
         const title:{data:string}[] = await PageDataGateway.getPageDataByConditions("data",{"blockId":pageId})
         return title[0].data.slice(3);
+    }
+
+    static getAllBlockId=async()=>{
+        const id:{blockId:string}[] = await PageDataGateway.getPageDataByConditions("blockId")
+        return id.map((data)=>data.blockId)
     }
 
     static getPageIcon=async(pageId:string):Promise<IconInfo>=>{
