@@ -34,7 +34,7 @@ export const getAllData = async () => {
         page_size: 100,
     });
 
-    const allPosts = posts.results.filter(isFullPage);
+    const allPosts = posts.results;
     return allPosts.map(getPageMetaData);
 };
 
@@ -55,6 +55,8 @@ const getPageMetaData = (post) => {
 
     return {
         id: post.id,
+        cover:post.cover,
+        icon:post.icon,
         title: properties.title?.title?.[0]?.plain_text || "untitled",
         tags: properties.tag?.multi_select ? getTags(properties.tag.multi_select) : [],
         category: properties.category?.select?.name || "",
@@ -84,6 +86,14 @@ export const getSinglePage = async (title) => {
     }
 };
 
+export const getPageId = async (title) => {
+    const response = await notion.pages.retrieve({
+
+    });
+    return response.id;
+        
+};
+
 export const getSinglePageBlock = async (pageId, retries=10) => {
     for (let attempt = 0; attempt < retries; attempt++) {
         try {
@@ -110,6 +120,25 @@ export const getSingleblock = async (blockId, retries = 5) => {
     for (let attempt = 0; attempt < retries; attempt++) {
         try {
             const response = await notion.blocks.retrieve({ block_id: blockId });
+            return response;
+        } catch (error) {
+            if (error.status === 429) {
+                console.warn(`Rate limit exceeded. Retrying in ${10} seconds...`);
+                await wait(1000)
+            } else {
+                throw error;
+            }
+        }
+    }
+    throw new Error("Failed to retrieve block after multiple attempts.");
+};
+
+export const getChildBlocks = async (blockId, retries = 5) => {
+    for (let attempt = 0; attempt < retries; attempt++) {
+        try {
+            const response = await notion.blocks.children.list({
+                "block_id":blockId,
+            })
             return response;
         } catch (error) {
             if (error.status === 429) {

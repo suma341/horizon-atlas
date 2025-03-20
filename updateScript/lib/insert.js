@@ -40,7 +40,7 @@ async function insertParagragh(curriculumId,pageId,parentId,block,i){
 
 async function insertPageInfo(curriculumId,pageId,parentId,block,i){
     const res = await getSinglePageBlock(block.blockId);
-    const pageImage = await getPageImage(curriculumId,pageId,res)
+    const pageImage = await getPageImage(curriculumId,pageId,res.cover,res.icon)
     const data = {
         parent:block.parent,
         iconType:pageImage.iconType,
@@ -102,16 +102,15 @@ export async function insertblock(curriculumId,parentId,blocks,pageId){
     }
 }
 
-export async function insertCurriculum(data,pageId){
-    const res = await getSinglePageBlock(pageId);
-    const pageImage = await getPageImage(pageId,pageId,res)
+export async function insertCurriculum(data){
+    const pageImage = await getPageImage(data.id,data.id,data.cover,data.icon)
     await upsertCurriculum(
         data.title,
         data.is_basic_curriculum,
         data.visibility,
         data.category,
         data.tags,
-        pageId,
+        data.id,
         pageImage.iconType,
         pageImage.iconUrl,
         pageImage.coverUrl,

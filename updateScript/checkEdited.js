@@ -72,7 +72,7 @@ const initDir=(pageId)=>{
 
 const insertDatas=async(data)=>{
     const {mdBlocks,pageId} =await getSinglePage(data.title)
-    await insertCurriculum(data,pageId);
+    await insertCurriculum(data);
     initDir(data);
     await insertblock(pageId,pageId,mdBlocks,pageId)
     await fetchAllMdBlock(mdBlocks,pageId)
@@ -80,7 +80,7 @@ const insertDatas=async(data)=>{
 
 const editDatas=async(data)=>{
     const {mdBlocks,pageId} = await getSinglePage(data.title)
-    await insertCurriculum(data,pageId);
+    await insertCurriculum(data);
     initDir(data);
     await deletePage(pageId);
     await insertblock(pageId,pageId,mdBlocks,pageId)
@@ -88,9 +88,8 @@ const editDatas=async(data)=>{
 }
 
 const deleteDatas=async(data)=>{
-    const {pageId} = await getSinglePage(data.title)
-    await deleteCurriculum(pageId);
-    await deletePage(pageId);
+    await deleteCurriculum(data.id);
+    await deletePage(data.id);
 }
 
 getCurrentData().then(async(data)=>{

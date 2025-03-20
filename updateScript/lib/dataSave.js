@@ -106,37 +106,37 @@ export const fetchAllMdBlock = async (mdBlocks,id) => {
     }
 };
 
-export const getPageImage=async(curriculumId,pageId,res)=>{
+export const getPageImage=async(curriculumId,pageId,cover,icon)=>{
     let iconType = "";
     let iconUrl = "";
-    if(res.icon){
-        iconType = res.icon.type;
+    if(icon){
+        iconType = icon.type;
         if(iconType==="file"){
-            let exte = res.icon.file.url.split(".")[1];
+            let exte = icon.file.url.split(".")[1];
             if(exte===undefined || (exte!=="png" && exte!="jpg"  && exte!="svg")){
                 exte = "png";
             }
-            await downloadImage(res.icon.file.url, `./public/notion_data/eachPage/${curriculumId}/pageImageData/icon/${pageId}.${exte}`)
+            await downloadImage(icon.file.url, `./public/notion_data/eachPage/${curriculumId}/pageImageData/icon/${pageId}.${exte}`)
             iconUrl = `/horizon-atlas/notion_data/eachPage/${curriculumId}/pageImageData/icon/${pageId}.${exte}`
         }else if(iconType==="external"){
-            iconUrl = res.icon.external.url
+            iconUrl = icon.external.url
         }else if(iconType==="emoji"){
-            iconUrl = res.icon.emoji
+            iconUrl = icon.emoji
         }
     }
     let coverUrl = "";
-    if(res.cover){
-        if(res.cover.type==="file"){
-            let exte = res.cover.file.url.split(".")[1];
+    if(cover){
+        if(cover.type==="file"){
+            let exte = cover.file.url.split(".")[1];
             if(exte===undefined || (exte!=="png" && exte!="jpg")){
                 exte = "png";
             }
-            await downloadImage(res.cover.file.url, `./public/notion_data/eachPage/${curriculumId}/pageImageData/cover/${pageId}.${exte}`)
+            await downloadImage(cover.file.url, `./public/notion_data/eachPage/${curriculumId}/pageImageData/cover/${pageId}.${exte}`)
             coverUrl = `/horizon-atlas/notion_data/eachPage/${curriculumId}/pageImageData/cover/${pageId}.${exte}`
-        }else if(res.cover.type==="external"){
-            coverUrl = res.cover.external.url
-        }else if(res.cover.type==="emoji"){
-            coverUrl = res.cover.emoji
+        }else if(cover.type==="external"){
+            coverUrl = cover.external.url
+        }else if(cover.type==="emoji"){
+            coverUrl = cover.emoji
         }
     }
     return {iconType,iconUrl,coverUrl}
