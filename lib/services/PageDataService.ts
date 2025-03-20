@@ -246,8 +246,8 @@ export class PageDataService{
         return title[0].data.slice(3);
     }
 
-    static getAllBlockId=async()=>{
-        const id:{blockId:string}[] = await PageDataGateway.getPageDataByConditions("blockId")
+    static getAllBlockId=async(curriculumId:string)=>{
+        const id:{blockId:string}[] = await PageDataGateway.getPageDataByConditions("blockId",{"curriculumId":curriculumId})
         return id.map((data)=>data.blockId)
     }
 
