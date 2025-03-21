@@ -33,6 +33,7 @@ jobs:
           SUPABASE_ANON_KEY: ${{secrets.SUPABASE_ANON_KEY}}
           SUPABASE_URL: ${{secrets.SUPABASE_URL}}
           IFRAMELY_API_KEY: ${{secrets.IFRAMELY_API_KEY}}
+          NOTION_DB_ID_CATEGORY: ${{secrets.NOTION_DB_ID_CATEGORY}}
       
       - name: Commit and push if changes exist
         run: |
