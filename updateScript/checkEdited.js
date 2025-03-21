@@ -1,8 +1,8 @@
 import fs from "fs";
-import { getEditTimeData,getAllData,getSinglePage } from "./lib/notionGateway.js";
-import { insertCurriculum,insertblock } from "./lib/insert.js";
+import { getEditTimeData,getAllData,getSinglePage,getAllCategory } from "./lib/notionGateway.js";
+import { insertCurriculum,insertblock,insertCategory } from "./lib/insert.js";
 import {fetchAllMdBlock} from "./lib/dataSave.js"
-import { deletePage,deleteCurriculum } from "./lib/delete.js";
+import { deletePage,deleteCurriculum,deletePageByCurriculumId,deleteCategory } from "./lib/delete.js";
 import path from "path";
 
 
@@ -17,6 +17,13 @@ const getCurrentData=async()=>{
     console.log("new",newData)
     console.log("delete",deleteData)
     fs.writeFileSync(`./notion_last_edit/curriculum.json`, JSON.stringify(editTimeData, null, 2))
+    const categories = await getAllCategory()
+    for(const category of categories){
+        console.log("delete:",category.title)
+        await deleteCategory(category.id)
+        console.log("insert:",category.title)
+        await insertCategory(category)
+    }
     if(newData.length===0 && editedData.length===0 && deleteData.length===0){
         return null;
     }
@@ -89,7 +96,8 @@ const editDatas=async(data)=>{
 
 const deleteDatas=async(data)=>{
     await deleteCurriculum(data.id);
-    await deletePage(data.id);
+    await deletePageByCurriculumId(data.id);
+    cleardir(`./public/notion_data/eachPage/${data.id}`)
 }
 
 getCurrentData().then(async(data)=>{
@@ -101,11 +109,13 @@ getCurrentData().then(async(data)=>{
         const allData = await getAllData();
         const insertData =  allData.filter((item1)=>data.newData.some((item2)=>item1.id===item2.id))
         for(const item of insertData){
+            console.log("reading:",item.title)
             wait(90)
             await insertDatas(item)
         }
         const editData = allData.filter((item1)=>data.editedData.some((item2)=>item1.id===item2.id))
         for(const item of editData){
+            console.log("reading:",item.title)
             wait(90)
             await editDatas(item)
         }

@@ -29,9 +29,8 @@ const getAllData = async () => {
         },
     });
 
-    const allPosts = posts.results.filter(isFullPage);
-    // return allPosts.map(getPageMetaData);
-    return allPosts
+    const allPosts = posts.results;
+    return allPosts.map(getPageMetaData);
 };
 
 const getSingleData = async (title) => {
@@ -44,9 +43,20 @@ const getSingleData = async (title) => {
         }
     });
 
-    const allPosts = posts.results.filter(isFullPage);
+    const allPosts = posts.results;
     return allPosts.map(getPageMetaData);
     // return allPosts
+};
+
+const getPageId = async (title) => {
+    const res = await notion.databases.query({
+        database_id:NOTION_DATABASE_ID,
+        filter: {
+            property: 'title',
+            formula: { string: { equals: title } }
+        }
+    })
+    return res.results[0].id
 };
 
 const getPageMetaData = (post) => {
@@ -56,6 +66,9 @@ const getPageMetaData = (post) => {
 
     return {
         id: post.id,
+        cover:post.cover,
+        icon:post.icon,
+        last_edited_time:post.last_edited_time,
         title: properties.title?.title?.[0]?.plain_text || "untitled",
         tags: properties.tag?.multi_select ? getTags(properties.tag.multi_select) : [],
         category: properties.category?.select?.name || "",
@@ -84,87 +97,48 @@ const getSinglePage = async (title) => {
     // return page
 };
 
-const getPageData = async (title) => {
-    const res = await notion.databases.retrieve({
-        database_id: NOTION_DATABASE_ID,
-    });
-
-    return res.id
-};
-
 const getSinglePageData = async (pageId) => {
     const response = await notion.pages.retrieve({
         page_id: pageId,
       });
-      const utcDate = new Date(response.last_edited_time);
-    return utcDate.toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" })
+    return response
 };
 
 const getSingleblock = async (blockId) => {
     const response = await notion.blocks.retrieve({
         block_id:blockId
       });
-      return {
-        parent:response[response.type].rich_text.map((text)=>{
-            return {
-                annotations:text.annotations,
-                plain_text:text.plain_text,
-                href:text.href
-            }
-        }),
-        color:response[response.type].color,
-        is_toggleable:response[response.type].is_toggleable
-    }
+      return response
 };
 
-// getAllData().then(data=>{console.log(data)})
-
-
-// getAllData().then(data=>{
-//     console.log(data);
-//     fs.writeFileSync(`./public/notion_data/eachPage/${slug}/iframeData/${block.blockId}.json`, JSON.stringify(saveData, null, 2));
-// })
-
-function wait(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-const l = [];
-
-function writeBlock(block){
-    getSingleblock(block.blockId).then(data_=>{
-        l.push(data_)
+const getChildblock = async (blockId) => {
+    const response = await notion.blocks.children.list({
+        "block_id":blockId
     })
-    if(block.children.length!==0){
-        block.children.map((child)=>{
-            writeBlock(child)
-        })
-    }
-}
+      return response
+};
 
-// getSinglePage("test").then(async(data)=>{
-//     const blocks = [];
-//     for(const block of data.mdBlocks){
-//         const blockdata = await getSingleblock(block.blockId)
-//         blocks.push(blockdata)
-//     }
-//     fs.writeFileSync(`./public/notion_data/page.json`, JSON.stringify(blocks, null, 2));
+// getSingleData("test").then(async(d)=>{
+//     const data = await getSinglePageData("1b8a501ef337806c8615f492e93f80b0")
+//     fs.writeFileSync(`./public/notion_data/class.json`, JSON.stringify(data, null, 2))
 // })
 
-// getSinglePage("test").then(async({pageId})=>{
-//     console.log(pageId)
-//     const data = await getSinglePageData(pageId)
-//     console.log(data)
-//     fs.writeFileSync(`./public/notion_data/page.json`, JSON.stringify(data, null, 2))
-// })
-
-getSinglePage("test").then(async({mdBlocks})=>{
-    const a = [];
-    for(const block of mdBlocks){
-        const item = await getSingleblock(block.blockId)
-        a.push(item)
+getSinglePage("test").then(async(data)=>{
+    for(const item of data.mdBlocks){
+        if(item.type==="table"){
+            getSingleblock(item.blockId).then(async(data)=>{
+                    if(data.has_children){
+                        const res = await getChildblock(item.blockId)
+                        fs.writeFileSync(`./public/notion_data/page.json`, JSON.stringify(res, null, 2))
+                    }
+                    fs.writeFileSync(`./public/notion_data/class.json`, JSON.stringify(data, null, 2))
+                }
+            )
+        }
     }
-    fs.writeFileSync(`./public/notion_data/class.json`, JSON.stringify(a, null, 2))
 })
+
+
+
 
 // getAllData().then(data=>fs.writeFileSync(`./public/notion_data/class.json`, JSON.stringify(data, null, 2)))

@@ -4,6 +4,7 @@ import { Client, isFullPage } from "@notionhq/client";
 
 const token = process.env.NOTION_TOKEN_HORIZON
 const db = process.env.NOTION_DB_ID_HORIZON
+const category_db = process.env.NOTION_DB_ID_CATEGORY;
 
 const notion = new Client({ auth:token });
 const n2m = new NotionToMarkdown({ notionClient: notion });
@@ -39,12 +40,11 @@ export const getAllData = async () => {
 };
 
 const getEditTime = (post) => {
-    const properties = post.properties;
-    const utcDate = new Date(properties["Last edited time"].last_edited_time);
+    const date = new Date(post.last_edited_time)
 
     return {
         id: post.id,
-        Last_edited_time:utcDate.toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" })
+        Last_edited_time:date.toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" })
     };
 };
 
@@ -63,6 +63,28 @@ const getPageMetaData = (post) => {
         is_basic_curriculum: properties.is_basic_curriculum?.checkbox || false,
         visibility: properties.visibility?.multi_select ? getVisibilities(properties.visibility.multi_select) : [],
         order:properties.order.number
+    };
+};
+
+export const getAllCategory = async () => {
+    const posts = await notion.databases.query({
+        database_id: category_db,
+    });
+
+    const allPosts = posts.results;
+    // return allPosts
+    return allPosts.map(getCategoryMetaData);
+};
+
+const getCategoryMetaData = (post) => {
+    const properties = post.properties;
+
+    return {
+        id: post.id,
+        cover:post.cover || "",
+        icon:post.icon || "",
+        title: properties.title?.title?.[0]?.plain_text || "untitled",
+        description:properties.description.rich_text[0]?.plain_text || ""
     };
 };
 
@@ -86,23 +108,17 @@ export const getSinglePage = async (title) => {
     }
 };
 
-export const getPageId = async (title) => {
-    const response = await notion.pages.retrieve({
-
-    });
-    return response.id;
-        
-};
-
 export const getSinglePageBlock = async (pageId, retries=10) => {
     for (let attempt = 0; attempt < retries; attempt++) {
         try {
             const response = await notion.pages.retrieve({
                 page_id: pageId,
               });
+            const date = new Date(response.last_edited_time)
             return {
                 icon:response.icon,
-                cover:response.cover
+                cover:response.cover,
+                date:date.toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" })
             };
         } catch (error) {
             if (error.status === 429) {

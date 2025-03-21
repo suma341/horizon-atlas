@@ -141,3 +141,40 @@ export const getPageImage=async(curriculumId,pageId,cover,icon)=>{
     }
     return {iconType,iconUrl,coverUrl}
 }
+
+export const getCategoryImage=async(categoryId,cover,icon)=>{
+    let iconType = "";
+    let iconUrl = "";
+    if(icon){
+        iconType = icon.type;
+        if(iconType==="file"){
+            let exte = icon.file.url.split(".")[1];
+            if(exte===undefined || (exte!=="png" && exte!="jpg"  && exte!="svg")){
+                exte = "png";
+            }
+            await downloadImage(icon.file.url, `./public/notion_data/category/${categoryId}/icon.${exte}`)
+            iconUrl = `/horizon-atlas/notion_data/category/${categoryId}/icon.${exte}`
+        }else if(iconType==="external"){
+            iconUrl = icon.external.url
+        }else if(iconType==="emoji"){
+            console.log("icon.emoji",icon.emoji)
+            iconUrl = icon.emoji
+        }
+    }
+    let coverUrl = "";
+    if(cover){
+        if(cover.type==="file"){
+            let exte = cover.file.url.split(".")[1];
+            if(exte===undefined || (exte!=="png" && exte!="jpg")){
+                exte = "png";
+            }
+            await downloadImage(cover.file.url, `./public/notion_data/category/${categoryId}/cover.${exte}`)
+            coverUrl = `/horizon-atlas/notion_data/category/${categoryId}/cover.${exte}`
+        }else if(cover.type==="external"){
+            coverUrl = cover.external.url
+        }else if(cover.type==="emoji"){
+            coverUrl = cover.emoji
+        }
+    }
+    return {iconType,iconUrl,coverUrl}
+}

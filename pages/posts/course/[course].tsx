@@ -10,6 +10,9 @@ import { useEffect, useState } from "react";
 import { NUMBER_OF_POSTS_PER_PAGE } from "@/constants/numberOfPage";
 import { CurriculumService } from "@/lib/services/CurriculumService";
 import { useAuth0 } from "@auth0/auth0-react";
+import { CategoryService } from "@/lib/services/CategoryService";
+import { Category } from "@/types/category";
+import Image from "next/image";
 
 type pagePath = {
     params: { course:string }
@@ -36,6 +39,7 @@ type Props={
     posts:PostMetaData[];
     currentCourse:string;
     pageNavs:pageNav[];
+    categoryData:Category | undefined;
 }
 
 // getStaticProps関数
@@ -46,16 +50,23 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const currentNav:pageNav = {title:currentCourse,id:`/posts/course/${currentCourse}`};
     const pageNavs = isBasic ? [HOME_NAV,BASIC_NAV,currentNav] :[HOME_NAV,currentNav];
 
+    const allCategory = await CategoryService.getAllCategory()
+    const targetCategory = allCategory.find((item)=>{
+        return item.title === currentCourse
+    })
+
+
     return {
         props: {
           posts,
           currentCourse,
           pageNavs,
+          categoryData:targetCategory
         },
     };
 };
 
-const CoursePage = ({ posts, currentCourse,pageNavs }: Props)=> {
+const CoursePage = ({ posts, currentCourse,pageNavs,categoryData }: Props)=> {
     const [currentPage, setCurrentPage] = useState(1);
     const postsPerPage = NUMBER_OF_POSTS_PER_PAGE;
     const [postsByRole, setPostsByRole] = useState(posts);
@@ -75,10 +86,17 @@ const CoursePage = ({ posts, currentCourse,pageNavs }: Props)=> {
 
     return (
         <Layout pageNavs={pageNavs}> 
-            <div className="h-full w-full mx-auto font-mono pt-20">
-                <main className="w-full mt-16 mb-3">
-                    <h1 className="text-5xl font-medium text-center mb-16">{currentCourse}</h1>
-                    <section className="mx-auto">
+            <div className='p-4 pt-20 pb-8'>
+                {categoryData && categoryData.cover !=="" && <Image src={categoryData.cover} alt={''} width={120} height={120} className='h-48 top-0' style={{width:"100vw"}} />}
+                <section className={'px-3 bg-white pb-10'} style={(!categoryData || categoryData.cover !=="") ? {} : {paddingTop:"1.25rem"}}>
+                    {(!categoryData || categoryData.iconType ==="") && <Image src={"/horizon-atlas/file_icon.svg"} alt={''} width={20} height={20} className='relative w-14 h-14 m-0' style={categoryData && categoryData.cover !=="" ? {top:"-25px",left:"3px"} : {marginBottom:"1.25rem"}} />}
+                    {categoryData && categoryData.iconType !== "emoji" && categoryData.iconType!=="" && <Image src={categoryData.iconUrl} alt={''} width={20} height={20} className='relative w-14 h-14 m-0' style={categoryData && categoryData.cover!=="" ? {top:"-25px",left:"3px"} : {marginBottom:"1.25rem"}} />}
+                    {categoryData && categoryData.iconType === "emoji" && <p className='relative w-14 h-14 text-6xl' style={categoryData.cover!=="" ? {top:"-25px",left:"3px"} : {marginBottom:"1.25rem"}}>{categoryData.iconUrl}</p>}
+                    <h2 className='w-full text-3xl font-bold'>{currentCourse}</h2>
+                    <div className="mt-8">
+                        <p>{categoryData?.description}</p>
+                    </div>
+                    <div className="mt-8">
                         {postsByRole.slice(postsPerPage * (currentPage - 1), postsPerPage * currentPage).map((post)=>{
                             return (
                                 <div key={post.curriculumId}>
@@ -86,10 +104,11 @@ const CoursePage = ({ posts, currentCourse,pageNavs }: Props)=> {
                                     postData={post}
                                     />
                                 </div>
-                        )})}
-                    </section>
-                </main>
-                <Pagenation numberOfPage={numberOfPages} currentPage={currentPage} setPage={setCurrentPage} />
+                            )
+                        })}
+                        </div>
+                    <Pagenation numberOfPage={numberOfPages} currentPage={currentPage} setPage={setCurrentPage} />
+                </section>
             </div>
         </Layout>
     );

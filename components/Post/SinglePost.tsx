@@ -11,7 +11,7 @@ const SinglePost = (props:Props) => {
     const {title, tags, curriculumId,iconType,iconUrl} = props.postData;
     return (
         <Link href={`/posts/curriculums/${curriculumId}/${curriculumId}`}>
-            <section className='mb-4 mx-5 rounded-md p-3 shadow-md hover:shadow-none hover:translate-y-1 hover:bg-neutral-50 transition-all duration-200 border'>
+            <section className='mb-4 rounded-md p-3 shadow-md hover:shadow-none hover:translate-y-1 hover:bg-neutral-50 transition-all duration-200 border'>
                 <div className='flex w-auto h-9 my-1'>
                     {iconType==="" && <Image src={"/horizon-atlas/file_icon.svg"} alt={title} width={30} height={30} className='relative w-8 h-8 m-0 mr-1 bottom-1' />}
                     {iconType !=="emoji" && iconType!=="" &&<Image src={iconUrl} alt={title} width={30} height={30} className='relative w-8 h-8 m-0 mr-1 bottom-1' />}

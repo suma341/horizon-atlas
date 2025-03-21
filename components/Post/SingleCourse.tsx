@@ -1,56 +1,51 @@
 "use client";
-import React from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { PostMetaData } from '@/types/postMetaData';
+import React from "react";
+import Link from "next/link";
+import Image from "next/image";
 
 type Props = {
-    course: string;
-    posts: PostMetaData[];
+  course: string;
+  icon: {
+    url: string | undefined;
+    type: string | undefined;
+  };
 };
 
-const SingleCourse = ({ course, posts }: Props) => {
-    return (
-        <Link href={`/posts/course/${course}`}>
-            <section className="bg-white border border-gray-200 rounded-md p-2 mb-4 mx-5 shadow-sm hover:bg-neutral-50 hover:shadow-md hover:-translate-y-1 transition-all duration-200">
-                <div className="flex justify-between items-center">
-                    <h2 className="text-lg font-semibold text-gray-800">{course}</h2>
-                    <span className="text-xs font-medium bg-gray-100 text-gray-600 px-2 py-0.5 rounded-md">
-                        {posts.length} カリキュラム
-                    </span>
-                </div>
-                <div className="mt-2">
-                    {posts.slice(0, 5).map((post) => {
-                        return (
-                            <div key={post.curriculumId} className="flex items-center text-gray-700 mb-0.5 text-sm border-l border-gray-300 pl-2">
-                                <div className="flex">
-                                    {post.iconType !=="emoji" && post.iconType!=="" &&
-                                     <Image
-                                        src={post.iconUrl}
-                                        alt=""
-                                        height={20}
-                                        width={20}
-                                        className="h-5 w-5 rounded mr-2"
-                                    />}
-                                    {post.iconType==="" &&  <Image
-                                        src={"/horizon-atlas/file_icon.svg"}
-                                        alt=""
-                                        height={20}
-                                        width={20}
-                                        className="h-5 w-5 rounded mr-2"
-                                    />}
-                                    {post.iconType ==="emoji" && <p
-                                        className="h-5 w-5 rounded mr-2 text-lg"
-                                    >{post.iconUrl}</p>}
-                                    <span>{post.title}</span>
-                                </div>
-                            </div>
-                    )})}
-                    {posts.length > 5 && <p className='text-neutral-400 text-sm'>  ...他{posts.length - 5}カリキュラム</p>}
-                </div>
-            </section>
-        </Link>
-    );
+const SingleCourse = ({ course, icon }: Props) => {
+  return (
+    <Link href={`/posts/course/${course}`} className="group">
+      <section className="translate-y-5 animate-fadeIn mb-4 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-500 ease-out border border-gray-200/70 bg-white/90 hover:bg-gray-100/50 backdrop-blur-xl transform group-hover:scale-105 group-hover:-translate-y-2 group-hover:rotate-1">
+        <div className="flex items-center">
+          {icon.type === "" && (
+            <Image
+              src={"/horizon-atlas/file_icon.svg"}
+              alt={course}
+              width={40}
+              height={40}
+              className="w-12 h-12 mr-4 transition-transform duration-500 ease-out group-hover:rotate-12"
+            />
+          )}
+          {icon.type !== "emoji" && icon.type !== "" && (
+            <Image
+              src={icon.url ?? "/horizon-atlas/file_icon.svg"}
+              alt={course}
+              width={40}
+              height={40}
+              className="w-12 h-12 mr-4 transition-transform duration-500 ease-out group-hover:rotate-12"
+            />
+          )}
+          {icon.type === "emoji" && (
+            <p className="text-4xl mr-4 transition-transform duration-500 ease-out group-hover:rotate-12">
+              {icon.url}
+            </p>
+          )}
+          <h2 className="text-lg sm:text-xl font-semibold line-clamp-1 text-gray-800 group-hover:text-indigo-500 transition-colors duration-300">
+            {course}
+          </h2>
+        </div>
+      </section>
+    </Link>
+  );
 };
 
 export default SingleCourse;

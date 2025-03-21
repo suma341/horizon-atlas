@@ -20,6 +20,22 @@ export async function upsertCurriculum(
     console.log("upsertCurriculum",result);
 }
 
+export async function upsertCategory(categoryId, title, description, iconUrl,iconType, cover){
+    const url = `${SUPABASE_URL}/functions/v1/upsertCategory`;
+    const res = await fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+        },
+        body:JSON.stringify({
+            categoryId, title, description, iconUrl,iconType, cover
+        }),
+    });
+    const result = await res.json();
+    console.log("upsertCategory",result);
+}
+
 export async function upsertPage(curriculumId,parentId,blockData,blockId,type,pageId,order){
     const res = await fetch(`${SUPABASE_URL}/functions/v1/upsertPageData`, {
         method: "POST",

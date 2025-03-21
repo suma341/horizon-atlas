@@ -7,12 +7,15 @@ import type { GetStaticProps,} from "next";
 import { CurriculumService } from "@/lib/services/CurriculumService";
 import { useEffect, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
+import { CategoryService } from "@/lib/services/CategoryService";
+import { Category } from "@/types/category";
 
 type Props={
     courseAndPosts: {
         course: string;
         posts: PostMetaData[];
     }[];
+    categoryData:Category[]
 }
 
 // getStaticProps関数
@@ -26,15 +29,20 @@ export const getStaticProps: GetStaticProps = async () => {
             posts
         }
     }))
+    const allCategory = await CategoryService.getAllCategory()
+    const targetCategory = allCategory.filter((item)=>{
+        return basicCourse.some((item2)=>item2===item.title)
+    })
 
     return {
         props: {
             courseAndPosts,
+            categoryData:targetCategory
         },
     };
 };
 
-export default function BasicCoursePageList({courseAndPosts}: Props){
+export default function BasicCoursePageList({courseAndPosts,categoryData}: Props){
     const [dataByRole,setDataByRole] = useState(courseAndPosts);
     const { user } = useAuth0();
     useEffect(()=>{
@@ -54,17 +62,30 @@ export default function BasicCoursePageList({courseAndPosts}: Props){
     },[courseAndPosts,user])
 
     return (
-        <Layout pageNavs={[HOME_NAV,BASIC_NAV]}>
-            <div className="h-full w-full mx-auto font-mono pt-20 ">
-                <main className="w-full mt-16 mb-3">
-                    <h1 className="text-5xl font-medium text-center mb-16">基礎班カリキュラム</h1>
-                    <section className="gap-3 mx-auto">
-                        {dataByRole.map((courseAndPosts,i)=>{
-                            return (<SingleCourse course={courseAndPosts.course} posts={courseAndPosts.posts} key={i} />)
-                        })}
-                    </section>
+        <Layout pageNavs={[HOME_NAV, BASIC_NAV]}>
+            <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-white via-gray-100 to-purple-50 animate-gradient transition-all">
+                <main className="w-full max-w-5xl mx-auto text-center">
+                <h1 className="text-4xl sm:text-5xl font-extrabold bg-gradient-to-r from-indigo-500 to-purple-600 text-transparent bg-clip-text tracking-wide mb-16">
+                    基礎班カリキュラム
+                </h1>
+                <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 px-6">
+                    {dataByRole.map((courseAndPosts, i) => {
+                    const target = categoryData.find(
+                        (item1) => item1.title === courseAndPosts.course
+                    );
+                    return (
+                        <SingleCourse
+                        course={courseAndPosts.course}
+                        icon={{ url: target?.iconUrl, type: target?.iconType }}
+                        key={i}
+                        />
+                    );
+                    })}
+                </section>
                 </main>
             </div>
-        </Layout>  
+            </Layout>
+
+
     );
 }
