@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { atomOneLight } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 import SyntaxHighlighter from 'react-syntax-highlighter/dist/cjs/default-highlight';
 import { LuCopy } from "react-icons/lu";
-// import { IoCopy } from "react-icons/io5";
 import { FaCheck } from "react-icons/fa6";
 
 type Props = {
@@ -60,7 +59,7 @@ export default function Code(props: Props) {
             </div>
             
             <SyntaxHighlighter style={atomOneLight} language={language}>
-                {String(codeContent).replace(/\n$/, '')}
+                {codeContent.replace(/\n$/, '')}
             </SyntaxHighlighter>
         </div>
     );

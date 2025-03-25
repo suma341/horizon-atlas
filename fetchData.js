@@ -128,8 +128,9 @@ const getChildblock = async (blockId) => {
 //     fs.writeFileSync(`./public/notion_data/class.json`, JSON.stringify(data, null, 2))
 // })
 
-getPage("1bea501ef33780dc9a9cd815e91b852e").then((data)=>
+getSingleblock("1c0a501ef3378031a8fbc1b1cfb878c8").then((data)=>
     fs.writeFileSync(`./public/notion_data/class.json`, JSON.stringify(data, null, 2))
 )
+
 
 // getAllData().then(data=>fs.writeFileSync(`./public/notion_data/class.json`, JSON.stringify(data, null, 2)))

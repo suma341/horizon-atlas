@@ -1,7 +1,7 @@
 import "dotenv/config"
 import { upsertCategory, upsertCurriculum,upsertPage,} from "./supabaseDBGateway.js"
 import {getSingleblock,getSinglePageBlock} from "./notionGateway.js"
-import {getPageImage,getCategoryImage} from "./dataSave.js"
+import {getPageImage,getCategoryImage,saveImageAndgetUrl,saveEmbedDataAndgetUrl, saveBookmarkData} from "./dataSave.js"
 import fs from "fs"
 import { deletePage } from "./delete.js"
 
@@ -30,6 +30,62 @@ function saveLastEditedTimes(data) {
     } catch (error) {
         console.error("Error writing to page_info.json:", error);
     }
+}
+
+async function insertBookmark(curriculumId,pageId,parentId,block,i){
+    const res = await getSingleblock(block.blockId);
+    const url = res.bookmark.url;
+    const downloadUrl = await saveBookmarkData(curriculumId,block.blockId,url)
+    const parent = res.bookmark.caption.map((text)=>{
+        return {
+            annotations:text.annotations,
+            plain_text:text.plain_text,
+            href:text.href
+        }
+    })
+    const data = {
+        parent,
+        url,
+        downloadUrl
+    }
+    await upsertPage(curriculumId,parentId,JSON.stringify(data),block.blockId,block.type,pageId,i);
+}
+
+async function insertEmbed(curriculumId,pageId,parentId,block,i){
+    const res = await getSingleblock(block.blockId);
+    const url = res.embed.url
+    const downloadUrl = await saveEmbedDataAndgetUrl(curriculumId,block.blockId,url)
+    const parent = res.embed.caption.map((text)=>{
+        return {
+            annotations:text.annotations,
+            plain_text:text.plain_text,
+            href:text.href
+        }
+    })
+    const data = {
+        parent,
+        url,
+        downloadUrl
+    }
+    await upsertPage(curriculumId,parentId,JSON.stringify(data),block.blockId,block.type,pageId,i);
+}
+
+async function insertImage(curriculumId,pageId,parentId,block,i){
+    const res = await getSingleblock(block.blockId);
+    const url = res[res.type][res[res.type].type].url
+    const downloadUrl = await saveImageAndgetUrl(curriculumId,block.blockId,url)
+    const parent = res[res.type].caption.map((text)=>{
+        return {
+            annotations:text.annotations,
+            plain_text:text.plain_text,
+            href:text.href
+        }
+    })
+    const data = {
+        parent,
+        url:downloadUrl
+    }
+    await upsertPage(curriculumId,parentId,JSON.stringify(data),block.blockId,block.type,pageId,i);
 }
 
 async function insertHeading(curriculumId,pageId,parentId,block,i){
@@ -66,9 +122,6 @@ async function insertParagragh(curriculumId,pageId,parentId,block,i){
 async function insertPageInfo(curriculumId,pageId,parentId,block,i){
     const res = await getSinglePageBlock(block.blockId);
     const lastEditedTimes = loadLastEditedTimes();  // 以前のデータを読み込む
-
-    // 以前の `last_edited_time` と比較
-    const lastSavedTime = lastEditedTimes[block.blockId];
 
     // アイコンとカバー画像を取得
     const pageImage = await getPageImage(curriculumId, pageId, res.cover, res.icon);
@@ -145,6 +198,12 @@ export async function insertblock(curriculumId,parentId,blocks,pageId){
                 await insertParagragh(curriculumId,pageId,parentId,blocks[k],i)
             }else if(blocks[k].type ==='heading_1' || blocks[k].type ==='heading_2' || blocks[k].type ==='heading_3'){
                 await insertHeading(curriculumId,pageId,parentId,blocks[k],i)
+            }else if(blocks[k].type==="image"){
+                await insertImage(curriculumId,pageId,parentId,blocks[k],i)
+            }else if(blocks[k].type==="embed"){
+                await insertEmbed(curriculumId,pageId,parentId,blocks[k],i)
+            }else if(blocks[k].type==="bookmark"){
+                await insertBookmark(curriculumId,pageId,parentId,blocks[k],i);
             }else{
                 await upsertPage(curriculumId,parentId,blocks[k].parent,blocks[k].blockId,blocks[k].type,pageId,i);
             }

@@ -1,7 +1,6 @@
 import "dotenv/config"
 import path from "path";
 import axios from "axios";
-import ogs from "open-graph-scraper";
 import fs from "fs";
 
 const IFRAMELY_API_KEY = process.env.IFRAMELY_API_KEY;
@@ -35,76 +34,16 @@ async function useIframely(url) {
     }
 }
 
-export const fetchAllMdBlock = async (mdBlocks,id) => {
-    for (const block of mdBlocks) {
-        if (block.type === 'image') {
-            const match = block.parent.match(/!\[([^\]]+)\]\(([^\)]+)\)/);
-            if (match) {
-                const url = match[2].endsWith(')') ? match[2].slice(0, -1) : match[2];
-                let exte = match[1].split(".")[1];
-                if(exte===undefined || (exte!=="png" && exte!="jpg" && exte!="gif")){
-                    exte = "png";
-                }
-                console.log("Downloading image:", block.blockId);
-                await downloadImage(url, `./public/notion_data/eachPage/${id}/image/${block.blockId}.${exte}`);
-            }
-        }
-        if(block.type==='bookmark'){
-            const match = block.parent.match(/\((.*?)\)/g);
-            if (match) {
-                try{
-                    const url = match[0].slice(1, -1);
-                    const { result } = await ogs({url});
-                    const { ogTitle,ogDescription,ogSiteName,ogUrl,ogImage } = result;
-                    let favicon = result.favicon;
-                    console.log("favicon",favicon);
-                    if(favicon===undefined){
-                        const domain = new URL(url).origin;
-                        const {result:domain_result} = await ogs({url:domain});
-                        if(domain_result.favicon != undefined){
-                            if(domain_result.ogImage){
-                                const { url:image_url } = domain_result.ogImage[0];
-                                console.log("image_url",image_url);
-                                const image_domain = new URL(image_url).origin;
-                                console.log("image_domain",image_domain);
-                                const favicon_domain = domain_result.favicon;
-                                favicon = image_domain + "/" + (favicon_domain[0]==="/" ? favicon_domain.slice(1) : favicon_domain);
-                                console.log("favicon2",favicon);
-                            }
-                        }
-                    }
-                    if(ogImage){
-                        const { url } = ogImage[0];
-                        const saveData = { ogTitle,ogDescription,ogSiteName,ogUrl,ImageUrl:url, favicon };
-                        fs.writeFileSync(`./public/notion_data/eachPage/${id}/ogsData/${block.blockId}.json`, JSON.stringify(saveData, null, 2));
-                    }else{
-                        const saveData = { ogTitle,ogDescription,ogSiteName,ogUrl, favicon };
-                        const isAllUndefined = Object.values(saveData).every(value => value === undefined);
-                        if(isAllUndefined){
-                            fs.writeFileSync(`./public/notion_data/eachPage/${id}/ogsData/${block.blockId}.json`, JSON.stringify(result, null, 2));
-                        }else{
-                            fs.writeFileSync(`./public/notion_data/eachPage/${id}/ogsData/${block.blockId}.json`, JSON.stringify(saveData, null, 2));
-                        }
-                    }
-                }catch(e){console.warn(`⚠️ Open Graphの取得に失敗: ${e}`);}
-            }
-        }
-        if(block.type==="embed"){
-            const match = block.parent.match(/\((.*?)\)/g);
-            if(match){
-                const url = match[0].slice(1, -1);
-                const embedData = await useIframely(url);
-                if(embedData){
-                    const saveData = {title:embedData.title, html:embedData.html}
-                    fs.writeFileSync(`./public/notion_data/eachPage/${id}/iframeData/${block.blockId}.json`, JSON.stringify(saveData, null, 2));
-                }
-            }
-        }
-        if (block.children.length > 0) {
-            await fetchAllMdBlock(block.children,id);
-        }
+async function useIflamelyForBookmark(url){
+    try{
+        const res = await fetch(`https://iframe.ly/api/iframely?url=${url}&api_key=${IFRAMELY_API_KEY}`);
+        const data = await res.json();
+        return data;
+    }catch(e){
+        console.warn(e);
+        return;
     }
-};
+}
 
 export const getPageImage=async(curriculumId,pageId,cover,icon)=>{
     let iconType = "";
@@ -140,6 +79,49 @@ export const getPageImage=async(curriculumId,pageId,cover,icon)=>{
         }
     }
     return {iconType,iconUrl,coverUrl}
+}
+
+export const saveImageAndgetUrl=async(curriculumId,blockId,url)=>{
+    let exte = url.split(".")[1];
+    if(exte===undefined || (exte!=="png" && exte!="jpg" && exte!="gif")){
+        exte = "png";
+    }
+    const downloadUrl = `./public/notion_data/eachPage/${curriculumId}/image/${blockId}.${exte}`
+    await downloadImage(url, downloadUrl);
+    return downloadUrl.replace("./public","/horizon-atlas")
+}
+
+export const saveBookmarkData=async(curriculumId,blockId,url)=>{
+    const origin = new URL(url).origin
+    if(origin==="https://forms.gle"){
+        return "";
+    }else{
+        const bookmarkData = await useIflamelyForBookmark(url);
+        if(bookmarkData){
+            if(!fs.existsSync(`./public/notion_data/eachPage/${curriculumId}/ogsData`)){
+                fs.mkdirSync(`./public/notion_data/eachPage/${curriculumId}/ogsData`, { recursive: true });
+            }
+            const downloadUrl = `./public/notion_data/eachPage/${curriculumId}/ogsData/${blockId}.json`;
+            fs.writeFileSync(downloadUrl,JSON.stringify(bookmarkData,null,2));
+            return downloadUrl.replace("./public","/horizon-atlas")
+        }else{
+            return "";
+        }
+    }
+}
+
+export const saveEmbedDataAndgetUrl=async(curriculumId,blockId,url)=>{
+    const embedData = await useIframely(url);
+    if(embedData){
+        if (!fs.existsSync(`./public/notion_data/eachPage/${curriculumId}/iframeData`)) {
+            fs.mkdirSync(`./public/notion_data/eachPage/${curriculumId}/iframeData`, { recursive: true });
+        }
+        const downloadUrl = `./public/notion_data/eachPage/${curriculumId}/iframeData/${blockId}.json`
+        const saveData = {title:embedData.title, html:embedData.html}
+        fs.writeFileSync(downloadUrl, JSON.stringify(saveData, null, 2));
+        return downloadUrl.replace("./public","/horizon-atlas")
+    }
+    return "";
 }
 
 export const getCategoryImage=async(categoryId,cover,icon)=>{

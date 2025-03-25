@@ -1,7 +1,6 @@
 import fs from "fs";
 import { getEditTimeData,getAllData,getSinglePage,getAllCategory } from "./lib/notionGateway.js";
 import { insertCurriculum,insertblock,insertCategory } from "./lib/insert.js";
-import {fetchAllMdBlock} from "./lib/dataSave.js"
 import { deletePage,deleteCurriculum,deletePageByCurriculumId,deleteCategory } from "./lib/delete.js";
 import path from "path";
 
@@ -82,7 +81,6 @@ const insertDatas=async(data)=>{
     await insertCurriculum(data);
     initDir(data);
     await insertblock(pageId,pageId,mdBlocks,pageId)
-    await fetchAllMdBlock(mdBlocks,pageId)
 }
 
 const editDatas=async(data)=>{
@@ -91,7 +89,6 @@ const editDatas=async(data)=>{
     initDir(data);
     await deletePage(pageId);
     await insertblock(pageId,pageId,mdBlocks,pageId)
-    await fetchAllMdBlock(mdBlocks,pageId)
 }
 
 const deleteDatas=async(data)=>{

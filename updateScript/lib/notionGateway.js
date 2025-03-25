@@ -123,6 +123,7 @@ export const getSinglePageBlock = async (pageId, retries=10) => {
                 console.warn(`Rate limit exceeded. Retrying in ${10} seconds...`);
                 await wait(1000)
             } else {
+                console.log("error bunsyo",error)
                 throw error;
             }
         }
@@ -136,10 +137,11 @@ export const getSingleblock = async (blockId, retries = 5) => {
             const response = await notion.blocks.retrieve({ block_id: blockId });
             return response;
         } catch (error) {
-            if (error.RequestTimeoutError) {
+            if(error.code === "notionhq_client_request_timeout"){
+                console.log("code")
                 console.warn(`Rate limit exceeded. Retrying in ${10} seconds...`);
                 await wait(1000)
-            } else {
+            }else {
                 throw error;
             }
         }

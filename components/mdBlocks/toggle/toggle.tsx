@@ -50,7 +50,7 @@ export default function ToggleBlock(props:Props) {
     }
 
     return (
-        <div className='my-1 border-neutral-800 pl-1.5' id={mdBlock.blockId}>
+        <div className='my-1 border-neutral-800 pl-1.5' id={mdBlock.blockId} style={colorProperty}>
             <div className='flex'>
                 <button
                     className="text-left space-x-1 p-1 rounded-lg hover:bg-neutral-200 transition"
@@ -58,14 +58,15 @@ export default function ToggleBlock(props:Props) {
                 >
                     <span className='relative top-[-5px]'>{isOpen ? "▼" : "▶︎"}</span>
                 </button>
-                <p style={{...colorProperty,whiteSpace: "pre"}}>
-                    {textData.parent.map((text,i)=>{
+                <p>
+                    {textData.parent.map((text)=>{
                         const style = assignCss(text)
-                        return (
-                        <span key={i} style={style} onClick={()=>handleClick(text.href,text.scroll)}>
-                            {text.plain_text}
-                        </span>
-                    )})}
+                        return text.plain_text.split("\n").map((line,index)=>{
+                            return (<>
+                                <span key={index} style={style} onClick={()=>handleClick(text.href,text.scroll)}>{line}</span>
+                                {text.plain_text.split("\n")[1] && <br />}
+                            </>)
+                        })})}
                     {textData.parent.length===0 && <span className='opacity-0' >a</span>}
                 </p>
             </div>

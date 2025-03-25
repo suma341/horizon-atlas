@@ -1,7 +1,9 @@
 "use client";
-import useCurriculumIdStore from '@/stores/curriculumIdStore';
+import { assignCss } from '@/lib/assignCssProperties';
+import { Parent } from '@/types/Parent';
+import { useRouter } from 'next/router';
 import { MdBlock } from 'notion-to-md/build/types';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { FaExpandAlt } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
 
@@ -10,48 +12,57 @@ type Props = {
     depth: number;
 };
 
+type ImageData ={
+    parent:Parent[];
+    url:string;
+}
+
 export default function ImageBlock(props: Props) {
     const { mdBlock } = props;
-    const [imageSrc, setImageSrc] = useState<string | null>(null);
     const [isOpen, setIsOpen] = useState(false); 
     const [isHovered, setIsHovered] = useState(false);
-    const { curriculumId } = useCurriculumIdStore();
+    const data:ImageData = JSON.parse(mdBlock.parent)
 
-    useEffect(() => {
-        const checkImageExists = async (extension: string) => {
-            const url = `/horizon-atlas/notion_data/eachPage/${curriculumId}/image/${mdBlock.blockId}.${extension}`;
-            try {
-                const response = await fetch(url, { method: 'HEAD' });
-                if (response.ok) {
-                    setImageSrc(url);
+    const router = useRouter()
+
+    const scrollToSection = (targetId: string) => {
+        const element = document.getElementById(targetId);
+        if (element) {
+            const yOffset = -100; 
+            const y = element.getBoundingClientRect().top + window.scrollY + yOffset;
+            window.scrollTo({ top: y, behavior: "smooth" });
+        }
+        element?.classList.add("highlight")
+        setTimeout(()=>{
+            element?.classList.remove("highlight");
+        },1600)
+    };
+
+    const handleClick =(href:string | null, scroll:string | undefined)=>{
+        if(href && href!==""){
+            if(router.asPath===href){
+                if(scroll){
+                    scrollToSection(scroll)
                 }
-            } catch (error) {
-                console.error(`画像の取得に失敗: ${url}`, error);
-            }
-        };
-
-        (async () => {
-            await checkImageExists("png");
-            if (!imageSrc) {
-                await checkImageExists("jpg");
-                if(!imageSrc){
-                    await checkImageExists("gif");
+            }else{
+                if(scroll){
+                    router.push(`${href}#${scroll}`)
+                }else{
+                    router.push(href)
                 }
             }
-        })();
-    }, [mdBlock.blockId,curriculumId]);
-
-    if (!imageSrc) return null;
+        }
+    }
 
     return (
         <>
-            <div id={mdBlock.blockId} className="relative"
+            <div id={mdBlock.blockId} className="relative flex-col items-center flex container"
             onMouseEnter={() => setIsHovered(true)} 
             onMouseLeave={() => setIsHovered(false)}>
                 <img
                     height={200}
                     width={200}
-                    src={imageSrc}
+                    src={data.url}
                     alt={'image_block'}
                     style={{
                         width: 'auto',
@@ -63,7 +74,6 @@ export default function ImageBlock(props: Props) {
                     onClick={() => setIsOpen(true)} 
                 />
                 
-                {/* 拡大ボタン */}
                 <button
                     onClick={() => setIsOpen(true)}
                     className="absolute top-1 right-1 bg-neutral-800 bg-opacity-60 text-white hover:bg-opacity-100 p-1 rounded-md shadow-md border border-gray-300"
@@ -71,6 +81,17 @@ export default function ImageBlock(props: Props) {
                 >
                     <FaExpandAlt size={17} />
                 </button>
+                <p className='text-sm m-0 text-neutral-600' style={{width: "fit-content", textAlign: "left"}}>
+                    {data.parent.map((text)=>{
+                        const style = assignCss(text)
+                        return text.plain_text.split("\n").map((line,index)=>{
+                            return (<>
+                                <span key={index} style={style} onClick={()=>handleClick(text.href,text.scroll)}>{line}</span>
+                                {text.plain_text.split("\n")[1] && <br />}
+                            </>)
+                        })})}
+                    {data.parent.length===0 && <span className='opacity-0' >a</span>}
+                </p>
             </div>
 
 
@@ -92,7 +113,7 @@ export default function ImageBlock(props: Props) {
                             }}
                         >
                             <img
-                                src={imageSrc}
+                                src={data.url}
                                 alt="image_block_large"
                                 style={{
                                     width: '80vw',
