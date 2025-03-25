@@ -1,13 +1,11 @@
 import type { GetStaticProps } from "next";
 import SinglePost from "@/components/Post/SinglePost";
 import { PostMetaData } from "@/types/postMetaData";
-import Pagenation from "@/components/pagenation/Pagenation";
-import { calculatePageNumber, courseIsBasic, getPostsByRole } from "@/lib/services/notionApiService";
+import {  courseIsBasic, getPostsByRole } from "@/lib/services/notionApiService";
 import { BASIC_NAV, HOME_NAV } from "@/constants/pageNavs";
 import { pageNav } from "@/types/pageNav";
 import Layout from "@/components/Layout/Layout";
 import { useEffect, useState } from "react";
-import { NUMBER_OF_POSTS_PER_PAGE } from "@/constants/numberOfPage";
 import { CurriculumService } from "@/lib/services/CurriculumService";
 import { useAuth0 } from "@auth0/auth0-react";
 import { CategoryService } from "@/lib/services/CategoryService";
@@ -67,10 +65,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 const CoursePage = ({ posts, currentCourse,pageNavs,categoryData }: Props)=> {
-    const [currentPage, setCurrentPage] = useState(1);
-    const postsPerPage = NUMBER_OF_POSTS_PER_PAGE;
     const [postsByRole, setPostsByRole] = useState(posts);
-    const [numberOfPages,setNumberOfPages] = useState(1);
     const {user} = useAuth0();
 
     useEffect(()=>{
@@ -78,11 +73,9 @@ const CoursePage = ({ posts, currentCourse,pageNavs,categoryData }: Props)=> {
             const usersRole = user?.given_name ?? "体験入部"
             const postsByRole = await getPostsByRole(usersRole,posts);
             setPostsByRole(postsByRole);
-            setNumberOfPages(calculatePageNumber(postsByRole));
         }
         setData()
     },[posts,user])
-
 
     return (
         <Layout pageNavs={pageNavs}> 
@@ -97,7 +90,7 @@ const CoursePage = ({ posts, currentCourse,pageNavs,categoryData }: Props)=> {
                         <p>{categoryData?.description}</p>
                     </div>
                     <div className="mt-8">
-                        {postsByRole.slice(postsPerPage * (currentPage - 1), postsPerPage * currentPage).map((post)=>{
+                        {postsByRole.map((post)=>{
                             return (
                                 <div key={post.curriculumId}>
                                     <SinglePost
@@ -107,7 +100,6 @@ const CoursePage = ({ posts, currentCourse,pageNavs,categoryData }: Props)=> {
                             )
                         })}
                         </div>
-                    <Pagenation numberOfPage={numberOfPages} currentPage={currentPage} setPage={setCurrentPage} />
                 </section>
             </div>
         </Layout>
