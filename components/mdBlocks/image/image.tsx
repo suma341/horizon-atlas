@@ -3,7 +3,7 @@ import { assignCss } from '@/lib/assignCssProperties';
 import { Parent } from '@/types/Parent';
 import { useRouter } from 'next/router';
 import { MdBlock } from 'notion-to-md/build/types';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaExpandAlt } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
 
@@ -16,6 +16,23 @@ type ImageData ={
     parent:Parent[];
     url:string;
 }
+
+function useImageSize(imageUrl: string) {
+    const [size, setSize] = useState<{ width: number; height: number } | null>(null);
+  
+    useEffect(() => {
+      const img = new Image();
+      img.src = imageUrl;
+      img.onload = () => {
+        setSize({
+          width: img.naturalWidth,
+          height: img.naturalHeight,
+        });
+      };
+    }, [imageUrl]);
+  
+    return size;
+  }
 
 export default function ImageBlock(props: Props) {
     const { mdBlock } = props;
@@ -54,25 +71,31 @@ export default function ImageBlock(props: Props) {
         }
     }
 
+    const size = useImageSize(data.url)
+
     return (
         <>
             <div id={mdBlock.blockId} className="relative flex-col items-center flex container"
             onMouseEnter={() => setIsHovered(true)} 
             onMouseLeave={() => setIsHovered(false)}>
-                <img
-                    height={200}
-                    width={200}
+                {size && <img
                     src={data.url}
                     alt={'image_block'}
-                    style={{
+                    style={size.height > size.width ? {
                         width: 'auto',
-                        height: '100%',
+                        height: 'auto',
                         display: 'block',
-                        maxHeight: '350px',
+                        maxHeight: "750px",
+                        cursor: 'pointer',
+                    } : {
+                        width: 'auto',
+                        height: 'auto',
+                        display: 'block',
+                        maxHeight:"450px",
                         cursor: 'pointer',
                     }}
                     onClick={() => setIsOpen(true)} 
-                />
+                />}
                 
                 <button
                     onClick={() => setIsOpen(true)}

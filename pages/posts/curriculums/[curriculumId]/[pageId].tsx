@@ -103,7 +103,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
           title:titleAndIcon.title ? titleAndIcon.title : "",
           metadata:singlePost,
           mdBlocks,
-          pageNavs:[...pageNavs,...childPageNavs],
+          pageNavs:[...pageNavs,...childPageNavs.reverse()],
           childrenData,
           pageId,
           iconInfo:iconInfoList,
