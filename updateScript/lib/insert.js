@@ -124,7 +124,7 @@ async function insertPageInfo(curriculumId,pageId,parentId,block,i){
     const lastEditedTimes = loadLastEditedTimes();  // 以前のデータを読み込む
 
     // アイコンとカバー画像を取得
-    const pageImage = await getPageImage(curriculumId, pageId, res.cover, res.icon);
+    const pageImage = await getPageImage(curriculumId, block.blockId, res.cover, res.icon);
 
     // データを保存
     const data = {
