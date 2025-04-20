@@ -61,8 +61,8 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const mdBlocks:MdBlock[] = await PageDataService.getPageDataByPageId(pageId);
   const singlePost:PostMetaData = await CurriculumService.getCurriculumById(curriculumId);
 
-  const courseNav: pageNav = { title: singlePost.category ? singlePost.category : "", id: `/posts/course/${singlePost.category}` };
-  const postNav: pageNav = { title: singlePost.title, id: `/posts/curriculums/${curriculumId}/${curriculumId}` };
+  const courseNav: pageNav = { title: singlePost.category ? singlePost.category : "", link: `/posts/course/${singlePost.category}` };
+  const postNav: pageNav = { title: singlePost.title, link: `/posts/curriculums/${curriculumId}/${curriculumId}` };
   const pageNavs: pageNav[] = singlePost.is_basic_curriculum
     ? [HOME_NAV, BASIC_NAV, courseNav, postNav]
     : (singlePost.category ===undefined || singlePost.category === "")
@@ -136,14 +136,14 @@ const Post =({ metadata, mdBlocks,pageNavs,childrenData,pageId,iconInfo,title,ic
     setCurriculumId(metadata.curriculumId);
   },[metadata.curriculumId,pageId,iconInfo])
   return (
-    <Layout pageNavs={pageNavs} sideNavProps={childrenData}>
+    <Layout pageNavs={pageNavs} sideNavProps={childrenData} title={title} image={coverUrl}>
       <div className='pt-20 pb-8'>
       {coverUrl!=="" && <Image src={coverUrl} alt={''} width={120} height={120} className='h-56 top-0' style={{width:"100vw"}} />}
         <section className='px-2 bg-white pb-10' style={coverUrl!=="" ? {} : {paddingTop:"4rem"}}>
           <div>
-          {iconType==="" && <Image src={"/horizon-atlas/file_icon.svg"} alt={''} width={20} height={20} className='relative w-12 h-12 sm:w-14 sm:h-14 m-0' style={coverUrl!=="" ? {top:"-25px",left:"3px"} : {marginBottom:"1.25rem"}} />}
-          {iconType !== "emoji" && iconType!=="" && <Image src={iconUrl} alt={''} width={20} height={20} className='relative w-12 h-12 sm:w-14 sm:h-14 m-0' style={coverUrl!=="" ? {top:"-25px",left:"3px"} : {marginBottom:"1.25rem"}} />}
-          {iconType === "emoji" && <p className='relative w-12 h-12 sm:w-14 sm:h-14 text-5xl sm:text-6xl' style={coverUrl!=="" ? {top:"-25px",left:"3px"} : {marginBottom:"1.25rem"}}>{iconUrl}</p>}
+          {iconType==="" && <Image src={"/horizon-atlas/file_icon.svg"} alt={''} width={20} height={20} className='relative w-12 h-12 sm:w-14 sm:h-14 m-0' style={coverUrl!=="" ? {top:"-40px",left:"20px"} : {marginBottom:"1.25rem"}} />}
+          {iconType !== "emoji" && iconType!=="" && <Image src={iconUrl} alt={''} width={20} height={20} className='relative w-12 h-12 sm:w-20 sm:h-20 m-0' style={coverUrl!=="" ? {top:"-40px",left:"20px"} : {marginBottom:"1.25rem"}} />}
+          {iconType === "emoji" && <p className='relative w-12 h-12 sm:w-14 sm:h-14 text-5xl sm:text-7xl' style={coverUrl!=="" ? {top:"-40px",left:"20px"} : {marginBottom:"1.25rem"}}>{iconUrl}</p>}
             <h2 className='w-full text-3xl font-bold'>{title}</h2>
           </div>
           <div className='border-b mt-2'></div>

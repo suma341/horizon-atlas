@@ -45,7 +45,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const currentCourse:string = typeof context.params?.course == 'string' ? context.params.course: "";
     const posts = await CurriculumService.getCurriculumByCategory(currentCourse);
     const isBasic = await courseIsBasic(currentCourse,posts);
-    const currentNav:pageNav = {title:currentCourse,id:`/posts/course/${currentCourse}`};
+    const currentNav:pageNav = {title:currentCourse,link:`/posts/course/${currentCourse}`};
     const pageNavs = isBasic ? [HOME_NAV,BASIC_NAV,currentNav] :[HOME_NAV,currentNav];
 
     const allCategory = await CategoryService.getAllCategory()
@@ -78,7 +78,7 @@ const CoursePage = ({ posts, currentCourse,pageNavs,categoryData }: Props)=> {
     },[posts,user])
 
     return (
-        <Layout pageNavs={pageNavs}> 
+        <Layout pageNavs={pageNavs} title={categoryData ? categoryData?.title : "HorizonAtlas"} image={categoryData ? categoryData.cover : undefined}> 
             <div className='pt-20 pb-8'>
                 {categoryData && categoryData.cover !=="" && <Image src={categoryData.cover} alt={''} width={120} height={120} className='h-56 top-0' style={{width:"100vw"}} />}
                 <section className={'px-2 bg-white pb-10'} style={(!categoryData || categoryData.cover !=="") ? {} : {paddingTop:"4rem"}}>

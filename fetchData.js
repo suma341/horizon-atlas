@@ -17,120 +17,67 @@ const SUPABASE_URL = process.env.SUPABASE_URL;
 const notion = new Client({ auth: NOTION_TOKEN });
 const n2m = new NotionToMarkdown({ notionClient: notion });
 
-const getAllData = async () => {
+const getEditTimeData = async () => {
     const posts = await notion.databases.query({
-        database_id: NOTION_DATABASE_ID,
-        page_size: 100,
+        database_id:NOTION_DATABASE_ID,
         filter: {
             property: "published",
             checkbox: {
                 equals: true,
             },
-        },
-    });
-
-    const allPosts = posts.results;
-    return allPosts.map(getPageMetaData);
-};
-
-const getSingleData = async (title) => {
-    const posts = await notion.databases.query({
-        database_id: NOTION_DATABASE_ID,
-        page_size: 100,
-        filter: {
-            property: 'title',
-            formula: { string: { equals: title } }
         }
     });
 
-    const allPosts = posts.results;
-    return allPosts.map(getPageMetaData);
-    // return allPosts
+    const allPosts = posts.results.filter(isFullPage);
+    return allPosts.map(getEditTime);
 };
 
-const getPageId = async (title) => {
-    const res = await notion.databases.query({
-        database_id:NOTION_DATABASE_ID,
-        filter: {
-            property: 'title',
-            formula: { string: { equals: title } }
-        }
+const get = async () => {
+    const posts = await notion.pages.retrieve({
+        block_id:"1d8a501e-f337-8069-a0ad-d310f53524d0"
     })
-    return res.results[0].id
+    fs.writeFileSync(`./notion_last_edit/curriculum.json`, JSON.stringify(posts.results, null, 2))
 };
 
-const getPageMetaData = (post) => {
-    const getTags = (tags) => tags.map(tag => tag.name || "");
-    const getVisibilities = (visibilities) => visibilities.map(visibility=> visibility.name || "");
-    const properties = post.properties;
+const getEditTime = (post) => {
+    const date = new Date(post.last_edited_time)
 
     return {
         id: post.id,
-        cover:post.cover,
-        icon:post.icon,
-        last_edited_time:post.last_edited_time,
-        title: properties.title?.title?.[0]?.plain_text || "untitled",
-        tags: properties.tag?.multi_select ? getTags(properties.tag.multi_select) : [],
-        category: properties.category?.select?.name || "",
-        is_basic_curriculum: properties.is_basic_curriculum?.checkbox || false,
-        visibility: properties.visibility?.multi_select ? getVisibilities(properties.visibility.multi_select) : [],
-        order:properties.order.number
+        Last_edited_time:post.last_edited_time
     };
 };
 
-const getSinglePage = async (title) => {
-    const response = await notion.databases.query({
-        database_id: NOTION_DATABASE_ID,
-        filter: {
-            property: 'title',
-            formula: { string: { equals: title } }
-        }
-    });
+const getPageDataByConditions=async(select,match)=>{
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/getPageDataWithSelect`,{
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+        },
+        body:JSON.stringify({
+            match,
+            select
+        })
+    })
+    const data = await res.json()
+    return data;
+}
 
-    const page = response.results.find(isFullPage);
-    if (!page) throw new Error('Page not found');
-    const mdBlocks =  await n2m.pageToMarkdown(page.id);
-    return {
-        mdBlocks,
-        pageId:page.id
-    };
-    // return page
-};
+const getAllBlockId=async(curriculumId)=>{
+    const data = await getPageDataByConditions("*",{"curriculumId":curriculumId,"type":"child_page"})
+    return data
+}
 
 const getPage = async (id) => {
-    const mdBlocks =  await n2m.pageToMarkdown(id);
-    return mdBlocks
-};
-
-const getSinglePageData = async (pageId) => {
-    const response = await notion.pages.retrieve({
-        page_id: pageId,
-      });
-    return response
-};
-
-const getSingleblock = async (blockId) => {
-    const response = await notion.blocks.retrieve({
-        block_id:blockId
-      });
-      return response
-};
-
-const getChildblock = async (blockId) => {
-    const response = await notion.blocks.children.list({
-        "block_id":blockId
+    const posts = await notion.pages.retrieve({
+        page_id:id,
     })
-      return response
+
+    return posts
 };
 
-// getSingleData("test").then(async(d)=>{
-//     const data = await getSinglePageData("1b8a501ef337806c8615f492e93f80b0")
-//     fs.writeFileSync(`./public/notion_data/class.json`, JSON.stringify(data, null, 2))
-// })
-
-getSingleblock("1c0a501ef3378031a8fbc1b1cfb878c8").then((data)=>
-    fs.writeFileSync(`./public/notion_data/class.json`, JSON.stringify(data, null, 2))
-)
-
-
-// getAllData().then(data=>fs.writeFileSync(`./public/notion_data/class.json`, JSON.stringify(data, null, 2)))
+getEditTimeData().then((data)=>{
+    const re = getAllBlockId(data[0].id)
+    fs.writeFileSync(`./notion_last_edit/curriculum.json`, JSON.stringify(re, null, 2))
+})

@@ -12,6 +12,9 @@ import { CustomUser } from "@/global";
 import { Loader2 } from "lucide-react";
 
 type LayoutProps = {
+  title?:string;
+  description?:string;
+  image?:string;
   children: ReactNode;
   pageNavs: pageNav[];
   sideNavProps?: {
@@ -20,7 +23,7 @@ type LayoutProps = {
   };
 };
 
-const Layout: React.FC<LayoutProps> = ({ children, pageNavs, sideNavProps }) => {
+const Layout: React.FC<LayoutProps> = ({ children, pageNavs, sideNavProps,title="HorizonAtlas",description="HorizonAtlasは、学習カリキュラムをまとめたHorizon部員専用のサービスです。",image }) => {
   const [isVisible, setIsVisible] = useState(true); // ヘッダーの表示状態
   const [lastScrollY, setLastScrollY] = useState(0); // 最後のスクロール位置
   const [openbar, setOpenbar] = useState(false);
@@ -74,9 +77,12 @@ const Layout: React.FC<LayoutProps> = ({ children, pageNavs, sideNavProps }) => 
     return (
       <div className="bg-white min-h-screen flex flex-col">
       <Head>
-        <title>HorizonAtlas</title>
-        <meta name="description" content="HorizonAtlasは、学習カリキュラムをまとめたHorizon部員専用のサービスです。" />
-        <meta property="og:image" content="/horizon-atlas/app_image.png" />
+        <title>{title}</title>
+        <meta property="og:title" content={title} />
+        <meta name="description" content={description} />
+        {<meta property="og:image" content={image} />}
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content={image} />
         <link rel="icon" href="/horizon-atlas/favicon.ico" />
       </Head>
       <Sidebar openbar={openbar} setOpenbar={setOpenbar} pageNav={sideNavProps} />

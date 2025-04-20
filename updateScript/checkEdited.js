@@ -1,16 +1,44 @@
 import fs from "fs";
-import { getEditTimeData,getAllData,getSinglePage,getAllCategory } from "./lib/notionGateway.js";
+import { getEditTimeData,getAllData,getSinglePage,getAllCategory,getPage } from "./lib/notionGateway.js";
 import { insertCurriculum,insertblock,insertCategory } from "./lib/insert.js";
 import { deletePage,deleteCurriculum,deletePageByCurriculumId,deleteCategory } from "./lib/delete.js";
+import { getPageDataByConditions } from "./lib/supabaseDBGateway.js"
 import path from "path";
 
+const getAllChildId=async(curriculumId)=>{
+    const data = await getPageDataByConditions("*",{"curriculumId":curriculumId,"type":"child_page"})
+    return data
+}
+
+const latestTime=(times)=>{
+    const latest = times.reduce((latestSoFar, current) => {
+        return new Date(current) > new Date(latestSoFar) ? current : latestSoFar;
+    });
+    return latest;
+}
+
+const getCurriculumEditedTime = async(Last_edited_time,curriculumId)=>{
+    const editedTimes = [Last_edited_time];
+    const pages = await getAllChildId(curriculumId)
+    for(const page of pages){
+        const pageData = await getPage(page.pageId)
+        editedTimes.push(pageData.last_edited_time)
+    }
+    const latestTime_ = latestTime(editedTimes)
+    return latestTime_;
+}
 
 const getCurrentData=async()=>{
-    const editTimeData = await getEditTimeData();
+    const timeData = await getEditTimeData();
+    const editTimeData = [];
+    for(const d of timeData){
+        const latest = await getCurriculumEditedTime(d.Last_edited_time,d.id);
+        editTimeData.push({id:d.id,Last_edited_time:latest})
+    }
     const currentData = fs.readFileSync("./notion_last_edit/curriculum.json");
-    const parsedData = JSON.parse(currentData)
+    const parsedData = await JSON.parse(currentData)
     const newData = editTimeData.filter((item1)=>parsedData.every((item2)=>item1.id !== item2.id))
-    const editedData = editTimeData.filter((item1)=>parsedData.some((item2)=>item1.Last_edited_time !== item2.Last_edited_time && item1.id === item2.id))
+    const editedData = editTimeData.filter((item1)=>parsedData.some((item2)=>new Date(item1.Last_edited_time) < new Date(item2.Last_edited_time) && item1.id === item2.id))
     const deleteData = parsedData.filter((item1)=>editTimeData.every((item2)=>item1.id!==item2.id))
     console.log("edited",editedData)
     console.log("new",newData)

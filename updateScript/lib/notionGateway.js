@@ -25,7 +25,7 @@ export const getEditTimeData = async () => {
     });
 
     const allPosts = posts.results.filter(isFullPage);
-    return allPosts.map(getEditTime);
+    return allPosts.map((post)=>{return {id:post.id,Last_edited_time:post.last_edited_time}});
 };
 
 export const getAllData = async () => {
@@ -35,15 +35,6 @@ export const getAllData = async () => {
 
     const allPosts = posts.results;
     return allPosts.map(getPageMetaData);
-};
-
-const getEditTime = (post) => {
-    const date = new Date(post.last_edited_time)
-
-    return {
-        id: post.id,
-        Last_edited_time:date.toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" })
-    };
 };
 
 const getPageMetaData = (post) => {
@@ -129,6 +120,14 @@ export const getSinglePageBlock = async (pageId, retries=10) => {
         }
     }
     throw new Error("Failed to retrieve block after multiple attempts.");
+};
+
+export const getPage = async (id) => {
+    const posts = await notion.pages.retrieve({
+        page_id:id,
+    })
+
+    return posts
 };
 
 export const getSingleblock = async (blockId, retries = 5) => {

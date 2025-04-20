@@ -235,7 +235,7 @@ export class PageDataService{
         const pages:pageNav[] = [];
         while(currentPage!==curriculumId){
             const parentPage:{blockId:string,data:string,pageId:string}[] = await PageDataGateway.getPageDataByConditions("pageId,blockId,data",{"blockId":currentPage})
-            pages.push({id:`/posts/curriculums/${curriculumId}/${parentPage[0].blockId}`,title:JSON.parse(parentPage[0].data).parent.replace("##","")})
+            pages.push({link:`/posts/curriculums/${curriculumId}/${parentPage[0].blockId}`,title:JSON.parse(parentPage[0].data).parent.replace("##","")})
             currentPage = parentPage[0].pageId;
         }
         return pages

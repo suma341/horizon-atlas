@@ -33,7 +33,7 @@ function DetailNav({pageNav}:Props) {
 
   return (
     <>
-      <div ref={toggleRef} className='mr-2 px-1 hover:bg-neutral-200'>
+      <div ref={toggleRef} className='px-2 pt-0.5 pb-1 hover:bg-neutral-200'>
         <button onClick={(event) => {
                 event.stopPropagation(); 
                 setIsVisible((prev) => !prev); 
@@ -45,9 +45,9 @@ function DetailNav({pageNav}:Props) {
       {isVisible && (
           <div
             id="toggleTarget" ref={toggleTargetRef}
-            className="absolute bg-white p-2 rounded-xl translate-y-[45%] translate-x-[40%] shadow-2xl">
+            className="absolute bg-white p-2 rounded-xl translate-y-[50%] translate-x-[30%] shadow-2xl">
             {pageNav.map((nav,i)=>(
-              <Link href={nav.id} className='z-50' key={i}>
+              <Link href={nav.link} className='z-50' key={i}>
                 <p className='hover:bg-neutral-200 text-neutral-500 text-sm'>{nav.title}</p>
               </Link>
             ))}

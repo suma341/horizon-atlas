@@ -10,6 +10,7 @@ interface Progress {
   progress: {
     title:string;
     achieved: boolean;
+    order:number;
   }[];
 }
 
@@ -50,7 +51,7 @@ export default function Progress() {
             {progress.map((item, i) => (
               <div key={i} className="bg-white shadow-lg rounded-lg p-6 hover:shadow-xl transition-shadow">
                 <h2 className="text-xl font-bold text-neutral-500 mb-4">{item.title}</h2>
-                {item.progress.map((p, j) => (
+                {item.progress.sort((a,b)=>a.order - b.order).map((p, j) => (
                   <CurriculumItem key={j} {...p} />
                 ))}
               </div>
