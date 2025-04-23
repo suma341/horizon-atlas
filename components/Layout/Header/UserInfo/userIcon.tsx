@@ -64,8 +64,4 @@ export default function UserIcon() {
         </div>
       </>
     );
-  // }
-  // return (
-  //   <div></div>
-  // );
 }

@@ -68,7 +68,7 @@ export default function BasicCoursePageList({courseAndPosts,categoryData}: Props
                 <h1 className="text-4xl sm:text-5xl font-extrabold bg-gradient-to-r from-indigo-500 to-purple-600 text-transparent bg-clip-text tracking-wide mb-16">
                     基礎班カリキュラム
                 </h1>
-                <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 px-6">
+                <section className="grid grid-cols-1 gap-8 px-6">
                     {dataByRole.map((courseAndPosts, i) => {
                     const target = categoryData.find(
                         (item1) => item1.title === courseAndPosts.course

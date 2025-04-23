@@ -82,9 +82,9 @@ const CoursePage = ({ posts, currentCourse,pageNavs,categoryData }: Props)=> {
             <div className='pt-20 pb-8'>
                 {categoryData && categoryData.cover !=="" && <Image src={categoryData.cover} alt={''} width={120} height={120} className='h-56 top-0' style={{width:"100vw"}} />}
                 <section className={'px-2 bg-white pb-10'} style={(!categoryData || categoryData.cover !=="") ? {} : {paddingTop:"4rem"}}>
-                    {(!categoryData || categoryData.iconType ==="") && <Image src={"/horizon-atlas/file_icon.svg"} alt={''} width={20} height={20} className='relative w-12 h-12 sm:w-14 sm:h-14 m-0' style={categoryData && categoryData.cover !=="" ? {top:"-25px",left:"3px"} : {marginBottom:"1.25rem"}} />}
-                    {categoryData && categoryData.iconType !== "emoji" && categoryData.iconType!=="" && <Image src={categoryData.iconUrl} alt={''} width={20} height={20} className='relative w-12 h-12 sm:w-14 sm:h-14 m-0' style={categoryData && categoryData.cover!=="" ? {top:"-25px",left:"3px"} : {marginBottom:"1.25rem"}} />}
-                    {categoryData && categoryData.iconType === "emoji" && <p className='relative w-12 h-12 sm:w-14 sm:h-14 text-5xl sm:text-6xl' style={categoryData.cover!=="" ? {top:"-25px",left:"3px"} : {marginBottom:"1.25rem"}}>{categoryData.iconUrl}</p>}
+                    {(!categoryData || categoryData.iconType ==="") && <Image src={"/horizon-atlas/file_icon.svg"} alt={''} width={20} height={20} className='relative w-20 h-20 m-0' style={categoryData && categoryData.cover !=="" ? {top:"-40px",left:"20px"} : {marginBottom:"1.5rem"}} />}
+                    {categoryData && categoryData.iconType !== "emoji" && categoryData.iconType!=="" && <Image src={categoryData.iconUrl} alt={''} width={20} height={20} className='relative w-20 h-20 m-0' style={categoryData && categoryData.cover!=="" ? {top:"-40px",left:"20px"} : {marginBottom:"1.5rem"}} />}
+                    {categoryData && categoryData.iconType === "emoji" && <p className='relative w-14 h-14 text-7xl' style={categoryData.cover!=="" ? {top:"-40px",left:"20px"} : {marginBottom:"1.5rem"}}>{categoryData.iconUrl}</p>}
                     <h2 className='w-full text-3xl font-bold'>{currentCourse}</h2>
                     <div className="mt-8">
                         <p>{categoryData?.description}</p>

@@ -96,6 +96,18 @@ export default function ImageBlock(props: Props) {
                     }}
                     onClick={() => setIsOpen(true)} 
                 />}
+                {!size && <img
+                src={data.url}
+                alt={'image_block'}
+                style={ {
+                    width: 'auto',
+                    height: 'auto',
+                    display: 'block',
+                    maxHeight:"450px",
+                    cursor: 'pointer',
+                }}
+                onClick={() => setIsOpen(true)} 
+                />}
                 
                 <button
                     onClick={() => setIsOpen(true)}
