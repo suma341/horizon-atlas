@@ -138,7 +138,7 @@ const Post =({ metadata, mdBlocks,pageNavs,childrenData,pageId,iconInfo,title,ic
   },[metadata.curriculumId,pageId,iconInfo])
 
   return (
-    <Layout pageNavs={pageNavs} sideNavProps={childrenData} title={title} image={coverUrl}>
+    <Layout pageNavs={pageNavs} sideNavProps={childrenData}>
       <div className='pt-20 pb-8'>
       {coverUrl!=="" && <Image src={coverUrl} alt={''} width={120} height={120} className='h-56 top-0' style={{width:"100vw"}} />}
         <section className='px-2 bg-white pb-10' style={coverUrl!=="" ? {} : {paddingTop:"4rem"}}>
