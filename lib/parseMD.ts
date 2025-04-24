@@ -4,18 +4,25 @@ type MdTypeAndText = {
     link: string[];
   };
   
-  const patterns = [
+  const notion_pattern = [
     { type: "link", regex: /\[([^\]]+)\]\(([^\)]+)\)/g },
     { regex: /\*\*(.*?)\*\*/g, type: "bold", remove: /\*\*/g }, 
     { regex: /`([^`]+)`/g, type: "code", remove: /`/g }, 
     { regex: /__(.*?)__/g, type: "italic", remove: /__/g }, 
     { type: "underline", regex: /<u>(.*?)<\/u>/g,remove: /<\/?u>/g },
   ];
+
+  const md_pattern = [
+    { regex: /\*\*(.*?)\*\*/g, type: "bold", remove: /\*\*/g }, 
+    { regex: /__(.*?)__/g, type: "underline", remove: /__/g }, 
+  ];
   
-export function parseMarkdown(node: MdTypeAndText): MdTypeAndText[] {
+export function parseMarkdown(node: MdTypeAndText,code=false): MdTypeAndText[] {
     const result: MdTypeAndText[] = [];
     let lastIndex = 0;
     let matched = false;
+
+    const patterns = code ? md_pattern : notion_pattern
   
     for (const { regex, type, remove } of patterns) {
       regex.lastIndex = 0;
@@ -63,7 +70,7 @@ export function parseMarkdown(node: MdTypeAndText): MdTypeAndText[] {
       });
     }
   
-    return result.flatMap((n) => parseMarkdown(n));
+    return result.flatMap((n) => parseMarkdown(n,code));
   }
   
   

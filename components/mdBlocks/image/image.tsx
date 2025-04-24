@@ -78,25 +78,19 @@ export default function ImageBlock(props: Props) {
             <div id={mdBlock.blockId} className="relative flex-col items-center flex container"
             onMouseEnter={() => setIsHovered(true)} 
             onMouseLeave={() => setIsHovered(false)}>
-                {size && <img
+                {(size && size.height > size.width) && <img
                     src={data.url}
                     alt={'image_block'}
-                    style={size.height > size.width ? {
+                    style={{
                         width: 'auto',
                         height: 'auto',
                         display: 'block',
                         maxHeight: "750px",
                         cursor: 'pointer',
-                    } : {
-                        width: 'auto',
-                        height: 'auto',
-                        display: 'block',
-                        maxHeight:"450px",
-                        cursor: 'pointer',
                     }}
                     onClick={() => setIsOpen(true)} 
                 />}
-                {!size && <img
+                {(!size || (size && size.width > size.height)) && <img
                 src={data.url}
                 alt={'image_block'}
                 style={ {

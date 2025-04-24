@@ -5,6 +5,9 @@ import { atomOneLight } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 import SyntaxHighlighter from 'react-syntax-highlighter/dist/cjs/default-highlight';
 import { LuCopy } from "react-icons/lu";
 import { FaCheck } from "react-icons/fa6";
+import { MdTypeAndText } from '@/types/textAndType';
+import { parseMarkdown } from '@/lib/parseMD';
+import { assignCssProperties } from '@/lib/assignCssProperties';
 
 type Props = {
     mdBlock: MdBlock;
@@ -37,6 +40,13 @@ export default function Code(props: Props) {
         }
     };
 
+    const inputData:MdTypeAndText = {
+        text: codeContent,
+        type: [],
+        link:[]
+    }
+    const md = parseMarkdown(inputData,true)
+
     return (
         <div 
             id={mdBlock.blockId} 
@@ -57,10 +67,16 @@ export default function Code(props: Props) {
                     {copied ? <span className='text-purple-500 flex'>copied ! <FaCheck size={24} /></span> : <LuCopy size={24} className='text-neutral-400 hover:text-neutral-500' />}
                 </button>
             </div>
+            {language==="markdown" && <div className='p-2' style={{backgroundColor:"rgb(250,250,250)"}}>
+                {md.map((text,i)=>{
+                    const style = assignCssProperties(text);
+                    return (<p key={i} style={style}>{text.text}</p>)
+                })}
+            </div>}
             
-            <SyntaxHighlighter style={atomOneLight} language={language}>
+            {language !=="markdown" && <SyntaxHighlighter style={atomOneLight} language={language}>
                 {codeContent.replace(/\n$/, '')}
-            </SyntaxHighlighter>
+            </SyntaxHighlighter>}
         </div>
     );
 }
