@@ -38,7 +38,10 @@ const getCurrentData=async()=>{
     const currentData = fs.readFileSync("./notion_last_edit/curriculum.json");
     const parsedData = await JSON.parse(currentData)
     const newData = editTimeData.filter((item1)=>parsedData.every((item2)=>item1.id !== item2.id))
-    const editedData = editTimeData.filter((item1)=>parsedData.some((item2)=>new Date(item1.Last_edited_time) < new Date(item2.Last_edited_time) && item1.id === item2.id))
+    const editedData = editTimeData.filter((item1)=>parsedData.some((item2)=>{
+        console.log(item1.Last_edited_time,item2.Last_edited_time)
+        return (new Date(item1.Last_edited_time) > new Date(item2.Last_edited_time) && item1.id === item2.id)
+    }))
     const deleteData = parsedData.filter((item1)=>editTimeData.every((item2)=>item1.id!==item2.id))
     console.log("edited",editedData)
     console.log("new",newData)

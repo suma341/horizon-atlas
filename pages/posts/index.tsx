@@ -8,6 +8,9 @@ import Tags from "@/components/tag/Tags";
 import { CurriculumService } from "@/lib/services/CurriculumService";
 import Link from "next/link";
 import { BsCompass } from "react-icons/bs";
+import SingleCourse from "@/components/Post/SingleCourse";
+import { CategoryService } from "@/lib/services/CategoryService";
+import { Category } from "@/types/category";
 
 type Props = {
   courseAndPosts:{
@@ -15,6 +18,7 @@ type Props = {
     posts:PostMetaData[];
   }[];
   allTags:string[];
+  targetCategory:Category[]
 };
 
 export const getStaticProps: GetStaticProps = async () => {
@@ -29,16 +33,21 @@ export const getStaticProps: GetStaticProps = async () => {
     }
   }))
   const allTags = await getAllTags(allPosts);
+  const allCategory = await CategoryService.getAllCategory()
+  const targetCategory = allCategory.filter((item)=>{
+    return notBasicCourses.some((item2)=>item2===item.title)
+})
   return {
       props: {
         courseAndPosts,
         allTags,
+        targetCategory
       },
       // revalidate: 600
   };
 };
 
-const PostsPage = ({ allTags }: Props)=> {
+const PostsPage = ({ allTags,courseAndPosts,targetCategory}: Props)=> {
     return (
       <Layout pageNavs={[HOME_NAV]}>  
         <div className="bg-gradient-to-b from-gray-100 to-white min-h-screen">
@@ -63,7 +72,15 @@ const PostsPage = ({ allTags }: Props)=> {
 
               <SearchField searchKeyWord={""} />
               <Tags allTags={allTags} />
-
+              <div>
+                {courseAndPosts.map((item,i)=>{
+                  const target = targetCategory.find(
+                    (item1) => item1.title === item.course
+                  );
+                  return (
+                  <SingleCourse key={i} course={item.course} icon={{url:target?.iconUrl,type:target?.iconType}} />
+                )})}
+              </div>
             </main>
           </div>
         </div>
