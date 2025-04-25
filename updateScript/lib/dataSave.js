@@ -93,7 +93,7 @@ export const saveImageAndgetUrl=async(curriculumId,blockId,url)=>{
 
 export const saveBookmarkData=async(curriculumId,blockId,url)=>{
     const origin = new URL(url).origin
-    if(origin==="https://forms.gle"){
+    if(origin==="https://forms.gle" || origin==="https://docs.google.com"){
         return "";
     }else{
         const bookmarkData = await useIflamelyForBookmark(url);
