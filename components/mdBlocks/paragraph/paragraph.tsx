@@ -51,7 +51,7 @@ export default function Paragraph(props:Props){
     return (
         <div className='mb-0.5 mt-1' id={mdBlock.blockId}>
             <p style={colorProperty}>
-                {textData.parent.map((text,)=>{
+                {textData.parent.map((text)=>{
                     const style = assignCss(text)
                     return text.plain_text.split("\n").map((line,index)=>{
                         return (<>

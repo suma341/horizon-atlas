@@ -118,7 +118,7 @@ const editDatas=async(data)=>{
     const {mdBlocks,pageId} = await getSinglePage(data.title)
     await insertCurriculum(data);
     initDir(data);
-    await deletePage(pageId);
+    await deletePageByCurriculumId(pageId);
     await insertblock(pageId,pageId,mdBlocks,pageId)
 }
 

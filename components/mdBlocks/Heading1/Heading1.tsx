@@ -50,8 +50,8 @@ export default function Heading1(props:Props) {
     }
 
     return (
-        <div id={mdBlock.blockId}>
-            {!data.is_toggleable && <h1 className='mb-1 mt-8 font-bold text-3xl' style={colorProperty}>
+        <div id={mdBlock.blockId} className='mb-2 mt-8'>
+            {!data.is_toggleable && <h1 className='font-bold text-3xl' style={colorProperty}>
                 {data.parent.map((text,i)=>{
                     const style = assignCss(text)
                     return (<span style={style} key={i} onClick={()=>handleClick(text.href,text.scroll)}>{text.plain_text}</span>)
@@ -59,12 +59,12 @@ export default function Heading1(props:Props) {
             </h1>}
             {data.is_toggleable && <div className='flex'>
                 <button
-                    className="text-left text-xl space-x-1 p-1 rounded-lg hover:bg-neutral-200 transition"
+                    className="text-left text-xl space-x-1 p-1 rounded-lg hover:bg-neutral-200 transition justify-end"
                     onClick={() => setIsOpen(!isOpen)}
                 >
                     {isOpen ? "▼" : "▶︎"}
                 </button>
-                <h1 className='mb-1 mt-8 font-bold text-3xl' style={colorProperty}>
+                <h1 className='font-bold text-3xl' style={colorProperty}>
                     {data.parent.map((text,i)=>{
                         const style = assignCss(text)
                         return (<span style={style} key={i} onClick={()=>handleClick(text.href,text.scroll)}>{text.plain_text}</span>)

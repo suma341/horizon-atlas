@@ -29,14 +29,35 @@ const getEditTimeData = async () => {
     });
 
     const allPosts = posts.results.filter(isFullPage);
-    return allPosts.map(getEditTime);
+    return allPosts
 };
 
-const get = async () => {
-    const posts = await notion.pages.retrieve({
-        block_id:"1d8a501e-f337-8069-a0ad-d310f53524d0"
+export const getSinglePage = async (title) => {
+    const response = await notion.databases.query({
+        database_id: NOTION_DATABASE_ID,
+        filter: {
+            property: 'title',
+            formula: { string: { equals: title } }
+        }
+    });
+
+    const pageIds = response.results.map(page => page.id);
+    const page = response.results.find(isFullPage);
+    if (!page) throw new Error('Page not found');
+
+    const mdBlocks =  await n2m.pageToMarkdown(page.id);
+    return {
+        mdBlocks,
+        pageId:pageIds[0]
+    }
+};
+
+const get = async (id) => {
+    const posts = await notion.blocks.children.list({
+        "block_id":id
     })
-    fs.writeFileSync(`./notion_last_edit/curriculum.json`, JSON.stringify(posts.results, null, 2))
+    const a = posts.results
+    return a
 };
 
 const getEditTime = (post) => {
@@ -77,7 +98,13 @@ const getPage = async (id) => {
     return posts
 };
 
-getEditTimeData().then((data)=>{
-    const re = getAllBlockId(data[0].id)
-    fs.writeFileSync(`./notion_last_edit/curriculum.json`, JSON.stringify(re, null, 2))
+`https://www.notion.so/test-1ada501ef337818bb108d75c192b26c9?pvs=4#1e1a501ef33780b0bdb5c655f79df2ae`
+
+getSinglePage("test").then(async(id)=>{
+    const posts = await get(id.pageId)
+    if(posts[0].has_children){
+        const a = await get(posts[0].id)
+        posts.push(...a)
+    }
+    fs.writeFileSync(`./public/notion_data/class.json`, JSON.stringify(posts, null, 2))
 })

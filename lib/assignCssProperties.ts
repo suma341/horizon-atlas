@@ -56,7 +56,7 @@ export function assignCss(parent:Parent){
   }
   if(parent.href){
     result.push(attritube.underline ? {} : {textDecorationLine: "underline"})
-    result.push((color!=="" && attritube.code) ? {} : {color:"rgb(115 115 115)"})
+    result.push((color!=="" || attritube.code) ? {} : {color:"rgb(115 115 115)"})
     if(parent.href!==""){
       result.push({cursor:"pointer"})
     }

@@ -20,10 +20,6 @@ export default function Code(props: Props) {
     let codeContent = '';
     for (let i = 1; i < codeBlocks.length - 1; i++) {
         codeContent += (i === 1 ? '' : '\n') + codeBlocks[i];
-        const match = codeContent.match(/\*\*(.*?)\*\*/g);
-        if(match){
-            codeContent = codeContent.replace(/\*\*/g,"");
-        }
     }
     const language: string = codeBlocks[0].slice(3);
 

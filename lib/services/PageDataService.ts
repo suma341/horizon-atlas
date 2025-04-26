@@ -13,6 +13,7 @@ import { Parent } from "@/types/Parent";
 import { CalloutData } from "@/types/callout";
 import { HeadingData } from "@/types/headingData";
 import { searchBlock } from "../searchBlock";
+import { TableCell } from "@/types/table_cell";
 
 function buildTree(pageData:PageData[], parentId:string):MdBlock[] {
     const mdBlocks:MdBlock[] = pageData
@@ -150,6 +151,27 @@ async function processBlock(block:MdBlock,mdBlocks:MdBlock[]):Promise<MdBlock>{
             ...block,
             parent:JSON.stringify(parent),
             children: block.children.length===0 ? [] :
+                await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks)))
+        }
+    }else if(block.type==="table_row"){
+        const data:TableCell[][] = JSON.parse(block.parent)
+        const processed:Parent[][] = []
+        for(const items of data){
+            const parents:Parent[] = items.map((i)=>{
+                return {
+                    annotations:i.annotations,
+                    plain_text:i.plain_text,
+                    href:i.href,
+                    scroll:undefined
+                }
+            })
+            const linkRewrited = await rewriteLinks(parents)
+            processed.push(linkRewrited)
+        }
+        return {
+            ...block,
+            parent:JSON.stringify(processed),
+            children:block.children.length===0 ? [] :
                 await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks)))
         }
     }

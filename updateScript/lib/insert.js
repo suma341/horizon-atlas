@@ -2,34 +2,21 @@ import "dotenv/config"
 import { upsertCategory, upsertCurriculum,upsertPage,} from "./supabaseDBGateway.js"
 import {getSingleblock,getSinglePageBlock} from "./notionGateway.js"
 import {getPageImage,getCategoryImage,saveImageAndgetUrl,saveEmbedDataAndgetUrl, saveBookmarkData} from "./dataSave.js"
-import fs from "fs"
-import { deletePage } from "./delete.js"
 
 function wait(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-const FILE_PATH = "./notion_last_edit/page.json"
-// ファイルから保存データを読み込む関数
-function loadLastEditedTimes() {
-    if (!fs.existsSync(FILE_PATH)) {
-        return {};
-    }
-    try {
-        const data = fs.readFileSync(FILE_PATH, 'utf-8');
-        return JSON.parse(data);
-    } catch (error) {
-        console.error("Error reading page_info.json:", error);
-        return {};
-    }
+async function insertTable_row(curriculumId,pageId,parentId,block,i){
+    const res = await getSingleblock(block.blockId);
+    const data = res.table_row.cells
+    await upsertPage(curriculumId,parentId,JSON.stringify(data),block.blockId,block.type,pageId,i)
 }
 
-function saveLastEditedTimes(data) {
-    try {
-        fs.writeFileSync(FILE_PATH, JSON.stringify(data, null, 2), 'utf-8');
-    } catch (error) {
-        console.error("Error writing to page_info.json:", error);
-    }
+async function insertTable(curriculumId,pageId,parentId,block,i){
+    const res = await getSingleblock(block.blockId);
+    const data = res.table
+    await upsertPage(curriculumId,parentId,JSON.stringify(data),block.blockId,block.type,pageId,i)
 }
 
 async function insertBookmark(curriculumId,pageId,parentId,block,i){
@@ -121,7 +108,6 @@ async function insertParagragh(curriculumId,pageId,parentId,block,i){
 
 async function insertPageInfo(curriculumId,pageId,parentId,block,i){
     const res = await getSinglePageBlock(block.blockId);
-    const lastEditedTimes = loadLastEditedTimes();  // 以前のデータを読み込む
 
     // アイコンとカバー画像を取得
     const pageImage = await getPageImage(curriculumId, block.blockId, res.cover, res.icon);
@@ -135,11 +121,6 @@ async function insertPageInfo(curriculumId,pageId,parentId,block,i){
     };
 
     await upsertPage(curriculumId, parentId, JSON.stringify(data), block.blockId, block.type, pageId, i);
-
-    // `last_edited_time` を更新
-    lastEditedTimes[block.blockId] = res.date;
-    saveLastEditedTimes(lastEditedTimes);
-    return true;
 }
 
 async function insertCallout(block,parentId,curriculumId,pageId,i){
@@ -173,10 +154,7 @@ export async function insertblock(curriculumId,parentId,blocks,pageId){
         await wait(90);
         const k = i -1;
         if(blocks[k].type==="child_page"){
-            const isEdited = await insertPageInfo(curriculumId,pageId,parentId,blocks[k],i);
-            if(isEdited){
-                await deletePage(blocks[k].id)
-            }
+            await insertPageInfo(curriculumId,pageId,parentId,blocks[k],i);
             if(blocks[k].children.length!==0){
                 await insertblock(
                     curriculumId,
@@ -185,13 +163,11 @@ export async function insertblock(curriculumId,parentId,blocks,pageId){
                     blocks[k].blockId);
             }
         }else{
-            if(blocks[k].children.length!==0){
-                await insertblock(
-                    curriculumId,
-                    blocks[k].blockId,
-                    blocks[k].children,
-                    pageId);
-            }
+            await insertblock(
+                curriculumId,
+                blocks[k].blockId,
+                blocks[k].children,
+                pageId);
             if(blocks[k].type==="callout"){
                 await insertCallout(blocks[k],parentId,curriculumId,pageId,i)
             }else if(blocks[k].type==="paragraph" || blocks[k].type==="quote" || blocks[k].type==="toggle"){
@@ -204,6 +180,10 @@ export async function insertblock(curriculumId,parentId,blocks,pageId){
                 await insertEmbed(curriculumId,pageId,parentId,blocks[k],i)
             }else if(blocks[k].type==="bookmark"){
                 await insertBookmark(curriculumId,pageId,parentId,blocks[k],i);
+            }else if(blocks[k].type ==="table"){
+                await insertTable(curriculumId,pageId,parentId,blocks[k],i)
+            }else if(blocks[k].type ==="table_row"){
+                await insertTable_row(curriculumId,pageId,parentId,blocks[k],i)
             }else{
                 await upsertPage(curriculumId,parentId,blocks[k].parent,blocks[k].blockId,blocks[k].type,pageId,i);
             }
