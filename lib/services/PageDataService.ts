@@ -100,7 +100,7 @@ async function processBlock(block:MdBlock,mdBlocks:MdBlock[]):Promise<MdBlock>{
             children: block.children.length===0 ? [] :
                 await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks)))
         }
-    }else if(block.type==="paragraph"){
+    }else if(block.type==="paragraph" || block.type==="quote" || block.type==="toggle" || block.type==="bulleted_list_item" || block.type==="numbered_list_item"){
         const data:ParagraphData = JSON.parse(block.parent);
         const linkRewrited = await rewriteLinks(data.parent);
         const parent = {

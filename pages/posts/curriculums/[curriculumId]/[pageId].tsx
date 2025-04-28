@@ -131,6 +131,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 const Post =({ metadata, mdBlocks,pageNavs,childrenData,pageId,iconInfo,title,iconType,iconUrl,coverUrl}: Props) => {
   const { setCurriculumId } = useCurriculumIdStore();
   const { setIcons } = useIconStore();
+  let o = 0;
 
   useEffect(()=>{
     setIcons(iconInfo);
@@ -158,9 +159,17 @@ const Post =({ metadata, mdBlocks,pageNavs,childrenData,pageId,iconInfo,title,ic
           </>}
           <div className='mt-4 font-medium'>
             <div key={pageId}>
-              {mdBlocks.map((mdBlock)=>(
-                <MdBlockComponent mdBlock={mdBlock} depth={0} key={mdBlock.blockId} />
-              ))}
+              {mdBlocks.map((mdBlock)=>{
+                if(mdBlock.type==="numbered_list_item"){
+                  o = o + 1
+                  return <MdBlockComponent mdBlock={mdBlock} depth={0} key={mdBlock.blockId} order={o} />
+                }else{
+                  o = 0
+                  return (
+                    <MdBlockComponent mdBlock={mdBlock} depth={0} key={mdBlock.blockId} />
+                  )
+                }
+              })}
             </div>
           </div>
         </section>

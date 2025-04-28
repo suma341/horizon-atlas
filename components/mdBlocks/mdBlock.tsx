@@ -26,10 +26,11 @@ import Table_row from './table_row/table_row';
 type Props ={
     mdBlock:MdBlock;
     depth:number;
+    order?:number;
 }
 
 export default function MdBlockComponent(props:Props) {
-    const {mdBlock,depth } = props;
+    const {mdBlock,depth,order } = props;
 
     if(mdBlock.type==='paragraph'){
       return <Paragraph mdBlock={mdBlock} depth={depth} />
@@ -44,7 +45,7 @@ export default function MdBlockComponent(props:Props) {
     }else if(mdBlock.type === 'code'){
         return <Code mdBlock={mdBlock} depth={depth} />
     }else if(mdBlock.type==='numbered_list_item'){
-        return <NumberedListItem mdBlock={mdBlock} depth={depth} />
+        return <NumberedListItem mdBlock={mdBlock} depth={depth} order={order!} />
     }else if(mdBlock.type==='bulleted_list_item'){
         return <BulletedListItem mdBlock={mdBlock} depth={depth} />
     }else if(mdBlock.type==='callout'){

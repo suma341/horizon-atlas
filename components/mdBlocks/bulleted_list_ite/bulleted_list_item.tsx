@@ -1,10 +1,11 @@
 "use client";
 import { MdBlock } from 'notion-to-md/build/types'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import MdBlockComponent from '../mdBlock';
-import { MdTypeAndText } from '@/types/textAndType';
-import { parseMarkdown } from '@/lib/parseMD';
-import TextBlock from '../text';
+import { useRouter } from 'next/router';
+import { ParagraphData } from '@/types/paragraph';
+import { getColorProperty } from '@/lib/backgroundCorlor';
+import { assignCss } from '@/lib/assignCssProperties';
 
 type Props={
     mdBlock:MdBlock;
@@ -13,23 +14,56 @@ type Props={
 
 export default function BulletedListItem(props:Props) {
     const {mdBlock,depth} =props;
-    const splitedText = mdBlock.parent.split(" ")
-    const text = splitedText.slice(1).join("");
-    const [mdTypeAndTextList,setMd]=useState<MdTypeAndText[]>([]);
+    const textData:ParagraphData = JSON.parse(mdBlock.parent)
+    const colorProperty = getColorProperty(textData.color);
 
-    useEffect(()=>{
-        const inputData:MdTypeAndText = {
-            text,
-            type: [],
-            link:[]
-        };
-        const setData = parseMarkdown(inputData);
-        setMd(setData)
-    },[mdBlock.blockId])
+    const router = useRouter()
+
+    const scrollToSection = (targetId: string) => {
+        const element = document.getElementById(targetId);
+        if (element) {
+            const yOffset = -100; 
+            const y = element.getBoundingClientRect().top + window.scrollY + yOffset;
+            window.scrollTo({ top: y, behavior: "smooth" });
+        }
+        element?.classList.add("highlight")
+        setTimeout(()=>{
+            element?.classList.remove("highlight");
+        },1600)
+    };
+
+    const handleClick =(href:string | null, scroll:string | undefined)=>{
+        if(href && href!==""){
+            if(router.asPath===href){
+                if(scroll){
+                    scrollToSection(scroll)
+                }
+            }else{
+                if(scroll){
+                    router.push(`${href}#${scroll}`)
+                }else{
+                    router.push(href)
+                }
+            }
+        }
+    }
 
     return (
         <div id={mdBlock.blockId}>
-            <TextBlock mdTypeAndTextList={mdTypeAndTextList} />
+            <p style={colorProperty}>
+                <span className='font-bold text-xl'>{depth % 3===0 && "・"}</span>
+                <span className='font-bold text-xl'>{depth % 3===1 && "○"}</span>
+                <span className='font-bold text-xl'>{depth % 3===2 && "■"}</span>
+                {textData.parent.map((text)=>{
+                    const style = assignCss(text)
+                    return text.plain_text.split("\n").map((line,index)=>{
+                        return (<>
+                            <span key={index} style={style} onClick={()=>handleClick(text.href,text.scroll)}>{line}</span>
+                            {text.plain_text.split("\n")[1] && <br />}
+                        </>)
+                    })})}
+                {textData.parent.length===0 && <span className='opacity-0' >a</span>}
+            </p>
             {mdBlock.children.map((child,i)=>(
                 <div key={i} style={{marginLeft:(depth + 1) * 16}}>
                     <MdBlockComponent mdBlock={child} depth={depth +1} />

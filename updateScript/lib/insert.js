@@ -170,7 +170,7 @@ export async function insertblock(curriculumId,parentId,blocks,pageId){
                 pageId);
             if(blocks[k].type==="callout"){
                 await insertCallout(blocks[k],parentId,curriculumId,pageId,i)
-            }else if(blocks[k].type==="paragraph" || blocks[k].type==="quote" || blocks[k].type==="toggle"){
+            }else if(blocks[k].type==="paragraph" || blocks[k].type==="quote" || blocks[k].type==="toggle" || blocks[k].type==="bulleted_list_item" || blocks[k].type==="numbered_list_item"){
                 await insertParagragh(curriculumId,pageId,parentId,blocks[k],i)
             }else if(blocks[k].type ==='heading_1' || blocks[k].type ==='heading_2' || blocks[k].type ==='heading_3'){
                 await insertHeading(curriculumId,pageId,parentId,blocks[k],i)
