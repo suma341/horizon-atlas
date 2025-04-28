@@ -1,4 +1,4 @@
-import { getDriveFileByFileId, getUserData } from "../Gateways/DriveGateway";
+import { getDriveFileByFileId, getUserData, userProgressGateway } from "../Gateways/DriveGateway";
 
 interface CurriculumProgress{
     [key: string]: string;
@@ -103,3 +103,21 @@ export async function getCarriculumProgress(userName:string){
     }
     return allProgressData;
   }
+
+
+// ↓new
+
+export const getUserProgress=async(studentNumber:string)=>{
+    const fileId = "1TBsqURXWNBDKShdhjxITi2d87udMhuXeAQ0j82G-eww"
+    const sheetName = "進捗一覧";
+    const data:Record<string,string> | null = await userProgressGateway(fileId,sheetName,studentNumber)
+    if(data===null){
+        return null
+    }
+    const parsed = Object.entries(data).map(([title, value]) => ({
+        title,
+        value:value
+      }));
+    const filtered = parsed.filter((item)=>item.title!=="学籍番号" && item.title!=="氏名" && item.title!== "学舎")
+    return filtered
+}

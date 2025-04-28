@@ -29,7 +29,7 @@ export default function Header({setOpenbar}:Props){
                     </Link>
                 </li>
                 <li className="mr-4">
-                    <Link href={'/construction'}>
+                    <Link href={'/user/progress'}>
                         <div className="text-neutral-400 hover:text-purple-500 flex flex-col items-center text-center">
                             <FaArrowTrendUp size={22}/>
                             <p>進捗度</p>

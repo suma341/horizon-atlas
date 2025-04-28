@@ -1,35 +1,77 @@
-import { Loader2, CheckCircle, XCircle } from "lucide-react";
+import { Loader2, CheckCircle, XCircle, Link, ArrowLeft } from "lucide-react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect, useState } from "react";
-import { getCarriculumProgress } from "@/lib/services/DriveService";
+import { getUserProgress } from "@/lib/services/DriveService";
 import Layout from "@/components/Layout/Layout";
 import { HOME_NAV, PROGRESS_NAV } from "@/constants/pageNavs";
+import { motion } from "framer-motion";
 
-interface Progress {
+type Progress={
   title: string;
-  progress: {
-    title:string;
-    achieved: boolean;
-    order:number;
-  }[];
+  value: string;
 }
 
 export default function Progress() {
   const { user } = useAuth0();
   const [progress, setProgress] = useState<Progress[]>([]);
   const [loading, setLoading] = useState(false);
+  const [cannotLoad, setCannotLoad] = useState(false);
 
   useEffect(() => {
     async function setData() {
       if (user) {
         setLoading(true);
-        const progress = await getCarriculumProgress(user.name!.split("-")[0]);
-        setProgress(progress);
+        if(user.zoneinfo){
+          const data = await getUserProgress(user.zoneinfo);
+          if(data===null || data.length===0){
+            setCannotLoad(true)
+          }else{
+            setProgress(data)
+          }
+        }
         setLoading(false);
+      }
+      if(!user || !user.zoneinfo){
+        setCannotLoad(true)
       }
     }
     setData();
   }, [user]);
+
+  if(cannotLoad){
+    return (
+      <Layout pageNavs={[HOME_NAV,PROGRESS_NAV]}>
+            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br px-4">
+                <div className="w-full max-w-md text-white bg-purple-900 border-purple-700 shadow-xl rounded-2xl">
+                    <div className="p-8 text-center">
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6 }}
+                    >
+                        <h1 className="text-3xl font-semibold mb-2">
+                          進捗が読み込めませんでした。
+                        </h1>
+                        {user?.zoneinfo  ? <p>
+                        学籍番号は合っていますか？：{user.zoneinfo}
+                         <br />
+                        違う場合はHorizon技術部にお問い合わせください。
+                        <br />
+                        学籍番号が合っている場合は、一度ホームに戻ってからもう一度このページにアクセスしてください。
+                        </p> : <p>
+                        学籍番号が読み取れていません。再度ログインしてください。<br />
+                        もう一度ログインしても読み込めない場合はHorizon技術部にお問い合わせください
+                          </p>}
+                        <Link href={"/posts"} className="text-neutral-100 hover:text-white">
+                            <ArrowLeft className="mr-2" size={28} /> ホームに戻る
+                        </Link>
+                    </motion.div>
+                    </div>
+                </div>
+            </div>
+        </Layout>
+    )
+  }
 
   return (
     <Layout pageNavs={[HOME_NAV, PROGRESS_NAV]}>
@@ -48,14 +90,11 @@ export default function Progress() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-8">
+            <div className="bg-white shadow-lg rounded-lg p-6 hover:shadow-xl transition-shadow">
             {progress.map((item, i) => (
-              <div key={i} className="bg-white shadow-lg rounded-lg p-6 hover:shadow-xl transition-shadow">
-                <h2 className="text-xl font-bold text-neutral-500 mb-4">{item.title}</h2>
-                {item.progress.sort((a,b)=>a.order - b.order).map((p, j) => (
-                  <CurriculumItem key={j} {...p} />
-                ))}
-              </div>
+                <CurriculumItem title={item.title} achieved={item.value==="TRUE"} key={i} />
             ))}
+            </div>
           </div>
         )}
       </div>

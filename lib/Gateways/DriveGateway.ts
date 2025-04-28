@@ -9,3 +9,19 @@ export const getUserData = async(fileId:string,userName:string,nameColumn:string
     const data = await res.json();
     return data;
 }
+
+// ⤵︎新しいほう
+export const getDiriveSheet=async(fileId:string,sheetName:string)=>{
+    const res = await fetch(`${process.env.NEXT_PUBLIC_RAILWAY_URL}/getDriveSheet/fileId/${fileId}/sheetName/${sheetName}`)
+    const data = await res.json();
+    return data;
+}
+
+export const userProgressGateway=async(fileId:string,sheetName:string,studentNumber:string)=>{
+    const res = await fetch(`${process.env.NEXT_PUBLIC_RAILWAY_URL}/getDriveSheet/fileId/${fileId}/sheetName/${sheetName}/studentNumber/${studentNumber}`)
+    if(!res.ok){
+        return null
+    }
+    const data = await res.json();
+    return data;
+}
