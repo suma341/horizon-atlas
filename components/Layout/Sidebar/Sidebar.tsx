@@ -2,13 +2,13 @@ import React from 'react';
 import { pageNav } from '@/types/pageNav';
 import Link from 'next/link';
 import UserBlock from '../Header/UserInfo/userBlock';
-import { IoIosSearch } from 'react-icons/io';
 import { FaArrowTrendUp } from "react-icons/fa6";
 import { PiSignOut } from "react-icons/pi";
 import { MdOutlineEmail } from 'react-icons/md';
 import useCurriculumIdStore from '@/stores/curriculumIdStore';
 import useFirebaseUser from '@/hooks/useFirebaseUser';
 import useUserProfileStore from '@/stores/userProfile';
+import { FaRegUser } from 'react-icons/fa';
 
 type Props={
     openbar:boolean;
@@ -57,11 +57,11 @@ function Sidebar({openbar,setOpenbar,pageNav}:Props) {
                             </div>
                         </li>
                         <li className='mt-3 hover:bg-neutral-100'>
-                            <Link href={'/search'}>
+                            <Link href={'/user/setting'}>
                                 <div className='flex items-center justify-between mr-5 py-2 px-2'>
-                                    <IoIosSearch size={25} className='text-neutral-600' />
+                                    <FaRegUser size={25} className='text-neutral-600' />
                                     <div className='text-neutral-500 font-bold'>
-                                        カリキュラム検索
+                                        ユーザー
                                     </div>
                                 </div>
                             </Link>
