@@ -4,4 +4,5 @@ export type Profile={
     picture:string;
     profile: boolean;
     given_name?:string;
+    studentNum?:string;
   }

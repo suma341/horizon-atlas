@@ -8,9 +8,23 @@ export const saveUserProfile = async (profile:Profile) => {
   if(!profile.profile) return;
 
   const userDocRef = doc(db, "users", user.uid);
-
-  await setDoc(userDocRef, profile);
+  const docSnap = await getDoc(userDocRef);
+  if (docSnap.exists()) {
+    const studentNum:string | undefined | null = docSnap.get("studentNum");
+    if(studentNum){
+      await setDoc(userDocRef,{...profile,studentNum})
+      return;
+    }
+  }
+  await setDoc(userDocRef, {...profile,studentNum:""});
 };
+
+export const saveStudentNumber =async(studentNum:string,profile:Profile)=>{
+    const user = auth.currentUser;
+    if(!user) return;
+    const userDocRef = doc(db,"users",user.uid)
+    await setDoc(userDocRef,{...profile,studentNum})
+}
 
 export async function fetchUser(uid: string) {
   const docRef = doc(db, "users", uid);

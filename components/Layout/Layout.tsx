@@ -87,29 +87,29 @@ const Layout: React.FC<LayoutProps> = ({ children, pageNavs, sideNavProps}) => {
   }
 
     return (
-      <div className="bg-white min-h-screen flex flex-col">
-      <Head>
-        <title>HorizonAtlas</title>
-        <meta property="og:title" content="HorizonAtlas" />
-        <meta name="description" content="HorizonAtlasは、学習カリキュラムをまとめたHorizon部員専用のサービスです。" />
-        {<meta property="og:image" content="/horizon-atlas/app_image.png" />}
-        <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="/horizon-atlas/app_image.png" />
-        <link rel="icon" href="/horizon-atlas/favicon.ico" />
-      </Head>
-      <Sidebar openbar={openbar} setOpenbar={setOpenbar} pageNav={sideNavProps} />
-      <div
-        className="fixed top-0 z-50 w-full duration-500"
-        style={isVisible ? { transform: "translateY(0px)" } : { transform: "translateY(-65%)" }}
-      >
-        <Header setOpenbar={setOpenbar} />
-        <Navbar pageNavs={pageNavs} />
-      </div>
-      <div className="bg-gray-50 flex-grow">
-        {children}
-        <div className="h-5"></div>
-      </div>
-      <Footer />
+      <div className="bg-white min-h-screen flex-1">
+        <Head>
+          <title>HorizonAtlas</title>
+          <meta property="og:title" content="HorizonAtlas" />
+          <meta name="description" content="HorizonAtlasは、学習カリキュラムをまとめたHorizon部員専用のサービスです。" />
+          {<meta property="og:image" content="/horizon-atlas/app_image.png" />}
+          <meta property="og:type" content="website" />
+          <meta name="twitter:card" content="/horizon-atlas/app_image.png" />
+          <link rel="icon" href="/horizon-atlas/favicon.ico" />
+        </Head>
+        <Sidebar openbar={openbar} setOpenbar={setOpenbar} pageNav={sideNavProps} />
+        <div
+          className="fixed top-0 z-50 w-full duration-500"
+          style={isVisible ? { transform: "translateY(0px)" } : { transform: "translateY(-65%)" }}
+        >
+          <Header setOpenbar={setOpenbar} />
+          <Navbar pageNavs={pageNavs} />
+        </div>
+        <div className="bg-gray-50 flex-grow w-full">
+          {children}
+          <div className="h-5"></div>
+        </div>
+        <Footer />
     </div>
     
     );
