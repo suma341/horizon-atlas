@@ -111,8 +111,8 @@ export const getUserProgress=async(studentNumber:string)=>{
     const fileId = "1TBsqURXWNBDKShdhjxITi2d87udMhuXeAQ0j82G-eww"
     const sheetName = "進捗一覧";
     const data:Record<string,string> | null = await userProgressGateway(fileId,sheetName,studentNumber)
-    if(data===null){
-        return null
+    if(data===null || Object.keys(data).length === 0){
+        return []
     }
     const parsed = Object.entries(data).map(([title, value]) => ({
         title,
