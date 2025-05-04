@@ -10,11 +10,23 @@ import { motion } from "framer-motion";
 import useUserProfileStore from "@/stores/userProfile";
 
 const Callback = () => {
-  const { loginWithCustomToken, user, logout } = useFirebaseUser();
+  const { loginWithCustomToken, user, logout,loading } = useFirebaseUser();
   const router = useRouter();
   const [load,setLoad] = useState(false);
   const [errMessage,setErrMessage] = useState("")
   const {userProfile,setUserProfile} = useUserProfileStore()
+  const [loadingMess,setLoadingMess] = useState("");
+  const [dotCount, setDotCount] = useState(0)
+
+  const handleSignIn=()=>{
+    const clientId = process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID;
+    const redirectUri = encodeURIComponent(`${process.env.NEXT_PUBLIC_ROOT_PATH}/callback`);
+    const scope = "identify guilds guilds.members.read";
+
+    const discordAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}`;
+
+    window.location.href = discordAuthUrl;
+  }
 
   useEffect(() => {
     const getUserProfile = async () => {
@@ -26,8 +38,8 @@ const Callback = () => {
             if(user){
               setUserProfile(user)
             }else{
-              logout();
-              router.push("/")
+              await logout();
+              handleSignIn()
               return;
             }
           }
@@ -41,6 +53,7 @@ const Callback = () => {
             setErrMessage("URLから`code`を取得できませんでした");
             return;
           }
+          setLoadingMess("ユーザープロフィールを取得しています")
           const redirectUrl = `${process.env.NEXT_PUBLIC_ROOT_PATH}/callback`;
           const res = await fetch(`${process.env.NEXT_PUBLIC_RAILWAY_URL}/auth/discord`, {
             method: "POST",
@@ -48,19 +61,20 @@ const Callback = () => {
             body: JSON.stringify({ code, redirectUrl }),
           });
           if(!res.ok){
-            setErrMessage(`$${res.status}：${await res.text()}`);
+            setErrMessage(`${res.status}：${await res.text()}`);
             console.error("Error:", res.status, await res.text());
             return;
           }
           const { firebaseToken,profile }:{firebaseToken:string,profile:Profile} = await res.json();
-          console.log("profile",profile)
           if(profile.profile){
+            setLoadingMess("トークンをクラウドに保存しています")
             await loginWithCustomToken(firebaseToken);
           }else{
             setErrMessage("HorizonのDiscordサーバーの参加を確認できません：HorizonのDiscordサーバーに参加したアカウントのみログインできます")
             return;
           }
           if(auth.currentUser){
+            setLoadingMess("ユーザープロフィールをデータベースに保存しています")
             await saveUserProfile(profile)
           }
         }
@@ -71,33 +85,46 @@ const Callback = () => {
     getUserProfile();
   }, [user]);
 
-  if(load){
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDotCount(prev => (prev + 1) % 4) // 0,1,2,3 → 0 に戻る
+    }, 1000) // 500msごとに更新
+
+    return () => clearInterval(interval) // クリーンアップ
+  }, [])
+
+  const dots = '.'.repeat(dotCount)
+
+  if(load || loading){
     return (
       <div className="flex flex-col items-center gap-4">
-        <Loader2 className="animate-spin text-purple-400" size={48} />
-        <p className="text-lg font-semibold text-gray-700">読み込み中...</p>
+        <Loader2 className="animate-spin text-purple-400 mt-10" size={48} />
+        <p  className="text-lg font-semibold text-gray-700">{loadingMess}</p>
+        <p className="font-semibold text-gray-700">読み込み中{dots}</p>
       </div>
     );
   }
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br px-4">
-      <div className="w-full max-w-md text-white bg-purple-900 border-purple-700 shadow-xl rounded-2xl">
-          <div className="p-8 text-center">
-          <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-          >
-              <h1 className="text-3xl font-semibold mb-2">ログインに失敗しました</h1>
-              <p>{errMessage}</p>
-              <Link href={"/posts"} className="text-neutral-100 hover:text-white">
-                ホームに戻る
-              </Link>
-          </motion.div>
-          </div>
-      </div>
-  </div>
-  )
+  if(!load && !loading && errMessage!==""){
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br px-4">
+        <div className="w-full max-w-md text-white bg-purple-900 border-purple-700 shadow-xl rounded-2xl">
+            <div className="p-8 text-center">
+            <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+            >
+                <h1 className="text-3xl font-semibold mb-2">ログインに失敗しました</h1>
+                <p>{errMessage}</p>
+                <Link href={"/posts"} className="text-neutral-100 hover:text-white">
+                  ホームに戻る
+                </Link>
+            </motion.div>
+            </div>
+        </div>
+    </div>
+    )
+  }
 };
 
 export default Callback;
