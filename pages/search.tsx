@@ -12,7 +12,7 @@ import SearchField from "@/components/SearchField/SearchField";
 import Pagenation from "@/components/pagenation/Pagenation";
 import { NUMBER_OF_POSTS_PER_PAGE } from "@/constants/numberOfPage";
 import { CurriculumService } from "@/lib/services/CurriculumService";
-import { useAuth0 } from "@auth0/auth0-react";
+import useUserProfileStore from "@/stores/userProfile";
 
 type Props = {
   allTags:string[];
@@ -37,12 +37,12 @@ export default function SearchPage({allTags, posts}:Props) {
   const [matchPosts, setMatchPosts] = useState<PostMetaData[]>(posts);
   const [currentPage, setCurrentPage] = useState(1);
   const [numberOfPage, setNumberOfPage] = useState(calculatePageNumber(posts));
-  const {user} = useAuth0();
+  const { userProfile } = useUserProfileStore()
   const router = useRouter();
   const query = router.query.search!==undefined ? router.query.search as string : undefined;
   useEffect(()=>{
     async function setData(){
-      const usersRole = user?.given_name ?? "体験入部"
+      const usersRole = userProfile?.given_name ?? "体験入部"
       const postsByRole = await getPostsByRole(usersRole,posts);
       setMatchPosts(postsByRole);
       if(query!==undefined){
@@ -54,7 +54,7 @@ export default function SearchPage({allTags, posts}:Props) {
       }
     }
     setData();
-  },[query,posts,user])
+  },[query,posts,userProfile])
   
   const postsPerPage = NUMBER_OF_POSTS_PER_PAGE;
   

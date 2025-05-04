@@ -6,10 +6,12 @@ import Header from "./Header/Header";
 import { pageNav } from "@/types/pageNav";
 import Navbar from "./Navbar/navbar";
 import Sidebar from "./Sidebar/Sidebar";
-import { useAuth0 } from "@auth0/auth0-react";
 import { useRouter } from "next/router";
-import { CustomUser } from "@/global";
 import { Loader2 } from "lucide-react";
+import useFirebaseUser from "@/hooks/useFirebaseUser";
+import useUserProfileStore from "@/stores/userProfile";
+import { auth } from "@/lib/fireabase";
+import { fetchUser } from "@/lib/fireStore";
 
 type LayoutProps = {
   children: ReactNode;
@@ -24,23 +26,35 @@ const Layout: React.FC<LayoutProps> = ({ children, pageNavs, sideNavProps}) => {
   const [isVisible, setIsVisible] = useState(true); // ヘッダーの表示状態
   const [lastScrollY, setLastScrollY] = useState(0); // 最後のスクロール位置
   const [openbar, setOpenbar] = useState(false);
-  const { isAuthenticated,user,logout,isLoading } = useAuth0();
+  const {logout,loading:userLoad} = useFirebaseUser();
+  const { userProfile,setUserProfile } = useUserProfileStore();
+  const [loading,setLoading] = useState(false)
+
+  const router = useRouter()
 
   useEffect(()=>{
-    if(isAuthenticated){
-      const customUser = user! as CustomUser;
-      const checkGuild = async()=>{
-        const isMember = customUser.profile
-        if (!isMember) {
-          alert("Horizonメンバーアカウント以外はログインできません");
-          logout({ logoutParams: { returnTo: process.env.NEXT_PUBLIC_ROOT_PATH } });
-        } else {
-          // setAllowed(true);
+    const checkUser=async()=>{
+      try{
+        setLoading(true)
+        if (auth.currentUser) {
+          if(!userProfile){
+            const user = await fetchUser(auth.currentUser.uid);
+            if(user){
+              setUserProfile(user)
+            }else{
+              logout();
+              router.push("/")
+              return;
+            }
+          }
+          return;
         }
+      }finally{
+        setLoading(false)
       }
-      checkGuild();
     }
-  },[isAuthenticated,user,isLoading])
+    checkUser()
+  },[auth.currentUser])
 
   useEffect(() => {
     if (window !== undefined) {
@@ -64,11 +78,12 @@ const Layout: React.FC<LayoutProps> = ({ children, pageNavs, sideNavProps}) => {
     }
   }, [lastScrollY]);
 
-  if (isLoading) {
-    return <LoadingScreen />;
-  }
-  if(!isAuthenticated){
+  if(!auth.currentUser && !userLoad){
     return <LoginModal />
+  }
+
+  if(loading){
+    return <LoadingScreen />
   }
 
     return (
@@ -123,7 +138,7 @@ function LoginModal() {
 
 function LoadingScreen() {
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div className="flex flex-col items-center gap-4 mt-5">
       <Loader2 className="animate-spin text-purple-400" size={48} />
       <p className="text-lg font-semibold text-gray-700">読み込み中...</p>
     </div>

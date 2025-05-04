@@ -10,7 +10,7 @@ import Tags from "@/components/tag/Tags";
 import { useEffect, useState } from "react";
 import { NUMBER_OF_POSTS_PER_PAGE } from "@/constants/numberOfPage";
 import { CurriculumService } from "@/lib/services/CurriculumService";
-import { useAuth0 } from "@auth0/auth0-react";
+import useUserProfileStore from "@/stores/userProfile";
 
 type pagePath = {
     params: { tag:string }
@@ -60,16 +60,16 @@ const TagPageList = ({ posts, currentTag,allTags}: Props)=> {
     const [matchPosts, setMatchPosts] = useState<PostMetaData[]>(posts);
     const numberOfPages = calculatePageNumber(posts);
     const postsPerPage = NUMBER_OF_POSTS_PER_PAGE;
-    const {user} = useAuth0();
+    const { userProfile } = useUserProfileStore()
 
     useEffect(()=>{
         async function setData(){
-          const usersRole = user?.given_name ?? "体験入部"
+          const usersRole = userProfile?.given_name ?? "体験入部"
           const postsByRole = await getPostsByRole(usersRole,posts);
           setMatchPosts(postsByRole);
         }
         setData();
-      },[posts,user,currentTag])
+      },[posts,userProfile,currentTag])
 
     return (
         <Layout pageNavs={[HOME_NAV,tagSearchNav]}>

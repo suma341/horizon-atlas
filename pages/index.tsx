@@ -1,5 +1,4 @@
 "use client";
-import AuthButton from '@/components/LoginButton/loginButton';
 import Head from 'next/head';
 import { motion } from 'framer-motion';
 import About from '@/components/top/about';
@@ -10,6 +9,7 @@ import { PageDataService } from '@/lib/services/PageDataService';
 import Header from '@/components/top/header';
 import { IntroductionService } from '@/lib/services/IntroductionService';
 import { Introduction } from '@/types/introduction';
+import SignInButton from '@/components/LoginButton/SignInButton';
 
 type Props = {
   pageNum:number;
@@ -70,7 +70,7 @@ export default function Home({pageNum,allIntroduction}:Props) {
 
           <p className="text-lg mt-4 max-w-2xl">プログラミング部Horizonで使用する学習資料を簡単に閲覧、検索できます。</p>
           <div className="mt-8 flex justify-center">
-            <AuthButton  />
+            <SignInButton  />
           </div>
           <div className='mt-2 text-sm text-gray-50'>⚠️Horizonサーバーのメンバーアカウントのみログインできます</div>
         </section>

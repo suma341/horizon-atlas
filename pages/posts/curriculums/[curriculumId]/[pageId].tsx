@@ -161,10 +161,10 @@ const Post =({ metadata, mdBlocks,pageNavs,childrenData,pageId,iconInfo,title,ic
             <div key={pageId}>
               {mdBlocks.map((mdBlock)=>{
                 if(mdBlock.type==="numbered_list_item"){
-                  o = o + 1
+                  o = o + 1;
                   return <MdBlockComponent mdBlock={mdBlock} depth={0} key={mdBlock.blockId} order={o} />
                 }else{
-                  o = 0
+                  o = 0;
                   return (
                     <MdBlockComponent mdBlock={mdBlock} depth={0} key={mdBlock.blockId} />
                   )

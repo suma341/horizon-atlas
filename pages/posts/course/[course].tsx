@@ -7,10 +7,10 @@ import { pageNav } from "@/types/pageNav";
 import Layout from "@/components/Layout/Layout";
 import { useEffect, useState } from "react";
 import { CurriculumService } from "@/lib/services/CurriculumService";
-import { useAuth0 } from "@auth0/auth0-react";
 import { CategoryService } from "@/lib/services/CategoryService";
 import { Category } from "@/types/category";
 import Image from "next/image";
+import useUserProfileStore from "@/stores/userProfile";
 
 type pagePath = {
     params: { course:string }
@@ -66,16 +66,16 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 const CoursePage = ({ posts, currentCourse,pageNavs,categoryData }: Props)=> {
     const [postsByRole, setPostsByRole] = useState(posts);
-    const {user} = useAuth0();
+    const { userProfile } = useUserProfileStore()
 
     useEffect(()=>{
         async function setData(){
-            const usersRole = user?.given_name ?? "体験入部"
+            const usersRole = userProfile?.given_name ?? "体験入部"
             const postsByRole = await getPostsByRole(usersRole,posts);
             setPostsByRole(postsByRole);
         }
         setData()
-    },[posts,user])
+    },[posts,userProfile])
 
     return (
         <Layout pageNavs={pageNavs}> 

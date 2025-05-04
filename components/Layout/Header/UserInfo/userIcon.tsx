@@ -1,10 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { useAuth0 } from "@auth0/auth0-react";
 import { PiSignOut } from "react-icons/pi";
+import useFirebaseUser from "@/hooks/useFirebaseUser";
+import useUserProfileStore from "@/stores/userProfile";
 
 export default function UserIcon() {
-  const { user,logout } = useAuth0();
+  // const { user,logout } = useAuth0();
+  const { logout } = useFirebaseUser()
+  const { userProfile } = useUserProfileStore()
   
   const [isVisible, setIsVisible] = useState(false); // トグルの状態を管理
   const toggleRef = useRef<HTMLDivElement>(null); // toggle要素への参照
@@ -42,10 +45,10 @@ export default function UserIcon() {
               setIsVisible((prev) => !prev); // 状態を切り替え
             }}
             className="cursor-pointer flex rounded-lg shadow-lx  hover:translate-y-1 hover:opacity-85 duration-200">
-              <Image src={user?.picture || ""} alt="UserIcon" width={10} height={10}  className="h-auto w-9 rounded-full"/>
+              <Image src={userProfile?.picture || ""} alt="UserIcon" width={10} height={10}  className="h-auto w-9 rounded-full"/>
               <div className="mt-0.5 ml-0.5">
-                <p className='text-xs text-neutral-500'>{user?.name}</p>
-                <p className="text-xs text-neutral-500">{user?.given_name}</p>
+                <p className='text-xs text-neutral-500'>{userProfile?.name}</p>
+                <p className="text-xs text-neutral-500">{userProfile?.given_name}</p>
               </div>
             </div>
             {isVisible && (
@@ -53,7 +56,7 @@ export default function UserIcon() {
                 id="toggleTarget" ref={toggleTargetRef}
                 className="z-50 border-solid border-neutral-300 border-2 absolute bg-white p-2 rounded-md w-32 translate-y-1 translate-x-[-15%]">
                 <ul>
-                    <button onClick={() => logout({logoutParams:{returnTo:process.env.NEXT_PUBLIC_ROOT_PATH!}})} className="flex relative hover:bg-slate-200 rounded-sm p-1 pr-2">
+                    <button onClick={() => logout()} className="flex relative hover:bg-slate-200 rounded-sm p-1 pr-2">
                       <PiSignOut size={18} className="mt-0.5 mr-1.5 text-red-400" />
                       <p className="text-red-400">ログアウト</p>
                     </button>

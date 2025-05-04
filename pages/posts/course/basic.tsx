@@ -6,9 +6,9 @@ import { PostMetaData } from "@/types/postMetaData";
 import type { GetStaticProps,} from "next";
 import { CurriculumService } from "@/lib/services/CurriculumService";
 import { useEffect, useState } from "react";
-import { useAuth0 } from "@auth0/auth0-react";
 import { CategoryService } from "@/lib/services/CategoryService";
 import { Category } from "@/types/category";
+import useUserProfileStore from "@/stores/userProfile";
 
 type Props={
     courseAndPosts: {
@@ -44,10 +44,11 @@ export const getStaticProps: GetStaticProps = async () => {
 
 export default function BasicCoursePageList({courseAndPosts,categoryData}: Props){
     const [dataByRole,setDataByRole] = useState(courseAndPosts);
-    const { user } = useAuth0();
+    const { userProfile } = useUserProfileStore()
+
     useEffect(()=>{
         async function setData(){
-            const usersRole = user?.given_name ?? "体験入部"
+            const usersRole = userProfile?.given_name ?? "体験入部"
             const dataByRole:{
                 course: string;
                 posts: PostMetaData[];
@@ -59,7 +60,7 @@ export default function BasicCoursePageList({courseAndPosts,categoryData}: Props
             setDataByRole(dataByRole);
         }
         setData();
-    },[courseAndPosts,user])
+    },[courseAndPosts,userProfile])
 
     return (
         <Layout pageNavs={[HOME_NAV, BASIC_NAV]}>
