@@ -8,8 +8,11 @@ import useUserProfileStore from "@/stores/userProfile";
 import Link from "next/link";
 
 type Progress={
-  title: string;
-  value: string;
+  category: string;
+  data: {
+      title: string;
+      value: string;
+  }[];
 }
 
 export default function Progress() {
@@ -89,11 +92,14 @@ export default function Progress() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-8">
-            <div className="bg-white shadow-lg rounded-lg p-6 hover:shadow-xl transition-shadow">
-            {progress.map((item, i) => (
-                <CurriculumItem title={item.title} achieved={item.value==="TRUE"} key={i} />
+            {progress.map((item,i)=>(
+              <div className="bg-white shadow-lg rounded-lg p-6 hover:shadow-xl transition-shadow" key={i}>
+                <p className="font-bold text-xl">{item.category}</p>
+                {item.data.map((item2,j)=>(
+                  <CurriculumItem title={item2.title} achieved={item2.value==="TRUE"} key={j} />
+                ))}
+              </div>
             ))}
-            </div>
           </div>
         )}
       </div>
