@@ -90,6 +90,7 @@ const Callback = () => {
                   },2000)
                   return;
                 }else{
+                  console.error(e)
                   setErrMessage("トークンの保存に失敗しました")
                   return;
                 }
@@ -106,6 +107,7 @@ const Callback = () => {
             }
             if(auth.currentUser){
               setLoadingMess("ユーザープロフィールをデータベースに保存しています")
+              setUserProfile(profile)
               await saveUserProfile(profile)
             }
           }
