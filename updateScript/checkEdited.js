@@ -1,7 +1,7 @@
 import fs from "fs";
 import { getEditTimeData,getAllData,getSinglePage,getAllCategory,getPage } from "./lib/notionGateway.js";
 import { insertCurriculum,insertblock,insertCategory } from "./lib/insert.js";
-import { deletePage,deleteCurriculum,deletePageByCurriculumId,deleteCategory } from "./lib/delete.js";
+import { deleteCurriculum,deletePageByCurriculumId,deleteCategory } from "./lib/delete.js";
 import { getPageDataByConditions } from "./lib/supabaseDBGateway.js"
 import path from "path";
 

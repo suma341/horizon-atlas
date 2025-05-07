@@ -8,18 +8,21 @@ function wait(ms) {
 }
 
 async function insertTable_row(curriculumId,pageId,parentId,block,i){
+    console.log("insert table_row")
     const res = await getSingleblock(block.blockId);
     const data = res.table_row.cells
     await upsertPage(curriculumId,parentId,JSON.stringify(data),block.blockId,block.type,pageId,i)
 }
 
 async function insertTable(curriculumId,pageId,parentId,block,i){
+    console.log("insert table")
     const res = await getSingleblock(block.blockId);
     const data = res.table
     await upsertPage(curriculumId,parentId,JSON.stringify(data),block.blockId,block.type,pageId,i)
 }
 
 async function insertBookmark(curriculumId,pageId,parentId,block,i){
+    console.log("insert bookmark")
     const res = await getSingleblock(block.blockId);
     const url = res.bookmark.url;
     const downloadUrl = await saveBookmarkData(curriculumId,block.blockId,url)
@@ -39,6 +42,7 @@ async function insertBookmark(curriculumId,pageId,parentId,block,i){
 }
 
 async function insertEmbed(curriculumId,pageId,parentId,block,i){
+    console.log("insert embed")
     const res = await getSingleblock(block.blockId);
     const url = res.embed.url
     const downloadUrl = await saveEmbedDataAndgetUrl(curriculumId,block.blockId,url)
@@ -58,6 +62,7 @@ async function insertEmbed(curriculumId,pageId,parentId,block,i){
 }
 
 async function insertImage(curriculumId,pageId,parentId,block,i){
+    console.log("insert image")
     const res = await getSingleblock(block.blockId);
     const url = res[res.type][res[res.type].type].url
     const downloadUrl = await saveImageAndgetUrl(curriculumId,block.blockId,url)
@@ -76,6 +81,7 @@ async function insertImage(curriculumId,pageId,parentId,block,i){
 }
 
 async function insertHeading(curriculumId,pageId,parentId,block,i){
+    console.log(`insert ${block.type}...`,block.parent)
     const res = await getSingleblock(block.blockId)
     const data = {
         parent:res[res.type].rich_text.map((text)=>{
@@ -92,6 +98,7 @@ async function insertHeading(curriculumId,pageId,parentId,block,i){
 }
 
 async function insertParagragh(curriculumId,pageId,parentId,block,i){
+    console.log(`insert ${block.type}...`,block.parent)
     const res = await getSingleblock(block.blockId)
     const data = {
         color:res[res.type].color,
@@ -107,6 +114,7 @@ async function insertParagragh(curriculumId,pageId,parentId,block,i){
 }
 
 async function insertPageInfo(curriculumId,pageId,parentId,block,i){
+    console.log("insert child_page...",block.parent)
     const res = await getSinglePageBlock(block.blockId);
 
     // アイコンとカバー画像を取得
@@ -124,6 +132,7 @@ async function insertPageInfo(curriculumId,pageId,parentId,block,i){
 }
 
 async function insertCallout(block,parentId,curriculumId,pageId,i){
+    console.log("insert callout",block.parent.split("\n")[0])
     const res = await getSingleblock(block.blockId)
     const parent = res.callout.rich_text.map((text)=>{
         return {
