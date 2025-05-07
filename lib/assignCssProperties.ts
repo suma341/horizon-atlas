@@ -54,6 +54,9 @@ export function assignCss(parent:Parent){
   if(attritube.underline){
     result.push({ textDecorationLine: "underline" });
   }
+  if(attritube.strikethrough){
+    result.push({ textDecoration: "line-through" });
+  }
   if(parent.href){
     result.push(attritube.underline ? {} : {textDecorationLine: "underline"})
     result.push((color!=="" || attritube.code) ? {} : {color:"rgb(115 115 115)"})
