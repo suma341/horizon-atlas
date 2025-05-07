@@ -16,7 +16,8 @@ const Callback = () => {
   const [errMessage,setErrMessage] = useState("")
   const {userProfile,setUserProfile} = useUserProfileStore()
   const [loadingMess,setLoadingMess] = useState("");
-  const [dotCount, setDotCount] = useState(0)
+  const [dotCount, setDotCount] = useState(0);
+  const [trigger,setTrigger]=useState(0);
 
   const handleSignIn=()=>{
     const clientId = process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID;
@@ -45,37 +46,68 @@ const Callback = () => {
           }
           router.push("/posts");
           return;
-        }
-        if(typeof window !== "undefined"){
-          const urlParams = new URLSearchParams(window.location.search);
-          const code = urlParams.get("code");
-          if (!code) {
-            setErrMessage("URLから`code`を取得できませんでした");
-            return;
-          }
-          setLoadingMess("ユーザープロフィールを取得しています")
-          const redirectUrl = `${process.env.NEXT_PUBLIC_ROOT_PATH}/callback`;
-          const res = await fetch(`${process.env.NEXT_PUBLIC_RAILWAY_URL}/auth/discord`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ code, redirectUrl }),
-          });
-          if(!res.ok){
-            setErrMessage(`${res.status}：${await res.text()}`);
-            console.error("Error:", res.status, await res.text());
-            return;
-          }
-          const { firebaseToken,profile }:{firebaseToken:string,profile:Profile} = await res.json();
-          if(profile.profile){
-            setLoadingMess("トークンをクラウドに保存しています")
-            await loginWithCustomToken(firebaseToken);
-          }else{
-            setErrMessage("HorizonのDiscordサーバーの参加を確認できません：HorizonのDiscordサーバーに参加したアカウントのみログインできます")
-            return;
-          }
-          if(auth.currentUser){
-            setLoadingMess("ユーザープロフィールをデータベースに保存しています")
-            await saveUserProfile(profile)
+        }else{
+          if(typeof window !== "undefined"){
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get("code");
+            if (!code) {
+              if(trigger<2){
+                setTimeout(()=>{
+                  setTrigger((prev)=>prev + 1)
+                },2000)
+                return;
+              }
+              setErrMessage("URLから`code`を取得できませんでした");
+              return;
+            }
+            setLoadingMess("ユーザープロフィールを取得しています")
+            const redirectUrl = `${process.env.NEXT_PUBLIC_ROOT_PATH}/callback`;
+            const res = await fetch(`${process.env.NEXT_PUBLIC_RAILWAY_URL}/auth/discord`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ code, redirectUrl }),
+            });
+            if(!res.ok){
+              if(trigger<2){
+                setTimeout(()=>{
+                  setTrigger((prev)=>prev + 1)
+                },2000)
+                return;
+              }
+              setErrMessage(`${res.status}：${await res.text()}`);
+              console.error("Error:", res.status, await res.text());
+              return;
+            }
+            const { firebaseToken,profile }:{firebaseToken:string,profile:Profile} = await res.json();
+            if(profile.profile){
+              setLoadingMess("トークンをクラウドに保存しています")
+              try{
+                await loginWithCustomToken(firebaseToken);
+              }catch(e){
+                if(trigger<2){
+                  setTimeout(()=>{
+                    setTrigger((prev)=>prev+1);
+                  },2000)
+                  return;
+                }else{
+                  setErrMessage("トークンの保存に失敗しました")
+                  return;
+                }
+              }
+            }else{
+              if(trigger<2){
+                setTimeout(()=>{
+                  setTrigger((prev)=>prev+1);
+                },2000)
+                return;
+              }
+              setErrMessage("HorizonのDiscordサーバーの参加を確認できません：HorizonのDiscordサーバーに参加したアカウントのみログインできます")
+              return;
+            }
+            if(auth.currentUser){
+              setLoadingMess("ユーザープロフィールをデータベースに保存しています")
+              await saveUserProfile(profile)
+            }
           }
         }
       }finally{
@@ -83,14 +115,14 @@ const Callback = () => {
       }
     };
     getUserProfile();
-  }, [user]);
+  }, [user,trigger]);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setDotCount(prev => (prev + 1) % 4) // 0,1,2,3 → 0 に戻る
-    }, 1000) // 500msごとに更新
+      setDotCount(prev => (prev + 1) % 4) 
+    }, 1000)
 
-    return () => clearInterval(interval) // クリーンアップ
+    return () => clearInterval(interval) 
   }, [])
 
   const dots = '.'.repeat(dotCount)
