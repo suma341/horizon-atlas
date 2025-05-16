@@ -11,9 +11,9 @@ function Column_list({mdBlock,depth}:Props) {
     const columns:MdBlock[] = mdBlock.children
 
   return (
-    <div className='md:flex' id={mdBlock.blockId}>
+    <div className='md:flex md:gap-3' id={mdBlock.blockId}>
         {columns.map((column,i)=>(
-            <div key={i} className='md:flex-1 md:gap-1'>
+            <div key={i} className='md:flex-1'>
                 {column.children.map((child,j)=>(
                     <MdBlockComponent mdBlock={child} depth={depth} key={j} />
                 ))}
