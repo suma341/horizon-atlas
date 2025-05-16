@@ -2,10 +2,10 @@
 import { MdBlock } from 'notion-to-md/build/types'
 import React from 'react'
 import MdBlockComponent from '../mdBlock';
-import { useRouter } from 'next/router';
 import { ParagraphData } from '@/types/paragraph';
 import { getColorProperty } from '@/lib/backgroundCorlor';
 import { assignCss } from '@/lib/assignCssProperties';
+import { usePageLink } from '@/hooks/usePagePush';
 
 type Props={
     mdBlock:MdBlock;
@@ -17,43 +17,14 @@ export default function BulletedListItem(props:Props) {
     const textData:ParagraphData = JSON.parse(mdBlock.parent)
     const colorProperty = getColorProperty(textData.color);
 
-    const router = useRouter()
-
-    const scrollToSection = (targetId: string) => {
-        const element = document.getElementById(targetId);
-        if (element) {
-            const yOffset = -100; 
-            const y = element.getBoundingClientRect().top + window.scrollY + yOffset;
-            window.scrollTo({ top: y, behavior: "smooth" });
-        }
-        element?.classList.add("highlight")
-        setTimeout(()=>{
-            element?.classList.remove("highlight");
-        },1600)
-    };
-
-    const handleClick =(href:string | null, scroll:string | undefined)=>{
-        if(href && href!==""){
-            if(router.asPath===href){
-                if(scroll){
-                    scrollToSection(scroll)
-                }
-            }else{
-                if(scroll){
-                    router.push(`${href}#${scroll}`)
-                }else{
-                    router.push(href)
-                }
-            }
-        }
-    }
+    const { handleClick } = usePageLink()
 
     return (
         <div id={mdBlock.blockId}>
-            <p style={colorProperty}>
+            <p style={colorProperty} className='flex items-center'>
                 <span className='font-bold text-xl'>{depth % 3===0 && "・"}</span>
-                <span className='font-bold text-xl'>{depth % 3===1 && "○"}</span>
-                <span className='font-bold text-xl'>{depth % 3===2 && "■"}</span>
+                <span className='font-bold text-xs mr-1'>{depth % 3===1 && "○   "}</span>
+                <span className='font-bold text-xs mr-1'>{depth % 3===2 && "■   "}</span>
                 {textData.parent.map((text)=>{
                     const style = assignCss(text)
                     return text.plain_text.split("\n").map((line,index)=>{

@@ -6,7 +6,7 @@ import { getColorProperty } from '@/lib/backgroundCorlor';
 import Image from 'next/image';
 import { CalloutData } from '@/types/callout';
 import { assignCss } from '@/lib/assignCssProperties';
-import { useRouter } from 'next/router';
+import { usePageLink } from '@/hooks/usePagePush';
 
 type Props={
     mdBlock:MdBlock
@@ -19,36 +19,7 @@ export default function Callout(props:Props) {
     const icon = data.icon
     const backgroundColor = getColorProperty(data.color)
 
-    const router = useRouter()
-
-    const scrollToSection = (targetId: string) => {
-        const element = document.getElementById(targetId);
-        if (element) {
-            const yOffset = -100; 
-            const y = element.getBoundingClientRect().top + window.scrollY + yOffset;
-            window.scrollTo({ top: y, behavior: "smooth" });
-        }
-        element?.classList.add("highlight")
-        setTimeout(()=>{
-            element?.classList.remove("highlight");
-        },1600)
-    };
-
-    const handleClick =(href:string | null, scroll:string | undefined)=>{
-        if(href && href!==""){
-            if(router.asPath===href){
-                if(scroll){
-                    scrollToSection(scroll)
-                }
-            }else{
-                if(scroll){
-                    router.push(`${href}#${scroll}`)
-                }else{
-                    router.push(href)
-                }
-            }
-        }
-    }
+    const { handleClick } = usePageLink()
 
     return (
         <div className='p-2 px-3 mb-3 mt-4 rounded relative' id={mdBlock.blockId} style={data.color==="default_background" ? {...backgroundColor,border:"solid rgb(212 212 212) 1px"} : {...backgroundColor}}>

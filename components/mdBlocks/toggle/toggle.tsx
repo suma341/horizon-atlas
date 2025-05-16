@@ -5,7 +5,7 @@ import MdBlockComponent from '../mdBlock';
 import { ParagraphData } from '@/types/paragraph';
 import { getColorProperty } from '@/lib/backgroundCorlor';
 import { assignCss } from '@/lib/assignCssProperties';
-import { useRouter } from 'next/router';
+import { usePageLink } from '@/hooks/usePagePush';
 
 type Props={
     mdBlock:MdBlock;
@@ -18,36 +18,7 @@ export default function ToggleBlock(props:Props) {
     const textData:ParagraphData = JSON.parse(mdBlock.parent)
     const colorProperty = getColorProperty(textData.color);
 
-    const router = useRouter()
-
-    const scrollToSection = (targetId: string) => {
-        const element = document.getElementById(targetId);
-        if (element) {
-            const yOffset = -100; 
-            const y = element.getBoundingClientRect().top + window.scrollY + yOffset;
-            window.scrollTo({ top: y, behavior: "smooth" });
-        }
-        element?.classList.add("highlight")
-        setTimeout(()=>{
-            element?.classList.remove("highlight");
-        },1600)
-    };
-
-    const handleClick =(href:string | null, scroll:string | undefined)=>{
-        if(href && href!==""){
-            if(router.asPath===href){
-                if(scroll){
-                    scrollToSection(scroll)
-                }
-            }else{
-                if(scroll){
-                    router.push(`${href}#${scroll}`)
-                }else{
-                    router.push(href)
-                }
-            }
-        }
-    }
+    const { handleClick } = usePageLink()
 
     return (
         <div className='my-1 border-neutral-800 pl-1.5' id={mdBlock.blockId} style={colorProperty}>
