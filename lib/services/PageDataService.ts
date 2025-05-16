@@ -32,7 +32,31 @@ async function rewriteLinks(parent: Parent[]) {
     const rewritedData = await Promise.all(parent.map(async(data)=>{
         if(data.href){
             if (data.href.startsWith("https://") || data.href.startsWith("http://")){
-                return data
+                if(new URL(data.href).origin==="https://www.notion.so"){
+                    const pageHref = "/" + data.href.split("/")[3]
+                    const page = await searchPageById(pageHref.split("#")[0].slice(1));
+                    if(page.pageId===""){
+                        return data
+                    }else{
+                        const targetId = await searchBlock(pageHref.split("#")[1]);
+                        if(targetId){
+                            const url = `/posts/curriculums/${page.curriculumId}/${page.pageId}`
+                            return {
+                                ...data,
+                                href:url,
+                                scroll:targetId
+                            }
+                        }else{
+                            const url = `/posts/curriculums/${page.curriculumId}/${page.pageId}`;
+                            return {
+                                ...data,
+                                href:url,
+                            }
+                        }
+                    }
+                }else{
+                    return data
+                }
             }else{
                 if(data.href.split("#")[1]){
                     const page = await searchPageById(data.href.split("#")[0].slice(1))
