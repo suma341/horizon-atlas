@@ -21,7 +21,7 @@ export default function BulletedListItem(props:Props) {
 
     return (
         <div id={mdBlock.blockId}>
-            <p style={colorProperty} className='flex items-center'>
+            <p style={colorProperty}>
                 <span className='font-bold text-xl'>{depth % 3===0 && "・"}</span>
                 <span className='font-bold text-xs mr-1'>{depth % 3===1 && "○   "}</span>
                 <span className='font-bold text-xs mr-1'>{depth % 3===2 && "■   "}</span>
