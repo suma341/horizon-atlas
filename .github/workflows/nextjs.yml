@@ -1,12 +1,10 @@
 name: Deploy Next.js to GitHub Pages
 
 on:
-  schedule:
-      - cron: "0 0 * * *"
-  push:
-    branches:
-      - main 
-  workflow_dispatch:
+  workflow_run:
+    workflows: ["Auto Dummy Commit"]
+    types:
+      - completed
 
 permissions:
   contents: write  
