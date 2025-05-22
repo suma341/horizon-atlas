@@ -69,12 +69,12 @@ export default function Bookmark(props: Props) {
                   </p>
                 </div>
               </div>
-              {data.downloadUrl && ogData && ogData.links && ogData.links.thumbnail && (
+              {data.downloadUrl && ogData && ogData.links && ogData.links.thumbnail && ogData.links.thumbnail[0] && (
               <div className='p-0 m-0' style={{ lineHeight: 0 }}>
                   <img src={ogData.links.thumbnail[0].href} className='w-96 h-28 rounded-sm lg:w-72' alt={'pageImage'} />
               </div>
               )}
-              {!ogData?.links.thumbnail && <div className='w-16 h-1' />}
+              {(!ogData?.links.thumbnail || !ogData.links.thumbnail[0]) && <div className='w-16 h-1' />}
           </div>
       </Link>
     </div>
