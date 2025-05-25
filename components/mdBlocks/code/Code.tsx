@@ -21,6 +21,7 @@ export default function Code(props: Props) {
     for (let i = 1; i < codeBlocks.length - 1; i++) {
         codeContent += (i === 1 ? '' : '\n') + codeBlocks[i];
     }
+    codeContent = codeContent.replace(/\t/g, '  ');
     const language: string = codeBlocks[0].slice(3);
 
     const [copied, setCopied] = useState(false);
