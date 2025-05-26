@@ -1,13 +1,13 @@
 "use client";
-import { Link, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import useFirebaseUser from "@/hooks/useFirebaseUser";
 import { useRouter } from "next/router";
 import { auth } from "@/lib/fireabase";
 import { Profile } from "@/types/profile";
 import { fetchUser, saveUserProfile } from "@/lib/fireStore";
-import { motion } from "framer-motion";
 import useUserProfileStore from "@/stores/userProfile";
+import Link from "next/link";
 
 const Callback = () => {
   const { loginWithCustomToken, user, logout,loading } = useFirebaseUser();
@@ -52,9 +52,10 @@ const Callback = () => {
             const code = urlParams.get("code");
             if (!code) {
               if(trigger<2){
+                setLoadingMess("ログイン中にエラーが起きました。再度ログインを試みます...")
                 setTimeout(()=>{
                   setTrigger((prev)=>prev + 1)
-                },2000)
+                },5000)
                 return;
               }
               setErrMessage("URLから`code`を取得できませんでした");
@@ -69,9 +70,10 @@ const Callback = () => {
             });
             if(!res.ok){
               if(trigger<2){
+                setLoadingMess("ログイン中にエラーが起きました。再度ログインを試みます...")
                 setTimeout(()=>{
                   setTrigger((prev)=>prev + 1)
-                },2000)
+                },5000)
                 return;
               }
               setErrMessage(`${res.status}：${await res.text()}`);
@@ -85,9 +87,10 @@ const Callback = () => {
                 await loginWithCustomToken(firebaseToken);
               }catch(e){
                 if(trigger<2){
+                  setLoadingMess("ログイン中にエラーが起きました。再度ログインを試みます...")
                   setTimeout(()=>{
                     setTrigger((prev)=>prev+1);
-                  },2000)
+                  },5000)
                   return;
                 }else{
                   console.error(e)
@@ -96,13 +99,7 @@ const Callback = () => {
                 }
               }
             }else{
-              if(trigger<2){
-                setTimeout(()=>{
-                  setTrigger((prev)=>prev+1);
-                },2000)
-                return;
-              }
-              setErrMessage("HorizonのDiscordサーバーの参加を確認できません：HorizonのDiscordサーバーに参加したアカウントのみログインできます")
+              setErrMessage("HorizonのDiscordサーバーに参加したアカウントのみログインできます")
               return;
             }
             if(auth.currentUser){
@@ -140,23 +137,19 @@ const Callback = () => {
   }
   if(!load && !loading && errMessage!==""){
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br px-4">
-        <div className="w-full max-w-md text-white bg-purple-900 border-purple-700 shadow-xl rounded-2xl">
-            <div className="p-8 text-center">
-            <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-            >
-                <h1 className="text-3xl font-semibold mb-2">ログインに失敗しました</h1>
-                <p>{errMessage}</p>
-                <Link href={"/posts"} className="text-neutral-100 hover:text-white">
-                  ホームに戻る
-                </Link>
-            </motion.div>
-            </div>
+      <div className="min-h-screen flex items-center justify-center px-4">
+        <div className="w-full max-w-md text-white bg-purple-950 border border-purple-700 shadow-2xl rounded-2xl">
+          <div className="p-8 text-center">
+            <h1 className="text-3xl font-bold mb-4">ログインに失敗しました</h1>
+            <p className="mb-6 text-sm text-purple-200">{errMessage}</p>
+            <Link href="/" className="inline-block">
+              <div className="bg-purple-700 hover:bg-purple-600 text-white font-medium py-2 px-4 rounded-lg transition duration-300">
+                ホームに戻る
+              </div>
+            </Link>
+          </div>
         </div>
-    </div>
+      </div>
     )
   }
 };
