@@ -61,6 +61,13 @@ export const getPageImage=async(curriculumId,pageId,cover,icon)=>{
             iconUrl = icon.external.url
         }else if(iconType==="emoji"){
             iconUrl = icon.emoji
+        }else if(iconType==="custom_emoji"){
+            let exte = icon.custom_emoji.url.split(".")[1];
+            if(exte===undefined || (exte!=="png" && exte!="jpg"  && exte!="svg")){
+                exte = "png";
+            }
+            await downloadImage(icon.custom_emoji.url, `./public/notion_data/eachPage/${curriculumId}/pageImageData/icon/${pageId}.${exte}`)
+            iconUrl = `/horizon-atlas/notion_data/eachPage/${curriculumId}/pageImageData/icon/${pageId}.${exte}`
         }
     }
     let coverUrl = "";

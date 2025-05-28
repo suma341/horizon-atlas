@@ -19,7 +19,7 @@ const converseData =(data:data)=>{
     const postMetaData:PostMetaData = {
         title:data.title,
         curriculumId:data.curriculumId,
-        category:data.category,
+        category:data.category || "",
         visibility:JSON.parse(data.visibility),
         tags:JSON.parse(data.tag),
         is_basic_curriculum:JSON.parse(data.is_basic_curriculum),

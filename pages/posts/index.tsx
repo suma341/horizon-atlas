@@ -43,7 +43,6 @@ export const getStaticProps: GetStaticProps = async () => {
         allTags,
         targetCategory
       },
-      // revalidate: 600
   };
 };
 
