@@ -11,6 +11,7 @@ import { BsCompass } from "react-icons/bs";
 import SingleCourse from "@/components/Post/SingleCourse";
 import { CategoryService } from "@/lib/services/CategoryService";
 import { Category } from "@/types/category";
+import SinglePost from "@/components/Post/SinglePost";
 
 type Props = {
   courseAndPosts:{
@@ -18,13 +19,15 @@ type Props = {
     posts:PostMetaData[];
   }[];
   allTags:string[];
-  targetCategory:Category[]
+  targetCategory:Category[];
+  emptyCoursesPosts:PostMetaData[];
 };
 
 export const getStaticProps: GetStaticProps = async () => {
   const allPosts:PostMetaData[] = await CurriculumService.getAllCurriculum();
   const notBasicCourses = await getEitherCourses(false,allPosts);
   const removeEmptyCourses = notBasicCourses.filter((course)=>course!=="")
+  const emptyCourses = notBasicCourses.filter((course)=>course==="")
   const courseAndPosts = await Promise.all(removeEmptyCourses.map(async(course)=>{
     const posts = await getPostsByCourse(course,allPosts);
     return {
@@ -32,6 +35,10 @@ export const getStaticProps: GetStaticProps = async () => {
         posts
     }
   }))
+  const emptyCoursesPosts = await Promise.all(emptyCourses.map((async(course)=>{
+    const posts = await getPostsByCourse(course,allPosts);
+    return posts
+  })));
   const allTags = await getAllTags(allPosts);
   const allCategory = await CategoryService.getAllCategory()
   const targetCategory = allCategory.filter((item)=>{
@@ -41,12 +48,13 @@ export const getStaticProps: GetStaticProps = async () => {
       props: {
         courseAndPosts,
         allTags,
-        targetCategory
+        targetCategory,
+        emptyCoursesPosts:emptyCoursesPosts.flat()
       },
   };
 };
 
-const PostsPage = ({ allTags,courseAndPosts,targetCategory}: Props)=> {
+const PostsPage = ({ allTags,courseAndPosts,targetCategory,emptyCoursesPosts}: Props)=> {
     return (
       <Layout pageNavs={[HOME_NAV]}>  
         <div className="bg-gradient-to-b from-gray-100 to-white min-h-screen">
@@ -79,6 +87,12 @@ const PostsPage = ({ allTags,courseAndPosts,targetCategory}: Props)=> {
                   return (
                   <SingleCourse key={i} course={item.course} icon={{url:target?.iconUrl,type:target?.iconType}} />
                 )})}
+              </div>
+              <div className="mt-5">
+                <p className="font-bold m-2">その他の資料</p>
+                {emptyCoursesPosts.map((item)=>(
+                  <SinglePost postData={item} key={item.curriculumId} />
+                ))}
               </div>
             </main>
           </div>
