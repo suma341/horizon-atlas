@@ -141,14 +141,22 @@ export default function ImageBlock(props: Props) {
                                 touchAction: 'none', 
                             }}
                         >
-                            <img
+                            {(!size || (size && size.width > size.height)) && <img
                                 src={data.url}
                                 alt="image_block_large"
                                 style={{
                                     width: '80vw',
                                     height: 'auto'
                                 }}
-                            />
+                            />}
+                            {(size && size.height > size.width) && <img
+                                src={data.url}
+                                alt="image_block_large"
+                                style={{
+                                    width: "auto",
+                                    height: "90vh"
+                                }}
+                            />}
                             
                         </div>
                     </div>

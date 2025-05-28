@@ -1,5 +1,7 @@
 name: Auto Dummy Commit
 
+# 1日に一回ダミーコミットをする
+
 on:
   schedule:
     - cron: "0 0 * * *"

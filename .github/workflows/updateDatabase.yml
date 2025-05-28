@@ -1,7 +1,12 @@
-name: auto build and Deploy Next.js
+name: update database
+
+# Notionからデータを読み込んでから、ビルドしてデプロイ
 
 on:
-  workflow_dispatch:
+  workflow_run:
+    workflows: ["Auto Dummy Commit"]
+    types:
+      - completed
 
 permissions:
   contents: write  
@@ -22,7 +27,26 @@ jobs:
       - name: 依存関係をインストール
         run: npm install
 
+      - name: Run script
+        run: node updateScript/checkEdited.js
+        env:
+          NOTION_TOKEN_HORIZON: ${{secrets.NOTION_TOKEN_HORIZON}}
+          NOTION_DB_ID_HORIZON: ${{secrets.NOTION_DB_ID_HORIZON}}
+          SUPABASE_ANON_KEY: ${{secrets.SUPABASE_ANON_KEY}}
+          SUPABASE_URL: ${{secrets.SUPABASE_URL}}
+          IFRAMELY_API_KEY: ${{secrets.IFRAMELY_API_KEY}}
+          NOTION_DB_ID_CATEGORY: ${{secrets.NOTION_DB_ID_CATEGORY}}
+      
+      - name: Commit and push if changes exist
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git diff --quiet && git diff --staged --quiet || git commit -m "Update Notion data [skip ci]"
+          git push
+
       - name: Next.js をビルド
+        if: success()
         run: npm run build
         env:
           NEXT_PUBLIC_AUTH0_DOMAIN: ${{secrets.NEXT_PUBLIC_AUTH0_DOMAIN}}
