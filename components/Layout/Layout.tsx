@@ -87,7 +87,7 @@ const Layout: React.FC<LayoutProps> = ({ children, pageNavs, sideNavProps}) => {
   }
 
     return (
-      <div className="bg-white min-h-screen flex-1">
+      <div className="bg-white min-h-screen flex flex-col flex-1">
         <Head>
           <title>HorizonAtlas</title>
           <meta property="og:title" content="HorizonAtlas" />
@@ -110,7 +110,7 @@ const Layout: React.FC<LayoutProps> = ({ children, pageNavs, sideNavProps}) => {
           <div className="h-5"></div>
         </div>
         <Footer />
-    </div>
+      </div>
     
     );
 };
