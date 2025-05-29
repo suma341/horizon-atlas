@@ -11,7 +11,6 @@ import { useEffect, useState } from "react";
 import { NUMBER_OF_POSTS_PER_PAGE } from "@/constants/numberOfPage";
 import { CurriculumService } from "@/lib/services/CurriculumService";
 import useUserProfileStore from "@/stores/userProfile";
-import { Loader2 } from "lucide-react";
 import Loader from "@/components/loader/loader";
 
 type pagePath = {

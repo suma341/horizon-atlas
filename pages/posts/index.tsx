@@ -14,7 +14,6 @@ import { Category } from "@/types/category";
 import SinglePost from "@/components/Post/SinglePost";
 import { useEffect, useState } from "react";
 import useUserProfileStore from "@/stores/userProfile";
-import { Loader2 } from "lucide-react";
 import Loader from "@/components/loader/loader";
 
 type Props = {
