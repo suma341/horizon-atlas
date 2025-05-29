@@ -15,6 +15,7 @@ import useIconStore from '@/stores/iconStore';
 import useUserProfileStore from '@/stores/userProfile';
 import MessageBoard from '@/components/messageBoard/messageBoard';
 import Head from 'next/head';
+import { ParagraphData } from '@/types/paragraph';
 
 type postPath = {
   params: { curriculumId:string,pageId:string }
@@ -31,6 +32,7 @@ type Props = {
   iconType:string;
   iconUrl:string;
   coverUrl:string;
+  firstText:string;
 };
 
 export const getStaticPaths = async () => {
@@ -97,6 +99,14 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     }
   }
 
+  let firstText = "";
+  for(const i of mdBlocks){
+    if(i.type==="paragraph"){
+        const textData:ParagraphData = JSON.parse(i.parent)
+        firstText = textData.parent.join("")
+    }
+  }
+
     if(curriculumId!==pageId){
       const childrenData = await PageDataService.getChildrenData(pageId);
       const childPageNavs = await PageDataService.getPageNavs(pageId);
@@ -112,7 +122,8 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
           iconInfo:iconInfoList,
           iconUrl:titleAndIcon.iconUrl,
           iconType:titleAndIcon.iconType,
-          coverUrl:titleAndIcon.coverUrl
+          coverUrl:titleAndIcon.coverUrl,
+          firstText
         }
       }
     }
@@ -126,12 +137,13 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       iconInfo:iconInfoList,
       iconUrl:singlePost.iconUrl,
       iconType:singlePost.iconType,
-      coverUrl:singlePost.coverUrl
+      coverUrl:singlePost.coverUrl,
+      firstText
     },
   };
 };
 
-const Post =({ metadata, mdBlocks,pageNavs,childrenData,pageId,iconInfo,title,iconType,iconUrl,coverUrl}: Props) => {
+const Post =({ metadata, mdBlocks,pageNavs,childrenData,pageId,iconInfo,title,iconType,iconUrl,coverUrl,firstText}: Props) => {
   const { setCurriculumId } = useCurriculumIdStore();
   const { setIcons } = useIconStore();
   let o = 0;
@@ -155,7 +167,7 @@ const Post =({ metadata, mdBlocks,pageNavs,childrenData,pageId,iconInfo,title,ic
     <>
     <Head>
         <meta property="og:title" content={title} />
-        {/* <meta property="og:description" content={``} /> */}
+        <meta property="og:description" content={firstText} />
         <meta property="og:image" content={`https://ryukoku-horizon.github.io/horizon-atlas/ogp/${metadata.curriculumId}-${pageId}.png`} />
         <meta property="og:url" content={`https://ryukoku-horizon.github.io/horizon-atlas/${pageNavs[pageNavs.length - 1].link}`} />
     </Head>
