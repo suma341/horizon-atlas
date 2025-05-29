@@ -70,20 +70,22 @@ const PostsPage = ({ allTags,courseAndPosts,targetCategory,emptyCoursesPosts}: P
       async function setData(){
         try{
           setLoading(true)
+          console.log(userProfile?.given_name)
           const usersRole = userProfile?.given_name ?? "体験入部"
           const postsByRole = await getPostsByRole(usersRole,emptyCoursesPosts);
           setPostsByRole(postsByRole);
           const courseByRole = await Promise.all(courseAndPosts.map(async(item)=>{
-            const coursePostsByRole = await getPostsByCourse(usersRole,item.posts)
-            return {posts:coursePostsByRole,course:item.course};
+            const postsByRole = item.posts.filter((item2)=>item2.visibility.some((item3)=>item3===usersRole))
+            return {posts:postsByRole,course:item.course};
           }))
-          setCourseByRole(courseByRole)
+          const filteredCourse = courseByRole.filter((item)=>item.posts.length!==0)
+          setCourseByRole(filteredCourse)
         }finally{
           setLoading(false)
         }
       }
       setData()
-  },[emptyCoursesPosts,userProfile])
+  },[emptyCoursesPosts,userProfile?.given_name])
 
     return (
       <Layout pageNavs={[HOME_NAV]}>  
@@ -109,16 +111,14 @@ const PostsPage = ({ allTags,courseAndPosts,targetCategory,emptyCoursesPosts}: P
 
               <SearchField searchKeyWord={""} />
               <Tags allTags={allTags} />
-              {!loading && courseByRole.length!==0 && <div>
+              {!loading && <div>
                 {courseByRole.map((item,i)=>{
-                  if(item.posts.length!==0){
                     const target = targetCategory.find(
                       (item1) => item1.title === item.course
                     );
                     return (
                       <SingleCourse key={i} course={item.course} icon={{url:target?.iconUrl,type:target?.iconType}} />
                     )
-                  }
                 })}
               </div>}
               {!loading && postsByRole.length!==0 && <div className="mt-5">
