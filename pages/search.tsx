@@ -40,6 +40,7 @@ export default function SearchPage({allTags, posts}:Props) {
   const { userProfile } = useUserProfileStore()
   const router = useRouter();
   const query = router.query.search!==undefined ? router.query.search as string : undefined;
+
   useEffect(()=>{
     async function setData(){
       const usersRole = userProfile?.given_name ?? "体験入部"
@@ -70,7 +71,9 @@ export default function SearchPage({allTags, posts}:Props) {
             {matchPosts.length!==0 && matchPosts.slice(postsPerPage * (currentPage - 1), postsPerPage * currentPage).map((post)=>{
               return (<SinglePost postData={post} key={post.curriculumId} />)
             })}
-            {matchPosts.length===0 && <div className="text-xl">カリキュラムが見つかりませんでした</div>}
+            {matchPosts.length===0 && <div className="text-xl flex items-center justify-center">
+              カリキュラムが見つかりませんでした
+            </div>}
           </div>
         </main>
         <Pagenation numberOfPage={numberOfPage} currentPage={currentPage} setPage={setCurrentPage} />

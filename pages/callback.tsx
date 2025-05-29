@@ -7,7 +7,7 @@ import { auth } from "@/lib/fireabase";
 import { Profile } from "@/types/profile";
 import { fetchUser, saveUserProfile } from "@/lib/fireStore";
 import useUserProfileStore from "@/stores/userProfile";
-import Link from "next/link";
+import MessageBoard from "@/components/messageBoard/messageBoard";
 
 const Callback = () => {
   const { loginWithCustomToken, user, logout,loading } = useFirebaseUser();
@@ -137,19 +137,12 @@ const Callback = () => {
   }
   if(!load && !loading && errMessage!==""){
     return (
-      <div className="min-h-screen flex items-center justify-center px-4">
-        <div className="w-full max-w-md text-white bg-purple-950 border border-purple-700 shadow-2xl rounded-2xl">
-          <div className="p-8 text-center">
-            <h1 className="text-3xl font-bold mb-4">ログインに失敗しました</h1>
-            <p className="mb-6 text-sm text-purple-200">{errMessage}</p>
-            <Link href="/" className="inline-block">
-              <div className="bg-purple-700 hover:bg-purple-600 text-white font-medium py-2 px-4 rounded-lg transition duration-300">
-                ホームに戻る
-              </div>
-            </Link>
-          </div>
-        </div>
-      </div>
+      <MessageBoard
+        title="ログインに失敗しました"
+        message={errMessage}
+        link="/"
+        linkLabel="ホームに戻る"
+      />
     )
   }
 };

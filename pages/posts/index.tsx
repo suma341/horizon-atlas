@@ -1,6 +1,6 @@
 import Layout from "@/components/Layout/Layout";
 import { HOME_NAV } from "@/constants/pageNavs";
-import {  getAllTags, getEitherCourses, getPostsByCourse } from "@/lib/services/notionApiService";
+import {  getAllTags, getEitherCourses, getPostsByCourse, getPostsByRole } from "@/lib/services/notionApiService";
 import { PostMetaData } from "@/types/postMetaData";
 import { GetStaticProps } from "next";
 import SearchField from "@/components/SearchField/SearchField";
@@ -12,6 +12,10 @@ import SingleCourse from "@/components/Post/SingleCourse";
 import { CategoryService } from "@/lib/services/CategoryService";
 import { Category } from "@/types/category";
 import SinglePost from "@/components/Post/SinglePost";
+import { useEffect, useState } from "react";
+import useUserProfileStore from "@/stores/userProfile";
+import { Loader2 } from "lucide-react";
+import Loader from "@/components/loader/loader";
 
 type Props = {
   courseAndPosts:{
@@ -55,6 +59,33 @@ export const getStaticProps: GetStaticProps = async () => {
 };
 
 const PostsPage = ({ allTags,courseAndPosts,targetCategory,emptyCoursesPosts}: Props)=> {
+  const [postsByRole, setPostsByRole] = useState(emptyCoursesPosts);
+  const { userProfile } = useUserProfileStore();
+  const [courseByRole,setCourseByRole] = useState<{
+    course: string;
+    posts: PostMetaData[];
+  }[]>(courseAndPosts)
+  const [loading,setLoading] = useState(false)
+
+  useEffect(()=>{
+      async function setData(){
+        try{
+          setLoading(true)
+          const usersRole = userProfile?.given_name ?? "体験入部"
+          const postsByRole = await getPostsByRole(usersRole,emptyCoursesPosts);
+          setPostsByRole(postsByRole);
+          const courseByRole = await Promise.all(courseAndPosts.map(async(item)=>{
+            const coursePostsByRole = await getPostsByCourse(usersRole,item.posts)
+            return {posts:coursePostsByRole,course:item.course};
+          }))
+          setCourseByRole(courseByRole)
+        }finally{
+          setLoading(false)
+        }
+      }
+      setData()
+  },[emptyCoursesPosts,userProfile])
+
     return (
       <Layout pageNavs={[HOME_NAV]}>  
         <div className="bg-gradient-to-b from-gray-100 to-white min-h-screen">
@@ -79,21 +110,25 @@ const PostsPage = ({ allTags,courseAndPosts,targetCategory,emptyCoursesPosts}: P
 
               <SearchField searchKeyWord={""} />
               <Tags allTags={allTags} />
-              <div>
-                {courseAndPosts.map((item,i)=>{
-                  const target = targetCategory.find(
-                    (item1) => item1.title === item.course
-                  );
-                  return (
-                  <SingleCourse key={i} course={item.course} icon={{url:target?.iconUrl,type:target?.iconType}} />
-                )})}
-              </div>
-              <div className="mt-5">
+              {!loading && courseByRole.length!==0 && <div>
+                {courseByRole.map((item,i)=>{
+                  if(item.posts.length!==0){
+                    const target = targetCategory.find(
+                      (item1) => item1.title === item.course
+                    );
+                    return (
+                      <SingleCourse key={i} course={item.course} icon={{url:target?.iconUrl,type:target?.iconType}} />
+                    )
+                  }
+                })}
+              </div>}
+              {!loading && postsByRole.length!==0 && <div className="mt-5">
                 <p className="font-bold m-2">その他の資料</p>
-                {emptyCoursesPosts.map((item)=>(
+                {postsByRole.map((item)=>(
                   <SinglePost postData={item} key={item.curriculumId} />
                 ))}
-              </div>
+              </div>}
+              {loading && <Loader size={20} />}
             </main>
           </div>
         </div>

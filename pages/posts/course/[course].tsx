@@ -11,6 +11,8 @@ import { CategoryService } from "@/lib/services/CategoryService";
 import { Category } from "@/types/category";
 import Image from "next/image";
 import useUserProfileStore from "@/stores/userProfile";
+import { Loader2 } from "lucide-react";
+import Loader from "@/components/loader/loader";
 
 type pagePath = {
     params: { course:string }
@@ -66,13 +68,19 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 const CoursePage = ({ posts, currentCourse,pageNavs,categoryData }: Props)=> {
     const [postsByRole, setPostsByRole] = useState(posts);
-    const { userProfile } = useUserProfileStore()
+    const { userProfile } = useUserProfileStore();
+    const [loading,setLoading] = useState(false)
 
     useEffect(()=>{
         async function setData(){
-            const usersRole = userProfile?.given_name ?? "体験入部"
-            const postsByRole = await getPostsByRole(usersRole,posts);
-            setPostsByRole(postsByRole);
+            try{
+                setLoading(true)
+                const usersRole = userProfile?.given_name ?? "体験入部"
+                const postsByRole = await getPostsByRole(usersRole,posts);
+                setPostsByRole(postsByRole);
+            }finally{
+                setLoading(false)
+            }
         }
         setData()
     },[posts,userProfile])
@@ -89,7 +97,7 @@ const CoursePage = ({ posts, currentCourse,pageNavs,categoryData }: Props)=> {
                     <div className="mt-8">
                         <p>{categoryData?.description}</p>
                     </div>
-                    <div className="mt-8">
+                    {!loading && <div className="mt-8">
                         {postsByRole.map((post)=>{
                             return (
                                 <div key={post.curriculumId}>
@@ -99,7 +107,8 @@ const CoursePage = ({ posts, currentCourse,pageNavs,categoryData }: Props)=> {
                                 </div>
                             )
                         })}
-                        </div>
+                    </div>}
+                    {loading && <Loader size={20} />}
                 </section>
             </div>
         </Layout>

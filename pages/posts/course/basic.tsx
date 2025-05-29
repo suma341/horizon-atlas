@@ -9,6 +9,8 @@ import { useEffect, useState } from "react";
 import { CategoryService } from "@/lib/services/CategoryService";
 import { Category } from "@/types/category";
 import useUserProfileStore from "@/stores/userProfile";
+import { Loader2 } from "lucide-react";
+import Loader from "@/components/loader/loader";
 
 type Props={
     courseAndPosts: {
@@ -45,19 +47,25 @@ export const getStaticProps: GetStaticProps = async () => {
 export default function BasicCoursePageList({courseAndPosts,categoryData}: Props){
     const [dataByRole,setDataByRole] = useState(courseAndPosts);
     const { userProfile } = useUserProfileStore()
+    const [loading,setLoading] = useState(false)
 
     useEffect(()=>{
         async function setData(){
-            const usersRole = userProfile?.given_name ?? "体験入部"
-            const dataByRole:{
-                course: string;
-                posts: PostMetaData[];
-            }[] = [];
-            for(const i of courseAndPosts){
-                const postsByRole = await getPostsByRole(usersRole,i.posts);
-                dataByRole.push({course:i.course,posts:postsByRole});
+            try{
+                setLoading(true)
+                const usersRole = userProfile?.given_name ?? "体験入部"
+                const dataByRole:{
+                    course: string;
+                    posts: PostMetaData[];
+                }[] = [];
+                for(const i of courseAndPosts){
+                    const postsByRole = await getPostsByRole(usersRole,i.posts);
+                    dataByRole.push({course:i.course,posts:postsByRole});
+                }
+                setDataByRole(dataByRole);
+            }finally{
+                setLoading(false)
             }
-            setDataByRole(dataByRole);
         }
         setData();
     },[courseAndPosts,userProfile])
@@ -70,18 +78,21 @@ export default function BasicCoursePageList({courseAndPosts,categoryData}: Props
                     基礎班カリキュラム
                 </h1>
                 <section className="grid grid-cols-1 gap-8 px-6">
-                    {dataByRole.map((courseAndPosts, i) => {
-                    const target = categoryData.find(
-                        (item1) => item1.title === courseAndPosts.course
-                    );
-                    return (
-                        <SingleCourse
-                        course={courseAndPosts.course}
-                        icon={{ url: target?.iconUrl, type: target?.iconType }}
-                        key={i}
-                        />
-                    );
+                    {!loading && dataByRole.map((courseAndPosts, i) => {
+                        if(courseAndPosts.posts.length!==0){
+                            const target = categoryData.find(
+                                (item1) => item1.title === courseAndPosts.course
+                            );
+                            return (
+                                <SingleCourse
+                                course={courseAndPosts.course}
+                                icon={{ url: target?.iconUrl, type: target?.iconType }}
+                                key={i}
+                                />
+                            );
+                        }
                     })}
+                    {loading && <Loader size={20} />}
                 </section>
                 </main>
             </div>

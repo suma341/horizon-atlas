@@ -11,6 +11,8 @@ import { useEffect, useState } from "react";
 import { NUMBER_OF_POSTS_PER_PAGE } from "@/constants/numberOfPage";
 import { CurriculumService } from "@/lib/services/CurriculumService";
 import useUserProfileStore from "@/stores/userProfile";
+import { Loader2 } from "lucide-react";
+import Loader from "@/components/loader/loader";
 
 type pagePath = {
     params: { tag:string }
@@ -60,13 +62,19 @@ const TagPageList = ({ posts, currentTag,allTags}: Props)=> {
     const [matchPosts, setMatchPosts] = useState<PostMetaData[]>(posts);
     const numberOfPages = calculatePageNumber(posts);
     const postsPerPage = NUMBER_OF_POSTS_PER_PAGE;
-    const { userProfile } = useUserProfileStore()
+    const { userProfile } = useUserProfileStore();
+    const [loading,setLoading] = useState(false)
 
     useEffect(()=>{
         async function setData(){
-          const usersRole = userProfile?.given_name ?? "体験入部"
-          const postsByRole = await getPostsByRole(usersRole,posts);
-          setMatchPosts(postsByRole);
+            try{
+                setLoading(true)
+                const usersRole = userProfile?.given_name ?? "体験入部"
+                const postsByRole = await getPostsByRole(usersRole,posts);
+                setMatchPosts(postsByRole);
+            }finally{
+                setLoading(false)
+            }
         }
         setData();
       },[posts,userProfile,currentTag])
@@ -76,7 +84,7 @@ const TagPageList = ({ posts, currentTag,allTags}: Props)=> {
             <div className="h-full w-full mx-auto font-mono">
                 <main className="mt-20 mx-5 md:mx-16 mb-3 pt-4">
                     <Tags allTags={allTags} />
-                    <section className="pt-5">
+                    {!loading && <section className="pt-5">
                         {matchPosts.slice(postsPerPage * (currentPage - 1), postsPerPage * currentPage).map((post)=>{
                             return (
                                 <div key={post.curriculumId}>
@@ -85,7 +93,8 @@ const TagPageList = ({ posts, currentTag,allTags}: Props)=> {
                                     />
                                 </div>
                         )})}
-                    </section>
+                    </section>}
+                    {loading && <Loader size={20} />}
                 </main>
                 <Pagenation numberOfPage={numberOfPages} currentPage={currentPage} setPage={setCurrentPage} />
             </div>

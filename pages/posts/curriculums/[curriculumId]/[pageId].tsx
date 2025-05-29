@@ -1,5 +1,5 @@
 import { GetStaticProps } from 'next';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { PostMetaData } from '@/types/postMetaData';
 import { MdBlock } from 'notion-to-md/build/types';
 import MdBlockComponent from '@/components/mdBlocks/mdBlock';
@@ -12,6 +12,8 @@ import { PageDataService } from '@/lib/services/PageDataService';
 import useCurriculumIdStore from '@/stores/curriculumIdStore';
 import { IconInfo } from '@/types/iconInfo';
 import useIconStore from '@/stores/iconStore';
+import useUserProfileStore from '@/stores/userProfile';
+import MessageBoard from '@/components/messageBoard/messageBoard';
 
 type postPath = {
   params: { curriculumId:string,pageId:string }
@@ -132,6 +134,16 @@ const Post =({ metadata, mdBlocks,pageNavs,childrenData,pageId,iconInfo,title,ic
   const { setCurriculumId } = useCurriculumIdStore();
   const { setIcons } = useIconStore();
   let o = 0;
+  const { userProfile } = useUserProfileStore();
+  const [notVisible,setNotVisible] = useState(false)
+
+  useEffect(()=>{
+    const usersRole = userProfile?.given_name ?? "体験入部";
+    const isVisible = metadata.visibility.some((item)=>item===usersRole)
+    if(!isVisible){
+      setNotVisible(true)
+    }
+  },[userProfile])
 
   useEffect(()=>{
     setIcons(iconInfo);
@@ -140,7 +152,7 @@ const Post =({ metadata, mdBlocks,pageNavs,childrenData,pageId,iconInfo,title,ic
 
   return (
     <Layout pageNavs={pageNavs} sideNavProps={childrenData}>
-      <div className='pt-20 pb-8'>
+      {!notVisible && <div className='pt-20 pb-8'>
       {coverUrl!=="" && <Image src={coverUrl} alt={''} width={120} height={120} className='h-56 top-0' style={{width:"100vw"}} />}
         <section className='px-2 bg-white pb-10' style={coverUrl!=="" ? {} : {paddingTop:"4rem"}}>
           <div>
@@ -173,8 +185,13 @@ const Post =({ metadata, mdBlocks,pageNavs,childrenData,pageId,iconInfo,title,ic
             </div>
           </div>
         </section>
-      </div>
-      <script async src="//cdn.iframe.ly/embed.js"></script>
+      </div>}
+      {notVisible && <MessageBoard 
+        title='このページは制限されています' 
+        message={`${userProfile?.given_name || "体験入部"}のユーザーはこのページを見ることを制限されています。ロールを更新するには再度ログインしてください。`}
+        link='/posts'
+        linkLabel='戻る'
+      />}
     </Layout>
   )
 }
