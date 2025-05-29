@@ -30,36 +30,41 @@ const __dirname = path.dirname(__filename);
     let title = targetCurriculum?.title || "";
     let iconType = targetCurriculum?.iconType;
     let iconUrl = targetCurriculum?.iconUrl;
+    let coverUrl = targetCurriculum?.coverUrl
 
     if(i.curriculumId!==i.pageId){
       const titleAndIcon = await getTitleAndIcon(i.pageId)
       title = titleAndIcon.title;
       iconType = titleAndIcon.iconType;
       iconUrl = titleAndIcon.iconUrl;
+      coverUrl = titleAndIcon.coverUrl
       if(iconType==="file" || iconType==="custom_emoji"){
         iconUrl = iconUrl.replace("/horizon-atlas","https://ryukoku-horizon.github.io/horizon-atlas")
-        // iconUrl = pathToFileURL(iconUrl).href.replace("file://","");
-        // console.log(iconUrl,fs.existsSync(iconUrl))
       }
     }else{
       if(iconType==="file" || iconType==="custom_emoji"){
         iconUrl = iconUrl.replace("/horizon-atlas","https://ryukoku-horizon.github.io/horizon-atlas")
-        // iconUrl = pathToFileURL(iconUrl).href.replace("file://","");
-        // console.log(iconUrl,fs.existsSync(iconUrl))
       }
     }
     const page = await browser.newPage();
     const file_icon = "https://ryukoku-horizon.github.io/horizon-atlas/pngwing.png"
-    // const file_icon = pathToFileURL("./public/file_icon.svg").href.replace("file://","");
-    // console.log(file_icon, fs.existsSync(file_icon))
     // ここで画像にしたいHTMLをセット
     const html = `
       <html>
         <body style="width: 1203px; height: 630px;background: white;">
-          ${iconType==="" ? `<img src="${file_icon} style="width: 10rem; height: 10rem;position: absolute; top: 100px; left: 90px" >` : ""}
-          ${(iconType !== "emoji" && iconType!=="") ? `<img src=${iconUrl} style="width: 10rem; height: 10rem;position: absolute; top: 100px; left: 90px" >` : ""}
-          ${iconType === "emoji" ? `<p style="font-size: 7rem; position: absolute; top: 0px; left: 90px">${iconUrl}</p>` : ""}
-          <h2 style="font-size: 64px; font-style: bold;position: absolute; top: 190px; left:40px;">${title}</h2>
+          ${coverUrl!=="" ? `<img src=${coverUrl} style="position: absolute;top: 0px;left:0px; width: 101%;height: 330px;">` : ""}
+          ${coverUrl!=="" ? `<div>
+            ${iconType==="" ? `<img src="${file_icon} style="width: 9rem; height: 9rem;position: absolute; top: 265px; left: 90px" >` : ""}
+            ${(iconType !== "emoji" && iconType!=="") ? `<img src=${iconUrl} style="width: 9rem; height: 9rem;position: absolute; top: 265px; left: 90px" >` : ""}
+            ${iconType === "emoji" ? `<p style="font-size: 7rem; position: absolute; top: 160px; left: 90px">${iconUrl}</p>` : ""}
+            <h2 style="font-size: 64px; font-style: bold;position: absolute; top: 370px; left:40px;">${title}</h2>
+          </div>` :
+          `<div>
+            ${iconType==="" ? `<img src="${file_icon} style="width: 9rem; height: 9rem;position: absolute; top: 135px; left: 90px" >` : ""}
+            ${(iconType !== "emoji" && iconType!=="") ? `<img src=${iconUrl} style="width: 9rem; height: 9rem;position: absolute; top: 135px; left: 90px" >` : ""}
+            ${iconType === "emoji" ? `<p style="font-size: 7rem; position: absolute; top: 30px; left: 90px">${iconUrl}</p>` : ""}
+            <h2 style="font-size: 64px; font-style: bold;position: absolute; top: 220px; left:40px;">${title}</h2>
+          </div>`}
         </body>
       </html>
     `;
