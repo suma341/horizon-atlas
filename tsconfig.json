@@ -17,6 +17,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "constants", "lib/discordAuth.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "constants", "lib/discordAuth.ts", "ogpGenerator/gateways/currilumGateway.js"],
   "exclude": ["node_modules"]
 }

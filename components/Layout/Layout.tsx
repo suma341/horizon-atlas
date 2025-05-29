@@ -20,11 +20,12 @@ type LayoutProps = {
     title: string;
     childPages?: pageNav[];
   };
+  useSelefHeader?:boolean;
 };
 
-const Layout: React.FC<LayoutProps> = ({ children, pageNavs, sideNavProps}) => {
-  const [isVisible, setIsVisible] = useState(true); // ヘッダーの表示状態
-  const [lastScrollY, setLastScrollY] = useState(0); // 最後のスクロール位置
+const Layout: React.FC<LayoutProps> = ({ children, pageNavs, sideNavProps,useSelefHeader}) => {
+  const [isVisible, setIsVisible] = useState(true); 
+  const [lastScrollY, setLastScrollY] = useState(0); 
   const [openbar, setOpenbar] = useState(false);
   const {logout,loading:userLoad} = useFirebaseUser();
   const { userProfile,setUserProfile } = useUserProfileStore();
@@ -88,15 +89,15 @@ const Layout: React.FC<LayoutProps> = ({ children, pageNavs, sideNavProps}) => {
 
     return (
       <div className="bg-white min-h-screen flex flex-col flex-1">
-        <Head>
+        {!useSelefHeader && <Head>
           <title>HorizonAtlas</title>
           <meta property="og:title" content="HorizonAtlas" />
           <meta name="description" content="HorizonAtlasは、学習カリキュラムをまとめたHorizon部員専用のサービスです。" />
-          {/* {<meta property="og:image" content="/horizon-atlas/app_image.png" />} */}
+          <meta property="og:image" content="/horizon-atlas/app_image.png" />
           <meta property="og:type" content="website" />
           <meta name="twitter:card" content="/horizon-atlas/app_image.png" />
           <link rel="icon" href="/horizon-atlas/favicon.ico" />
-        </Head>
+        </Head>}
         <Sidebar openbar={openbar} setOpenbar={setOpenbar} pageNav={sideNavProps} />
         <div
           className="fixed top-0 z-50 w-full duration-500"

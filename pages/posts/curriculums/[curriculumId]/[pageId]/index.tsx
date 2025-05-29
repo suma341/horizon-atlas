@@ -14,6 +14,7 @@ import { IconInfo } from '@/types/iconInfo';
 import useIconStore from '@/stores/iconStore';
 import useUserProfileStore from '@/stores/userProfile';
 import MessageBoard from '@/components/messageBoard/messageBoard';
+import Head from 'next/head';
 
 type postPath = {
   params: { curriculumId:string,pageId:string }
@@ -151,7 +152,14 @@ const Post =({ metadata, mdBlocks,pageNavs,childrenData,pageId,iconInfo,title,ic
   },[metadata.curriculumId,pageId,iconInfo])
 
   return (
-    <Layout pageNavs={pageNavs} sideNavProps={childrenData}>
+    <>
+    <Head>
+        <meta property="og:title" content={title} />
+        {/* <meta property="og:description" content={} /> */}
+        {/* <meta property="og:image" content="画像のURL" /> */}
+        <meta property="og:url" content={pageNavs[pageNavs.length - 1].link} />
+    </Head>
+    <Layout pageNavs={pageNavs} sideNavProps={childrenData} useSelefHeader={true}>
       {!notVisible && <div className='pt-20 pb-8'>
       {coverUrl!=="" && <Image src={coverUrl} alt={''} width={120} height={120} className='h-56 top-0' style={{width:"100vw"}} />}
         <section className='px-2 bg-white pb-10' style={coverUrl!=="" ? {} : {paddingTop:"4rem"}}>
@@ -193,6 +201,7 @@ const Post =({ metadata, mdBlocks,pageNavs,childrenData,pageId,iconInfo,title,ic
         linkLabel='戻る'
       />}
     </Layout>
+    </>
   )
 }
 
