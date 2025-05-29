@@ -23,6 +23,7 @@
     "next": "15.0.3",
     "notion-to-md": "^3.1.1",
     "open-graph-scraper": "^6.8.3",
+    "puppeteer": "^24.9.0",
     "react": "^18.3.1",
     "react-code-blocks": "^0.1.6",
     "react-dom": "^18.3.1",

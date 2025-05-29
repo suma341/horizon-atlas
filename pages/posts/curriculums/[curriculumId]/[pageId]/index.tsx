@@ -144,7 +144,7 @@ const Post =({ metadata, mdBlocks,pageNavs,childrenData,pageId,iconInfo,title,ic
     if(!isVisible){
       setNotVisible(true)
     }
-  },[userProfile])
+  },[userProfile?.given_name])
 
   useEffect(()=>{
     setIcons(iconInfo);
@@ -155,9 +155,9 @@ const Post =({ metadata, mdBlocks,pageNavs,childrenData,pageId,iconInfo,title,ic
     <>
     <Head>
         <meta property="og:title" content={title} />
-        {/* <meta property="og:description" content={} /> */}
-        {/* <meta property="og:image" content="画像のURL" /> */}
-        <meta property="og:url" content={pageNavs[pageNavs.length - 1].link} />
+        {/* <meta property="og:description" content={``} /> */}
+        <meta property="og:image" content={`ogp/${metadata.curriculumId}-${pageId}.png`} />
+        <meta property="og:url" content={`https://ryukoku-horizon.github.io/horizon-atlas/${pageNavs[pageNavs.length - 1].link}`} />
     </Head>
     <Layout pageNavs={pageNavs} sideNavProps={childrenData} useSelefHeader={true}>
       {!notVisible && <div className='pt-20 pb-8'>
