@@ -106,7 +106,9 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
         for(const i2 of textData.parent){
             firstText = firstText + i2.plain_text
         }
-        break;
+        if(firstText.length>12){
+            break;
+        }
     }
   }
 
@@ -169,10 +171,16 @@ const Post =({ metadata, mdBlocks,pageNavs,childrenData,pageId,iconInfo,title,ic
   return (
     <>
     <Head>
+        <title>{title}</title>
         <meta property="og:title" content={title} />
         <meta property="og:description" content={firstText} />
         <meta property="og:image" content={`https://ryukoku-horizon.github.io/horizon-atlas/ogp/${metadata.curriculumId}-${pageId}.png`} />
         <meta property="og:url" content={`https://ryukoku-horizon.github.io/horizon-atlas/${pageNavs[pageNavs.length - 1].link}`} />
+        <meta name='twitter:card' content='summary_large_image' />
+        <meta name='twitter:title' content={title} />
+        <meta name='twitter:description' content={firstText} />
+        <meta name='twitter:image' content={`https://ryukoku-horizon.github.io/horizon-atlas/ogp/${metadata.curriculumId}-${pageId}.png`} />
+        <meta name='og:type' content='website' />
     </Head>
     <Layout pageNavs={pageNavs} sideNavProps={childrenData} useSelefHeader={true}>
       {!notVisible && <div className='pt-20 pb-8'>
