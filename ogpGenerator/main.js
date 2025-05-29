@@ -20,10 +20,12 @@ const __dirname = path.dirname(__filename);
 
 (async () => {
   const browser = await puppeteer.launch();
-  const outputDir = path.resolve(__dirname, '../public/ogp');
-  if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir);
 
+  const dir = path.resolve(__dirname, "../public/ogp");
+  if(!fs.existsSync(dir)) fs.mkdirSync(dir);
   for (const i of allPageId) {
+    const outputDir = path.resolve(__dirname, `../public/ogp/${i.curriculumId}`);
+    if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir);
     let title = allCurriculums.find((item)=>item.curriculumId===i.curriculumId)?.title || "";
 
     if(i.curriculumId!==i.pageId){
@@ -39,8 +41,8 @@ const __dirname = path.dirname(__filename);
       </html>
     `;
     await page.setContent(html);
-    await page.setViewport({ width: 1200, height: 630 });
-    const filePath = path.join(outputDir, `${i.curriculumId}-${i.pageId}.png`);
+    await page.setViewport({ width: 1203, height: 630 });
+    const filePath = path.join(outputDir, `${i.pageId}.png`);
     await page.screenshot({ path: filePath });
     console.log(`Generated ${filePath}`);
   }
