@@ -103,7 +103,10 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   for(const i of mdBlocks){
     if(i.type==="paragraph"){
         const textData:ParagraphData = JSON.parse(i.parent)
-        firstText = textData.parent.join("")
+        for(const i2 of textData.parent){
+            firstText = firstText + i2.plain_text
+        }
+        break;
     }
   }
 
