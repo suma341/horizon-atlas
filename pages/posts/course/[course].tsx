@@ -12,6 +12,7 @@ import { Category } from "@/types/category";
 import Image from "next/image";
 import useUserProfileStore from "@/stores/userProfile";
 import Loader from "@/components/loader/loader";
+import Head from "next/head";
 
 type pagePath = {
     params: { course:string }
@@ -85,32 +86,49 @@ const CoursePage = ({ posts, currentCourse,pageNavs,categoryData }: Props)=> {
     },[posts,userProfile])
 
     return (
-        <Layout pageNavs={pageNavs}> 
-            <div className='pt-20 pb-8'>
-                {categoryData && categoryData.cover !=="" && <Image src={categoryData.cover} alt={''} width={120} height={120} className='h-56 top-0' style={{width:"100vw"}} />}
-                <section className={'px-2 bg-white pb-10'} style={(!categoryData || categoryData.cover !=="") ? {} : {paddingTop:"4rem"}}>
-                    {(!categoryData || categoryData.iconType ==="") && <Image src={"/horizon-atlas/file_icon.svg"} alt={''} width={20} height={20} className='relative w-20 h-20 m-0' style={categoryData && categoryData.cover !=="" ? {top:"-40px",left:"20px"} : {marginBottom:"1.5rem"}} />}
-                    {categoryData && categoryData.iconType !== "emoji" && categoryData.iconType!=="" && <Image src={categoryData.iconUrl} alt={''} width={20} height={20} className='relative w-20 h-20 m-0' style={categoryData && categoryData.cover!=="" ? {top:"-40px",left:"20px"} : {marginBottom:"1.5rem"}} />}
-                    {categoryData && categoryData.iconType === "emoji" && <p className='relative w-14 h-14 text-7xl' style={categoryData.cover!=="" ? {top:"-40px",left:"20px"} : {marginBottom:"1.5rem"}}>{categoryData.iconUrl}</p>}
-                    <h2 className='w-full text-3xl font-bold'>{currentCourse}</h2>
-                    <div className="mt-8">
-                        <p>{categoryData?.description}</p>
-                    </div>
-                    {!loading && <div className="mt-8">
-                        {postsByRole.map((post)=>{
-                            return (
-                                <div key={post.curriculumId}>
-                                    <SinglePost
-                                    postData={post}
-                                    />
-                                </div>
-                            )
-                        })}
-                    </div>}
-                    {loading && <Loader size={20} />}
-                </section>
-            </div>
-        </Layout>
+        <>
+            <Head>
+                <title>{currentCourse}</title>
+                <link rel="icon" href="/horizon-atlas/favicon.ico" />
+                <meta name='description' content='HorizonAtlasは、学習カリキュラムをまとめたHorizon部員専用のサービスです。' />
+                <meta property="og:title" content={currentCourse} />
+                <meta property="og:description" content={categoryData?.description} />
+                <meta property="og:image" content={`https://ryukoku-horizon.github.io/horizon-atlas/ogp/category/${categoryData?.categoryId}.png`} />
+                <meta property="og:url" content={`https://ryukoku-horizon.github.io/horizon-atlas/${pageNavs[pageNavs.length - 1].link}`} />
+                <meta property='og:type' content='website' />
+                <meta property='og:site_name' content="HorizonAtlas" />
+                <meta name='twitter:card' content='summary_large_image' />
+                <meta name='twitter:title' content={currentCourse} />
+                <meta name='twitter:description' content={categoryData?.description} />
+                <meta name='twitter:image' content={`https://ryukoku-horizon.github.io/horizon-atlas/ogp/category/${categoryData?.categoryId}.png`} />
+            </Head>
+            <Layout pageNavs={pageNavs} useSelefHeader={true}> 
+                <div className='pt-20 pb-8'>
+                    {categoryData && categoryData.cover !=="" && <Image src={categoryData.cover} alt={''} width={120} height={120} className='h-56 top-0' style={{width:"100vw"}} />}
+                    <section className={'px-2 bg-white pb-10'} style={(!categoryData || categoryData.cover !=="") ? {} : {paddingTop:"4rem"}}>
+                        {(!categoryData || categoryData.iconType ==="") && <Image src={"/horizon-atlas/file_icon.svg"} alt={''} width={20} height={20} className='relative w-20 h-20 m-0' style={categoryData && categoryData.cover !=="" ? {top:"-40px",left:"20px"} : {marginBottom:"1.5rem"}} />}
+                        {categoryData && categoryData.iconType !== "emoji" && categoryData.iconType!=="" && <Image src={categoryData.iconUrl} alt={''} width={20} height={20} className='relative w-20 h-20 m-0' style={categoryData && categoryData.cover!=="" ? {top:"-40px",left:"20px"} : {marginBottom:"1.5rem"}} />}
+                        {categoryData && categoryData.iconType === "emoji" && <p className='relative w-14 h-14 text-7xl' style={categoryData.cover!=="" ? {top:"-40px",left:"20px"} : {marginBottom:"1.5rem"}}>{categoryData.iconUrl}</p>}
+                        <h2 className='w-full text-3xl font-bold'>{currentCourse}</h2>
+                        <div className="mt-8">
+                            <p>{categoryData?.description}</p>
+                        </div>
+                        {!loading && <div className="mt-8">
+                            {postsByRole.map((post)=>{
+                                return (
+                                    <div key={post.curriculumId}>
+                                        <SinglePost
+                                        postData={post}
+                                        />
+                                    </div>
+                                )
+                            })}
+                        </div>}
+                        {loading && <Loader size={20} />}
+                    </section>
+                </div>
+            </Layout>
+        </>
     );
 }
 

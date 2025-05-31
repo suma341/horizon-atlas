@@ -17,6 +17,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "constants", "lib/discordAuth.ts", "ogpScript/gateways/currilumGateway.js", "ogpScript/main.js", "ogpScript/gateways/pageDataGateway.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "constants", "lib/discordAuth.ts", "scripts/ogpScript/gateways/currilumGateway.js", "scripts/ogpScript/main.js", "scripts/ogpScript/gateways/pageDataGateway.js"],
   "exclude": ["node_modules"]
 }
