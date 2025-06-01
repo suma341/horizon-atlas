@@ -91,14 +91,14 @@ const CoursePage = ({ posts, currentCourse,pageNavs,categoryData }: Props)=> {
                 <title>{currentCourse}</title>
                 <link rel="icon" href="/horizon-atlas/favicon.ico" />
                 <meta name='description' content='HorizonAtlasは、学習カリキュラムをまとめたHorizon部員専用のサービスです。' />
-                <meta property="og:title" content={currentCourse} />
+                <meta property="og:title" content={`${pageNavs[1]===BASIC_NAV ? "基礎班カリキュラム/" : ""}${currentCourse}`} />
                 <meta property="og:description" content={categoryData?.description} />
                 <meta property="og:image" content={`https://ryukoku-horizon.github.io/horizon-atlas/ogp/category/${categoryData?.categoryId}.png`} />
                 <meta property="og:url" content={`https://ryukoku-horizon.github.io/horizon-atlas/${pageNavs[pageNavs.length - 1].link}`} />
                 <meta property='og:type' content='website' />
                 <meta property='og:site_name' content="HorizonAtlas" />
                 <meta name='twitter:card' content='summary_large_image' />
-                <meta name='twitter:title' content={currentCourse} />
+                <meta name='twitter:title' content={`${pageNavs[1]===BASIC_NAV ? "基礎班カリキュラム/" : ""}${currentCourse}`} />
                 <meta name='twitter:description' content={categoryData?.description} />
                 <meta name='twitter:image' content={`https://ryukoku-horizon.github.io/horizon-atlas/ogp/category/${categoryData?.categoryId}.png`} />
             </Head>

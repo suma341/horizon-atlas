@@ -93,9 +93,9 @@ const Layout: React.FC<LayoutProps> = ({ children, pageNavs, sideNavProps,useSel
           <title>HorizonAtlas</title>
           <meta property="og:title" content="HorizonAtlas" />
           <meta name="description" content="HorizonAtlasは、学習カリキュラムをまとめたHorizon部員専用のサービスです。" />
-          <meta property="og:image" content="/horizon-atlas/app_image.png" />
+          <meta property="og:image" content="https://ryukoku-horizon.github.io/horizon-atlas/home.png" />
           <meta property="og:type" content="website" />
-          <meta name="twitter:card" content="/horizon-atlas/app_image.png" />
+          <meta name="twitter:card" content="https://ryukoku-horizon.github.io/horizon-atlas/home.png" />
           <link rel="icon" href="/horizon-atlas/favicon.ico" />
         </Head>}
         <Sidebar openbar={openbar} setOpenbar={setOpenbar} pageNav={sideNavProps} />

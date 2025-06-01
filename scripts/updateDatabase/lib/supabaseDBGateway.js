@@ -1,7 +1,7 @@
 import "dotenv/config";
 
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
-const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 
 export const getPageDataByConditions=async(select,match)=>{
     const res = await fetch(`${SUPABASE_URL}/functions/v1/getPageDataWithSelect`,{
