@@ -36,6 +36,7 @@ export default function Home({pageNum,allIntroduction}:Props) {
         <title>HorizonAtlas</title>
         <meta property="og:title" content="HorizonAtlas" />
         <meta name="description" content="HorizonAtlasは、学習カリキュラムをまとめたHorizon部員専用のサービスです。" />
+        <meta property="og:description" content="HorizonAtlasは、学習カリキュラムをまとめたHorizon部員専用のサービスです。" />
         <meta property="og:image" content="https://ryukoku-horizon.github.io/horizon-atlas/home.png" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="https://ryukoku-horizon.github.io/horizon-atlas/home.png" />
