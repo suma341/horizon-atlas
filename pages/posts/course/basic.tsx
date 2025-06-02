@@ -71,9 +71,9 @@ export default function BasicCoursePageList({courseAndPosts,categoryData}: Props
 
     return (
         <Layout pageNavs={[HOME_NAV, BASIC_NAV]}>
-            <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-white via-gray-100 to-purple-50 animate-gradient transition-all">
-                <main className="w-full max-w-5xl mx-auto text-center">
-                    <h1 className="text-4xl sm:text-4xl font-extrabold bg-gradient-to-r from-indigo-500 to-purple-600 text-transparent bg-clip-text tracking-wide mb-16">
+            <div className="min-h-screen md:flex md:flex-col md:justify-center md:items-center bg-gradient-to-br from-white via-gray-100 to-purple-50 animate-gradient transition-all">
+                <main className="w-full md:max-w-5xl mx-auto text-center">
+                    <h1 className="text-4xl font-extrabold bg-gradient-to-r from-indigo-500 to-purple-600 text-transparent bg-clip-text tracking-wide mb-16">
                         基礎班カリキュラム
                     </h1>
                     <section className="grid grid-cols-1 gap-8 px-6">
