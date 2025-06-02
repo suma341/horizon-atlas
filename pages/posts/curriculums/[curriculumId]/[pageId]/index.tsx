@@ -160,6 +160,8 @@ const Post =({ metadata, mdBlocks,pageNavs,childrenData,pageId,iconInfo,title,ic
     const isVisible = metadata.visibility.some((item)=>item===usersRole)
     if(!isVisible){
       setNotVisible(true)
+    }else{
+        setNotVisible(false)
     }
   },[userProfile?.given_name])
 
