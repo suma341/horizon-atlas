@@ -103,9 +103,9 @@ const CoursePage = ({ posts, currentCourse,pageNavs,categoryData }: Props)=> {
                 <meta name='twitter:image' content={`https://ryukoku-horizon.github.io/horizon-atlas/ogp/category/${categoryData?.categoryId}.png`} />
             </Head>
             <Layout pageNavs={pageNavs} useSelefHeader={true}> 
-                <div className='pt-20 pb-8'>
+                <div className='pt-20 pb-8 min-h-screen flex flex-col justify-center items-center '>
                     {categoryData && categoryData.cover !=="" && <Image src={categoryData.cover} alt={''} width={120} height={120} className='h-56 top-0' style={{width:"100vw"}} />}
-                    <section className={'px-2 bg-white pb-10'} style={(!categoryData || categoryData.cover !=="") ? {} : {paddingTop:"4rem"}}>
+                    <section className='bg-white pb-10 max-w-4xl px-2' style={(!categoryData || categoryData.cover !=="") ? {} : {paddingTop:"4rem"}}>
                         {(!categoryData || categoryData.iconType ==="") && <Image src={"/horizon-atlas/file_icon.svg"} alt={''} width={20} height={20} className='relative w-20 h-20 m-0' style={categoryData && categoryData.cover !=="" ? {top:"-40px",left:"20px"} : {marginBottom:"1.5rem"}} />}
                         {categoryData && categoryData.iconType !== "emoji" && categoryData.iconType!=="" && <Image src={categoryData.iconUrl} alt={''} width={20} height={20} className='relative w-20 h-20 m-0' style={categoryData && categoryData.cover!=="" ? {top:"-40px",left:"20px"} : {marginBottom:"1.5rem"}} />}
                         {categoryData && categoryData.iconType === "emoji" && <p className='relative w-14 h-14 text-7xl' style={categoryData.cover!=="" ? {top:"-40px",left:"20px"} : {marginBottom:"1.5rem"}}>{categoryData.iconUrl}</p>}

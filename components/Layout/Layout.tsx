@@ -106,7 +106,7 @@ const Layout: React.FC<LayoutProps> = ({ children, pageNavs, sideNavProps,useSel
           <Header setOpenbar={setOpenbar} />
           <Navbar pageNavs={pageNavs} />
         </div>
-        <div className="bg-gray-50 flex-grow w-full">
+        <div className="bg-white flex-grow w-full">
           {children}
           <div className="h-5"></div>
         </div>
