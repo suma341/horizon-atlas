@@ -1,4 +1,3 @@
-"use client";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import useFirebaseUser from "@/hooks/useFirebaseUser";
@@ -8,6 +7,7 @@ import { Profile } from "@/types/profile";
 import { fetchUser, saveUserProfile } from "@/lib/fireStore";
 import useUserProfileStore from "@/stores/userProfile";
 import MessageBoard from "@/components/messageBoard/messageBoard";
+import { SUPABASE_ANON_KEY, SUPABASE_URL } from "@/constants/supabaseEnvironmental";
 
 const Callback = () => {
   const { loginWithCustomToken, user, logout,loading } = useFirebaseUser();
@@ -63,10 +63,12 @@ const Callback = () => {
             }
             setLoadingMess("ユーザープロフィールを取得しています")
             const redirectUrl = `${process.env.NEXT_PUBLIC_ROOT_PATH}/callback`;
-            const res = await fetch(`${process.env.NEXT_PUBLIC_RAILWAY_URL}/auth/discord`, {
+            const res = await fetch(`${SUPABASE_URL}/functions/v1/auth_discord`, {
               method: "POST",
-              headers: { "Content-Type": "application/json" },
+              headers: { "Content-Type": "application/json","Authorization": `Bearer ${SUPABASE_ANON_KEY}` },
               body: JSON.stringify({ code, redirectUrl }),
+              mode: "cors"
+              
             });
             if(!res.ok){
               if(trigger<2){
