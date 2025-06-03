@@ -28,7 +28,9 @@ function cleardir(directory) {
 // main処理
 (async () => {
 
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    args: ["--no-sandbox", "--disable-setuid-sandbox"]
+  });
 
   const dir = path.resolve(__dirname, "../../public/ogp");
   if(fs.existsSync(dir)) cleardir(dir)
