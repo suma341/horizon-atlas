@@ -37,11 +37,11 @@ jobs:
           IFRAMELY_API_KEY: ${{secrets.IFRAMELY_API_KEY}}
           NOTION_DB_ID_CATEGORY: ${{secrets.NOTION_DB_ID_CATEGORY}}
 
-      - name: run Generate OGP script
-        run: node scripts/generateOgp/main.js
-        env:
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY}}
-          NEXT_PUBLIC_SUPABASE_URL: ${{secrets.NEXT_PUBLIC_SUPABASE_URL}}
+      # - name: run Generate OGP script
+      #   run: node scripts/generateOgp/main.js
+      #   env:
+      #     NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY}}
+      #     NEXT_PUBLIC_SUPABASE_URL: ${{secrets.NEXT_PUBLIC_SUPABASE_URL}}
       
       - name: Commit and push if changes exist
         run: |
