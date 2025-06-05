@@ -6,6 +6,7 @@ import { ParagraphData } from '@/types/paragraph';
 import { getColorProperty } from '@/lib/backgroundCorlor';
 import { assignCss } from '@/lib/assignCssProperties';
 import { usePageLink } from '@/hooks/usePagePush';
+import { renderTextWithBreaks } from '../renderTextWithBreaks';
 
 type Props={
     mdBlock:MdBlock;
@@ -27,12 +28,8 @@ export default function BulletedListItem(props:Props) {
                 <span className='font-bold text-xs mr-1'>{depth % 3===2 && "■   "}</span>
                 {textData.parent.map((text)=>{
                     const style = assignCss(text)
-                    return text.plain_text.split("\n").map((line,index)=>{
-                        return (<>
-                            <span key={index} style={style} onClick={()=>handleClick(text.href,text.scroll)}>{line}</span>
-                            {text.plain_text.split("\n")[1] && <br />}
-                        </>)
-                    })})}
+                    return renderTextWithBreaks(text.plain_text,style,()=>handleClick(text.href,text.scroll))
+                    })}
                 {textData.parent.length===0 && <span className='opacity-0' >a</span>}
             </p>
             {mdBlock.children.map((child,i)=>(
