@@ -43,6 +43,7 @@ export default function Home({pageNum,allIntroduction}:Props) {
         <meta name='twitter:description' content="HorizonAtlasは、学習カリキュラムをまとめたHorizon部員専用のサービスです。" />
         <meta name='twitter:card' content='summary_large_image' />
         <meta name="twitter:card" content="https://ryukoku-horizon.github.io/horizon-atlas/home.png" />
+        <meta name="google-site-verification" content="SXCl4dT0J3G7YXvZ1rlN7iG2aq28aVfOj_xVkoLP4V0" />
         <link rel="icon" href="/horizon-atlas/favicon.ico" />
       </Head>
 

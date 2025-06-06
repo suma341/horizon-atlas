@@ -151,17 +151,29 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 const Post =({ metadata, mdBlocks,pageNavs,childrenData,pageId,iconInfo,title,iconType,iconUrl,coverUrl,firstText}: Props) => {
   const { setCurriculumId } = useCurriculumIdStore();
   const { setIcons } = useIconStore();
-  let o = 0;
   const { userProfile } = useUserProfileStore();
   const [notVisible,setNotVisible] = useState(false)
 
+  // const router = useRouter()
   useEffect(()=>{
-    const usersRole = userProfile?.given_name ?? "体験入部";
-    const isVisible = metadata.visibility.some((item)=>item===usersRole)
-    if(!isVisible){
-      setNotVisible(true)
-    }else{
+    try{
+      const usersRole = userProfile?.given_name ?? "体験入部";
+      const isVisible = metadata.visibility.some((item)=>item===usersRole)
+      if(!isVisible){
+        setNotVisible(true)
+      }else{
         setNotVisible(false)
+      }
+    }finally{
+      if (typeof window !== "undefined" && window.location.hash) {
+        const id = window.location.hash.substring(1); // "#" を除去
+        const element = document.getElementById(id);
+        if (element) {
+          setTimeout(() => {
+            element.scrollIntoView({ behavior: "smooth" });
+          }, 100); 
+        }
+      }
     }
   },[userProfile?.given_name])
 
@@ -209,10 +221,8 @@ const Post =({ metadata, mdBlocks,pageNavs,childrenData,pageId,iconInfo,title,ic
             <div key={pageId}>
               {mdBlocks.map((mdBlock)=>{
                 if(mdBlock.type==="numbered_list_item"){
-                  o = o + 1;
-                  return <MdBlockComponent mdBlock={mdBlock} depth={0} key={mdBlock.blockId} order={o} />
+                  return <MdBlockComponent mdBlock={mdBlock} depth={0} key={mdBlock.blockId} order={1} />
                 }else{
-                  o = 0;
                   return (
                     <MdBlockComponent mdBlock={mdBlock} depth={0} key={mdBlock.blockId} />
                   )
