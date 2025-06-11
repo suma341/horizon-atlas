@@ -70,16 +70,17 @@ const PostsPage = ({ allTags,courseAndPosts,targetCategory,emptyCoursesPosts}: P
       async function setData(){
         try{
           setLoading(true)
-          console.log(userProfile?.given_name)
           const usersRole = userProfile?.given_name ?? "体験入部"
-          const postsByRole = await getPostsByRole(usersRole,emptyCoursesPosts);
-          setPostsByRole(postsByRole);
-          const courseByRole = await Promise.all(courseAndPosts.map(async(item)=>{
-            const postsByRole = item.posts.filter((item2)=>item2.visibility.some((item3)=>item3===usersRole))
-            return {posts:postsByRole,course:item.course};
-          }))
-          const filteredCourse = courseByRole.filter((item)=>item.posts.length!==0)
-          setCourseByRole(filteredCourse)
+          if(usersRole !=="幹事長" && usersRole !=="技術部員"){
+            const postsByRole = await getPostsByRole(usersRole,emptyCoursesPosts);
+            setPostsByRole(postsByRole);
+            const courseByRole = await Promise.all(courseAndPosts.map(async(item)=>{
+              const postsByRole = item.posts.filter((item2)=>item2.visibility.some((item3)=>item3===usersRole))
+              return {posts:postsByRole,course:item.course};
+            }))
+            const filteredCourse = courseByRole.filter((item)=>item.posts.length!==0)
+            setCourseByRole(filteredCourse)
+          }
         }finally{
           setLoading(false)
         }

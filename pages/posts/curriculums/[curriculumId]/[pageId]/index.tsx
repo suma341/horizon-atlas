@@ -159,7 +159,7 @@ const Post =({ metadata, mdBlocks,pageNavs,childrenData,pageId,iconInfo,title,ic
     try{
       const usersRole = userProfile?.given_name ?? "体験入部";
       const isVisible = metadata.visibility.some((item)=>item===usersRole)
-      if(!isVisible){
+      if(!isVisible && usersRole!=="幹事長" && usersRole!=="技術部員"){
         setNotVisible(true)
       }else{
         setNotVisible(false)

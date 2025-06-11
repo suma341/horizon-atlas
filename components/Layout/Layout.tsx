@@ -12,6 +12,7 @@ import useFirebaseUser from "@/hooks/useFirebaseUser";
 import useUserProfileStore from "@/stores/userProfile";
 import { auth } from "@/lib/fireabase";
 import { fetchUser } from "@/lib/fireStore";
+import SidePeak from "./SidePeak/sidePeak";
 
 type LayoutProps = {
   children: ReactNode;
@@ -102,7 +103,9 @@ const Layout: React.FC<LayoutProps> = ({ children, pageNavs, sideNavProps,useSel
           <meta name="twitter:card" content="https://ryukoku-horizon.github.io/horizon-atlas/home.png" />
           <link rel="icon" href="/horizon-atlas/favicon.ico" />
         </Head>}
-        <Sidebar openbar={openbar} setOpenbar={setOpenbar} pageNav={sideNavProps} />
+        {openbar && <Sidebar openbar={openbar} setOpenbar={setOpenbar} pageNav={sideNavProps} />}
+
+        <SidePeak setOpenbar={setOpenbar} />
         <div
           className="fixed top-0 z-50 w-full duration-500"
           style={isVisible ? { transform: "translateY(0px)" } : { transform: "translateY(-65%)" }}

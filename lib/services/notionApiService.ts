@@ -18,6 +18,9 @@ export const getPostsByTag=async(tagName:string, allPosts:PostMetaData[])=>{
 }
 
 export const getPostsByRole=async(roleName:string,allPosts:PostMetaData[])=>{
+    if(roleName==="幹事長" || roleName==="技術部員"){
+        return allPosts
+    }
     const posts:PostMetaData[] = allPosts.filter((post)=>{
         return post.visibility.find((vis:string)=>vis===roleName);
     })

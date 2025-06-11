@@ -1,4 +1,3 @@
-"use client";
 import useCurriculumIdStore from '@/stores/curriculumIdStore';
 import { pageNav } from '@/types/pageNav';
 import Link from 'next/link';

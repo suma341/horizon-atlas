@@ -41,7 +41,7 @@ function Sidebar({openbar,setOpenbar,pageNav}:Props) {
                 onClick={()=>setOpenbar(false)}
                 className='bg-black opacity-45 fixed w-full top-0 block md:hidden' style={{height:`${getPageHeight()}px`,zIndex:"9998"}}>
                 </div>}
-                <div className='fixed w-7/12 top-0 right-0 block md:hidden bg-white duration-700 h-screen'
+            <div className='fixed w-7/12 top-0 right-0 block md:hidden bg-white duration-700 h-screen'
                 style={openbar ? { transform: "translateX(0px)", zIndex: "9999" } : { transform: "translateX(130%)" }}>
                 <div className="h-full overflow-y-auto p-3">
                     <ul>
