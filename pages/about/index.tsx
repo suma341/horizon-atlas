@@ -8,7 +8,7 @@ function AboutDetail() {
     return (
         <>
             <Head>
-                <title>【 HorizonAtlas 】RyukokuHorizonプログラミング学習サイト</title>
+                <title>【 HorizonAtlas 】HorizonAtlasとは？</title>
                 <meta property="og:title" content="HorizonAtlas" />
                 <meta name="description" content="HorizonAtlasは、RyukokuHorizonの学習カリキュラムをまとめた部員専用のサービスです。" />
                 <meta name="keywords" content="ryukoku,龍谷,プログラミング部,Horizon,HorizonAtlas" />
