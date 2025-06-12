@@ -105,7 +105,7 @@ const Layout: React.FC<LayoutProps> = ({ children, pageNavs, sideNavProps,useSel
         </Head>}
         {openbar && <Sidebar openbar={openbar} setOpenbar={setOpenbar} pageNav={sideNavProps} />}
 
-        <SidePeak setOpenbar={setOpenbar} />
+        {sideNavProps && <SidePeak setOpenbar={setOpenbar} />}
         <div
           className="fixed top-0 z-50 w-full duration-500"
           style={isVisible ? { transform: "translateY(0px)" } : { transform: "translateY(-65%)" }}

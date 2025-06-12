@@ -1,11 +1,27 @@
 import Header from '@/components/top/header'
 import { motion, AnimatePresence } from 'framer-motion'
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 function AboutDetail() {
     const router = useRouter();
     return (
         <>
+            <Head>
+                <title>【 HorizonAtlas 】RyukokuHorizonプログラミング学習サイト</title>
+                <meta property="og:title" content="HorizonAtlas" />
+                <meta name="description" content="HorizonAtlasは、RyukokuHorizonの学習カリキュラムをまとめた部員専用のサービスです。" />
+                <meta name="keywords" content="ryukoku,龍谷,プログラミング部,Horizon,HorizonAtlas" />
+                <meta property="og:description" content="HorizonAtlasは、RyukokuHorizonの学習カリキュラムをまとめた部員専用のサービスです。" />
+                <meta property="og:image" content="https://ryukoku-horizon.github.io/horizon-atlas/home.png" />
+                <meta property="og:type" content="website" />
+                <meta name='twitter:title' content="HorizonAtlas" />
+                <meta name='twitter:description' content="HorizonAtlasは、RyukokuHorizonの学習カリキュラムをまとめた部員専用のサービスです。" />
+                <meta name='twitter:card' content='summary_large_image' />
+                <meta name="twitter:card" content="https://ryukoku-horizon.github.io/horizon-atlas/home.png" />
+                <meta name="google-site-verification" content="SXCl4dT0J3G7YXvZ1rlN7iG2aq28aVfOj_xVkoLP4V0" />
+                <link rel="icon" href="/horizon-atlas/favicon.ico" />
+            </Head>
             <Header />
                 <motion.section 
                     className="bg-purple-700 text-white text-center py-16"
