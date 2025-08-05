@@ -1,9 +1,16 @@
 import fs from "fs";
-import { getEditTimeData,getAllData,getSinglePage,getAllCategory,getPage } from "./lib/notionGateway.js";
+import { getEditTimeData,getAllData,getSinglePage,getAllCategory,getPage,getDatabaseLastEdited } from "./lib/notionGateway.js";
 import { insertCurriculum,insertblock,insertCategory } from "./lib/insert.js";
 import { deleteCurriculum,deletePageByCurriculumId,deleteCategory } from "./lib/delete.js";
-import { getPageDataByConditions } from "./lib/supabaseDBGateway.js"
+import { getPageDataByConditions,getLastEdited,updateLastEdited } from "./lib/supabaseDBGateway.js"
 import path from "path";
+
+const isDatabaseEdited=async()=>{
+    const current = await getDatabaseLastEdited();
+    const latest = await getLastEdited("*",{"curriculum":"0"});
+    await updateLastEdited(current,"0");
+    return new Date(current) > new Date(latest)
+}
 
 const getAllChildId=async(curriculumId)=>{
     const data = await getPageDataByConditions("*",{"curriculumId":curriculumId,"type":"child_page"})
@@ -29,23 +36,33 @@ const getCurriculumEditedTime = async(Last_edited_time,curriculumId)=>{
 }
 
 const getCurrentData=async()=>{
+    const isEdited = await isDatabaseEdited()
+    if(isEdited){
+        return null;
+    }
     const timeData = await getEditTimeData();
     const editTimeData = [];
     for(const d of timeData){
         const latest = await getCurriculumEditedTime(d.Last_edited_time,d.id);
         editTimeData.push({id:d.id,Last_edited_time:latest})
     }
-    const currentData = fs.readFileSync("./notion_last_edit/curriculum.json");
-    const parsedData = await JSON.parse(currentData)
-    const newData = editTimeData.filter((item1)=>parsedData.every((item2)=>item1.id !== item2.id))
-    const editedData = editTimeData.filter((item1)=>parsedData.some((item2)=>{
+    const data = await getLastEdited("*")
+    const filtered = data.filter((item)=>item.curriculum!=="0")
+    editTimeData.map((item)=>{
+        item.id
+    })
+    const newData = editTimeData.filter((item1)=>filtered.every((item2)=>item1.id !== item2.curriculum))
+    const editedData = editTimeData.filter((item1)=>filtered.some((item2)=>{
         console.log(item1.Last_edited_time,item2.Last_edited_time)
-        return (new Date(item1.Last_edited_time) > new Date(item2.Last_edited_time) && item1.id === item2.id)
+        return (new Date(item1.Last_edited_time) > new Date(item2.Last_edited_time) && item1.id === item2.curriculum)
     }))
-    const deleteData = parsedData.filter((item1)=>editTimeData.every((item2)=>item1.id!==item2.id))
+    const deleteData = filtered.filter((item1)=>editTimeData.every((item2)=>item1.curriculum!==item2.id))
     console.log("edited",editedData)
     console.log("new",newData)
     console.log("delete",deleteData)
+    for(const data of editTimeData){
+        await updateLastEdited(data.Last_edited_time,data.id)
+    }
     fs.writeFileSync(`./notion_last_edit/curriculum.json`, JSON.stringify(editTimeData, null, 2))
     const categories = await getAllCategory()
     for(const category of categories){

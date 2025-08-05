@@ -84,3 +84,31 @@ export async function deleteData(table,where,value){
     const result = await res.json();
     return result.message;
 }
+
+export const getLastEdited=async(select,match)=>{
+    const data = await fetch(`${SUPABASE_URL}/functions/v1/getLast_edited`,{
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+        },
+        body:JSON.stringify({
+            match,select
+        }),
+    })
+    const lastEdited = await data.json()
+    return lastEdited;
+}
+
+export const updateLastEdited =async(last_edited,curriculum)=>{
+    await fetch(`${SUPABASE_URL}/functions/v1/upsertLast_edited`,{
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+        },
+        body:JSON.stringify({
+            last_edited,curriculum
+        }),
+    })
+}
