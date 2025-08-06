@@ -15,7 +15,7 @@ function wait(ms) {
 
 export const getDatabaseLastEdited=async()=>{
     const data = await notion.databases.retrieve({
-        database_id:NOTION_DATABASE_ID
+        database_id:db
     })
     return data.last_edited_time;
 }
