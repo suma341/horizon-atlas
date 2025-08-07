@@ -9,7 +9,7 @@ export const createHTML=(coverUrl,iconType,iconUrl,title)=>{
             ${(iconType !== "emoji" && iconType!=="") ? `<img src=${iconUrl} style="width: 9rem; height: 9rem;position: absolute; top: 235px; left: 90px" >` : ""}
             ${iconType === "emoji" ? `<p style="font-size: 7rem; position: absolute; top: 130px; left: 90px">${iconUrl}</p>` : ""}
             <h2 style="font-size: 64px; font-style: bold;position: absolute; top: 320px; left:40px;">${title}</h2>
-            <p style="font-size:24px; position: absolute; top: 440px; left: 40px;color:rgb(158, 159, 159);">on HorizonAtlas</p>
+            <p style="font-size:28px; position: absolute; top: 440px; left: 40px;color:rgb(158, 159, 159);">on HorizonAtlas</p>
           </div>` :
           `
           <div  style="display: flex;flex-direction: column;align-items: center; justify-content: center; flex:1;">
@@ -19,7 +19,7 @@ export const createHTML=(coverUrl,iconType,iconUrl,title)=>{
               ${iconType === "emoji" ? `<p style="font-size: 7.5rem;">${iconUrl}</p>` : ""}
               <h2 style="font-size: 64px; font-style: bold;">${title}</h2>
             </div>
-            <p style="font-size:24px; color:rgb(158, 159, 159);position: absolute; bottom: 20px; right: 50px;">on HorizonAtlas</p>
+            <p style="font-size:28px; color:rgb(158, 159, 159);position: absolute; bottom: 20px; right: 50px;">on HorizonAtlas</p>
           <div>
             `}
         </body>
