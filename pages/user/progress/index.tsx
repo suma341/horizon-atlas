@@ -6,6 +6,7 @@ import { HOME_NAV, PROGRESS_NAV, SETTING_NAV } from "@/constants/pageNavs";
 import { motion } from "framer-motion";
 import useUserProfileStore from "@/stores/userProfile";
 import Link from "next/link";
+import StaticHead from "@/components/head/staticHead";
 
 type Progress={
   category: string;
@@ -50,7 +51,9 @@ export default function Progress() {
 
   if(cannotLoad){
     return (
-      <Layout pageNavs={[HOME_NAV,SETTING_NAV,PROGRESS_NAV]}>
+      <>
+        <StaticHead />
+        <Layout pageNavs={[HOME_NAV,SETTING_NAV,PROGRESS_NAV]}>
             <div className="min-h-screen flex items-center justify-center bg-gradient-to-br px-4">
                 <div className="w-full max-w-md text-white bg-purple-900 border-purple-700 shadow-xl rounded-2xl">
                     <div className="p-8 text-center">
@@ -78,38 +81,42 @@ export default function Progress() {
                 </div>
             </div>
         </Layout>
+      </>
     )
   }
 
   return (
-    <Layout pageNavs={[HOME_NAV, SETTING_NAV, PROGRESS_NAV]}>
-      <div className="min-h-screen text-gray-900 pt-24 px-5">
-        <div className="text-center mb-10 animate-fadeIn">
-          <h1 className="text-4xl font-extrabold text-neutral-600">
-            {userProfile?.name!.split("-")[0]}さんの進捗度
-          </h1>
-          <div className="w-40 mx-auto border-b-4 border-purple-400 mt-4"></div>
-        </div>
+    <>
+      <StaticHead />
+      <Layout pageNavs={[HOME_NAV, SETTING_NAV, PROGRESS_NAV]}>
+        <div className="min-h-screen text-gray-900 pt-24 px-5">
+          <div className="text-center mb-10 animate-fadeIn">
+            <h1 className="text-4xl font-extrabold text-neutral-600">
+              {userProfile?.name!.split("-")[0]}さんの進捗度
+            </h1>
+            <div className="w-40 mx-auto border-b-4 border-purple-400 mt-4"></div>
+          </div>
 
-        {loading ? (
-          <div className="flex flex-col items-center gap-4">
-            <Loader2 className="animate-spin text-purple-400" size={48} />
-            <p className="text-lg font-semibold text-gray-700">読み込み中...</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-8">
-            {progress.map((item,i)=>(
-              <div className="bg-white shadow-lg rounded-lg p-6 hover:shadow-xl transition-shadow" key={i}>
-                <p className="font-bold text-xl">{item.category}</p>
-                {item.data.map((item2,j)=>(
-                  <CurriculumItem title={item2.title} achieved={item2.value==="TRUE"} key={j} />
-                ))}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </Layout>
+          {loading ? (
+            <div className="flex flex-col items-center gap-4">
+              <Loader2 className="animate-spin text-purple-400" size={48} />
+              <p className="text-lg font-semibold text-gray-700">読み込み中...</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-8">
+              {progress.map((item,i)=>(
+                <div className="bg-white shadow-lg rounded-lg p-6 hover:shadow-xl transition-shadow" key={i}>
+                  <p className="font-bold text-xl">{item.category}</p>
+                  {item.data.map((item2,j)=>(
+                    <CurriculumItem title={item2.title} achieved={item2.value==="TRUE"} key={j} />
+                  ))}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </Layout>
+    </>
   );
 }
 

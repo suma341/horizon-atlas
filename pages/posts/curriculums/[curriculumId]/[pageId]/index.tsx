@@ -14,8 +14,8 @@ import { IconInfo } from '@/types/iconInfo';
 import useIconStore from '@/stores/iconStore';
 import useUserProfileStore from '@/stores/userProfile';
 import MessageBoard from '@/components/messageBoard/messageBoard';
-import Head from 'next/head';
 import { ParagraphData } from '@/types/paragraph';
+import DynamicHead from '@/components/head/dynamicHead';
 
 type postPath = {
   params: { curriculumId:string,pageId:string }
@@ -27,7 +27,6 @@ type Props = {
   mdBlocks:MdBlock[];
   pageNavs:pageNav[];
   pageId:string;
-  childrenData?:{title:string;childPages:pageNav[]};
   iconInfo:IconInfo[];
   iconType:string;
   iconUrl:string;
@@ -113,7 +112,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   }
 
     if(curriculumId!==pageId){
-      const childrenData = await PageDataService.getChildrenData(pageId);
       const childPageNavs = await PageDataService.getPageNavs(pageId);
       const titleAndIcon = await PageDataService.getTitleAndIcon(pageId);
       return {
@@ -122,7 +120,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
           metadata:singlePost,
           mdBlocks,
           pageNavs:[...pageNavs,...childPageNavs.reverse()],
-          childrenData,
           pageId,
           iconInfo:iconInfoList,
           iconUrl:titleAndIcon.iconUrl,
@@ -148,7 +145,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   };
 };
 
-const Post =({ metadata, mdBlocks,pageNavs,childrenData,pageId,iconInfo,title,iconType,iconUrl,coverUrl,firstText}: Props) => {
+const Post =({ metadata, mdBlocks,pageNavs,pageId,iconInfo,title,iconType,iconUrl,coverUrl,firstText}: Props) => {
   const { setCurriculumId } = useCurriculumIdStore();
   const { setIcons } = useIconStore();
   const { userProfile } = useUserProfileStore();
@@ -184,22 +181,13 @@ const Post =({ metadata, mdBlocks,pageNavs,childrenData,pageId,iconInfo,title,ic
 
   return (
     <>
-    <Head>
-        <title>{title}</title>
-        <link rel="icon" href="/horizon-atlas/favicon.ico" />
-        <meta name='description' content='HorizonAtlasは、学習カリキュラムをまとめたHorizon部員専用のサービスです。' />
-        <meta property="og:title" content={title} />
-        <meta property="og:description" content={firstText} />
-        <meta property="og:image" content={`https://ryukoku-horizon.github.io/horizon-atlas/ogp/${metadata.curriculumId}/${pageId}.png`} />
-        <meta property="og:url" content={`https://ryukoku-horizon.github.io/horizon-atlas/${pageNavs[pageNavs.length - 1].link}`} />
-        <meta property='og:type' content='website' />
-        <meta property='og:site_name' content="HorizonAtlas" />
-        <meta name='twitter:card' content='summary_large_image' />
-        <meta name='twitter:title' content={title} />
-        <meta name='twitter:description' content={firstText} />
-        <meta name='twitter:image' content={`https://ryukoku-horizon.github.io/horizon-atlas/ogp/${metadata.curriculumId}/${pageId}.png`} />
-    </Head>
-    <Layout pageNavs={pageNavs} sideNavProps={childrenData} useSelefHeader={true}>
+      <DynamicHead
+        title={title}
+        firstText={firstText}
+        link={`https://ryukoku-horizon.github.io/horizon-atlas/${pageNavs[pageNavs.length - 1].link}`}
+        image={`https://ryukoku-horizon.github.io/horizon-atlas/ogp/${metadata.curriculumId}/${pageId}.png`}
+      />
+      <Layout pageNavs={pageNavs}>
       {!notVisible && <div className='pt-20 pb-8 min-h-screen md:flex md:flex-col md:justify-center md:items-center '>
       {coverUrl!=="" && <Image src={coverUrl} alt={''} width={120} height={120} className='h-56 top-0' style={{width:"100vw"}} />}
         <section className='bg-white pb-10 md:max-w-4xl md:min-w-[670px] px-2' style={coverUrl!=="" ? {} : {paddingTop:"4rem"}}>

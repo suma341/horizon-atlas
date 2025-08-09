@@ -1,11 +1,9 @@
 import React from 'react';
-import { pageNav } from '@/types/pageNav';
 import Link from 'next/link';
 import UserBlock from '../Header/UserInfo/userBlock';
 import { FaArrowTrendUp } from "react-icons/fa6";
 import { PiSignOut } from "react-icons/pi";
 import { MdOutlineEmail } from 'react-icons/md';
-import useCurriculumIdStore from '@/stores/curriculumIdStore';
 import useFirebaseUser from '@/hooks/useFirebaseUser';
 import useUserProfileStore from '@/stores/userProfile';
 import { FaRegUser } from 'react-icons/fa';
@@ -13,15 +11,10 @@ import { FaRegUser } from 'react-icons/fa';
 type Props={
     openbar:boolean;
     setOpenbar:React.Dispatch<React.SetStateAction<boolean>>;
-    pageNav?:{
-        title:string;
-        childPages?:pageNav[];
-    }
 }
 
-function Sidebar({openbar,setOpenbar,pageNav}:Props) {
+function Sidebar({openbar,setOpenbar}:Props) {
     // const { user,logout } = useAuth0();
-    const { curriculumId } = useCurriculumIdStore();
     const {logout} = useFirebaseUser()
     const {userProfile} = useUserProfileStore()
 
@@ -86,7 +79,7 @@ function Sidebar({openbar,setOpenbar,pageNav}:Props) {
                                 </div>
                             </Link>
                         </li>
-                        <li className='mt-2'>
+                        {/* <li className='mt-2'>
                             {pageNav !== undefined && (
                                 <div className='p-1 border border-neutral-400 rounded'>
                                     <p className='text-base'>{pageNav.title}</p>
@@ -99,7 +92,7 @@ function Sidebar({openbar,setOpenbar,pageNav}:Props) {
                                     ))}
                                 </div>
                             )}
-                        </li>
+                        </li> */}
                         <div>
                             <li className='mt-3 hover:bg-neutral-100 cursor-pointer' onClick={()=>logout()}>
                                 <div className='flex items-center justify-between mr-5 py-2 px-2'>

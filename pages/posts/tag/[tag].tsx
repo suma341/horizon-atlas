@@ -12,6 +12,7 @@ import { NUMBER_OF_POSTS_PER_PAGE } from "@/constants/numberOfPage";
 import { CurriculumService } from "@/lib/services/CurriculumService";
 import useUserProfileStore from "@/stores/userProfile";
 import Loader from "@/components/loader/loader";
+import StaticHead from "@/components/head/staticHead";
 
 type pagePath = {
     params: { tag:string }
@@ -79,25 +80,28 @@ const TagPageList = ({ posts, currentTag,allTags}: Props)=> {
       },[posts,userProfile,currentTag])
 
     return (
-        <Layout pageNavs={[HOME_NAV,tagSearchNav]}>
-            <div className="h-full w-full mx-auto font-mono">
-                <main className="mt-20 mx-5 md:mx-16 mb-3 pt-4">
-                    <Tags allTags={allTags} />
-                    {!loading && <section className="pt-5">
-                        {matchPosts.slice(postsPerPage * (currentPage - 1), postsPerPage * currentPage).map((post)=>{
-                            return (
-                                <div key={post.curriculumId}>
-                                    <SinglePost
-                                        postData={post}
-                                    />
-                                </div>
-                        )})}
-                    </section>}
-                    {loading && <Loader size={20} />}
-                </main>
-                <Pagenation numberOfPage={numberOfPages} currentPage={currentPage} setPage={setCurrentPage} />
-            </div>
-        </Layout>
+        <>
+            <StaticHead />
+            <Layout pageNavs={[HOME_NAV,tagSearchNav]}>
+                <div className="h-full w-full mx-auto font-mono">
+                    <main className="mt-20 mx-5 md:mx-16 mb-3 pt-4">
+                        <Tags allTags={allTags} />
+                        {!loading && <section className="pt-5">
+                            {matchPosts.slice(postsPerPage * (currentPage - 1), postsPerPage * currentPage).map((post)=>{
+                                return (
+                                    <div key={post.curriculumId}>
+                                        <SinglePost
+                                            postData={post}
+                                        />
+                                    </div>
+                            )})}
+                        </section>}
+                        {loading && <Loader size={20} />}
+                    </main>
+                    <Pagenation numberOfPage={numberOfPages} currentPage={currentPage} setPage={setCurrentPage} />
+                </div>
+            </Layout>
+        </>
     );
 }
 

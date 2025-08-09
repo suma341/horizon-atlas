@@ -13,6 +13,7 @@ import Pagenation from "@/components/pagenation/Pagenation";
 import { NUMBER_OF_POSTS_PER_PAGE } from "@/constants/numberOfPage";
 import { CurriculumService } from "@/lib/services/CurriculumService";
 import useUserProfileStore from "@/stores/userProfile";
+import StaticHead from "@/components/head/staticHead";
 
 type Props = {
   allTags:string[];
@@ -60,24 +61,27 @@ export default function SearchPage({allTags, posts}:Props) {
   const postsPerPage = NUMBER_OF_POSTS_PER_PAGE;
   
   return (
-    <Layout pageNavs={[HOME_NAV,SEARCH_NAV]}>
-      <div className="pt-20">
-        <main className="w-full mt-16 px-8">
-          <div>
-            <SearchField searchKeyWord={query} />
-            <div className="h-5"></div>
-            <Tags allTags={allTags} />
-            <div className="mt-5" />
-            {matchPosts.length!==0 && matchPosts.slice(postsPerPage * (currentPage - 1), postsPerPage * currentPage).map((post)=>{
-              return (<SinglePost postData={post} key={post.curriculumId} />)
-            })}
-            {matchPosts.length===0 && <div className="text-xl flex items-center justify-center">
-              カリキュラムが見つかりませんでした
-            </div>}
-          </div>
-        </main>
-        <Pagenation numberOfPage={numberOfPage} currentPage={currentPage} setPage={setCurrentPage} />
-      </div>
-    </Layout>
+    <>
+      <StaticHead />
+      <Layout pageNavs={[HOME_NAV,SEARCH_NAV]}>
+        <div className="pt-20">
+          <main className="w-full mt-16 px-8">
+            <div>
+              <SearchField searchKeyWord={query} />
+              <div className="h-5"></div>
+              <Tags allTags={allTags} />
+              <div className="mt-5" />
+              {matchPosts.length!==0 && matchPosts.slice(postsPerPage * (currentPage - 1), postsPerPage * currentPage).map((post)=>{
+                return (<SinglePost postData={post} key={post.curriculumId} />)
+              })}
+              {matchPosts.length===0 && <div className="text-xl flex items-center justify-center">
+                カリキュラムが見つかりませんでした
+              </div>}
+            </div>
+          </main>
+          <Pagenation numberOfPage={numberOfPage} currentPage={currentPage} setPage={setCurrentPage} />
+        </div>
+      </Layout>
+    </>
   );
 }

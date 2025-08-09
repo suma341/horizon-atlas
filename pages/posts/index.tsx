@@ -15,6 +15,8 @@ import SinglePost from "@/components/Post/SinglePost";
 import { useEffect, useState } from "react";
 import useUserProfileStore from "@/stores/userProfile";
 import Loader from "@/components/loader/loader";
+import Head from "next/head";
+import StaticHead from "@/components/head/staticHead";
 
 type Props = {
   courseAndPosts:{
@@ -89,51 +91,53 @@ const PostsPage = ({ allTags,courseAndPosts,targetCategory,emptyCoursesPosts}: P
   },[emptyCoursesPosts,userProfile?.given_name])
 
     return (
-      <Layout pageNavs={[HOME_NAV]}>  
-        <div className="bg-gradient-to-b from-gray-100 to-white min-h-screen">
-          <div className="container max-w-3xl mx-auto font-sans pt-24 px-6">
-            <main className="mt-16 mb-5 flex flex-col gap-8">
+      <>
+        <StaticHead />
+        <Layout pageNavs={[HOME_NAV]}>  
+          <div className="bg-gradient-to-b from-gray-100 to-white min-h-screen">
+            <div className="container max-w-3xl mx-auto font-sans pt-24 px-6">
+              <main className="mt-16 mb-5 flex flex-col gap-8">
 
-              <section className="mb-12">
-                <Link href={`/posts/course/basic`} className="block group">
-                  <section className="relative bg-white/90 backdrop-blur-lg border border-gray-300/50 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[1.01] hover:-translate-y-3">
-                    <div className="flex items-center justify-between">
-                      <h2 className="text-3xl font-extrabold tracking-wide text-gray-900 group-hover:text-purple-700 transition-colors duration-100">
-                        基礎班カリキュラム
-                      </h2>
-                      <BsCompass className="text-6xl text-purple-600 hover:text-purple-700 transition-all duration-300 group-hover:rotate-[660deg] group-hover:scale-[1.03]" />
-                    </div>
-                    <p className="text-lg text-gray-600/90 mt-3 leading-relaxed">
-                      PythonやFletライブラリを通してアプリ開発を学べるカリキュラムです。初心者向けに丁寧に解説します！
-                    </p>
-                  </section>
-                </Link>
-              </section>
+                <section className="mb-12">
+                  <Link href={`/posts/course/basic`} className="block group">
+                    <section className="relative bg-white/90 backdrop-blur-lg border border-gray-300/50 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[1.01] hover:-translate-y-3">
+                      <div className="flex items-center justify-between">
+                        <h2 className="text-3xl font-extrabold tracking-wide text-gray-900 group-hover:text-purple-700 transition-colors duration-100">
+                          基礎班カリキュラム
+                        </h2>
+                        <BsCompass className="text-6xl text-purple-600 hover:text-purple-700 transition-all duration-300 group-hover:rotate-[660deg] group-hover:scale-[1.03]" />
+                      </div>
+                      <p className="text-lg text-gray-600/90 mt-3 leading-relaxed">
+                        PythonやFletライブラリを通してアプリ開発を学べるカリキュラムです。初心者向けに丁寧に解説します！
+                      </p>
+                    </section>
+                  </Link>
+                </section>
 
-              <SearchField searchKeyWord={""} />
-              <Tags allTags={allTags} />
-              {!loading && <div>
-                {courseByRole.map((item,i)=>{
-                    const target = targetCategory.find(
-                      (item1) => item1.title === item.course
-                    );
-                    return (
-                      <SingleCourse key={i} course={item.course} icon={{url:target?.iconUrl,type:target?.iconType}} />
-                    )
-                })}
-              </div>}
-              {!loading && postsByRole.length!==0 && <div className="mt-5">
-                <p className="font-bold m-2">その他の資料</p>
-                {postsByRole.map((item)=>(
-                  <SinglePost postData={item} key={item.curriculumId} />
-                ))}
-              </div>}
-              {loading && <Loader size={20} />}
-            </main>
+                <SearchField searchKeyWord={""} />
+                <Tags allTags={allTags} />
+                {!loading && <div>
+                  {courseByRole.map((item,i)=>{
+                      const target = targetCategory.find(
+                        (item1) => item1.title === item.course
+                      );
+                      return (
+                        <SingleCourse key={i} course={item.course} icon={{url:target?.iconUrl,type:target?.iconType}} />
+                      )
+                  })}
+                </div>}
+                {!loading && postsByRole.length!==0 && <div className="mt-5">
+                  <p className="font-bold m-2">その他の資料</p>
+                  {postsByRole.map((item)=>(
+                    <SinglePost postData={item} key={item.curriculumId} />
+                  ))}
+                </div>}
+                {loading && <Loader size={20} />}
+              </main>
+            </div>
           </div>
-        </div>
-      </Layout>
-
+        </Layout>
+      </>
     );
   }
 

@@ -1,5 +1,4 @@
 "use client";
-import Head from 'next/head';
 import { motion } from 'framer-motion';
 import About from '@/components/top/about';
 import Curriculums from '@/components/top/curriculums';
@@ -10,6 +9,7 @@ import Header from '@/components/top/header';
 import { IntroductionService } from '@/lib/services/IntroductionService';
 import { Introduction } from '@/types/introduction';
 import SignInButton from '@/components/LoginButton/SignInButton';
+import StaticHead from '@/components/head/staticHead';
 
 type Props = {
   pageNum:number;
@@ -32,21 +32,7 @@ export const getStaticProps: GetStaticProps = async () => {
 export default function Home({pageNum,allIntroduction}:Props) {
   return (
     <div className="min-h-screen text-gray-900 diagonal-bg">
-      <Head>
-        <title>【 HorizonAtlas 】RyukokuHorizon部員専用プログラミング学習サイト</title>
-        <meta property="og:title" content="HorizonAtlas" />
-        <meta name="description" content="HorizonAtlasは、RyukokuHorizonの学習カリキュラムをまとめた部員専用のサービスです。" />
-        <meta name="keywords" content="ryukoku,龍谷,プログラミング部,Horizon,HorizonAtlas" />
-        <meta property="og:description" content="HorizonAtlasは、RyukokuHorizonの学習カリキュラムをまとめた部員専用のサービスです。" />
-        <meta property="og:image" content="https://ryukoku-horizon.github.io/horizon-atlas/home.png" />
-        <meta property="og:type" content="website" />
-        <meta name='twitter:title' content="HorizonAtlas" />
-        <meta name='twitter:description' content="HorizonAtlasは、RyukokuHorizonの学習カリキュラムをまとめた部員専用のサービスです。" />
-        <meta name='twitter:card' content='summary_large_image' />
-        <meta name="twitter:card" content="https://ryukoku-horizon.github.io/horizon-atlas/home.png" />
-        <meta name="google-site-verification" content="SXCl4dT0J3G7YXvZ1rlN7iG2aq28aVfOj_xVkoLP4V0" />
-        <link rel="icon" href="/horizon-atlas/favicon.ico" />
-      </Head>
+      <StaticHead />
 
       <Header />
       <main className="mx-auto py-16 text-center">

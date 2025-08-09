@@ -12,7 +12,7 @@ import { Category } from "@/types/category";
 import Image from "next/image";
 import useUserProfileStore from "@/stores/userProfile";
 import Loader from "@/components/loader/loader";
-import Head from "next/head";
+import DynamicHead from "@/components/head/dynamicHead";
 
 type pagePath = {
     params: { course:string }
@@ -87,22 +87,13 @@ const CoursePage = ({ posts, currentCourse,pageNavs,categoryData }: Props)=> {
 
     return (
         <>
-            <Head>
-                <title>{currentCourse}</title>
-                <link rel="icon" href="/horizon-atlas/favicon.ico" />
-                <meta name='description' content='HorizonAtlasは、学習カリキュラムをまとめたHorizon部員専用のサービスです。' />
-                <meta property="og:title" content={`${pageNavs[1]===BASIC_NAV ? "基礎班カリキュラム/" : ""}${currentCourse}`} />
-                <meta property="og:description" content={categoryData?.description} />
-                <meta property="og:image" content={`https://ryukoku-horizon.github.io/horizon-atlas/ogp/category/${categoryData?.categoryId}.png`} />
-                <meta property="og:url" content={`https://ryukoku-horizon.github.io/horizon-atlas/${pageNavs[pageNavs.length - 1].link}`} />
-                <meta property='og:type' content='website' />
-                <meta property='og:site_name' content="HorizonAtlas" />
-                <meta name='twitter:card' content='summary_large_image' />
-                <meta name='twitter:title' content={`${pageNavs[1]===BASIC_NAV ? "基礎班カリキュラム/" : ""}${currentCourse}`} />
-                <meta name='twitter:description' content={categoryData?.description} />
-                <meta name='twitter:image' content={`https://ryukoku-horizon.github.io/horizon-atlas/ogp/category/${categoryData?.categoryId}.png`} />
-            </Head>
-            <Layout pageNavs={pageNavs} useSelefHeader={true}> 
+            <DynamicHead
+                title={`${pageNavs[1]===BASIC_NAV ? "基礎班カリキュラム/" : ""}${currentCourse}`}
+                firstText={categoryData?.description ?? ""}
+                image={`https://ryukoku-horizon.github.io/horizon-atlas/ogp/category/${categoryData?.categoryId}.png`}
+                link={`https://ryukoku-horizon.github.io/horizon-atlas/${pageNavs[pageNavs.length - 1].link}`}
+            />
+            <Layout pageNavs={pageNavs}> 
                 <div className='pt-20 min-h-screen md:flex md:flex-col md:items-center '>
                     {categoryData && categoryData.cover !=="" && <Image src={categoryData.cover} alt={''} width={120} height={120} className='h-56 top-0' style={{width:"100vw"}} />}
                     <section className='bg-white pb-10 md:max-w-4xl px-2 md:min-w-[670px]' style={(!categoryData || categoryData.cover !=="") ? {} : {paddingTop:"4rem"}}>
