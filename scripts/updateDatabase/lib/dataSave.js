@@ -162,6 +162,9 @@ export const saveEmbedDataAndgetUrl=async(curriculumId,blockId,url)=>{
             fs.mkdirSync(`./public/notion_data/eachPage/${curriculumId}/iframeData`, { recursive: true });
         }
         const downloadUrl = `./public/notion_data/eachPage/${curriculumId}/iframeData/${blockId}.json`
+        if(embedData.status===403){
+            return ""
+        }
         const saveData = {title:embedData.title, html:embedData.html}
         fs.writeFileSync(downloadUrl, JSON.stringify(saveData, null, 2));
         return downloadUrl.replace("./public","/horizon-atlas")
