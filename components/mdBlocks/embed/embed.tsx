@@ -1,5 +1,5 @@
 import Loader from '@/components/loader/loader';
-import { Parent } from '@/types/Parent';import { Loader2 } from 'lucide-react';
+import { Parent } from '@/types/Parent';
 import { MdBlock } from 'notion-to-md/build/types';
 import React,{ useEffect, useState,useRef } from 'react'
 
@@ -72,13 +72,4 @@ function EmbedBlock(props: Props) {
         </>}
     </div>)
 }
-
-function LoadingScreen() {
-    return (
-      <div className="flex flex-col items-center gap-4">
-        <Loader2 className="animate-spin text-purple-400" size={48} />
-      </div>
-    );
-  }
-
 export default EmbedBlock;
