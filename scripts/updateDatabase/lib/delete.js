@@ -1,4 +1,4 @@
-import { deleteData } from "./supabaseDBGateway.js"
+import { deleteData } from "../gateway/supabaseDBGateway.js"
 
 export async function deletePage(id){
     const result = await deleteData("PageData","pageId",id)

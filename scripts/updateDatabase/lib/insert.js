@@ -1,10 +1,29 @@
 import "dotenv/config"
-import { upsertCategory, upsertCurriculum,upsertPage,} from "./supabaseDBGateway.js"
-import {getSingleblock,getSinglePageBlock} from "./notionGateway.js"
-import {getPageImage,getCategoryImage,saveImageAndgetUrl,saveEmbedDataAndgetUrl, saveBookmarkData} from "./dataSave.js"
+import { upsertCategory, upsertCurriculum,upsertPage,} from "../gateway/supabaseDBGateway.js"
+import {getSingleblock,getSinglePageBlock} from "../gateway/notionGateway.js"
+import {getPageImage,getCategoryImage,saveImageAndgetUrl,saveEmbedDataAndgetUrl, saveBookmarkData,saveVideoAndgetUrl} from "./dataSave.js"
 
 function wait(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function insertVideo(curriculumId,pageId,parentId,block,i){
+    console.log("insert video")
+    const res = await getSingleblock(block.blockId);
+    const url = res[res.type][res[res.type].type].url
+    const downloadUrl = await saveVideoAndgetUrl(curriculumId,block.blockId,url)
+    const parent = res[res.type].caption.map((text)=>{
+        return {
+            annotations:text.annotations,
+            plain_text:text.plain_text,
+            href:text.href
+        }
+    })
+    const data = {
+        parent,
+        url:downloadUrl
+    }
+    await upsertPage(curriculumId,parentId,JSON.stringify(data),block.blockId,block.type,pageId,i);
 }
 
 async function insertTable_row(curriculumId,pageId,parentId,block,i){
@@ -160,7 +179,7 @@ async function insertCallout(block,parentId,curriculumId,pageId,i){
 
 export async function insertblock(curriculumId,parentId,blocks,pageId){
     for(let i=1;i<(blocks.length + 1);i++){
-        await wait(90);
+        await wait(80);
         const k = i -1;
         if(blocks[k].type==="child_page"){
             await insertPageInfo(curriculumId,pageId,parentId,blocks[k],i);
@@ -193,6 +212,8 @@ export async function insertblock(curriculumId,parentId,blocks,pageId){
                 await insertTable(curriculumId,pageId,parentId,blocks[k],i)
             }else if(blocks[k].type ==="table_row"){
                 await insertTable_row(curriculumId,pageId,parentId,blocks[k],i)
+            }else if(blocks[k].type==="video"){
+                await insertVideo(curriculumId,pageId,parentId,blocks[k],i)
             }else{
                 await upsertPage(curriculumId,parentId,blocks[k].parent,blocks[k].blockId,blocks[k].type,pageId,i);
             }

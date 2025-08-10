@@ -13,11 +13,11 @@ function wait(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-export const getDatabaseLastEdited=async()=>{
+export const getDatabaseData=async()=>{
     const data = await notion.databases.retrieve({
         database_id:db
     })
-    return data.last_edited_time;
+    return data;
 }
 
 export const getEditTimeData = async () => {

@@ -208,13 +208,9 @@ const Post =({ metadata, mdBlocks,pageNavs,pageId,iconInfo,title,iconType,iconUr
           <div className='mt-4 font-medium'>
             <div key={pageId}>
               {mdBlocks.map((mdBlock)=>{
-                if(mdBlock.type==="numbered_list_item"){
-                  return <MdBlockComponent mdBlock={mdBlock} depth={0} key={mdBlock.blockId} order={1} />
-                }else{
                   return (
                     <MdBlockComponent mdBlock={mdBlock} depth={0} key={mdBlock.blockId} />
                   )
-                }
               })}
             </div>
           </div>

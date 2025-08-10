@@ -18,7 +18,7 @@ const SingleCourse = ({ course, icon }: Props) => {
         <div className="flex items-center">
           {icon.type === "" && (
             <Image
-              src={"/horizon-atlas/file_icon.svg"}
+              src={"https://ryukoku-horizon.github.io/horizon-atlas/file_icon.svg"}
               alt={course}
               width={40}
               height={40}
@@ -27,7 +27,7 @@ const SingleCourse = ({ course, icon }: Props) => {
           )}
           {icon.type !== "emoji" && icon.type !== "" && (
             <Image
-              src={icon.url ?? "/horizon-atlas/file_icon.svg"}
+              src={icon.url ?? "https://ryukoku-horizon.github.io/horizon-atlas/file_icon.svg"}
               alt={course}
               width={40}
               height={40}

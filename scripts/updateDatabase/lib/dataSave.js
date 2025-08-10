@@ -2,6 +2,7 @@ import "dotenv/config"
 import path from "path";
 import axios from "axios";
 import fs from "fs";
+import https from "https"
 
 const IFRAMELY_API_KEY = process.env.IFRAMELY_API_KEY;
 
@@ -22,6 +23,33 @@ const downloadImage = async (imageUrl, savePath) => {
         console.error("❌ 画像のダウンロードに失敗しました:", error);
     }
 };
+
+const downloadVideo = (url, savePath) => {
+    return new Promise((resolve, reject) => {
+        const dirPath = path.dirname(savePath); 
+        fs.mkdirSync(dirPath, { recursive: true }); 
+
+        https.get(url, (res) => {
+        if (res.statusCode !== 200) {
+            reject(new Error(`Failed to get '${url}' (${res.statusCode})`));
+            return;
+        }
+
+        const fileStream = fs.createWriteStream(savePath);
+        res.pipe(fileStream);
+
+        fileStream.on("finish", () => {
+            fileStream.close();
+            resolve();
+        });
+
+        fileStream.on("error", (err) => {
+            fs.unlink(savePath, () => reject(err)); 
+        });
+        }).on("error", (err) => reject(err));
+    });
+};
+
 
 async function useIframely(url) {
     try{
@@ -95,6 +123,16 @@ export const saveImageAndgetUrl=async(curriculumId,blockId,url)=>{
     }
     const downloadUrl = `./public/notion_data/eachPage/${curriculumId}/image/${blockId}.${exte}`
     await downloadImage(url, downloadUrl);
+    return downloadUrl.replace("./public","/horizon-atlas")
+}
+
+export const saveVideoAndgetUrl=async(curriculumId,blockId,url)=>{
+    let exte = path.extname(new URL(url).pathname).replace(".", "");
+    if (!exte) {
+    exte = "mp4";
+    }
+    const downloadUrl = `./public/notion_data/eachPage/${curriculumId}/video/${blockId}.${exte}`
+    await downloadVideo(url, downloadUrl);
     return downloadUrl.replace("./public","/horizon-atlas")
 }
 

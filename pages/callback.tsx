@@ -61,7 +61,6 @@ const Callback = () => {
               setErrMessage("URLから`code`を取得できませんでした");
               return;
             }
-            setLoadingMess("ユーザープロフィールを取得しています")
             const redirectUrl = `${process.env.NEXT_PUBLIC_ROOT_PATH}/callback`;
             const res = await fetch(`${SUPABASE_URL}/functions/v1/auth_discord`, {
               method: "POST",
@@ -84,7 +83,6 @@ const Callback = () => {
             }
             const { firebaseToken,profile }:{firebaseToken:string,profile:Profile} = await res.json();
             if(profile.profile){
-              setLoadingMess("トークンをクラウドに保存しています")
               try{
                 await loginWithCustomToken(firebaseToken);
               }catch(e){
@@ -105,7 +103,6 @@ const Callback = () => {
               return;
             }
             if(auth.currentUser){
-              setLoadingMess("ユーザープロフィールをデータベースに保存しています")
               setUserProfile(profile)
               await saveUserProfile(profile)
             }
@@ -132,8 +129,8 @@ const Callback = () => {
     return (
       <div className="flex flex-col items-center gap-4">
         <Loader2 className="animate-spin text-purple-400 mt-10" size={48} />
-        <p  className="text-lg font-semibold text-gray-700">{loadingMess}</p>
         <p className="font-semibold text-gray-700">読み込み中{dots}</p>
+        <p className="text-gray-700">{loadingMess}</p>
       </div>
     );
   }

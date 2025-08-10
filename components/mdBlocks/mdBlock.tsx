@@ -22,15 +22,16 @@ import Column_list from './column_list/column_list';
 import To_do from './to_do/to_do';
 import Synced_block from './synced_block/synced_block';
 import Table_row from './table_row/table_row';
+import VideoBlock from './video/video';
 
 type Props ={
     mdBlock:MdBlock;
     depth:number;
-    order?:number;
+    sameDepth?:number;
 }
 
 export default function MdBlockComponent(props:Props) {
-    const {mdBlock,depth,order } = props;
+    const {mdBlock,depth,sameDepth } = props;
 
     if(mdBlock.type==='paragraph'){
       return <Paragraph mdBlock={mdBlock} depth={depth} />
@@ -45,15 +46,15 @@ export default function MdBlockComponent(props:Props) {
     }else if(mdBlock.type === 'code'){
         return <Code mdBlock={mdBlock} depth={depth} />
     }else if(mdBlock.type==='numbered_list_item'){
-        return <NumberedListItem mdBlock={mdBlock} depth={depth} order={order!} />
+        return <NumberedListItem mdBlock={mdBlock} depth={depth} />
     }else if(mdBlock.type==='bulleted_list_item'){
-        return <BulletedListItem mdBlock={mdBlock} depth={depth} />
+        return <BulletedListItem mdBlock={mdBlock} depth={depth} sameDepth={sameDepth} />
     }else if(mdBlock.type==='callout'){
         return <Callout mdBlock={mdBlock} depth={depth} />
     }else if(mdBlock.type === 'quote'){
         return <Quote mdBlock={mdBlock} depth={depth} />
     }else if(mdBlock.type === 'image'){
-        return <ImageBlock mdBlock={mdBlock} depth={depth} />
+        return <ImageBlock mdBlock={mdBlock} />
     }else if(mdBlock.type==='table'){
         return <TableBlock mdBlock={mdBlock} depth={depth} />
     }else if(mdBlock.type==='child_page'){
@@ -76,6 +77,8 @@ export default function MdBlockComponent(props:Props) {
         return <Synced_block mdBlock={mdBlock} depth={depth} />
     }else if(mdBlock.type==="table_row"){
         return <Table_row mdBlock={mdBlock} />
+    }else if(mdBlock.type==="video"){
+        return <VideoBlock mdBlock={mdBlock} depth={depth} />
     }
     return;
 }
