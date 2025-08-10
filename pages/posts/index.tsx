@@ -15,7 +15,6 @@ import SinglePost from "@/components/Post/SinglePost";
 import { useEffect, useState } from "react";
 import useUserProfileStore from "@/stores/userProfile";
 import Loader from "@/components/loader/loader";
-import Head from "next/head";
 import StaticHead from "@/components/head/staticHead";
 
 type Props = {
