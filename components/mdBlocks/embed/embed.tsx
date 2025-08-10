@@ -1,3 +1,4 @@
+import Loader from '@/components/loader/loader';
 import { Parent } from '@/types/Parent';import { Loader2 } from 'lucide-react';
 import { MdBlock } from 'notion-to-md/build/types';
 import React,{ useEffect, useState,useRef } from 'react'
@@ -28,15 +29,18 @@ function EmbedBlock(props: Props) {
     const [load, setLoad] = useState(false)
 
     useEffect(()=>{
-        setLoad(true);
         async function fetchIframeData(){
-            const res = await fetch(data.downloadUrl);
-            const iframeData:IframeData = await res.json();
-            setHtml(iframeData.html);
-            setTitle(iframeData.title);
+            setLoad(true);
+            try{
+                const res = await fetch(data.downloadUrl);
+                const iframeData:IframeData = await res.json();
+                setHtml(iframeData.html);
+                setTitle(iframeData.title);
+            }finally{
+                setLoad(false);
+            }
         }
         fetchIframeData();
-        setLoad(false);
     },[mdBlock.blockId])
 
     useEffect(() => {
@@ -51,30 +55,22 @@ function EmbedBlock(props: Props) {
         }
       }, [title]);
 
-
-    if(load){
-        return <LoadingScreen />
-    }
-    if(title==="Flet"){
-        return (<div style={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }} className='mx-1.5 my-1.5' id={mdBlock.blockId}>
-            <iframe src={data.url} ref={iframeRef}
+    return (<div style={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }} className='mx-1.5 my-1.5' id={mdBlock.blockId}>
+        {load && <Loader size={60} />}
+        {!load && <>
+            {title==="Flet" && <iframe src={data.url} ref={iframeRef}
             style={{
                 width: "100%",
                 height: appHeight,
                 border: "none",
                 overflow: "hidden"
-              }}
-              allowFullScreen />
-        </div>)
-    }
-        return (
-            <div className='mx-1.5 my-1.5' id={mdBlock.blockId}>
-                <div
+                }}
+            allowFullScreen />}
+            {title!=="Flet" && <div
                 dangerouslySetInnerHTML={{ __html: html }}
-                />
-            </div>
-        )
-    // }
+            />}
+        </>}
+    </div>)
 }
 
 function LoadingScreen() {
