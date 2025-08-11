@@ -8,24 +8,78 @@ import { FaCheck } from "react-icons/fa6";
 import { MdTypeAndText } from '@/types/textAndType';
 import { parseMarkdown } from '@/lib/parseMD';
 import { assignCssProperties } from '@/lib/assignCssProperties';
+import { CodeBlock } from '@/types/code';
 
 type Props = {
     mdBlock: MdBlock;
     depth: number;
 };
 
+function isJsonString(str: string): boolean {
+  try {
+    JSON.parse(str);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export default function Code(props: Props) {
     const { mdBlock } = props;
+    const [copied, setCopied] = useState(false);
+    const [isHovered, setIsHovered] = useState(false);
+
+    if(isJsonString(mdBlock.parent)){
+        const codeOb:CodeBlock = JSON.parse(mdBlock.parent)
+        let codeContent = codeOb.parent.join("").replace(/\n$/, '')
+        codeContent = codeContent.replace(/\t/g, '  ');
+
+        const handleCopy = async () => {
+            try {
+                await navigator.clipboard.writeText(codeContent);
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
+            } catch (error) {
+                console.error('Failed to copy:', error);
+            }
+        };
+        
+        return (
+            <div 
+                id={mdBlock.blockId} 
+                className='mb-2 mt-2 relative' 
+                onMouseEnter={() => setIsHovered(true)} 
+                onMouseLeave={() => setIsHovered(false)}
+            >
+                <div className='mb-0' style={{backgroundColor:"rgb(250,250,250)"}}>
+                    <p>
+                        <span className='text-neutral-600 text-sm px-3 py-1 rounded' style={{background: "rgb(235, 235, 235)"}}>
+                            {codeOb.language}
+                        </span>
+                    </p>
+                    <button
+                        onClick={handleCopy}
+                        className={`h-5 absolute top-1 right-2 px-2 text-sm rounded transition-opacity duration-200 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
+                    >
+                        {copied ? <span className='text-purple-500 flex'>copied ! <FaCheck size={24} /></span> : <LuCopy size={24} className='text-neutral-400 hover:text-neutral-500' />}
+                    </button>
+                </div>
+                
+                <SyntaxHighlighter style={atomOneLight} language={codeOb.language}>
+                    {codeContent}
+                </SyntaxHighlighter>
+            </div>
+        );
+    }
+
     const codeBlocks: string[] = mdBlock.parent.split('\n');
+
     let codeContent = '';
     for (let i = 1; i < codeBlocks.length - 1; i++) {
         codeContent += (i === 1 ? '' : '\n') + codeBlocks[i];
     }
     codeContent = codeContent.replace(/\t/g, '  ');
     const language: string = codeBlocks[0].slice(3);
-
-    const [copied, setCopied] = useState(false);
-    const [isHovered, setIsHovered] = useState(false);
 
     const handleCopy = async () => {
         try {
