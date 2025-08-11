@@ -32,7 +32,7 @@ export default function ChildPage(props: Props) {
           {data.iconType === "" && <Image src={"/horizon-atlas/file_icon.svg"} alt={title} width={20} height={20} className='relative w-5 h-5 m-0 mr-1' />}
           {data.iconType !=="emoji" && data.iconType !== "" &&<Image src={data.iconUrl} alt={title} width={20} height={20} className='relative w-5 h-5 m-0 mr-1' />}
           {data.iconType ==="emoji" &&<p className='relative w-5 h-5 m-0 mr-1 align-middle ml-0.5'>{data.iconUrl}</p>}
-          <span className='underline'>{title}</span>
+          <span className='underline'>{(title==="" || title===undefined) ? data.parent : title}</span>
         </div>
       </Link>
   );

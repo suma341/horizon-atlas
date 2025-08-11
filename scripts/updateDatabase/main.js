@@ -41,14 +41,14 @@ getCurrentData().then(async(data)=>{
         process.exit(0);
     }
     try{
-        console.log("カテゴリーデータ読み込み中...")
-        const categories = await getAllCategory()
-        for(const category of categories){
-            console.log("delete:",category.title)
-            await deleteCategory(category.id)
-            console.log("insert:",category.title)
-            await insertCategory(category)
-        }
+        // console.log("カテゴリーデータ読み込み中...")
+        // const categories = await getAllCategory()
+        // for(const category of categories){
+        //     console.log("delete:",category.title)
+        //     await deleteCategory(category.id)
+        //     console.log("insert:",category.title)
+        //     await insertCategory(category)
+        // }
         console.log("ページデータ読み込み中...")
         const allData_ = await getAllPageData();
         const allData = await converce(allData_)

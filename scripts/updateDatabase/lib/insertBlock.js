@@ -4,17 +4,18 @@ import { getPageImage, saveBookmarkData, saveEmbedDataAndgetUrl, saveImageAndget
 
 export async function insertChildren(children,curriculumId){
     for(let i=0;i<children.length;i++){
-        await insertChild(children[i],curriculumId,curriculumId,curriculumId,i)
+        await insertChild(children[i],curriculumId,curriculumId,curriculumId,i,`${i}/${children.length}`)
     }
 }
 
-async function insertChild(block,curriculumId,pageId,parentId,i){
+async function insertChild(block,curriculumId,pageId,parentId,i,p){
     const type = block.type
-    await insertblock(curriculumId,parentId,block,pageId,type,i)
+    console.log(p)
+    await insertblock(curriculumId,parentId,block,pageId,type,i + 1)
     if(block.has_children){
         const children = await getChildBlocks(block.id)
         for(let k=0;k<children.length;k++){
-            await insertChild(children[k],curriculumId,type==="child_page" ? block.id : pageId,block.id,k)
+            await insertChild(children[k],curriculumId,type==="child_page" ? block.id : pageId,block.id,k,`${p}[${k}/${children.length}]`)
         }
     }
 }
@@ -166,7 +167,7 @@ async function insertParagragh(curriculumId,pageId,parentId,res,i){
 }
 
 async function insertPageInfo(curriculumId,pageId,parentId,block,i){
-    console.log("insert child_page...",block.child_page.title)
+    console.log("insert child_page...")
     const res = await getSinglePageBlock(block.id);
 
     // アイコンとカバー画像を取得
