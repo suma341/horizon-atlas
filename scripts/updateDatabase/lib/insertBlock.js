@@ -4,26 +4,27 @@ import { getPageImage, saveBookmarkData, saveEmbedDataAndgetUrl, saveImageAndget
 
 export async function insertChildren(children,curriculumId){
     for(let i=0;i<children.length;i++){
-        await insertChild(children[i],curriculumId,curriculumId,curriculumId,i,`${i}/${children.length}`)
+        await insertChild(children[i],curriculumId,curriculumId,curriculumId,i,`${i + 1}/${children.length}`)
     }
 }
 
 async function insertChild(block,curriculumId,pageId,parentId,i,p){
     const type = block.type
-    console.log(p)
+    console.log(`insert ${type}...`)
     await insertblock(curriculumId,parentId,block,pageId,type,i + 1)
     if(block.has_children){
         const children = await getChildBlocks(block.id)
         for(let k=0;k<children.length;k++){
-            await insertChild(children[k],curriculumId,type==="child_page" ? block.id : pageId,block.id,k,`${p}[${k}/${children.length}]`)
+            await insertChild(children[k],curriculumId,type==="child_page" ? block.id : pageId,block.id,k,`${p}[${k + 1}/${children.length}]`)
         }
     }
+    console.log(p)
 }
 
 async function insertblock(curriculumId,parentId,data,pageId,type,i){
     if(type==="callout"){
-        await insertCallout(data,parentId,curriculumId,pageId,i)
-    }else if(type==="paragraph" || type==="quote" || type==="toggle" || type==="bulleted_list_item" || type==="numbered_list_item"){
+        await insertCallout(curriculumId,pageId,parentId,data,i)
+    }else if(type==="paragraph" || type==="quote" || type==="toggle" || type==="bulleted_list_item" || type==="numbered_list_item" || type==="to_do"){
         await insertParagragh(curriculumId,pageId,parentId,data,i)
     }else if(type ==='heading_1' || type ==='heading_2' || type ==='heading_3'){
         await insertHeading(curriculumId,pageId,parentId,data,i)
@@ -41,6 +42,13 @@ async function insertblock(curriculumId,parentId,data,pageId,type,i){
         await insertVideo(curriculumId,pageId,parentId,data,i)
     }else if(type==="child_page"){
         await insertPageInfo(curriculumId,pageId,parentId,data,i)
+    }else if(type==="link_to_page"){
+        await insertLinkToPage(curriculumId,pageId,parentId,data,i)
+    }else if(type==="code"){
+        await insertCode(curriculumId,pageId,parentId,data,i)
+    }else{
+        console.log("data",data)
+        await upsertPage(curriculumId,parentId,"_",data.id,data.type,pageId,i)
     }
     // else{
     //     await upsertPage(curriculumId,parentId,data.parent,data.id,data.type,pageId,i);
@@ -48,7 +56,6 @@ async function insertblock(curriculumId,parentId,data,pageId,type,i){
 }
 
 async function insertVideo(res,curriculumId,pageId,i){
-    console.log("insert video")
     const parentType = res["type"]
     const parentId = res["parent"][parentType]
     const url = res[res.type][res[res.type].type].url
@@ -68,19 +75,16 @@ async function insertVideo(res,curriculumId,pageId,i){
 }
 
 async function insertTable_row(curriculumId,pageId,parentId,res,i){
-    console.log("insert table_row")
     const data = res.table_row.cells
     await upsertPage(curriculumId,parentId,JSON.stringify(data),res.id,res.type,pageId,i)
 }
 
 async function insertTable(curriculumId,pageId,parentId,res,i){
-    console.log("insert table")
     const data = res.table
     await upsertPage(curriculumId,parentId,JSON.stringify(data),res.id,res.type,pageId,i)
 }
 
 async function insertBookmark(curriculumId,pageId,parentId,res,i){
-    console.log("insert bookmark")
     const url = res.bookmark.url;
     const downloadUrl = await saveBookmarkData(curriculumId,res.id,url)
     const parent = res.bookmark.caption.map((text)=>{
@@ -99,7 +103,6 @@ async function insertBookmark(curriculumId,pageId,parentId,res,i){
 }
 
 async function insertEmbed(curriculumId,pageId,parentId,res,i){
-    console.log("insert embed")
     const url = res.embed.url
     const downloadUrl = await saveEmbedDataAndgetUrl(curriculumId,res.id,url)
     const parent = res.embed.caption.map((text)=>{
@@ -118,7 +121,6 @@ async function insertEmbed(curriculumId,pageId,parentId,res,i){
 }
 
 async function insertImage(curriculumId,pageId,parentId,res,i){
-    console.log("insert image")
     const url = res[res.type][res[res.type].type].url
     const downloadUrl = await saveImageAndgetUrl(curriculumId,res.id,url)
     const parent = res[res.type].caption.map((text)=>{
@@ -136,7 +138,6 @@ async function insertImage(curriculumId,pageId,parentId,res,i){
 }
 
 async function insertHeading(curriculumId,pageId,parentId,res,i){
-    console.log(`insert ${res.type}...`)
     const data = {
         parent:res[res.type].rich_text.map((text)=>{
             return {
@@ -152,7 +153,6 @@ async function insertHeading(curriculumId,pageId,parentId,res,i){
 }
 
 async function insertParagragh(curriculumId,pageId,parentId,res,i){
-    console.log(`insert paragraph...`)
     const data = {
         color:res[res.type].color,
         parent:res[res.type].rich_text.map((text)=>{
@@ -167,7 +167,6 @@ async function insertParagragh(curriculumId,pageId,parentId,res,i){
 }
 
 async function insertPageInfo(curriculumId,pageId,parentId,block,i){
-    console.log("insert child_page...")
     const res = await getSinglePageBlock(block.id);
 
     // アイコンとカバー画像を取得
@@ -184,8 +183,7 @@ async function insertPageInfo(curriculumId,pageId,parentId,block,i){
     await upsertPage(curriculumId, parentId, JSON.stringify(data), block.id, block.type, pageId, i);
 }
 
-async function insertCallout(res,parentId,curriculumId,pageId,i){
-    console.log("insert callout")
+async function insertCallout(curriculumId,pageId,parentId,res,i){
     const parent = res.callout.rich_text.map((text)=>{
         return {
             annotations:text.annotations,
@@ -208,4 +206,27 @@ async function insertCallout(res,parentId,curriculumId,pageId,i){
         }
         await upsertPage(curriculumId,parentId,JSON.stringify(data),res.id,res.type,pageId,i);
     }
+}
+
+async function insertLinkToPage(curriculumId,pageId,parentId,res,i){
+    const page_id = res.link_to_page.page_id
+    await upsertPage(curriculumId,parentId,JSON.stringify(page_id),res.id,res.type,pageId,i)
+}
+
+async function insertCode(curriculumId,pageId,parentId,res,i){
+    const language = res.code.language
+    const rich_text = res.code.rich_text.length===0 ? [] : res.code.rich_text.map((i)=>i.plain_text)
+    const caption = res.code.caption.map((text)=>{
+        return {
+            annotations:text.annotations,
+            plain_text:text.plain_text,
+            href:text.href
+        }
+    })
+    const data ={
+        language,
+        parent:rich_text,
+        caption
+    }
+    await upsertPage(curriculumId,parentId,JSON.stringify(data),res.id,res.type,pageId,i)
 }

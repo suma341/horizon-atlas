@@ -64,9 +64,13 @@ export async function upsertPage(curriculumId,parentId,blockData,blockId,type,pa
         })
     });
     const result = await res.json();
-    console.log("upsertPage",result);
-    const { error } = result;
-    return error;
+    const { error,message } = result;
+    if(message==='Insert successfully'){
+        console.log("✅ insert successfully")
+    }
+    if(error){
+        console.log("❌ error:",error)
+    }
 }
 
 export async function deleteData(table,where,value){
