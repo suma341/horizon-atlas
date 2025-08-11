@@ -223,17 +223,16 @@ export async function insertblock(curriculumId,parentId,blocks,pageId){
 }
 
 export async function insertCurriculum(data){
-    const pageImage = await getPageImage(data.id,data.id,data.cover,data.icon)
     await upsertCurriculum(
         data.title,
         data.is_basic_curriculum,
         data.visibility,
         data.category,
-        data.tags,
-        data.id,
-        pageImage.iconType,
-        pageImage.iconUrl,
-        pageImage.coverUrl,
+        data.tag,
+        data.curriculumId,
+        data.iconType,
+        data.iconUrl,
+        data.coverUrl,
         data.order);
 }
 

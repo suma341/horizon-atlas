@@ -13,6 +13,19 @@ function wait(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+export const getAllPageData=async()=>{
+    const data = await notion.databases.query({
+        database_id:db,
+        "filter":{
+            property: "published",
+            checkbox: {
+                equals: true,
+            },
+        }
+    })
+    return await data.results;
+}
+
 export const getDatabaseData=async()=>{
     const data = await notion.databases.retrieve({
         database_id:db
@@ -161,7 +174,7 @@ export const getChildBlocks = async (blockId, retries = 5) => {
             const response = await notion.blocks.children.list({
                 "block_id":blockId,
             })
-            return response;
+            return response.results;
         } catch (error) {
             if (error.RequestTimeoutError) {
                 console.warn(`Rate limit exceeded. Retrying in ${10} seconds...`);

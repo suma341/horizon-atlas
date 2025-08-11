@@ -1,0 +1,210 @@
+import { getChildBlocks } from "../gateway/notionGateway.js"
+import { upsertPage } from "../gateway/supabaseDBGateway.js"
+import { getPageImage, saveBookmarkData, saveEmbedDataAndgetUrl, saveImageAndgetUrl, saveVideoAndgetUrl } from "./dataSave.js"
+
+export async function insertChildren(children,curriculumId){
+    for(let i=0;i<children.length;i++){
+        await insertChild(children[i],curriculumId,curriculumId,curriculumId,i)
+    }
+}
+
+async function insertChild(block,curriculumId,pageId,parentId,i){
+    const type = block.type
+    await insertblock(curriculumId,parentId,block,pageId,type,i)
+    if(block.has_children){
+        const children = await getChildBlocks(block.id)
+        for(let k=0;k<children.length;k++){
+            await insertChild(children[k],curriculumId,type==="child_page" ? block.id : pageId,block.id,k)
+        }
+    }
+}
+
+async function insertblock(curriculumId,parentId,data,pageId,type,i){
+    if(type==="callout"){
+        await insertCallout(data,parentId,curriculumId,pageId,i)
+    }else if(type==="paragraph" || type==="quote" || type==="toggle" || type==="bulleted_list_item" || type==="numbered_list_item"){
+        await insertParagragh(curriculumId,pageId,parentId,data,i)
+    }else if(type ==='heading_1' || type ==='heading_2' || type ==='heading_3'){
+        await insertHeading(curriculumId,pageId,parentId,data,i)
+    }else if(type==="image"){
+        await insertImage(curriculumId,pageId,parentId,data,i)
+    }else if(type==="embed"){
+        await insertEmbed(curriculumId,pageId,parentId,data,i)
+    }else if(type==="bookmark"){
+        await insertBookmark(curriculumId,pageId,parentId,data,i);
+    }else if(type ==="table"){
+        await insertTable(curriculumId,pageId,parentId,data,i)
+    }else if(type ==="table_row"){
+        await insertTable_row(curriculumId,pageId,parentId,data,i)
+    }else if(type==="video"){
+        await insertVideo(curriculumId,pageId,parentId,data,i)
+    }else if(type==="child_page"){
+        await insertPageInfo(curriculumId,pageId,parentId,data,i)
+    }
+    // else{
+    //     await upsertPage(curriculumId,parentId,data.parent,data.id,data.type,pageId,i);
+    // }
+}
+
+async function insertVideo(res,curriculumId,pageId,i){
+    console.log("insert video")
+    const parentType = res["type"]
+    const parentId = res["parent"][parentType]
+    const url = res[res.type][res[res.type].type].url
+    const downloadUrl = await saveVideoAndgetUrl(curriculumId,res.id,url)
+    const parent = res[res.type].caption.map((text)=>{
+        return {
+            annotations:text.annotations,
+            plain_text:text.plain_text,
+            href:text.href
+        }
+    })
+    const data = {
+        parent,
+        url:downloadUrl
+    }
+    await upsertPage(curriculumId,parentId,JSON.stringify(data),res.id,res.type,pageId,i);
+}
+
+async function insertTable_row(curriculumId,pageId,parentId,res,i){
+    console.log("insert table_row")
+    const data = res.table_row.cells
+    await upsertPage(curriculumId,parentId,JSON.stringify(data),res.id,res.type,pageId,i)
+}
+
+async function insertTable(curriculumId,pageId,parentId,res,i){
+    console.log("insert table")
+    const data = res.table
+    await upsertPage(curriculumId,parentId,JSON.stringify(data),res.id,res.type,pageId,i)
+}
+
+async function insertBookmark(curriculumId,pageId,parentId,res,i){
+    console.log("insert bookmark")
+    const url = res.bookmark.url;
+    const downloadUrl = await saveBookmarkData(curriculumId,res.id,url)
+    const parent = res.bookmark.caption.map((text)=>{
+        return {
+            annotations:text.annotations,
+            plain_text:text.plain_text,
+            href:text.href
+        }
+    })
+    const data = {
+        parent,
+        url,
+        downloadUrl
+    }
+    await upsertPage(curriculumId,parentId,JSON.stringify(data),res.id,res.type,pageId,i);
+}
+
+async function insertEmbed(curriculumId,pageId,parentId,res,i){
+    console.log("insert embed")
+    const url = res.embed.url
+    const downloadUrl = await saveEmbedDataAndgetUrl(curriculumId,res.id,url)
+    const parent = res.embed.caption.map((text)=>{
+        return {
+            annotations:text.annotations,
+            plain_text:text.plain_text,
+            href:text.href
+        }
+    })
+    const data = {
+        parent,
+        url,
+        downloadUrl
+    }
+    await upsertPage(curriculumId,parentId,JSON.stringify(data),res.id,res.type,pageId,i);
+}
+
+async function insertImage(curriculumId,pageId,parentId,res,i){
+    console.log("insert image")
+    const url = res[res.type][res[res.type].type].url
+    const downloadUrl = await saveImageAndgetUrl(curriculumId,res.id,url)
+    const parent = res[res.type].caption.map((text)=>{
+        return {
+            annotations:text.annotations,
+            plain_text:text.plain_text,
+            href:text.href
+        }
+    })
+    const data = {
+        parent,
+        url:downloadUrl
+    }
+    await upsertPage(curriculumId,parentId,JSON.stringify(data),res.id,res.type,pageId,i);
+}
+
+async function insertHeading(curriculumId,pageId,parentId,res,i){
+    console.log(`insert ${res.type}...`)
+    const data = {
+        parent:res[res.type].rich_text.map((text)=>{
+            return {
+                annotations:text.annotations,
+                plain_text:text.plain_text,
+                href:text.href
+            }
+        }),
+        color:res[res.type].color,
+        is_toggleable:res[res.type].is_toggleable
+    }
+    await upsertPage(curriculumId,parentId,JSON.stringify(data),res.id,res.type,pageId,i);
+}
+
+async function insertParagragh(curriculumId,pageId,parentId,res,i){
+    console.log(`insert paragraph...`)
+    const data = {
+        color:res[res.type].color,
+        parent:res[res.type].rich_text.map((text)=>{
+            return {
+                annotations:text.annotations,
+                plain_text:text.plain_text,
+                href:text.href
+            }
+        })
+    }
+    await upsertPage(curriculumId,parentId,JSON.stringify(data),res.id,res.type,pageId,i);
+}
+
+async function insertPageInfo(curriculumId,pageId,parentId,block,i){
+    console.log("insert child_page...",block.child_page.title)
+    const res = await getSinglePageBlock(block.id);
+
+    // アイコンとカバー画像を取得
+    const pageImage = await getPageImage(curriculumId, res.id, res.cover, res.icon);
+
+    // データを保存
+    const data = {
+        parent: block.child_page.title,
+        iconType: pageImage.iconType,
+        iconUrl: pageImage.iconUrl,
+        coverUrl: pageImage.coverUrl
+    };
+
+    await upsertPage(curriculumId, parentId, JSON.stringify(data), block.id, block.type, pageId, i);
+}
+
+async function insertCallout(res,parentId,curriculumId,pageId,i){
+    console.log("insert callout")
+    const parent = res.callout.rich_text.map((text)=>{
+        return {
+            annotations:text.annotations,
+            plain_text:text.plain_text,
+            href:text.href
+        }
+    })
+    if(res.icon && res.icon.emoji){
+        const data = {
+            icon:res.callout.icon,
+            color:res.callout.color,
+            parent
+        }
+        await upsertPage(curriculumId,parentId,JSON.stringify(data),res.id,res.type,pageId,i);
+    }else{
+        const data = {
+            icon:res.callout.icon,
+            color:res.callout.color,
+            parent
+        }
+        await upsertPage(curriculumId,parentId,JSON.stringify(data),res.id,res.type,pageId,i);
+    }
+}

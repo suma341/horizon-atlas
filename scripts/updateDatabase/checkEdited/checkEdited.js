@@ -1,13 +1,13 @@
-import { getDatabaseData, getEditTimeData, getPage } from "../gateway/notionGateway.js";
+import { getEditTimeData, getPage } from "../gateway/notionGateway.js";
 import { getPageDataByConditions,getLastEdited,updateLastEdited } from "../gateway/supabaseDBGateway.js"
 
-const isDatabaseEdited=async(current)=>{
-    const latest = await getLastEdited("*",{"curriculum":"0"});
-    console.log(latest)
-    console.log(current)
-    await updateLastEdited(current,"0");
-    return current !== latest[0].last_edited
-}
+// const isDatabaseEdited=async(current)=>{
+//     const latest = await getLastEdited("*",{"curriculum":"0"});
+//     console.log(latest)
+//     console.log(current)
+//     await updateLastEdited(current,"0");
+//     return current !== latest[0].last_edited
+// }
 
 const getAllChildId=async(curriculumId)=>{
     const data = await getPageDataByConditions("*",{"curriculumId":curriculumId,"type":"child_page"})
@@ -33,19 +33,20 @@ const getCurriculumEditedTime = async(Last_edited_time,curriculumId)=>{
 }
 
 export const getCurrentData=async()=>{
-    console.log("データベースの更新確認中...")
-    const databaseData = await getDatabaseData()
-    const isEdited = await isDatabaseEdited(databaseData.last_edited_time)
-    if(!isEdited){
-        return null;
-    }
+    // console.log("データベースの更新確認中...")
+    // const databaseData = await getDatabaseData()
+    // const isEdited = await isDatabaseEdited(databaseData.last_edited_time)
+    // if(!isEdited){
+    //     return null;
+    // }
     console.log("ページの更新確認中...")
     const timeData = await getEditTimeData();
-    const editTimeData = [];
-    for(const d of timeData){
-        const latest = await getCurriculumEditedTime(d.Last_edited_time,d.id);
-        editTimeData.push({id:d.id,Last_edited_time:latest})
-    }
+    let editTimeData = [];
+    editTimeData = timeData
+    // for(const d of timeData){
+    //     const latest = await getCurriculumEditedTime(d.Last_edited_time,d.id);
+    //     editTimeData.push({id:d.id,Last_edited_time:latest})
+    // }
     const data = await getLastEdited("*")
     const filtered = data.filter((item)=>item.curriculum!=="0")
     editTimeData.map((item)=>{
