@@ -1,9 +1,7 @@
 "use client";
-import Loader from '@/components/loader/loader';
-import useImageSize from '@/hooks/useImageSize';
 import { usePageLink } from '@/hooks/usePagePush';
 import { assignCss } from '@/lib/assignCssProperties';
-import { Parent } from '@/types/Parent';
+import { ImageBlock_Size } from '@/types/mdBlocks';
 import { MdBlock } from 'notion-to-md/build/types';
 import React, { useState } from 'react';
 import { FaExpandAlt } from "react-icons/fa";
@@ -13,62 +11,54 @@ type Props = {
     mdBlock: MdBlock;
 };
 
-type ImageData ={
-    parent:Parent[];
-    url:string;
-}
-
 export default function ImageBlock(props: Props) {
     const { mdBlock } = props;
     const [isOpen, setIsOpen] = useState(false); 
     const [isHovered, setIsHovered] = useState(false);
-    const data:ImageData = JSON.parse(mdBlock.parent)
+    const data:ImageBlock_Size = JSON.parse(mdBlock.parent)
 
     const { handleClick } = usePageLink()
 
-    const size = useImageSize(data.url)
+    const isVertical = data.height > data.width;
+    const isLandscape = data.width >= data.height;
 
     return (
         <>
             <div id={mdBlock.blockId} className="relative flex-col items-center flex container"
             onMouseEnter={() => setIsHovered(true)} 
             onMouseLeave={() => setIsHovered(false)}>
-                {size!==null && <>
-                    {(size.height > size.width) && <img
-                        src={data.url}
-                        alt={'image_block'}
-                        style={{
-                            width: 'auto',
-                            height: 'auto',
-                            display: 'block',
-                            maxHeight: "750px",
-                            cursor: 'pointer',
-                        }}
-                        onClick={() => setIsOpen(true)} 
-                    />}
-                    {(size.width >= size.height) && <img
+                {isVertical && <img
                     src={data.url}
                     alt={'image_block'}
-                    style={ {
+                    style={{
                         width: 'auto',
                         height: 'auto',
                         display: 'block',
-                        maxHeight:"450px",
+                        maxHeight: "700px",
                         cursor: 'pointer',
                     }}
                     onClick={() => setIsOpen(true)} 
-                    />}
-                </>}
-
-                {size===null && <Loader size={50} />}
+                />}
+                {isLandscape && <img
+                src={data.url}
+                alt={'image_block'}
+                style={ {
+                    width: 'auto',
+                    height: 'auto',
+                    display: 'block',
+                    maxHeight:"450px",
+                    cursor: 'pointer',
+                }}
+                onClick={() => setIsOpen(true)} 
+                />}
                 
-                {size!==null && <button
+                <button
                     onClick={() => setIsOpen(true)}
                     className="absolute top-1 right-1 bg-neutral-800 bg-opacity-60 text-white hover:bg-opacity-100 p-1 rounded-md shadow-md border border-gray-300"
                     style={{ backdropFilter: 'blur(5px)',opacity:isHovered ? "100%" : "0%" }}
                 >
                     <FaExpandAlt size={17} />
-                </button>}
+                </button>
                 <p className='text-sm m-0 text-neutral-600' style={{width: "fit-content", textAlign: "left"}}>
                     {data.parent.map((text)=>{
                         const style = assignCss(text)
@@ -100,7 +90,7 @@ export default function ImageBlock(props: Props) {
                                 touchAction: 'none', 
                             }}
                         >
-                            {(!size || (size && size.width > size.height)) && <img
+                            {isVertical && <img
                                 src={data.url}
                                 alt="image_block_large"
                                 style={{
@@ -108,7 +98,7 @@ export default function ImageBlock(props: Props) {
                                     height: 'auto'
                                 }}
                             />}
-                            {(size && size.height > size.width) && <img
+                            {isLandscape && <img
                                 src={data.url}
                                 alt="image_block_large"
                                 style={{

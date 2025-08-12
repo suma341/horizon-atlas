@@ -8,6 +8,8 @@ import { HeadingData } from "@/types/headingData";
 import { TableCell } from "@/types/table_cell";
 import { ParagraphData } from "@/types/paragraph";
 import { findHeadingBlock } from "./findHeadingBlock";
+import { ImageBlock, ImageBlock_Size } from "@/types/mdBlocks";
+import { getImageSize } from "./getImageSize";
 
 export function buildTree(pageData:PageData[], parentId:string):MdBlock[] {
     const mdBlocks:MdBlock[] = pageData
@@ -103,6 +105,16 @@ export async function processBlock(block:MdBlock,mdBlocks:MdBlock[]):Promise<MdB
             ...block,
             parent:JSON.stringify(processed),
             children:block.children.length===0 ? [] :
+                await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks)))
+        }
+    }else if(block.type==="image"){
+        const data:ImageBlock = JSON.parse(block.parent)
+        const size = await getImageSize(data.url)
+        const addSizeData:ImageBlock_Size = {...data,...size}
+        return {
+            ...block,
+            parent:JSON.stringify(addSizeData),
+            children: block.children.length===0 ? [] :
                 await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks)))
         }
     }
