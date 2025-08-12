@@ -1,3 +1,7 @@
+import path from "path";
+import axios from "axios";
+import fs from "fs";
+
 export const converce=async(re)=>{
     return await Promise.all(re.map(async(item)=>{
         const curriculumId = item.id
@@ -25,15 +29,33 @@ export const converce=async(re)=>{
     }))
 }
 
+const downloadImage = async (imageUrl, savePath) => {
+    try {
+        const response = await axios({ url: imageUrl, method: "GET", responseType: "stream" });
+        const dir = path.dirname(savePath);
+        if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+        
+        const writer = fs.createWriteStream(savePath);
+        response.data.pipe(writer);
+        await new Promise((resolve, reject) => {
+            writer.on("finish", resolve);
+            writer.on("error", reject);
+        });
+        console.log(`✅ 画像をダウンロードしました: ${savePath}`);
+    } catch (error) {
+        console.error("❌ 画像のダウンロードに失敗しました:", error);
+    }
+};
+
 const getCover=async(curriculumId,pageId,cover)=>{
     let coverUrl = "";
     if(cover){
         if(cover.type==="file"){
-            let exte = cover.file.url.split(".")[1];
+            let exte = path.extname(new URL(cover.file.url).pathname).replace(".", "");
             if(exte===undefined || (exte!=="png" && exte!="jpg")){
                 exte = "png";
             }
-            // await downloadImage(cover.file.url, `./public/notion_data/eachPage/${curriculumId}/pageImageData/cover/${pageId}.${exte}`)
+            await downloadImage(cover.file.url, `./public/notion_data/eachPage/${curriculumId}/pageImageData/cover/${pageId}.${exte}`)
             coverUrl = `/horizon-atlas/notion_data/eachPage/${curriculumId}/pageImageData/cover/${pageId}.${exte}`
             return {coverUrl}
         }else if(cover.type==="external"){
@@ -53,11 +75,11 @@ const getIcon=async(curriculumId,pageId,icon)=>{
     if(icon){
         iconType = icon.type;
         if(iconType==="file"){
-            let exte = icon.file.url.split(".")[1];
+            let exte = path.extname(new URL(icon.file.url).pathname).replace(".", "");
             if(exte===undefined || (exte!=="png" && exte!="jpg"  && exte!="svg")){
                 exte = "png";
             }
-            // await downloadImage(icon.file.url, `./public/notion_data/eachPage/${curriculumId}/pageImageData/icon/${pageId}.${exte}`)
+            await downloadImage(icon.file.url, `./public/notion_data/eachPage/${curriculumId}/pageImageData/icon/${pageId}.${exte}`)
             iconUrl = `/horizon-atlas/notion_data/eachPage/${curriculumId}/pageImageData/icon/${pageId}.${exte}`
             return {iconType,iconUrl}
         }else if(iconType==="external"){
@@ -67,11 +89,11 @@ const getIcon=async(curriculumId,pageId,icon)=>{
             iconUrl = icon.emoji
             return {iconType,iconUrl}
         }else if(iconType==="custom_emoji"){
-            let exte = icon.custom_emoji.url.split(".")[1];
+            let exte = path.extname(new URL(icon.custom_emoji.url).pathname).replace(".", "");
             if(exte===undefined || (exte!=="png" && exte!="jpg"  && exte!="svg")){
                 exte = "png";
             }
-            // await downloadImage(icon.custom_emoji.url, `./public/notion_data/eachPage/${curriculumId}/pageImageData/icon/${pageId}.${exte}`)
+            await downloadImage(icon.custom_emoji.url, `./public/notion_data/eachPage/${curriculumId}/pageImageData/icon/${pageId}.${exte}`)
             iconUrl = `/horizon-atlas/notion_data/eachPage/${curriculumId}/pageImageData/icon/${pageId}.${exte}`
             return {iconType,iconUrl}
         }

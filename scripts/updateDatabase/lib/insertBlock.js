@@ -1,6 +1,6 @@
 import { getChildBlocks, getSinglePageBlock } from "../gateway/notionGateway.js"
 import { upsertPage } from "../gateway/supabaseDBGateway.js"
-import { getPageImage, saveBookmarkData, saveEmbedDataAndgetUrl, saveImageAndgetUrl, saveVideoAndgetUrl } from "./dataSave.js"
+import { getPageCover, getPageIcon, saveBookmarkData, saveEmbedDataAndgetUrl, saveImageAndgetUrl, saveVideoAndgetUrl } from "./dataSave.js"
 
 export async function insertChildren(children,curriculumId){
     for(let i=0;i<children.length;i++){
@@ -14,9 +14,18 @@ async function insertChild(block,curriculumId,pageId,parentId,i,p){
     await insertblock(curriculumId,parentId,block,pageId,type,i + 1)
     if(block.has_children){
         const children = await getChildBlocks(block.id)
-        for(let k=0;k<children.length;k++){
-            await insertChild(children[k],curriculumId,type==="child_page" ? block.id : pageId,block.id,k,`${p}[${k + 1}/${children.length}]`)
-        }
+        await Promise.all(
+            children.map((child, k) =>
+                insertChild(
+                    child,
+                    curriculumId,
+                    type==="child_page" ? block.id : pageId,
+                    block.id,
+                    k,
+                    `${p}[${k + 1}/${children.length}]`
+                )
+            )
+        );
     }
     console.log(p)
 }
@@ -47,7 +56,6 @@ async function insertblock(curriculumId,parentId,data,pageId,type,i){
     }else if(type==="code"){
         await insertCode(curriculumId,pageId,parentId,data,i)
     }else{
-        console.log("data",data)
         await upsertPage(curriculumId,parentId,"_",data.id,data.type,pageId,i)
     }
     // else{
@@ -170,14 +178,15 @@ async function insertPageInfo(curriculumId,pageId,parentId,block,i){
     const res = await getSinglePageBlock(block.id);
 
     // アイコンとカバー画像を取得
-    const pageImage = await getPageImage(curriculumId, res.id, res.cover, res.icon);
+    const pageIcon = await getPageIcon(curriculumId, block.id, res.icon)
+    const pageCover = await getPageCover(curriculumId, block.id, res.cover)
 
     // データを保存
     const data = {
         parent: block.child_page.title,
-        iconType: pageImage.iconType,
-        iconUrl: pageImage.iconUrl,
-        coverUrl: pageImage.coverUrl
+        iconType: pageIcon.iconType,
+        iconUrl: pageIcon.iconUrl,
+        coverUrl: pageCover
     };
 
     await upsertPage(curriculumId, parentId, JSON.stringify(data), block.id, block.type, pageId, i);
@@ -209,8 +218,8 @@ async function insertCallout(curriculumId,pageId,parentId,res,i){
 }
 
 async function insertLinkToPage(curriculumId,pageId,parentId,res,i){
-    const page_id = res.link_to_page.page_id
-    await upsertPage(curriculumId,parentId,JSON.stringify(page_id),res.id,res.type,pageId,i)
+    const pageLink = res.link_to_page.page_id
+    await upsertPage(curriculumId,parentId,pageLink,res.id,res.type,pageId,i)
 }
 
 async function insertCode(curriculumId,pageId,parentId,res,i){

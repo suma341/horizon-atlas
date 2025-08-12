@@ -7,8 +7,9 @@ import { LuCopy } from "react-icons/lu";
 import { FaCheck } from "react-icons/fa6";
 import { MdTypeAndText } from '@/types/textAndType';
 import { parseMarkdown } from '@/lib/parseMD';
-import { assignCssProperties } from '@/lib/assignCssProperties';
+import { assignCss, assignCssProperties } from '@/lib/assignCssProperties';
 import { CodeBlock } from '@/types/code';
+import { usePageLink } from '@/hooks/usePagePush';
 
 type Props = {
     mdBlock: MdBlock;
@@ -28,6 +29,7 @@ export default function Code(props: Props) {
     const { mdBlock } = props;
     const [copied, setCopied] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
+    const { handleClick } = usePageLink()
 
     if(isJsonString(mdBlock.parent)){
         const codeOb:CodeBlock = JSON.parse(mdBlock.parent)
@@ -43,7 +45,7 @@ export default function Code(props: Props) {
                 console.error('Failed to copy:', error);
             }
         };
-        
+
         return (
             <div 
                 id={mdBlock.blockId} 
@@ -68,6 +70,17 @@ export default function Code(props: Props) {
                 <SyntaxHighlighter style={atomOneLight} language={codeOb.language}>
                     {codeContent}
                 </SyntaxHighlighter>
+                <p className='text-sm m-0 text-neutral-600' style={{width: "fit-content", textAlign: "left"}}>
+                    {codeOb.caption.map((text)=>{
+                        const style = assignCss(text)
+                        return text.plain_text.split("\n").map((line,index)=>{
+                            return (<>
+                                <span key={index} style={style} onClick={()=>handleClick(text.href,text.scroll)}>{line}</span>
+                                {text.plain_text.split("\n")[1] && <br />}
+                            </>)
+                        })})}
+                    {codeOb.caption.length===0 && <span className='opacity-0' >a</span>}
+                </p>
             </div>
         );
     }

@@ -15,6 +15,11 @@ export class CurriculumGateway{
                 select:Array.isArray(select) ? select.join(",") : select
             })
         })
+        if(!res.ok){
+            const text = await res.text()
+            console.error("error:",text)
+            throw new Error("error at curriculumGateway")
+        }
         const data = await res.json()
         return data;
     }

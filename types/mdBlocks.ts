@@ -11,3 +11,10 @@ export type ImageBlock_Size={
     width:number;
     height:number;
 }
+
+export type LinkToPageBlock={
+    link: string;
+    title: string;
+    iconType: string;
+    iconUrl: string;
+}

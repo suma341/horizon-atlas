@@ -9,25 +9,22 @@ import Image from 'next/image';
 import Layout from '@/components/Layout/Layout';
 import { CurriculumService } from '@/lib/services/CurriculumService';
 import { PageDataService } from '@/lib/services/PageDataService';
-import useCurriculumIdStore from '@/stores/curriculumIdStore';
-import { IconInfo } from '@/types/iconInfo';
-import useIconStore from '@/stores/iconStore';
 import useUserProfileStore from '@/stores/userProfile';
 import MessageBoard from '@/components/messageBoard/messageBoard';
 import { ParagraphData } from '@/types/paragraph';
 import DynamicHead from '@/components/head/dynamicHead';
+import Loader from '@/components/loader/loader';
 
 type postPath = {
   params: { curriculumId:string,pageId:string }
 }
 
-type Props = {
+type StaticProps = {
   title:string;
   metadata:PostMetaData;
   mdBlocks:MdBlock[];
   pageNavs:pageNav[];
   pageId:string;
-  iconInfo:IconInfo[];
   iconType:string;
   iconUrl:string;
   coverUrl:string;
@@ -58,7 +55,7 @@ export const getStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps = async ({ params }):Promise<{props:StaticProps}> => {
   const pageId = params?.pageId as string;
   const curriculumId = params?.curriculumId as string;
 
@@ -72,31 +69,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     : (singlePost.category ===undefined || singlePost.category === "")
     ? [HOME_NAV, postNav]
     : [HOME_NAV, courseNav, postNav];
-
-  const getListToPage =(blocks:MdBlock[])=>{
-    const link_to_pageBlocks:MdBlock[] = [];
-    for(const block of blocks){
-      if(block.type==="link_to_page"){
-        link_to_pageBlocks.push(block)
-      }
-      if(block.children.length!==0){
-        link_to_pageBlocks.push(...getListToPage(block.children))
-      }
-    }
-    return link_to_pageBlocks;
-  }
-  const listToPageBlocks = getListToPage(mdBlocks);
-  const UrlRegex = /\(([^)]+)\)/g;
-  const iconInfoList:IconInfo[] = [];
-  for(const block of listToPageBlocks){
-    const urlMatch = block.parent.match(UrlRegex);
-    if(urlMatch){
-      const url = urlMatch[0].slice(1,-1)
-      const pageId_ = url.split("/")[4]
-      const iconInfo:IconInfo = await PageDataService.getPageIcon(pageId_)
-      iconInfoList.push(iconInfo)
-    }
-  }
 
   let firstText = "";
   for(const i of mdBlocks){
@@ -121,7 +93,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
           mdBlocks,
           pageNavs:[...pageNavs,...childPageNavs.reverse()],
           pageId,
-          iconInfo:iconInfoList,
           iconUrl:titleAndIcon.iconUrl,
           iconType:titleAndIcon.iconType,
           coverUrl:titleAndIcon.coverUrl,
@@ -136,7 +107,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       mdBlocks,
       pageNavs,
       pageId,
-      iconInfo:iconInfoList,
       iconUrl:singlePost.iconUrl,
       iconType:singlePost.iconType,
       coverUrl:singlePost.coverUrl,
@@ -145,15 +115,14 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   };
 };
 
-const Post =({ metadata, mdBlocks,pageNavs,pageId,iconInfo,title,iconType,iconUrl,coverUrl,firstText}: Props) => {
-  const { setCurriculumId } = useCurriculumIdStore();
-  const { setIcons } = useIconStore();
+const Post =({ metadata, mdBlocks,pageNavs,pageId,title,iconType,iconUrl,coverUrl,firstText}: StaticProps) => {
   const { userProfile } = useUserProfileStore();
-  const [notVisible,setNotVisible] = useState(false)
+  const [notVisible,setNotVisible] = useState(false);
+  const [load,setLoad] = useState(false)
 
-  // const router = useRouter()
   useEffect(()=>{
     try{
+      setLoad(true)
       const usersRole = userProfile?.given_name ?? "体験入部";
       const isVisible = metadata.visibility.some((item)=>item===usersRole)
       if(!isVisible && usersRole!=="幹事長" && usersRole!=="技術部員"){
@@ -162,6 +131,7 @@ const Post =({ metadata, mdBlocks,pageNavs,pageId,iconInfo,title,iconType,iconUr
         setNotVisible(false)
       }
     }finally{
+      setLoad(false)
       if (typeof window !== "undefined" && window.location.hash) {
         const id = window.location.hash.substring(1); // "#" を除去
         const element = document.getElementById(id);
@@ -173,11 +143,6 @@ const Post =({ metadata, mdBlocks,pageNavs,pageId,iconInfo,title,iconType,iconUr
       }
     }
   },[userProfile?.given_name])
-
-  useEffect(()=>{
-    setIcons(iconInfo);
-    setCurriculumId(metadata.curriculumId);
-  },[metadata.curriculumId,pageId,iconInfo])
 
   return (
     <>
@@ -193,7 +158,8 @@ const Post =({ metadata, mdBlocks,pageNavs,pageId,iconInfo,title,iconType,iconUr
         <section className='bg-white pb-10 md:max-w-4xl md:min-w-[670px] px-2' style={coverUrl!=="" ? {} : {paddingTop:"4rem"}}>
           <div>
           {iconType==="" && <Image src={"/horizon-atlas/file_icon.svg"} alt={''} width={20} height={20} className='relative w-20 h-20 m-0' style={coverUrl!=="" ? {top:"-40px",left:"20px"} : {marginBottom:"1.25rem"}} />}
-          {iconType !== "emoji" && iconType!=="" && <Image src={iconUrl} alt={''} width={20} height={20} className='relative w-20 h-20 m-0' style={coverUrl!=="" ? {top:"-40px",left:"20px"} : {marginBottom:"1.25rem"}} />}
+          {iconType !== "emoji" && iconType!=="custom_emoji" && iconType!=="" && <Image src={iconUrl} alt={''} width={20} height={20} className='relative w-20 h-20 m-0' style={coverUrl!=="" ? {top:"-40px",left:"20px"} : {marginBottom:"1.25rem"}} />}
+          {iconType==="custom_emoji" && <img src={iconUrl} alt={''} className='relative w-20 h-20 m-0' style={coverUrl!=="" ? {top:"-40px",left:"20px"} : {marginBottom:"1.25rem"}} />}
           {iconType === "emoji" && <p className='relative w-14 h-14 text-7xl' style={coverUrl!=="" ? {top:"-40px",left:"20px"} : {marginBottom:"1.25rem"}}>{iconUrl}</p>}
             <h2 className='w-full text-3xl font-bold'>{title}</h2>
           </div>
@@ -206,13 +172,14 @@ const Post =({ metadata, mdBlocks,pageNavs,pageId,iconInfo,title,iconType,iconUr
             ))}
           </>}
           <div className='mt-4 font-medium'>
-            <div key={pageId}>
+            {!load && <div key={pageId}>
               {mdBlocks.map((mdBlock)=>{
                   return (
                     <MdBlockComponent mdBlock={mdBlock} depth={0} key={mdBlock.blockId} />
                   )
               })}
-            </div>
+            </div>}
+            {load && <Loader size={80} />}
           </div>
         </section>
       </div>}

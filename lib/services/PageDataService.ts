@@ -1,20 +1,25 @@
 import { PageDataGateway } from "../Gateways/PageDataGateway";
 import { CurriculumGateway } from "../Gateways/CurriculumGateway";
 import { pageNav } from "@/types/pageNav";
-import { CurriculumService } from "./CurriculumService";
 import { IconInfo } from "@/types/iconInfo";
 import { PageBlockData } from "@/types/pageBlockData";
 import { buildTree, processBlock } from "../pageDataToBlock";
 import { PageData } from "@/types/pageData";
+import { MdBlock } from "notion-to-md/build/types";
+import { LinkToPageBlock } from "@/types/mdBlocks";
 
 export class PageDataService{
-    static getPageDataByPageId=async(pageId:string)=>{
+    static getPageDataByPageId=async(pageId:string): Promise<MdBlock[]>=>{
         const pageDatas:PageData[] = await PageDataGateway.get("*",{"pageId":pageId})
+        if (pageDatas.length === 0) return [];
+
         const sortedData = pageDatas.sort((a,b)=>a.order-b.order);
         const mdBlocks = buildTree(sortedData, pageId);
-        const processedData = await Promise.all(mdBlocks.map(async(block)=>{
-            return processBlock(block,mdBlocks);
-        }))
+        const processedData = await Promise.all(
+            mdBlocks.map(async (block) => {
+            return processBlock(block, mdBlocks);
+            })
+        );
         return processedData;
     }
 
@@ -86,25 +91,19 @@ export class PageDataService{
     }
 
     static getPageIcon=async(pageId:string):Promise<IconInfo>=>{
-        const allCurriculum = await CurriculumService.getAllCurriculum()
-        for(const curriculum of allCurriculum){
-            if(curriculum.curriculumId===pageId){
-                return {
-                    iconType:curriculum.iconType,
-                    iconUrl:curriculum.iconUrl,
-                    pageId
-                }
+        const curriculums:{iconType:string,iconUrl:string}[] = await CurriculumGateway.get(["iconType","iconUrl"],{"curriculumId":pageId})
+        if(curriculums.length!==0){
+            return {
+                ...curriculums[0],
+                pageId
             }
         }
-        const blocks:{data:string,pageId:string}[] = await PageDataGateway.get(["data","pageId"],{type:"child_page"})
-        for(const block of blocks){
-            if(block.pageId===pageId){
-                const data:PageBlockData = JSON.parse(block.data)
-                return {
-                    iconType:data.iconType,
-                    iconUrl:data.iconUrl,
-                    pageId
-                }
+        const blocks:{data:string}[] = await PageDataGateway.get(["data"],{type:"child_page","blockId":pageId})
+        if(blocks.length!==0){
+            const data:PageBlockData = JSON.parse(blocks[0].data)
+            return {
+                ...data,
+                pageId
             }
         }
         return {
@@ -112,5 +111,20 @@ export class PageDataService{
             iconUrl:"",
             pageId
         }
+    }
+
+    static getLinkToPageData=async(pageId:string):Promise<LinkToPageBlock>=>{
+        const curriculum:{curriculumId:string,title:string,iconType:string,iconUrl:string}[] = await CurriculumGateway.get(["curriculumId","title","iconType","iconUrl"],{"curriculumId":pageId})
+        if(curriculum.length!==0){
+            const link =`/posts/curriculums/${curriculum[0].curriculumId}/${pageId}`
+            return {link,title:curriculum[0].title,iconUrl:curriculum[0].iconUrl,iconType:curriculum[0].iconType}
+        }
+        const pageData:{curriculumId:string,data:string}[] = await PageDataGateway.get(["data","curriculumId"],{"blockId":pageId})
+        if(pageData.length!==0){
+            const link =`/posts/curriculums/${pageData[0].curriculumId}/${pageId}`
+            const data:PageBlockData = JSON.parse(pageData[0].data)
+            return {link,title:data.parent,iconUrl:data.iconUrl,iconType:data.iconType}
+        }
+        return {link:"",title:"",iconUrl:"",iconType:""}
     }
 }

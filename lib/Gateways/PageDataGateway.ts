@@ -46,6 +46,11 @@ export class PageDataGateway{
                 select:Array.isArray(select) ? select.join(",") : select
             })
         })
+        if(!res.ok){
+            const text = await res.text()
+            console.error("erorr:",text)
+            throw new Error("error at PageData")
+        }
         const data = await res.json()
         return data;
     }

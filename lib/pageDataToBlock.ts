@@ -8,8 +8,10 @@ import { HeadingData } from "@/types/headingData";
 import { TableCell } from "@/types/table_cell";
 import { ParagraphData } from "@/types/paragraph";
 import { findHeadingBlock } from "./findHeadingBlock";
-import { ImageBlock, ImageBlock_Size } from "@/types/mdBlocks";
+import { ImageBlock, ImageBlock_Size, LinkToPageBlock } from "@/types/mdBlocks";
 import { getImageSize } from "./getImageSize";
+import { PageDataGateway } from "./Gateways/PageDataGateway";
+import { PageDataService } from "./services/PageDataService";
 
 export function buildTree(pageData:PageData[], parentId:string):MdBlock[] {
     const mdBlocks:MdBlock[] = pageData
@@ -26,10 +28,10 @@ export function buildTree(pageData:PageData[], parentId:string):MdBlock[] {
 
 export async function processBlock(block:MdBlock,mdBlocks:MdBlock[]):Promise<MdBlock>{
     if(block.type==="link_to_page"){
-        const parent = await rewriteLinkTopage(block.parent);
+        const data:LinkToPageBlock = await PageDataService.getLinkToPageData(block.parent);
         return {
             ...block,
-            parent,
+            parent:JSON.stringify(data),
             children: block.children.length===0 ? [] :
                 await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks)))
         }
@@ -56,8 +58,17 @@ export async function processBlock(block:MdBlock,mdBlocks:MdBlock[]):Promise<MdB
                 await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks)))
         }
     }else if(block.type==="child_page"){
+        const data:{
+            parent:string;
+            iconType:string;
+            iconUrl:string;
+            coverUrl:string;
+            } = JSON.parse(block.parent)
+        const id:{curriculumId:string}[] = await PageDataGateway.get(["curriculumId"],{"blockId":block.blockId})
+        const newData = {...data,curriculumId:id[0].curriculumId}
         return {
             ...block,
+            parent:JSON.stringify(newData),
             children:[]
         }
     }else if(block.type === "callout"){
@@ -200,15 +211,3 @@ async function rewriteLinks(parent: Parent[]) {
     }))
     return rewritedData
   }
-
-async function rewriteLinkTopage(text:string){
-    const regex = /\(([^)]+)\)/g;
-    const match = text.match(regex);
-    if(match){
-        const [fullMatch] = match;
-        const page = await searchPageById(fullMatch.slice(1,-1))
-        text = `[${page.title}](/posts/curriculums/${page.curriculumId}/${page.pageId})`
-    }
-    return text;
-}
-

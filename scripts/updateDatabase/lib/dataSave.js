@@ -30,23 +30,28 @@ const downloadVideo = (url, savePath) => {
         fs.mkdirSync(dirPath, { recursive: true }); 
 
         https.get(url, (res) => {
-        if (res.statusCode !== 200) {
-            reject(new Error(`Failed to get '${url}' (${res.statusCode})`));
-            return;
-        }
+            if (res.statusCode !== 200) {
+                reject(new Error(`Failed to get '${url}' (${res.statusCode})`));
+                return;
+            }
 
-        const fileStream = fs.createWriteStream(savePath);
-        res.pipe(fileStream);
+            const fileStream = fs.createWriteStream(savePath);
+            res.pipe(fileStream);
 
-        fileStream.on("finish", () => {
-            fileStream.close();
-            resolve();
+            fileStream.on("finish", () => {
+                fileStream.close();
+                console.log(`✅ 動画をダウンロードしました: ${savePath}`);
+                resolve();
+            });
+
+            fileStream.on("error", (err) => {
+                console.error("❌ 動画のダウンロードに失敗しました:", error);
+                fs.unlink(savePath, () => reject(err)); 
+            });
+        }).on("error", (err) => {
+            console.error("❌ 動画のダウンロードに失敗しました:", error);
+            reject(err)
         });
-
-        fileStream.on("error", (err) => {
-            fs.unlink(savePath, () => reject(err)); 
-        });
-        }).on("error", (err) => reject(err));
     });
 };
 
@@ -54,10 +59,15 @@ const downloadVideo = (url, savePath) => {
 async function useIframely(url) {
     try{
         const res = await fetch(`https://iframe.ly/api/oembed?url=${url}&api_key=${IFRAMELY_API_KEY}`);
+        if(!res.ok){
+            console.warn("❌ failed with Iframely:",await res.text());
+            return;
+        }
+        console.log("✅ read successfully with Iframely")
         const data = await res.json();
         return data;
     }catch(e){
-        console.warn(e);
+        console.error("❌ error:",e);
         return;
     }
 }
@@ -65,59 +75,71 @@ async function useIframely(url) {
 async function useIflamelyForBookmark(url){
     try{
         const res = await fetch(`https://iframe.ly/api/iframely?url=${url}&api_key=${IFRAMELY_API_KEY}`);
+        if(!res.ok){
+            console.warn("❌ failed with Iframely:",await res.text());
+            return;
+        }
         const data = await res.json();
         return data;
     }catch(e){
-        console.warn(e);
+        console.error("❌ error:",e);
         return;
     }
 }
 
-export const getPageImage=async(curriculumId,pageId,cover,icon)=>{
-    let iconType = "";
-    let iconUrl = "";
+export const getPageIcon=async(curriculumId,pageId,icon)=>{
     if(icon){
-        iconType = icon.type;
+        const iconType = icon.type;
         if(iconType==="file"){
-            let exte = icon.file.url.split(".")[1];
+            let exte = path.extname(new URL(icon.file.url).pathname).replace(".", "");
             if(exte===undefined || (exte!=="png" && exte!="jpg"  && exte!="svg")){
                 exte = "png";
             }
             await downloadImage(icon.file.url, `./public/notion_data/eachPage/${curriculumId}/pageImageData/icon/${pageId}.${exte}`)
-            iconUrl = `/horizon-atlas/notion_data/eachPage/${curriculumId}/pageImageData/icon/${pageId}.${exte}`
+            const iconUrl = `/horizon-atlas/notion_data/eachPage/${curriculumId}/pageImageData/icon/${pageId}.${exte}`
+            return {iconUrl,iconType}
         }else if(iconType==="external"){
-            iconUrl = icon.external.url
+            const iconUrl = icon.external.url
+            return {iconUrl,iconType}
         }else if(iconType==="emoji"){
-            iconUrl = icon.emoji
+            const iconUrl = icon.emoji
+            return {iconUrl,iconType}
         }else if(iconType==="custom_emoji"){
-            let exte = icon.custom_emoji.url.split(".")[1];
+            let exte = path.extname(new URL(icon.custom_emoji.url).pathname).replace(".", "");
             if(exte===undefined || (exte!=="png" && exte!="jpg"  && exte!="svg")){
                 exte = "png";
             }
             await downloadImage(icon.custom_emoji.url, `./public/notion_data/eachPage/${curriculumId}/pageImageData/icon/${pageId}.${exte}`)
-            iconUrl = `/horizon-atlas/notion_data/eachPage/${curriculumId}/pageImageData/icon/${pageId}.${exte}`
+            const iconUrl = `/horizon-atlas/notion_data/eachPage/${curriculumId}/pageImageData/icon/${pageId}.${exte}`
+            return {iconUrl,iconType}
         }
     }
-    let coverUrl = "";
+    return {iconUrl:"",iconType:""}
+}
+
+export const getPageCover=async(curriculumId,pageId,cover)=>{
     if(cover){
         if(cover.type==="file"){
-            let exte = cover.file.url.split(".")[1];
+            let exte = path.extname(new URL(cover.file.url).pathname).replace(".", "");
             if(exte===undefined || (exte!=="png" && exte!="jpg")){
                 exte = "png";
             }
             await downloadImage(cover.file.url, `./public/notion_data/eachPage/${curriculumId}/pageImageData/cover/${pageId}.${exte}`)
-            coverUrl = `/horizon-atlas/notion_data/eachPage/${curriculumId}/pageImageData/cover/${pageId}.${exte}`
+            const coverUrl = `/horizon-atlas/notion_data/eachPage/${curriculumId}/pageImageData/cover/${pageId}.${exte}`
+            return coverUrl
         }else if(cover.type==="external"){
-            coverUrl = cover.external.url
+            const coverUrl = cover.external.url
+            return coverUrl
         }else if(cover.type==="emoji"){
-            coverUrl = cover.emoji
+            const coverUrl = cover.emoji
+            return coverUrl
         }
     }
-    return {iconType,iconUrl,coverUrl}
+    return ""
 }
 
 export const saveImageAndgetUrl=async(curriculumId,blockId,url)=>{
-    let exte = url.split(".")[1];
+    let exte = path.extname(new URL(url).pathname).replace(".", "");
     if(exte===undefined || (exte!=="png" && exte!="jpg" && exte!="gif")){
         exte = "png";
     }
@@ -129,7 +151,7 @@ export const saveImageAndgetUrl=async(curriculumId,blockId,url)=>{
 export const saveVideoAndgetUrl=async(curriculumId,blockId,url)=>{
     let exte = path.extname(new URL(url).pathname).replace(".", "");
     if (!exte) {
-    exte = "mp4";
+        exte = "mp4";
     }
     const downloadUrl = `./public/notion_data/eachPage/${curriculumId}/video/${blockId}.${exte}`
     await downloadVideo(url, downloadUrl);
@@ -162,9 +184,6 @@ export const saveEmbedDataAndgetUrl=async(curriculumId,blockId,url)=>{
             fs.mkdirSync(`./public/notion_data/eachPage/${curriculumId}/iframeData`, { recursive: true });
         }
         const downloadUrl = `./public/notion_data/eachPage/${curriculumId}/iframeData/${blockId}.json`
-        if(embedData.status===403){
-            return ""
-        }
         const saveData = {title:embedData.title, html:embedData.html}
         fs.writeFileSync(downloadUrl, JSON.stringify(saveData, null, 2));
         return downloadUrl.replace("./public","/horizon-atlas")
@@ -178,7 +197,7 @@ export const getCategoryImage=async(categoryId,cover,icon)=>{
     if(icon){
         iconType = icon.type;
         if(iconType==="file"){
-            let exte = icon.file.url.split(".")[1];
+            let exte = path.extname(new URL(icon.file.url).pathname).replace(".", "");
             if(exte===undefined || (exte!=="png" && exte!="jpg"  && exte!="svg")){
                 exte = "png";
             }
@@ -187,14 +206,13 @@ export const getCategoryImage=async(categoryId,cover,icon)=>{
         }else if(iconType==="external"){
             iconUrl = icon.external.url
         }else if(iconType==="emoji"){
-            console.log("icon.emoji",icon.emoji)
             iconUrl = icon.emoji
         }
     }
     let coverUrl = "";
     if(cover){
         if(cover.type==="file"){
-            let exte = cover.file.url.split(".")[1];
+            let exte = path.extname(new URL(cover.file.url).pathname).replace(".", "");
             if(exte===undefined || (exte!=="png" && exte!="jpg")){
                 exte = "png";
             }
