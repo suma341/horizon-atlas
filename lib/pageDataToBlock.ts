@@ -38,9 +38,10 @@ export async function processBlock(block:MdBlock,mdBlocks:MdBlock[]):Promise<MdB
     }else if(block.type==="paragraph" || block.type==="quote" || block.type==="toggle" || block.type==="bulleted_list_item" || block.type==="numbered_list_item"){
         const data:ParagraphData = JSON.parse(block.parent);
         const linkRewrited = await rewriteLinks(data.parent);
+        const mentionRewrited = await rewritePageMention(linkRewrited)
         const parent = {
             ...data,
-            parent:linkRewrited
+            parent:mentionRewrited
         }
         return {
             ...block,
@@ -211,3 +212,25 @@ async function rewriteLinks(parent: Parent[]) {
     }))
     return rewritedData
   }
+
+const rewritePageMention=async(parents:Parent[])=>{
+    const newParents:Parent[] = []
+    for(const p of parents){
+        if(p.mention && p.mention.type==="page" && p.mention.content){
+            const id = p.mention.content.id;
+            const {title,iconType,iconUrl} = await PageDataService.getTitleAndIcon(id)
+            newParents.push({
+                ...p,
+                mention:{
+                    type:"prossedPage",
+                    content:{
+                        title,iconType,iconUrl
+                    }
+                }
+            })
+        }else {
+            newParents.push(p)
+        }
+    }
+    return newParents
+}

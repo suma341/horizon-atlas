@@ -3,6 +3,7 @@ import path from "path";
 import axios from "axios";
 import fs from "fs";
 import https from "https"
+import { getOGP } from "./ogp.js";
 
 const IFRAMELY_API_KEY = process.env.IFRAMELY_API_KEY;
 
@@ -64,21 +65,6 @@ async function useIframely(url) {
             return;
         }
         console.log("✅ read successfully with Iframely")
-        const data = await res.json();
-        return data;
-    }catch(e){
-        console.error("❌ error:",e);
-        return;
-    }
-}
-
-async function useIflamelyForBookmark(url){
-    try{
-        const res = await fetch(`https://iframe.ly/api/iframely?url=${url}&api_key=${IFRAMELY_API_KEY}`);
-        if(!res.ok){
-            console.warn("❌ failed with Iframely:",await res.text());
-            return;
-        }
         const data = await res.json();
         return data;
     }catch(e){
@@ -163,7 +149,7 @@ export const saveBookmarkData=async(curriculumId,blockId,url)=>{
     if(origin==="https://forms.gle" || origin==="https://docs.google.com"){
         return "";
     }else{
-        const bookmarkData = await useIflamelyForBookmark(url);
+        const bookmarkData = await getOGP(url)
         if(bookmarkData){
             if(!fs.existsSync(`./public/notion_data/eachPage/${curriculumId}/ogsData`)){
                 fs.mkdirSync(`./public/notion_data/eachPage/${curriculumId}/ogsData`, { recursive: true });

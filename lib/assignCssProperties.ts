@@ -30,7 +30,7 @@ export function assignCssProperties(mdTypeAndText:MdTypeAndText){
 }
 
 export function assignCss(parent:Parent){
-  const result:React.CSSProperties[] = [];
+  const result:React.CSSProperties[] = [{paddingBottom:"0.125rem",paddingTop:"0.125rem"}];
   const attritube = parent.annotations
   const color = assignColor(attritube.color)
   if(color!==""){

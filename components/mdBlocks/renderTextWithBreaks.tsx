@@ -24,4 +24,4 @@ export function renderTextWithBreaks(text: string, style: React.CSSProperties, o
     }
   
     return elements;
-  }
+}

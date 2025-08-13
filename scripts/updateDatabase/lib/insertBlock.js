@@ -164,6 +164,20 @@ async function insertParagragh(curriculumId,pageId,parentId,res,i){
     const data = {
         color:res[res.type].color,
         parent:res[res.type].rich_text.map((text)=>{
+            const type = text.type
+            if(type==="mention"){
+                const mentionType = text.mention.type
+                const content = text.mention[mentionType]
+                return {
+                    annotations:text.annotations,
+                    plain_text:text.plain_text,
+                    href:text.href,
+                    mention:{
+                        type:mentionType,
+                        content
+                    }
+                }
+            }
             return {
                 annotations:text.annotations,
                 plain_text:text.plain_text,
