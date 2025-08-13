@@ -218,7 +218,8 @@ const rewritePageMention=async(parents:Parent[])=>{
     for(const p of parents){
         if(p.mention && p.mention.type==="page" && p.mention.content){
             const id = p.mention.content.id;
-            const {title,iconType,iconUrl} = await PageDataService.getTitleAndIcon(id)
+            const data = await PageDataService.getTitleAndIcon(id)
+            const {title,iconType,iconUrl}= data ?? ""
             newParents.push({
                 ...p,
                 mention:{

@@ -40,6 +40,11 @@ export class PageDataService{
     }
     
     static getTitleAndIcon=async(pageId:string)=>{
+        const curr:{iconType:string,title:string,iconUrl:string,coverUrl:string}[] = await CurriculumGateway.get(["iconType","title","iconUrl","coverUrl"],{"curriculumId":pageId})
+        if(curr.length!==0){
+            const {title,iconUrl,iconType,coverUrl} = curr[0]
+            return {title,iconUrl,iconType,coverUrl}
+        }
         const data:{data:string}[] = await PageDataGateway.get("data",{blockId:pageId})
         const pageBlockData:PageBlockData = JSON.parse(data[0].data)
         const title = pageBlockData.parent.replace("##","")

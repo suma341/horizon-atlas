@@ -1,6 +1,8 @@
 import { getChildBlocks, getSinglePageBlock } from "../gateway/notionGateway.js"
 import { upsertPage } from "../gateway/supabaseDBGateway.js"
 import { getPageCover, getPageIcon, saveBookmarkData, saveEmbedDataAndgetUrl, saveImageAndgetUrl, saveVideoAndgetUrl } from "./dataSave.js"
+import { canEmbedIframe } from "./embed.js"
+import { getOGPWithPuppeteer } from "./ogp.js"
 
 export async function insertChildren(children,curriculumId){
     for(let i=0;i<children.length;i++){
@@ -94,7 +96,8 @@ async function insertTable(curriculumId,pageId,parentId,res,i){
 
 async function insertBookmark(curriculumId,pageId,parentId,res,i){
     const url = res.bookmark.url;
-    const downloadUrl = await saveBookmarkData(curriculumId,res.id,url)
+    // const downloadUrl = await saveBookmarkData(curriculumId,res.id,url)
+    const ogp = await getOGPWithPuppeteer(url)
     const parent = res.bookmark.caption.map((text)=>{
         return {
             annotations:text.annotations,
@@ -105,14 +108,14 @@ async function insertBookmark(curriculumId,pageId,parentId,res,i){
     const data = {
         parent,
         url,
-        downloadUrl
+        ogp
     }
     await upsertPage(curriculumId,parentId,JSON.stringify(data),res.id,res.type,pageId,i);
 }
 
 async function insertEmbed(curriculumId,pageId,parentId,res,i){
     const url = res.embed.url
-    const downloadUrl = await saveEmbedDataAndgetUrl(curriculumId,res.id,url)
+    const canEmbed = await canEmbedIframe(url)
     const parent = res.embed.caption.map((text)=>{
         return {
             annotations:text.annotations,
@@ -120,12 +123,25 @@ async function insertEmbed(curriculumId,pageId,parentId,res,i){
             href:text.href
         }
     })
-    const data = {
-        parent,
-        url,
-        downloadUrl
+    if(canEmbed){
+        const data = {
+            parent,
+            url,
+            canEmbed
+        }
+        await upsertPage(curriculumId,parentId,JSON.stringify(data),res.id,res.type,pageId,i);
+        return;
     }
-    await upsertPage(curriculumId,parentId,JSON.stringify(data),res.id,res.type,pageId,i);
+    if(!canEmbed){
+        const embedData = await saveEmbedDataAndgetUrl(curriculumId,res.id,url)
+        const data = {
+            parent,
+            url,
+            canEmbed,
+            embedData
+        }
+        await upsertPage(curriculumId,parentId,JSON.stringify(data),res.id,res.type,pageId,i);
+    }
 }
 
 async function insertImage(curriculumId,pageId,parentId,res,i){

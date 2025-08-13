@@ -163,18 +163,14 @@ export const saveBookmarkData=async(curriculumId,blockId,url)=>{
     }
 }
 
-export const saveEmbedDataAndgetUrl=async(curriculumId,blockId,url)=>{
+export const saveEmbedDataAndgetUrl=async(url)=>{
     const embedData = await useIframely(url);
-    if(embedData){
-        if (!fs.existsSync(`./public/notion_data/eachPage/${curriculumId}/iframeData`)) {
-            fs.mkdirSync(`./public/notion_data/eachPage/${curriculumId}/iframeData`, { recursive: true });
-        }
-        const downloadUrl = `./public/notion_data/eachPage/${curriculumId}/iframeData/${blockId}.json`
-        const saveData = {title:embedData.title, html:embedData.html}
-        fs.writeFileSync(downloadUrl, JSON.stringify(saveData, null, 2));
-        return downloadUrl.replace("./public","/horizon-atlas")
+    if(!embedData){
+        return;
     }
-    return "";
+    if(embedData){
+        return embedData
+    }
 }
 
 export const getCategoryImage=async(categoryId,cover,icon)=>{
