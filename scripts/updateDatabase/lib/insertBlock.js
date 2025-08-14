@@ -1,6 +1,6 @@
 import { getChildBlocks, getSinglePageBlock } from "../gateway/notionGateway.js"
 import { upsertPage } from "../gateway/supabaseDBGateway.js"
-import { getPageCover, getPageIcon, saveBookmarkData, saveEmbedDataAndgetUrl, saveImageAndgetUrl, saveVideoAndgetUrl } from "./dataSave.js"
+import { getPageCover, getPageIcon, saveImageAndgetUrl, saveVideoAndgetUrl, useIframely } from "./dataSave.js"
 import { canEmbedIframe } from "./embed.js"
 import { getOGPWithPuppeteer } from "./ogp.js"
 
@@ -60,14 +60,9 @@ async function insertblock(curriculumId,parentId,data,pageId,type,i){
     }else{
         await upsertPage(curriculumId,parentId,"_",data.id,data.type,pageId,i)
     }
-    // else{
-    //     await upsertPage(curriculumId,parentId,data.parent,data.id,data.type,pageId,i);
-    // }
 }
 
-async function insertVideo(res,curriculumId,pageId,i){
-    const parentType = res["type"]
-    const parentId = res["parent"][parentType]
+async function insertVideo(curriculumId,pageId,parentId,res,i){
     const url = res[res.type][res[res.type].type].url
     const downloadUrl = await saveVideoAndgetUrl(curriculumId,res.id,url)
     const parent = res[res.type].caption.map((text)=>{
@@ -96,7 +91,6 @@ async function insertTable(curriculumId,pageId,parentId,res,i){
 
 async function insertBookmark(curriculumId,pageId,parentId,res,i){
     const url = res.bookmark.url;
-    // const downloadUrl = await saveBookmarkData(curriculumId,res.id,url)
     const ogp = await getOGPWithPuppeteer(url)
     const parent = res.bookmark.caption.map((text)=>{
         return {
@@ -133,7 +127,7 @@ async function insertEmbed(curriculumId,pageId,parentId,res,i){
         return;
     }
     if(!canEmbed){
-        const embedData = await saveEmbedDataAndgetUrl(curriculumId,res.id,url)
+       const embedData = await useIframely(url)
         const data = {
             parent,
             url,
