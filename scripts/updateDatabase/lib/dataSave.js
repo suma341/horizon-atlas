@@ -3,7 +3,6 @@ import path from "path";
 import axios from "axios";
 import fs from "fs";
 import https from "https"
-import { getOGP } from "./ogp.js";
 
 const IFRAMELY_API_KEY = process.env.IFRAMELY_API_KEY;
 
@@ -57,7 +56,7 @@ const downloadVideo = (url, savePath) => {
 };
 
 
-async function useIframely(url) {
+export async function useIframely(url) {
     try{
         const res = await fetch(`https://iframe.ly/api/oembed?url=${url}&api_key=${IFRAMELY_API_KEY}`);
         if(!res.ok){
@@ -142,35 +141,6 @@ export const saveVideoAndgetUrl=async(curriculumId,blockId,url)=>{
     const downloadUrl = `./public/notion_data/eachPage/${curriculumId}/video/${blockId}.${exte}`
     await downloadVideo(url, downloadUrl);
     return downloadUrl.replace("./public","/horizon-atlas")
-}
-
-export const saveBookmarkData=async(curriculumId,blockId,url)=>{
-    const origin = new URL(url).origin
-    if(origin==="https://forms.gle" || origin==="https://docs.google.com"){
-        return "";
-    }else{
-        const bookmarkData = await getOGP(url)
-        if(bookmarkData){
-            if(!fs.existsSync(`./public/notion_data/eachPage/${curriculumId}/ogsData`)){
-                fs.mkdirSync(`./public/notion_data/eachPage/${curriculumId}/ogsData`, { recursive: true });
-            }
-            const downloadUrl = `./public/notion_data/eachPage/${curriculumId}/ogsData/${blockId}.json`;
-            fs.writeFileSync(downloadUrl,JSON.stringify(bookmarkData,null,2));
-            return downloadUrl.replace("./public","/horizon-atlas")
-        }else{
-            return "";
-        }
-    }
-}
-
-export const saveEmbedDataAndgetUrl=async(url)=>{
-    const embedData = await useIframely(url);
-    if(!embedData){
-        return;
-    }
-    if(embedData){
-        return embedData
-    }
 }
 
 export const getCategoryImage=async(categoryId,cover,icon)=>{

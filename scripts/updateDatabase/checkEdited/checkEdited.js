@@ -1,5 +1,5 @@
-import { getEditTimeData, getPage } from "../gateway/notionGateway.js";
-import { getPageDataByConditions,getLastEdited,updateLastEdited } from "../gateway/supabaseDBGateway.js"
+import { getEditTimeData } from "../gateway/notionGateway.js";
+import { getLastEdited,updateLastEdited } from "../gateway/supabaseDBGateway.js"
 
 // const isDatabaseEdited=async(current)=>{
 //     const latest = await getLastEdited("*",{"curriculum":"0"});
@@ -8,29 +8,6 @@ import { getPageDataByConditions,getLastEdited,updateLastEdited } from "../gatew
 //     await updateLastEdited(current,"0");
 //     return current !== latest[0].last_edited
 // }
-
-const getAllChildId=async(curriculumId)=>{
-    const data = await getPageDataByConditions("*",{"curriculumId":curriculumId,"type":"child_page"})
-    return data
-}
-
-const latestTime=(times)=>{
-    const latest = times.reduce((latestSoFar, current) => {
-        return new Date(current) > new Date(latestSoFar) ? current : latestSoFar;
-    });
-    return latest;
-}
-
-const getCurriculumEditedTime = async(Last_edited_time,curriculumId)=>{
-    const editedTimes = [Last_edited_time];
-    const pages = await getAllChildId(curriculumId)
-    for(const page of pages){
-        const pageData = await getPage(page.pageId)
-        editedTimes.push(pageData.last_edited_time)
-    }
-    const latestTime_ = latestTime(editedTimes)
-    return latestTime_;
-}
 
 export const getCurrentData=async()=>{
     // console.log("データベースの更新確認中...")
