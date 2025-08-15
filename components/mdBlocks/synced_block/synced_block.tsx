@@ -8,6 +8,7 @@ type Props={
 }
 
 function Synced_block({mdBlock,depth}:Props) {
+  // const isOriginal = mdBlock.parent==="original" || mdBlock.parent==="_"
   return (
     <div id={mdBlock.blockId}>
         {mdBlock.children.map((child)=>(

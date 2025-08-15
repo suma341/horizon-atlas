@@ -10,7 +10,6 @@ import { ParagraphData } from "@/types/paragraph";
 import { findHeadingBlock } from "./findHeadingBlock";
 import { ImageBlock, ImageBlock_Size, LinkToPageBlock } from "@/types/mdBlocks";
 import { getImageSize } from "./getImageSize";
-import { PageDataGateway } from "./Gateways/PageDataGateway";
 import { PageDataService } from "./services/PageDataService";
 
 export function buildTree(pageData:PageData[], parentId:string):MdBlock[] {
@@ -26,14 +25,14 @@ export function buildTree(pageData:PageData[], parentId:string):MdBlock[] {
     return mdBlocks;
 }
 
-export async function processBlock(block:MdBlock,mdBlocks:MdBlock[]):Promise<MdBlock>{
+export async function processBlock(block:MdBlock,mdBlocks:MdBlock[],curriculumId:string):Promise<MdBlock>{
     if(block.type==="link_to_page"){
         const data:LinkToPageBlock = await PageDataService.getLinkToPageData(block.parent);
         return {
             ...block,
             parent:JSON.stringify(data),
             children: block.children.length===0 ? [] :
-                await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks)))
+                await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks,curriculumId)))
         }
     }else if(block.type==="paragraph" || block.type==="quote" || block.type==="toggle" || block.type==="bulleted_list_item" || block.type==="numbered_list_item"){
         const data:ParagraphData = JSON.parse(block.parent);
@@ -47,7 +46,7 @@ export async function processBlock(block:MdBlock,mdBlocks:MdBlock[]):Promise<MdB
             ...block,
             parent:JSON.stringify(parent),
             children: block.children.length===0 ? [] :
-                await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks)))
+                await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks,curriculumId)))
         }
     }else if(block.type==="table_of_contents"){
         const headingList = findHeadingBlock(mdBlocks);
@@ -56,7 +55,7 @@ export async function processBlock(block:MdBlock,mdBlocks:MdBlock[]):Promise<MdB
             ...block,
             parent:stringfyData,
             children: block.children.length===0 ? [] :
-                await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks)))
+                await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks,curriculumId)))
         }
     }else if(block.type==="child_page"){
         const data:{
@@ -65,13 +64,13 @@ export async function processBlock(block:MdBlock,mdBlocks:MdBlock[]):Promise<MdB
             iconUrl:string;
             coverUrl:string;
             } = JSON.parse(block.parent)
-        const id:{curriculumId:string}[] = await PageDataGateway.get(["curriculumId"],{"blockId":block.blockId})
-        const newData = {...data,curriculumId:id[0].curriculumId}
-        return {
-            ...block,
-            parent:JSON.stringify(newData),
-            children:[]
-        }
+            const newData = {...data,curriculumId}
+            return {
+                ...block,
+                parent:JSON.stringify(newData),
+                children:[]
+            }
+        // }
     }else if(block.type === "callout"){
         const data:CalloutData = JSON.parse(block.parent);
         const linkRewrited = await rewriteLinks(data.parent);
@@ -83,7 +82,7 @@ export async function processBlock(block:MdBlock,mdBlocks:MdBlock[]):Promise<MdB
             ...block,
             parent:JSON.stringify(parent),
             children: block.children.length===0 ? [] :
-                await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks)))
+                await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks,curriculumId)))
         }
     }else if(block.type==='heading_1' || block.type==='heading_2' || block.type==='heading_3'){
         const data:HeadingData = JSON.parse(block.parent);
@@ -96,7 +95,7 @@ export async function processBlock(block:MdBlock,mdBlocks:MdBlock[]):Promise<MdB
             ...block,
             parent:JSON.stringify(parent),
             children: block.children.length===0 ? [] :
-                await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks)))
+                await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks,curriculumId)))
         }
     }else if(block.type==="table_row"){
         const data:TableCell[][] = JSON.parse(block.parent)
@@ -117,7 +116,7 @@ export async function processBlock(block:MdBlock,mdBlocks:MdBlock[]):Promise<MdB
             ...block,
             parent:JSON.stringify(processed),
             children:block.children.length===0 ? [] :
-                await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks)))
+                await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks,curriculumId)))
         }
     }else if(block.type==="image"){
         const data:ImageBlock = JSON.parse(block.parent)
@@ -127,13 +126,35 @@ export async function processBlock(block:MdBlock,mdBlocks:MdBlock[]):Promise<MdB
             ...block,
             parent:JSON.stringify(addSizeData),
             children: block.children.length===0 ? [] :
-                await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks)))
+                await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks,curriculumId)))
+        }
+    }else if(block.type==="synced_block"){
+        const data = block.parent;
+        if(data==="original"){
+            return {
+                ...block,
+                children: block.children.length===0 ? [] :
+                        await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks,curriculumId)))
+            };
+        }else{
+            const children = await getChildren(data)
+            const mdBlocks = buildTree(children,data)
+            const processedData = await Promise.all(
+                mdBlocks.map(async(block) => {
+                    return processBlock(block, mdBlocks,curriculumId);
+                })
+            );
+            const rewrited = processedData.length===0 ? [] : await rewriteBlockId(processedData,block.blockId)
+            return {
+                ...block,
+                children:rewrited
+            }
         }
     }
     return {
         ...block,
         children: block.children.length===0 ? [] :
-                await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks)))
+                await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks,curriculumId)))
     };
 }
 
@@ -234,4 +255,27 @@ const rewritePageMention=async(parents:Parent[])=>{
         }
     }
     return newParents
+}
+
+const getChildren=async(blockId:string):Promise<PageData[]>=>{
+    const children = await PageDataService.getChildBlock(blockId)
+    if(children.length===0) return [];
+    const sortedData = children.sort((a,b)=>a.order-b.order);
+    const result:PageData[] = [...sortedData];
+    for(const child of children){
+        const r = await getChildren(child.blockId)
+        result.push(...r)
+    }
+    return result
+}
+
+const rewriteBlockId=async(blocks:MdBlock[],blockId:string)=>{
+    return await Promise.all(blocks.map(async(b):Promise<MdBlock>=>{
+        const newId = `${b.blockId}-synced-${blockId}`
+        return {
+            ...b,
+            blockId:newId,
+            children:b.children.length===0 ? [] : await rewriteBlockId(b.children,blockId)
+        }
+    }))
 }
