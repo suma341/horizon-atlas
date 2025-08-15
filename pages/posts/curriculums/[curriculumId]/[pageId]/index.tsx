@@ -59,7 +59,7 @@ export const getStaticProps: GetStaticProps = async ({ params }):Promise<{props:
   const pageId = params?.pageId as string;
   const curriculumId = params?.curriculumId as string;
 
-  const mdBlocks:MdBlock[] = await PageDataService.getPageDataByPageId(pageId);
+  const mdBlocks:MdBlock[] = await PageDataService.getPageDataByPageId(pageId,curriculumId);
   const singlePost:PostMetaData = await CurriculumService.getCurriculumById(curriculumId);
 
   const courseNav: pageNav = { title: singlePost.category ? singlePost.category : "", link: `/posts/course/${singlePost.category}` };

@@ -15,19 +15,21 @@ async function insertChild(block,curriculumId,pageId,parentId,i,p){
     console.log(`insert ${type}...`)
     await insertblock(curriculumId,parentId,block,pageId,type,i + 1)
     if(block.has_children){
-        const children = await getChildBlocks(block.id)
-        await Promise.all(
-            children.map((child, k) =>
-                insertChild(
-                    child,
-                    curriculumId,
-                    type==="child_page" ? block.id : pageId,
-                    block.id,
-                    k,
-                    `${p}[${k + 1}/${children.length}]`
+        if((type==="synced_block" && block.synced_block.synced_from===null) || type!=="synced_block"){
+            const children = await getChildBlocks(block.id)
+            await Promise.all(
+                children.map((child, k) =>
+                    insertChild(
+                        child,
+                        curriculumId,
+                        type==="child_page" ? block.id : pageId,
+                        block.id,
+                        k,
+                        `${p}[${k + 1}/${children.length}]`
+                    )
                 )
-            )
-        );
+            );
+        }
     }
     console.log(p)
 }
@@ -57,6 +59,8 @@ async function insertblock(curriculumId,parentId,data,pageId,type,i){
         await insertLinkToPage(curriculumId,pageId,parentId,data,i)
     }else if(type==="code"){
         await insertCode(curriculumId,pageId,parentId,data,i)
+    }else if(type==="synced_block"){
+        await insertSynced_block(curriculumId,pageId,parentId,data,i)
     }else{
         await upsertPage(curriculumId,parentId,"_",data.id,data.type,pageId,i)
     }
@@ -262,4 +266,15 @@ async function insertCode(curriculumId,pageId,parentId,res,i){
         caption
     }
     await upsertPage(curriculumId,parentId,JSON.stringify(data),res.id,res.type,pageId,i)
+}
+
+async function insertSynced_block(curriculumId,pageId,parentId,res,i){
+    const syncedFrom = res.synced_block.synced_from
+    if(syncedFrom!==null){
+        const type = syncedFrom.type;
+        const from = syncedFrom[type];
+        await upsertPage(curriculumId,parentId,from,res.id,res.type,pageId,i)
+    }else{
+        await upsertPage(curriculumId,parentId,"original",res.id,res.type,pageId,i)
+    }
 }

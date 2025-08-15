@@ -9,7 +9,7 @@ import { MdBlock } from "notion-to-md/build/types";
 import { LinkToPageBlock } from "@/types/mdBlocks";
 
 export class PageDataService{
-    static getPageDataByPageId=async(pageId:string): Promise<MdBlock[]>=>{
+    static getPageDataByPageId=async(pageId:string,curriculumId:string): Promise<MdBlock[]>=>{
         const pageDatas:PageData[] = await PageDataGateway.get("*",{"pageId":pageId})
         if (pageDatas.length === 0) return [];
 
@@ -17,7 +17,7 @@ export class PageDataService{
         const mdBlocks = buildTree(sortedData, pageId);
         const processedData = await Promise.all(
             mdBlocks.map(async (block) => {
-            return processBlock(block, mdBlocks);
+            return processBlock(block, mdBlocks,curriculumId);
             })
         );
         return processedData;
@@ -131,5 +131,11 @@ export class PageDataService{
             return {link,title:data.parent,iconUrl:data.iconUrl,iconType:data.iconType}
         }
         return {link:"",title:"",iconUrl:"",iconType:""}
+    }
+
+    static getChildBlock=async(blockId:string)=>{
+        const data:PageData[] = await PageDataGateway.get("*",{"parentId":blockId})
+        if (data.length === 0) return [];
+        return data;
     }
 }

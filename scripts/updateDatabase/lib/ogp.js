@@ -1,15 +1,5 @@
-import ogs from 'open-graph-scraper';
+// import ogs from 'open-graph-scraper';
 import puppeteer from 'puppeteer';
-
-export async function getOGP(url) {
-  try {
-    const options = { url };
-    const { result } = await ogs(options);
-    return result
-  } catch (error) {
-    console.error(error);
-  }
-}
 
 async function isValidUrl(url) {
     try {
@@ -37,14 +27,14 @@ export async function getOGPWithPuppeteer(url) {
     const limit = 3
     let b = false;
     for(let i=0;i<limit;i++){
-        await page.waitForSelector('meta[property="og:title"]', { timeout: 8000 + (i * 1000) }).then(()=>{
+        await page.waitForSelector('meta[property="og:title"]', { timeout: 8000 }).then(()=>{
             b = true
             console.log("✅ タグが見つかりました")
         }).catch(() => {
             if(i ===3){
                 console.log('❌ OGPタグが見つかりませんでした');
             }else{
-                console.log('OGPタグが見つかりませんでした\n',`${8 + i}秒待ちます`)
+                console.log('OGPタグが見つかりませんでした\n',`${8}秒待ちます`)
             }
         });
         if(b){
@@ -65,11 +55,12 @@ export async function getOGPWithPuppeteer(url) {
 
     await browser.close();
 
-    let iconUrl = ogp.iconUrl
+    let iconUrl = ogp.icon
     if(ogp.icon && !ogp.icon.startsWith("https://")){
         const domain = new URL(url).origin
         const fullURL = `${domain}${iconUrl}`
-        if(isValidUrl(fullURL)){
+        const isValid = await isValidUrl(fullURL)
+        if(isValid){
             iconUrl = fullURL
         }else{
             iconUrl = null
@@ -79,7 +70,8 @@ export async function getOGPWithPuppeteer(url) {
     if(ogp.image && !ogp.image.startsWith("https://")){
         const domain = new URL(url).origin;
         const fullURL = `${domain}${imageUrl}`
-        if(isValidUrl(fullURL)){
+        const isValid = await isValidUrl(fullURL)
+        if(isValid){
             imageUrl = fullURL
         }else{
             imageUrl = null
