@@ -3,6 +3,8 @@ import { upsertPage } from "../gateway/supabaseDBGateway.js"
 import { getPageCover, getPageIcon, saveImageAndgetUrl, saveVideoAndgetUrl, useIframely } from "./dataSave.js"
 import { canEmbedIframe } from "./embed.js"
 import { getOGPWithPuppeteer } from "./ogp.js"
+import { processParent } from "./processParent.js"
+import { searchCurriculum } from "./searchBlock.js"
 
 export async function insertChildren(children,curriculumId){
     for(let i=0;i<children.length;i++){
@@ -69,13 +71,9 @@ async function insertblock(curriculumId,parentId,data,pageId,type,i){
 async function insertVideo(curriculumId,pageId,parentId,res,i){
     const url = res[res.type][res[res.type].type].url
     const downloadUrl = await saveVideoAndgetUrl(curriculumId,res.id,url)
-    const parent = res[res.type].caption.map((text)=>{
-        return {
-            annotations:text.annotations,
-            plain_text:text.plain_text,
-            href:text.href
-        }
-    })
+    const parent = await Promise.all(res[res.type].caption.map(async(text)=>{
+        return await processParent(text);
+    }))
     const data = {
         parent,
         url:downloadUrl
@@ -96,13 +94,9 @@ async function insertTable(curriculumId,pageId,parentId,res,i){
 async function insertBookmark(curriculumId,pageId,parentId,res,i){
     const url = res.bookmark.url;
     const ogp = await getOGPWithPuppeteer(url)
-    const parent = res.bookmark.caption.map((text)=>{
-        return {
-            annotations:text.annotations,
-            plain_text:text.plain_text,
-            href:text.href
-        }
-    })
+    const parent = await Promise.all(res.bookmark.caption.map(async(text)=>{
+        return await processParent(text)
+    }))
     const data = {
         parent,
         url,
@@ -114,13 +108,9 @@ async function insertBookmark(curriculumId,pageId,parentId,res,i){
 async function insertEmbed(curriculumId,pageId,parentId,res,i){
     const url = res.embed.url
     const canEmbed = await canEmbedIframe(url)
-    const parent = res.embed.caption.map((text)=>{
-        return {
-            annotations:text.annotations,
-            plain_text:text.plain_text,
-            href:text.href
-        }
-    })
+    const parent = await Promise.all(res.embed.caption.map(async(text)=>{
+        return await processParent(text)
+    }))
     if(canEmbed){
         const data = {
             parent,
@@ -145,13 +135,9 @@ async function insertEmbed(curriculumId,pageId,parentId,res,i){
 async function insertImage(curriculumId,pageId,parentId,res,i){
     const url = res[res.type][res[res.type].type].url
     const downloadUrl = await saveImageAndgetUrl(curriculumId,res.id,url)
-    const parent = res[res.type].caption.map((text)=>{
-        return {
-            annotations:text.annotations,
-            plain_text:text.plain_text,
-            href:text.href
-        }
-    })
+    const parent = await Promise.all(res[res.type].caption.map(async(text)=>{
+        return await processParent(text)
+    }))
     const data = {
         parent,
         url:downloadUrl
@@ -161,13 +147,9 @@ async function insertImage(curriculumId,pageId,parentId,res,i){
 
 async function insertHeading(curriculumId,pageId,parentId,res,i){
     const data = {
-        parent:res[res.type].rich_text.map((text)=>{
-            return {
-                annotations:text.annotations,
-                plain_text:text.plain_text,
-                href:text.href
-            }
-        }),
+        parent:await Promise.all(res[res.type].rich_text.map(async(text)=>{
+            return await processParent(text);
+        })),
         color:res[res.type].color,
         is_toggleable:res[res.type].is_toggleable
     }
@@ -177,27 +159,9 @@ async function insertHeading(curriculumId,pageId,parentId,res,i){
 async function insertParagragh(curriculumId,pageId,parentId,res,i){
     const data = {
         color:res[res.type].color,
-        parent:res[res.type].rich_text.map((text)=>{
-            const type = text.type
-            if(type==="mention"){
-                const mentionType = text.mention.type
-                const content = text.mention[mentionType]
-                return {
-                    annotations:text.annotations,
-                    plain_text:text.plain_text,
-                    href:text.href,
-                    mention:{
-                        type:mentionType,
-                        content
-                    }
-                }
-            }
-            return {
-                annotations:text.annotations,
-                plain_text:text.plain_text,
-                href:text.href
-            }
-        })
+        parent:await Promise.all(res[res.type].rich_text.map(async(text)=>{
+            return await processParent(text);
+        }))
     }
     await upsertPage(curriculumId,parentId,JSON.stringify(data),res.id,res.type,pageId,i);
 }
@@ -221,13 +185,9 @@ async function insertPageInfo(curriculumId,pageId,parentId,block,i){
 }
 
 async function insertCallout(curriculumId,pageId,parentId,res,i){
-    const parent = res.callout.rich_text.map((text)=>{
-        return {
-            annotations:text.annotations,
-            plain_text:text.plain_text,
-            href:text.href
-        }
-    })
+    const parent = await Promise.all(res.callout.rich_text.map(async(text)=>{
+        return await processParent(text)
+    }))
     if(res.icon && res.icon.emoji){
         const data = {
             icon:res.callout.icon,
@@ -247,19 +207,29 @@ async function insertCallout(curriculumId,pageId,parentId,res,i){
 
 async function insertLinkToPage(curriculumId,pageId,parentId,res,i){
     const pageLink = res.link_to_page.page_id
-    await upsertPage(curriculumId,parentId,pageLink,res.id,res.type,pageId,i)
+    const curriculum = await searchCurriculum(pageLink)
+    if(!curriculum){
+        await upsertPage(curriculumId,parentId,pageLink,res.id,res.type,pageId,i)
+        return;
+    }
+    const link = `/posts/curriculums/${curriculum}/${pageLink}`
+    const pageData = await getSinglePageBlock(pageLink)
+    const icon = await getPageIcon(curriculum,pageLink,pageData.icon,true)
+    const data = {
+        link,
+        iconUrl:icon.iconUrl,
+        iconType:icon.iconType,
+        title:pageData.title
+    }
+    await upsertPage(curriculumId,parentId,data,res.id,res.type,pageId,i)
 }
 
 async function insertCode(curriculumId,pageId,parentId,res,i){
     const language = res.code.language
     const rich_text = res.code.rich_text.length===0 ? [] : res.code.rich_text.map((i)=>i.plain_text)
-    const caption = res.code.caption.map((text)=>{
-        return {
-            annotations:text.annotations,
-            plain_text:text.plain_text,
-            href:text.href
-        }
-    })
+    const caption = await Promise.all(res.code.caption.map(async(text)=>{
+        return await processParent(text)
+    }))
     const data ={
         language,
         parent:rich_text,

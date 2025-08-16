@@ -23,7 +23,7 @@ export const getAllPageData=async()=>{
             },
         }
     })
-    return await data.results;
+    return data.results;
 }
 
 export const getDatabaseData=async()=>{
@@ -124,9 +124,13 @@ export const getSinglePageBlock = async (pageId, retries=10) => {
                 page_id: pageId,
               });
             const date = new Date(response.last_edited_time)
+            const parent = response.parent
+            const title = response.properties.title.title[0].plain_text
             return {
                 icon:response.icon,
                 cover:response.cover,
+                parent,
+                title,
                 date:date.toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" })
             };
         } catch (error) {
@@ -160,6 +164,8 @@ export const getSingleblock = async (blockId, retries = 5) => {
                 console.log("code")
                 console.warn(`Rate limit exceeded. Retrying in ${10} seconds...`);
                 await wait(1000)
+            }else if(error.code==="object_not_found"){
+                return undefined
             }else {
                 throw error;
             }
