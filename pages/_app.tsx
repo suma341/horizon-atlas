@@ -20,6 +20,7 @@ function App({ Component, pageProps }:AppProps) {
     const checkUser=async()=>{
       try{
         setLoading(true)
+        if(!router.asPath.startsWith("/posts") && !router.asPath.startsWith("/user")) return;
         if (auth.currentUser) {
           if(!userProfile){
             const user = await fetchUser(auth.currentUser.uid);
@@ -38,23 +39,22 @@ function App({ Component, pageProps }:AppProps) {
       }
     }
     checkUser()
-  },[auth.currentUser])
+  },[auth.currentUser,authLoading])
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setDotCount(prev => (prev + 1) % 4) 
-    }, 1000)
+    if(loading || authLoading){
+      const interval = setInterval(() => {
+        setDotCount(prev => (prev + 1) % 4) 
+      }, 1000)
 
-    return () => clearInterval(interval) 
-  }, [])
+      return () => clearInterval(interval) 
+      }
+  }, [loading])
 
-  if(!authLoading && !auth.currentUser){
-    <>
-      <LoginModal />
-      <div className="opacity-0">
-        <Component {...pageProps} /> 
-      </div>
-    </>
+  if(!router.asPath.startsWith("/posts") && !router.asPath.startsWith("/user")){ 
+    return (
+      <Component {...pageProps} /> // ログインの必要ないページ
+    );
   }
 
   if(authLoading || loading){
@@ -68,6 +68,15 @@ function App({ Component, pageProps }:AppProps) {
         </div>
       </div>
     )
+  }
+
+  if(!authLoading && !auth.currentUser){
+    return (<>
+      <LoginModal /> 
+      <div className="opacity-0 z-0">
+        <Component {...pageProps} /> 
+      </div>
+    </>)
   }
 
   return (
