@@ -72,7 +72,7 @@ export async function useIframely(url) {
     }
 }
 
-export const getPageIcon=async(curriculumId,pageId,icon)=>{
+export const getPageIcon=async(curriculumId,pageId,icon,notDownload)=>{
     if(icon){
         const iconType = icon.type;
         if(iconType==="file"){
@@ -80,7 +80,7 @@ export const getPageIcon=async(curriculumId,pageId,icon)=>{
             if(exte===undefined || (exte!=="png" && exte!="jpg"  && exte!="svg")){
                 exte = "png";
             }
-            await downloadImage(icon.file.url, `./public/notion_data/eachPage/${curriculumId}/pageImageData/icon/${pageId}.${exte}`)
+            if(!notDownload) await downloadImage(icon.file.url, `./public/notion_data/eachPage/${curriculumId}/pageImageData/icon/${pageId}.${exte}`)
             const iconUrl = `/horizon-atlas/notion_data/eachPage/${curriculumId}/pageImageData/icon/${pageId}.${exte}`
             return {iconUrl,iconType}
         }else if(iconType==="external"){
@@ -94,7 +94,7 @@ export const getPageIcon=async(curriculumId,pageId,icon)=>{
             if(exte===undefined || (exte!=="png" && exte!="jpg"  && exte!="svg")){
                 exte = "png";
             }
-            await downloadImage(icon.custom_emoji.url, `./public/notion_data/eachPage/${curriculumId}/pageImageData/icon/${pageId}.${exte}`)
+            if(!notDownload) await downloadImage(icon.custom_emoji.url, `./public/notion_data/eachPage/${curriculumId}/pageImageData/icon/${pageId}.${exte}`)
             const iconUrl = `/horizon-atlas/notion_data/eachPage/${curriculumId}/pageImageData/icon/${pageId}.${exte}`
             return {iconUrl,iconType}
         }

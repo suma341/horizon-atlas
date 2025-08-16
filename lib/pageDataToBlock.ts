@@ -27,20 +27,27 @@ export function buildTree(pageData:PageData[], parentId:string):MdBlock[] {
 
 export async function processBlock(block:MdBlock,mdBlocks:MdBlock[],curriculumId:string):Promise<MdBlock>{
     if(block.type==="link_to_page"){
-        const data:LinkToPageBlock = await PageDataService.getLinkToPageData(block.parent);
-        return {
-            ...block,
-            parent:JSON.stringify(data),
-            children: block.children.length===0 ? [] :
-                await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks,curriculumId)))
+        if(!isObject(block.parent)){
+            const data:LinkToPageBlock = await PageDataService.getLinkToPageData(block.parent);
+            return {
+                ...block,
+                parent:JSON.stringify(data),
+                children: block.children.length===0 ? [] :
+                    await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks,curriculumId)))
+            }
+        }else{
+            return {
+                ...block,
+                children: block.children.length===0 ? [] :
+                    await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks,curriculumId)))
+            }
         }
     }else if(block.type==="paragraph" || block.type==="quote" || block.type==="toggle" || block.type==="bulleted_list_item" || block.type==="numbered_list_item"){
         const data:ParagraphData = JSON.parse(block.parent);
         const linkRewrited = await rewriteLinks(data.parent);
-        const mentionRewrited = await rewritePageMention(linkRewrited)
         const parent = {
             ...data,
-            parent:mentionRewrited
+            parent:linkRewrited
         }
         return {
             ...block,
@@ -64,13 +71,12 @@ export async function processBlock(block:MdBlock,mdBlocks:MdBlock[],curriculumId
             iconUrl:string;
             coverUrl:string;
             } = JSON.parse(block.parent)
-            const newData = {...data,curriculumId}
-            return {
-                ...block,
-                parent:JSON.stringify(newData),
-                children:[]
-            }
-        // }
+        const newData = {...data,curriculumId}
+        return {
+            ...block,
+            parent:JSON.stringify(newData),
+            children:[]
+        }
     }else if(block.type === "callout"){
         const data:CalloutData = JSON.parse(block.parent);
         const linkRewrited = await rewriteLinks(data.parent);
@@ -138,6 +144,12 @@ export async function processBlock(block:MdBlock,mdBlocks:MdBlock[],curriculumId
             };
         }else{
             const children = await getChildren(data)
+            if(children.length===0){
+                return {
+                    ...block,
+                    children:[]
+                }
+            }
             const mdBlocks = buildTree(children,data)
             const processedData = await Promise.all(
                 mdBlocks.map(async(block) => {
@@ -161,6 +173,9 @@ export async function processBlock(block:MdBlock,mdBlocks:MdBlock[],curriculumId
 async function rewriteLinks(parent: Parent[]) {
     const rewritedData = await Promise.all(parent.map(async(data)=>{
         if(data.href){
+            if(data.href.startsWith("/posts/curriculums")){
+                return data
+            }
             if (data.href.startsWith("https://") || data.href.startsWith("http://")){
                 if(new URL(data.href).origin==="https://www.notion.so"){
                     const pageHref = "/" + data.href.split("/")[3]
@@ -232,30 +247,30 @@ async function rewriteLinks(parent: Parent[]) {
         }
     }))
     return rewritedData
-  }
-
-const rewritePageMention=async(parents:Parent[])=>{
-    const newParents:Parent[] = []
-    for(const p of parents){
-        if(p.mention && p.mention.type==="page" && p.mention.content){
-            const id = p.mention.content.id;
-            const data = await PageDataService.getTitleAndIcon(id)
-            const {title,iconType,iconUrl}= data ?? ""
-            newParents.push({
-                ...p,
-                mention:{
-                    type:"prossedPage",
-                    content:{
-                        title,iconType,iconUrl
-                    }
-                }
-            })
-        }else {
-            newParents.push(p)
-        }
-    }
-    return newParents
 }
+
+// const rewritePageMention=async(parents:Parent[])=>{
+//     const newParents:Parent[] = []
+//     for(const p of parents){
+//         if(p.mention && p.mention.type==="page" && p.mention.content){
+//             const id = p.mention.content.id;
+//             const data = await PageDataService.getTitleAndIcon(id)
+//             const {title,iconType,iconUrl}= data ?? ""
+//             newParents.push({
+//                 ...p,
+//                 mention:{
+//                     type:"prossedPage",
+//                     content:{
+//                         title,iconType,iconUrl
+//                     }
+//                 }
+//             })
+//         }else {
+//             newParents.push(p)
+//         }
+//     }
+//     return newParents
+// }
 
 const getChildren=async(blockId:string):Promise<PageData[]>=>{
     const children = await PageDataService.getChildBlock(blockId)
@@ -278,4 +293,13 @@ const rewriteBlockId=async(blocks:MdBlock[],blockId:string)=>{
             children:b.children.length===0 ? [] : await rewriteBlockId(b.children,blockId)
         }
     }))
+}
+
+const isObject=async(data:string)=>{
+    try{
+        await JSON.parse(data)
+        return true
+    }catch{
+        return false
+    }
 }
