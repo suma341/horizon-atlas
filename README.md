@@ -1,37 +1,38 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# HorizonAtlas
+![home](./public/a.png)
 
-## Getting Started
+## 📘 アプリ概要
+HorizonAtlas は、龍谷大学プログラミング部 Horizon の学習カリキュラムをまとめたアプリです。
+カリキュラムの内容は Notion に書かれており、Notion API を使って読み込み、SSG（静的サイト生成） でビルドしています。
+つまり、カリキュラムは Notion上で編集 → このアプリで自動的に公開 される仕組みになっています。
 
-First, run the development server:
+## ✨ 主な機能
+- カリキュラムをわかりやすく整理して表示
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- キーワード検索 / タグ検索によるカリキュラム検索
+
+- 毎日午前9時にカリキュラムを自動更新
+
+- ユーザーごとの進捗情報を取得・表示
+
+## 🌐 公開URL
+👉 [https://ryukoku-horizon.github.io/horizon-atlas](https://ryukoku-horizon.github.io/horizon-atlas)
+
+## 🛠 使用技術
+Next.js
+
+## 🚀 始め方
+- ビルド
+```
+npm run build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- 起動
+```
+npm start
+```
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-### Deployed URL
-You can access the deployed application here: [https://ryukoku-horizon.github.io/horizon-atlas](https://ryukoku-horizon.github.io/horizon-atlas)
+- アクセス
+```
+http://localhost:3000/horizon-atlas
+```
