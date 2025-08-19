@@ -1,5 +1,5 @@
 # HorizonAtlas
-![home](./public/a.png)
+![home](https://ryukoku-horizon.github.io/horizon-atlas/a.png)
 
 ## 📘 アプリ概要
 HorizonAtlas は、龍谷大学プログラミング部 Horizon の学習カリキュラムをまとめたアプリです。
