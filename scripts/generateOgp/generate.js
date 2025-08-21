@@ -6,6 +6,7 @@ import { createHTML } from "./createHTML.js";
 import { getAllCategory } from "./gateways/categoryGateway.js";
 
 export const generateOgpForCurriculum=async(browser,__dirname)=>{
+  console.log("Generating OGP for curriculums...");
     const allCurriculums = await getAll();
     const rootPages = allCurriculums.map((data)=>{
         return {
@@ -15,7 +16,10 @@ export const generateOgpForCurriculum=async(browser,__dirname)=>{
     })
     const allChildId = await getChildPageIds();
     const allPageId = [...rootPages,...allChildId];
+    let c = 0;
     for (const i of allPageId) {
+      c++;
+      try{
         const outputDir = path.resolve(__dirname, `../../public/ogp/${i.curriculumId}`);
         if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir);
         const targetCurriculum = allCurriculums.find((item)=>item.curriculumId===i.curriculumId)
@@ -44,29 +48,41 @@ export const generateOgpForCurriculum=async(browser,__dirname)=>{
         await page.setViewport({ width: 1203, height: 630 });
         const filePath = path.join(outputDir, `${i.pageId}.png`);
         await page.screenshot({ path: filePath });
-        console.log(`Generated ${filePath}`);
+        console.log(`✅ Generated successfully ${c}/${allPageId.length}`);
+      }catch(e){
+        console.error("❌ Error generating OGP:", e);
+        continue;
+      }
       }
 }
 
 export const generateOgpForCategory=async(browser,__dirname)=>{
+  console.log("Generating OGP for categories...");
   const categories = await getAllCategory();
   const outputDir = path.resolve(__dirname, "../../public/ogp/category");
   if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir);
+  let c = 0;
   for(const i of categories){
-    let iconUrl = i.iconUrl;
-    const iconType = i.iconType;
-    const coverUrl = i.cover;
-    // console.log(coverUrl)
-    const title = i.title;
-    if(iconType==="file" || iconType==="custom_emoji"){
-      iconUrl = iconUrl.replace("/horizon-atlas","https://ryukoku-horizon.github.io/horizon-atlas")
+    try{
+      c++;
+      let iconUrl = i.iconUrl;
+      const iconType = i.iconType;
+      const coverUrl = i.cover;
+      // console.log(coverUrl)
+      const title = i.title;
+      if(iconType==="file" || iconType==="custom_emoji"){
+        iconUrl = iconUrl.replace("/horizon-atlas","https://ryukoku-horizon.github.io/horizon-atlas")
+      }
+      const page = await browser.newPage();
+      const html = createHTML(coverUrl,iconType,iconUrl,title)
+      await page.setContent(html);
+      await page.setViewport({ width: 1203, height: 630 });
+      const filePath = path.join(outputDir, `${i.categoryId}.png`);
+      await page.screenshot({ path: filePath });
+      console.log(`✅ Generated successfully ${c}/${allPageId.length}`);
+    }catch(e){
+      console.error("❌ Error generating OGP for category:", e);
+      continue;
     }
-    const page = await browser.newPage();
-    const html = createHTML(coverUrl,iconType,iconUrl,title)
-    await page.setContent(html);
-    await page.setViewport({ width: 1203, height: 630 });
-    const filePath = path.join(outputDir, `${i.categoryId}.png`);
-    await page.screenshot({ path: filePath });
-    console.log(`Generated ${filePath}`);
   }
 }
