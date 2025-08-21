@@ -45,7 +45,7 @@ export const getEditTimeData = async () => {
     });
 
     const allPosts = posts.results.filter(isFullPage);
-    return allPosts.map((post)=>{return {id:post.id,Last_edited_time:post.last_edited_time}});
+    return allPosts.map((post)=>{return {id:post.id,title:post.properties.title.title[0].text.content,Last_edited_time:post.last_edited_time,update:post.properties.update.checkbox,}});
 };
 
 export const getAllData = async () => {
