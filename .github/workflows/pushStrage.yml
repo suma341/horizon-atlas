@@ -15,10 +15,10 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install dependencies (if any)
-        run: npm install
+      # - name: Install dependencies (if any)
+      #   run: npm install
 
       - name: Run push script
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: node scripts/push-file.js
+        run: node scripts/pushStrage/main.js
