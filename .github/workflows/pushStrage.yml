@@ -1,4 +1,4 @@
-name: Push assets to target repo
+name: Push assets to storage repo
 
 on:
   workflow_dispatch:
@@ -13,23 +13,23 @@ jobs:
       - name: Checkout source repo
         uses: actions/checkout@v4
 
-      - name: Checkout atlas-strage
+      - name: Checkout atlas-storage
         uses: actions/checkout@v4
         with:
-          repository: Ryukoku-Horizon/atlas-strage
+          repository: Ryukoku-Horizon/atlas-storage
           token: ${{ secrets.GITHUB_TOKEN }}
-          path: atlas-strage
+          path: atlas-storage
 
-      - name: Copy strage
+      - name: Copy storage
         run: |
-          mkdir -p atlas-strage/strage
-          cp -r strage/* atlas-strage/strage/
+          mkdir -p atlas-storage/storage
+          cp -r storage/* atlas-storage/storage/
 
       - name: Commit & push
         run: |
-          cd atlas-strage
+          cd atlas-storage
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "Update strage" || echo "No changes to commit"
+          git commit -m "Update storage" || echo "No changes to commit"
           git push
