@@ -4,10 +4,8 @@ import path from "path";
 
 const REPO_URL = `https://${process.env.GITHUB_TOKEN}@github.com/Ryukoku-Horizon/atlas-strage`;
 
-// リポジトリを clone
 execSync(`git clone ${REPO_URL}`, { stdio: "inherit" });
 
-// ファイルを追加（例: target-repo/data/newfile.json）
 const filePath = path.join("atlas-strage", "newfile.json");
 fs.mkdirSync(path.dirname(filePath), { recursive: true });
 fs.writeFileSync(filePath, JSON.stringify({ hello: "world" }, null, 2));
