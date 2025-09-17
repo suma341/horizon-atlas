@@ -145,7 +145,7 @@ const Post =({ metadata, mdBlocks,pageNavs,pageId,title,iconType,iconUrl,coverUr
         title={title}
         firstText={firstText}
         link={`https://ryukoku-horizon.github.io/horizon-atlas/${pageNavs[pageNavs.length - 1].link}`}
-        image={`https://ryukoku-horizon.github.io/horizon-atlas/ogp/${metadata.curriculumId}/${pageId}.png`}
+        image={`https://raw.githubusercontent.com/Ryukoku-Horizon/atlas-storage2/main/public/ogp/${pageId}.png`}
       />
       <Layout pageNavs={pageNavs}>
       {!notVisible && <div className='pt-20 pb-8 min-h-screen md:flex md:flex-col md:justify-center md:items-center '>
