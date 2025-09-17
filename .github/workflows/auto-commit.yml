@@ -17,7 +17,7 @@ jobs:
       - name: Gitリポジトリをチェックアウト
         uses: actions/checkout@v4
         with:
-          persist-credentials: true  # ← ここを true にして GITHUB_TOKEN を有効にする
+          persist-credentials: true  
 
       - name: ユーザー情報追加
         run: |
