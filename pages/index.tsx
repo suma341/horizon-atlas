@@ -3,13 +3,12 @@ import { motion } from 'framer-motion';
 import About from '@/components/top/about';
 import Curriculums from '@/components/top/curriculums';
 import { GetStaticProps } from 'next';
-import { CurriculumService } from '@/lib/services/CurriculumService';
-import { PageDataService } from '@/lib/services/PageDataService';
 import Header from '@/components/top/header';
 import { IntroductionService } from '@/lib/services/IntroductionService';
 import { Introduction } from '@/types/introduction';
 import SignInButton from '@/components/LoginButton/SignInButton';
 import StaticHead from '@/components/head/staticHead';
+import PageInfoSvc from '@/lib/services/PageInfoSvc';
 
 type Props = {
   pageNum:number;
@@ -17,9 +16,8 @@ type Props = {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const allCurriculumid:string[] = await CurriculumService.getAllCurriculumId();
-  const allChildId = await PageDataService.getChildPageIds();
-  const pageNum = allCurriculumid.length + allChildId.length;
+  const pages = await PageInfoSvc.getAll()
+  const pageNum = pages.length
   const allIntroduction:Introduction[] = await IntroductionService.getAllIntroduction();
   return {
     props:{

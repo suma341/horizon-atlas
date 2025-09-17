@@ -19,16 +19,15 @@ type pagePath = {
   }
 
 export const getStaticPaths = async() =>{
-    const allCategories = await CurriculumService.getAllCategories();
-    const removedEmptyCourses = allCategories.filter((category)=>category!=='');
+    const allCategories = await CategoryService.getAllCategory()
 
-     const paramsList: pagePath[] = (
+    const paramsList: pagePath[] = (
         await Promise.all(
-            removedEmptyCourses.map(async (course: string) => {
-                return  { params: { course: course } }
+            allCategories.map(async (course) => {
+                return  { params: { course: course.title } }
             })
         )
-    ).flat();
+    );
     return {
         paths:paramsList,
         fallback:'blocking'

@@ -1,57 +1,54 @@
-import { SUPABASE_ANON_KEY, SUPABASE_URL } from "@/constants/supabaseEnvironmental";
+import { PageData } from "@/types/pageData"
 
-type Column="*" | "curriculumId" | "blockId" | "parentId" | "data" | "type" | "pageId" | "order"
+type BlockData={
+    curriculumId:string
+    parentId: string
+    data: string
+    blockId: string
+    type: string
+    pageId: string
+    i: number
+}
 
 export class PageDataGateway{
-    // static getPageDataByPageId=async(pageId:string)=>{
-    //     const res = await fetch(`${SUPABASE_URL}/functions/v1/getPageDataByPageId`, {
-    //         method: "POST",
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //             "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
-    //         },
-    //         body:JSON.stringify({
-    //             pageId
-    //         })
-    //     });
-    //     const pageDatas:PageData[] = await res.json();
-    //     const sortedData = pageDatas.sort((a,b)=>a.order-b.order);
-    //     return sortedData;
-    // }
-
-    // static getPageDataByType=async(type:string)=>{
-    //     const res = await fetch(`${SUPABASE_URL}/functions/v1/getPageDataByType`, {
-    //         method: "POST",
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //             "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
-    //         },
-    //         body:JSON.stringify({
-    //             type
-    //         })
-    //     });
-    //     const pageDatas:PageData[] = await res.json();
-    //     return pageDatas;
-    // }
-
-    static get=async(select:Column | Column[],match?:{[key:string]:string})=>{
-        const res = await fetch(`${SUPABASE_URL}/functions/v1/getPageDataWithSelect`,{
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
-            },
-            body:JSON.stringify({
-                match,
-                select:Array.isArray(select) ? select.join(",") : select
-            })
-        })
-        if(!res.ok){
-            const text = await res.text()
-            console.error("erorr:",text)
-            throw new Error("error at PageData")
+    static get = async (pageId:string,match?: Partial<Record<keyof BlockData, string | string[] | boolean | number>>,limit:number=3):Promise<PageData[]> => {
+        if(!pageId){
+            throw new Error("missing pageId or curriculumId")
         }
-        const data = await res.json()
-        return data;
-    }
+        const res = await fetch(`https://raw.githubusercontent.com/Ryukoku-Horizon/atlas-storage2/main/public/pageData/${pageId}.json`);
+        if (!res.ok) {
+            const status = res.status
+            if(status===404){
+                return []
+            }else if(status === 429 || status === 403 || status === 503){
+                if(limit <= 0){
+                    throw new Error(`HTTP error! status: ${status}`)
+                }
+                console.log("リクエスト制限がかかりました:２秒待機します...")
+                await new Promise((resolve) => setTimeout(resolve, 2000));
+                return await this.get(pageId, match, limit - 1);
+            }
+            console.error(`error in https://ryukoku-horizon.github.io/atlas-storage/pageData/${pageId}.json`)
+            throw new Error(`HTTP error! status: ${status}`);
+        }
+
+        let data: BlockData[] = await res.json();
+
+        if (match) {
+            const keys = Object.keys(match) as (keyof BlockData)[];
+            for (const key of keys) {
+                const value = match[key];
+                if (value !== undefined) {
+                    data = data.filter((d) => d[key] === value);
+                }
+            }
+        }   
+        const result = data.map(d=>{
+            return {
+                ...d,
+                order:d.i
+            } as PageData
+        })
+        return result
+    };
 }

@@ -1,19 +1,17 @@
-import { SUPABASE_ANON_KEY, SUPABASE_URL } from "@/constants/supabaseEnvironmental";
+
+type Category={
+    id:string;
+    title:string
+    description: string
+    iconUrl:string
+    iconType: string
+    cover: string
+}
 
 export class CategoryGateway{
-    static getCategory=async(select:string,match?:{[key:string]:string})=>{
-        const res = await fetch(`${SUPABASE_URL}/functions/v1/getCategory`,{
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
-            },
-            body:JSON.stringify({
-                match,
-                select
-            })
-        })
-        const data = await res.json()
-        return data;
+    static getCategory=async()=>{
+        const res = await fetch("https://raw.githubusercontent.com/Ryukoku-Horizon/atlas-storage2/main/public/categories/data.json");
+        const data:Category[] = await res.json()
+        return data
     }
 }

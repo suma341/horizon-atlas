@@ -13,7 +13,6 @@ type data={
   iconType:string;
   iconUrl:string;
   coverUrl:string;
-  curriculumId:string;
 }
 
 
@@ -23,7 +22,7 @@ export default function ChildPage(props: Props) {
   const data:data = JSON.parse(mdBlock.parent)
   const title = data.parent.split("## ")[1]
 
-  const newPath = `/posts/curriculums/${data.curriculumId}/${pageId}`; 
+  const newPath = `/posts/curriculums/${pageId}`; 
 
   return (
       <Link href={newPath} id={mdBlock.blockId}>

@@ -7,11 +7,19 @@ type HeadingType ={
     blockId:string;
 }
 
+const parse =(s:string,id:string)=>{
+    try{
+        return JSON.parse(s)
+    }catch(e){
+        throw new Error(`error in image/${id}, data:${s}, error:${e}`)
+    }
+}
+
 export function findHeadingBlock(mdBlocks:MdBlock[]){
     const findList:HeadingType[] = [];
     for(const block of mdBlocks){
         if(block.type==="heading_1"){
-            const data:HeadingData = JSON.parse(block.parent)
+            const data:HeadingData = parse(block.parent,block.blockId)
             const texts = data.parent.map((data)=>data.plain_text)
             findList.push({
                 type:1,
@@ -19,7 +27,7 @@ export function findHeadingBlock(mdBlocks:MdBlock[]){
                 blockId:block.blockId
             })
         }else if(block.type==="heading_2"){
-            const data:HeadingData = JSON.parse(block.parent)
+            const data:HeadingData = parse(block.parent,block.blockId)
             const texts = data.parent.map((data)=>data.plain_text)
             findList.push({
                 type:2,
@@ -27,7 +35,7 @@ export function findHeadingBlock(mdBlocks:MdBlock[]){
                 blockId:block.blockId
             })
         }else if(block.type==="heading_3"){
-            const data:HeadingData = JSON.parse(block.parent)
+            const data:HeadingData = parse(block.parent,block.blockId)
             const texts = data.parent.map((data)=>data.plain_text)
             findList.push({
                 type:3,

@@ -1,5 +1,4 @@
 export type PageData={
-    id:number;
     curriculumId:string;
     blockId:string;
     data:string;

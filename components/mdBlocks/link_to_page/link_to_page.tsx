@@ -8,9 +8,16 @@ type Props = {
   mdBlock: MdBlock;
 };
 
+const parseLinkToPage=(s:string)=>{
+    if(typeof s!=="string")return s as LinkToPageBlock
+    else{
+      return JSON.parse(s)
+    }
+}
+
 export default function Link_to_page(props: Props) {
   const { mdBlock } = props;
-  const pageToLinkBlock:LinkToPageBlock = JSON.parse(mdBlock.parent);
+  const pageToLinkBlock:LinkToPageBlock = parseLinkToPage(mdBlock.parent)
 
   return (
     <Link href={pageToLinkBlock.link} target='_brank' rel="noopener noreferrer" 

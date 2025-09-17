@@ -4,7 +4,7 @@ name: build and Deploy Next.js
 
 on:
   workflow_run:
-    workflows: ["update database"]
+    workflows: ["Auto Dummy Commit"]
     types:
       - completed
   workflow_dispatch:
