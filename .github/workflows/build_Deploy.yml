@@ -47,7 +47,8 @@ jobs:
           NEXT_PUBLIC_APP_ID: ${{secrets.NEXT_PUBLIC_APP_ID}}
           NEXT_PUBLIC_MESSAGING_SENDER_ID: ${{secrets.NEXT_PUBLIC_MESSAGING_SENDER_ID}}
           NEXT_PUBLIC_MEASUREMENT_ID: ${{secrets.NEXT_PUBLIC_MEASUREMENT_ID}}
-          NEXT_PUBLIC_DISCORD_CLIENT_ID: ${{secrets.NEXT_PUBLIC_DISCORD_CLIENT_ID}}
+          # NEXT_PUBLIC_DISCORD_CLIENT_ID: ${{secrets.NEXT_PUBLIC_DISCORD_CLIENT_ID}}
+          NEXT_PUBLIC_CLOUDFLARE_URL: ${{secrets.NEXT_PUBLIC_CLOUDFLARE_URL}}
 
       - name: gh-pages ブランチにデプロイ
         uses: peaceiris/actions-gh-pages@v4
