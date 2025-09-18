@@ -1,3 +1,4 @@
+import { PageInfo } from "@/types/page";
 import { PostMetaData } from "@/types/postMetaData";
 import stringSimilarity from 'string-similarity';
 
@@ -6,25 +7,32 @@ export const createSearchQuery=(text:string)=>{
     return keywords;
 }
 
-export const searchByKeyWord = (keyWords: string[],allPosts: PostMetaData[]) => {
+export const searchByKeyWord = (keyWords: string[],pages: (PageInfo & PostMetaData)[] | PostMetaData[]) => {
     const normalize = (str: string) => str.replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, "");
 
-    const scoredPosts = allPosts.map(post => {
+    const scoredPosts = pages.map(post => {
         let score = 0;
         for (const word of keyWords) {
             const lowerWord = word.toLowerCase();
             const normalizedWord = normalize(lowerWord);
             score = score + stringSimilarity.compareTwoStrings(normalize(post.title), normalizedWord) * 1.2;
             for(const tag of post.tags){
-                score = score + (stringSimilarity.compareTwoStrings(normalize(tag),normalizedWord));
+                score = score + (stringSimilarity.compareTwoStrings(normalize(tag),normalizedWord)) * 0.1;
             }
         }
         return { post, score };
     });
 
+    console.log(keyWords)
+    console.log(
+        scoredPosts
+        .filter(({ score }) => score > 0.1)
+        .sort((a, b) => b.score - a.score)
+    )
+
     // スコア順にソートし、スコアが0以上のものを返す
     return scoredPosts
-        .filter(({ score }) => score > 0.33)
+        .filter(({ score }) => score > 0.1)
         .sort((a, b) => b.score - a.score)
         .map(({ post }) => post);
 };

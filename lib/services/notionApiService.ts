@@ -1,4 +1,5 @@
 import { NUMBER_OF_POSTS_PER_PAGE } from "@/constants/numberOfPage";
+import { PageInfo } from "@/types/page";
 import { PostMetaData } from "@/types/postMetaData";
 
 export const calculatePageNumber = (posts:PostMetaData[]) => {
@@ -17,11 +18,11 @@ export const getPostsByTag=async(tagName:string, allPosts:PostMetaData[])=>{
     return posts;
 }
 
-export const getPostsByRole=async(roleName:string,allPosts:PostMetaData[])=>{
+export const getPostsByRole=async(roleName:string,pageAndMetadata:(PostMetaData & PageInfo)[] | PostMetaData[])=>{
     if(roleName==="幹事長" || roleName==="技術部員"){
-        return allPosts
+        return pageAndMetadata
     }
-    const posts:PostMetaData[] = allPosts.filter((post)=>{
+    const posts = pageAndMetadata.filter((post)=>{
         return post.visibility.find((vis:string)=>vis===roleName);
     })
     return posts;
