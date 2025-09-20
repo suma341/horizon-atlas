@@ -15,6 +15,7 @@ import { ParagraphData } from '@/types/paragraph';
 import DynamicHead from '@/components/head/dynamicHead';
 import Loader from '@/components/loader/loader';
 import PageInfoSvc from '@/lib/services/PageInfoSvc';
+import { CategoryService } from '@/lib/services/CategoryService';
 
 type postPath = {
   params: { id:string }
@@ -61,14 +62,18 @@ export const getStaticProps: GetStaticProps = async ({ params }):Promise<{props:
         achieve.push("🤍")
         const singlePost:PostMetaData = await CurriculumService.getCurriculumById(curriculumId);
         achieve.push("🩵")
-
-        const courseNav: pageNav = { title: singlePost.category ? singlePost.category : "", link: `/posts/course/${singlePost.category}` };
-        const postNav: pageNav = { title: singlePost.title, link: `/posts/curriculums/${curriculumId}` };
-        const pageNavs: pageNav[] = singlePost.is_basic_curriculum
-            ? [HOME_NAV, BASIC_NAV, courseNav, postNav]
-            : (singlePost.category ===undefined || singlePost.category === "")
-            ? [HOME_NAV, postNav]
-            : [HOME_NAV, courseNav, postNav];
+        const pageNavs:pageNav[] = [HOME_NAV]
+        const noCategorized = singlePost.category===""
+        if(!noCategorized){
+          const category = await CategoryService.getCategoryByName(singlePost.category)
+          if(category){
+            if(category.is_basic_curriculum){
+              pageNavs.push(BASIC_NAV)
+            }
+            pageNavs.push({title: singlePost.category, link: `/posts/course/${category.id}`})
+          }
+        }
+        pageNavs.push({ title: singlePost.title, link: `/posts/curriculums/${curriculumId}` })
 
         let firstText = "";
         try{

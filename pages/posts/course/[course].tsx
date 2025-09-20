@@ -1,7 +1,7 @@
 import type { GetStaticProps } from "next";
 import SinglePost from "@/components/Post/SinglePost";
 import { PostMetaData } from "@/types/postMetaData";
-import {  courseIsBasic, getPostsByRole } from "@/lib/services/notionApiService";
+import { getPostsByRole } from "@/lib/services/notionApiService";
 import { BASIC_NAV, HOME_NAV } from "@/constants/pageNavs";
 import { pageNav } from "@/types/pageNav";
 import Layout from "@/components/Layout/Layout";
@@ -24,7 +24,7 @@ export const getStaticPaths = async() =>{
     const paramsList: pagePath[] = (
         await Promise.all(
             allCategories.map(async (course) => {
-                return  { params: { course: course.title } }
+                return  { params: { course: course.id } }
             })
         )
     );
@@ -36,36 +36,32 @@ export const getStaticPaths = async() =>{
 
 type Props={
     posts:PostMetaData[];
-    currentCourse:string;
     pageNavs:pageNav[];
-    categoryData:Category | undefined;
+    category:Category
 }
 
 // getStaticProps関数
 export const getStaticProps: GetStaticProps = async (context) => {
-    const currentCourse:string = typeof context.params?.course == 'string' ? context.params.course: "";
-    const posts = await CurriculumService.getCurriculumByCategory(currentCourse);
-    const isBasic = await courseIsBasic(currentCourse,posts);
-    const currentNav:pageNav = {title:currentCourse,link:`/posts/course/${currentCourse}`};
-    const pageNavs = isBasic ? [HOME_NAV,BASIC_NAV,currentNav] :[HOME_NAV,currentNav];
+    const currentId = context.params?.course as string
+    const category = await CategoryService.getCategoryById(currentId)
+    if(!category){
+        throw new Error(`カテゴリーデータが見つかりません:${currentId}`)
+    }
+    const posts = await CurriculumService.getCurriculumByCategory(category.title);
 
-    const allCategory = await CategoryService.getAllCategory()
-    const targetCategory = allCategory.find((item)=>{
-        return item.title === currentCourse
-    })
-
+    const currentNav:pageNav = {title:category.title,link:`/posts/course/${currentId}`};
+    const pageNavs = category.is_basic_curriculum ? [HOME_NAV,BASIC_NAV,currentNav] :[HOME_NAV,currentNav];
 
     return {
         props: {
           posts,
-          currentCourse,
           pageNavs,
-          categoryData:targetCategory
-        },
+          category
+        } as Props
     };
 };
 
-const CoursePage = ({ posts, currentCourse,pageNavs,categoryData }: Props)=> {
+const CoursePage = ({ posts,pageNavs,category }: Props)=> {
     const [postsByRole, setPostsByRole] = useState(posts);
     const { userProfile } = useUserProfileStore();
     const [loading,setLoading] = useState(false)
@@ -87,21 +83,21 @@ const CoursePage = ({ posts, currentCourse,pageNavs,categoryData }: Props)=> {
     return (
         <>
             <DynamicHead
-                title={`${pageNavs[1]===BASIC_NAV ? "基礎班カリキュラム/" : ""}${currentCourse}`}
-                firstText={categoryData?.description ?? ""}
-                image={`https://raw.githubusercontent.com/Ryukoku-Horizon/atlas-storage2/main/public/ogp/category/${categoryData?.categoryId}.png`}
+                title={`${pageNavs[1]===BASIC_NAV ? "基礎班カリキュラム/" : ""}${category.title}`}
+                firstText={category.description}
+                image={`https://raw.githubusercontent.com/Ryukoku-Horizon/atlas-storage2/main/public/ogp/category/${category.id}.png`}
                 link={`https://ryukoku-horizon.github.io/horizon-atlas/${pageNavs[pageNavs.length - 1].link}`}
             />
             <Layout pageNavs={pageNavs}> 
                 <div className='pt-20 min-h-screen md:flex md:flex-col md:items-center '>
-                    {categoryData && categoryData.cover !=="" && <Image src={categoryData.cover} alt={''} width={120} height={120} className='h-56 top-0' style={{width:"100vw"}} />}
-                    <section className='bg-white pb-10 md:max-w-4xl px-2 md:min-w-[670px]' style={(!categoryData || categoryData.cover !=="") ? {} : {paddingTop:"4rem"}}>
-                        {(!categoryData || categoryData.iconType ==="") && <Image src={"https://ryukoku-horizon.github.io/horizon-atlas/file_icon.svg"} alt={''} width={20} height={20} className='relative w-20 h-20 m-0' style={categoryData && categoryData.cover !=="" ? {top:"-40px",left:"20px"} : {marginBottom:"1.5rem"}} />}
-                        {categoryData && categoryData.iconType !== "emoji" && categoryData.iconType!=="" && <Image src={categoryData.iconUrl} alt={''} width={20} height={20} className='relative w-20 h-20 m-0' style={categoryData && categoryData.cover!=="" ? {top:"-40px",left:"20px"} : {marginBottom:"1.5rem"}} />}
-                        {categoryData && categoryData.iconType === "emoji" && <p className='relative w-14 h-14 text-7xl' style={categoryData.cover!=="" ? {top:"-40px",left:"20px"} : {marginBottom:"1.5rem"}}>{categoryData.iconUrl}</p>}
-                        <h2 className='w-full text-3xl font-bold'>{currentCourse}</h2>
+                    {category.cover !=="" && <Image src={category.cover} alt={''} width={120} height={120} className='h-56 top-0' style={{width:"100vw"}} />}
+                    <section className='bg-white pb-10 md:max-w-4xl px-2 md:min-w-[670px]' style={(category.cover !=="") ? {} : {paddingTop:"4rem"}}>
+                        {category.iconType ==="" && <Image src={"https://ryukoku-horizon.github.io/horizon-atlas/file_icon.svg"} alt={''} width={20} height={20} className='relative w-20 h-20 m-0' style={category.cover !=="" ? {top:"-40px",left:"20px"} : {marginBottom:"1.5rem"}} />}
+                        {category.iconType !== "emoji" && category.iconType!=="" && <Image src={category.iconUrl} alt={''} width={20} height={20} className='relative w-20 h-20 m-0' style={category.cover!=="" ? {top:"-40px",left:"20px"} : {marginBottom:"1.5rem"}} />}
+                        {category.iconType === "emoji" && <p className='relative w-14 h-14 text-7xl' style={category.cover!=="" ? {top:"-40px",left:"20px"} : {marginBottom:"1.5rem"}}>{category.iconUrl}</p>}
+                        <h2 className='w-full text-3xl font-bold'>{category.title}</h2>
                         <div className="mt-8">
-                            <p>{categoryData?.description}</p>
+                            <p>{category.description}</p>
                         </div>
                         {!loading && <div className="mt-8">
                             {postsByRole.map((post)=>{

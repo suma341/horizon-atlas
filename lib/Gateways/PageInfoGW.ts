@@ -3,7 +3,7 @@ import { PageInfo } from "@/types/page";
 
 export default class PageInfoGW{
     static get = async (match?: Partial<Record<keyof PageInfo, string | number>>) => {
-        const res = await fetch("https://raw.githubusercontent.com/Ryukoku-Horizon/atlas-storage2/main/public/pageInfos/data.json");
+        const res = await fetch(`${process.env.NEXT_PUBLIC_STORAGE_URL}/pageInfos/data.json`);
         if (!res.ok) {
             throw new Error(`HTTP error! status: ${res.status}`);
         }

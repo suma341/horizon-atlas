@@ -12,11 +12,6 @@ export class CurriculumService{
         return datas.sort((a,b)=>a.order -b.order);
     }
 
-    static getBasicCurriculum=async()=>{
-        const data = await CurriculumGateway.get({"is_basic_curriculum":true})
-        return data.sort((a,b)=>a.order -b.order);
-    }        
-
     static getCurriculumById=async(id:string)=>{
         const datas = await CurriculumGateway.get({"id":id})
         return datas[0]

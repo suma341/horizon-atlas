@@ -1,8 +1,9 @@
 export type Category={
-    title:string;
-    categoryId:string;
-    description:string;
-    cover:string;
-    iconUrl:string;
-    iconType:string;
+    id:string;
+    title:string
+    description: string
+    iconUrl:string
+    iconType: string
+    cover: string
+    is_basic_curriculum:boolean;
 }

@@ -1,17 +1,23 @@
-
-type Category={
-    id:string;
-    title:string
-    description: string
-    iconUrl:string
-    iconType: string
-    cover: string
-}
+import { Category } from "@/types/category";
 
 export class CategoryGateway{
-    static getCategory=async()=>{
-        const res = await fetch("https://raw.githubusercontent.com/Ryukoku-Horizon/atlas-storage2/main/public/categories/data.json");
-        const data:Category[] = await res.json()
-        return data
-    }
+    static get = async (match?: Partial<Record<keyof Category, string | string[] | boolean | number>>) => {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_STORAGE_URL}/categories/data.json`);
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
+    
+            let data: Category[] = await res.json();
+    
+            if (match) {
+                const keys = Object.keys(match) as (keyof Category)[];
+                for (const key of keys) {
+                    const value = match[key];
+                    if (value !== undefined) {
+                        data = data.filter((d) => d[key] === value);
+                    }
+                }
+            }   
+            return data
+        };
 }

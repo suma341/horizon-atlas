@@ -11,7 +11,7 @@ type BlockData={
 
 export default class SyncedGW{
     static get = async (match?: Partial<Record<keyof BlockData, string>>) => {
-        const res = await fetch("https://raw.githubusercontent.com/Ryukoku-Horizon/atlas-storage2/main/public/synced/data.json");
+        const res = await fetch(`${process.env.NEXT_PUBLIC_STORAGE_URL}/synced/data.json`);
         if (!res.ok) {
             throw new Error(`HTTP error! status: ${res.status}`);
         }

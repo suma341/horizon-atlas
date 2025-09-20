@@ -15,7 +15,7 @@ export class PageDataGateway{
         if(!pageId){
             throw new Error("missing pageId or curriculumId")
         }
-        const res = await fetch(`https://raw.githubusercontent.com/Ryukoku-Horizon/atlas-storage2/main/public/pageData/${pageId}.json`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_STORAGE_URL}/pageData/${pageId}.json`);
         if (!res.ok) {
             const status = res.status
             if(status===404){
@@ -28,7 +28,7 @@ export class PageDataGateway{
                 await new Promise((resolve) => setTimeout(resolve, 2000));
                 return await this.get(pageId, match, limit - 1);
             }
-            console.error(`error in https://ryukoku-horizon.github.io/atlas-storage/pageData/${pageId}.json`)
+            console.error(`error in /pageData/${pageId}.json`)
             throw new Error(`HTTP error! status: ${status}`);
         }
 

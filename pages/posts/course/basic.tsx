@@ -1,7 +1,7 @@
 import Layout from "@/components/Layout/Layout";
 import SingleCourse from "@/components/Post/SingleCourse";
 import { BASIC_NAV, HOME_NAV } from "@/constants/pageNavs";
-import {  getBasicCourses, getPostsByCourse, getPostsByRole } from "@/lib/services/notionApiService";
+import { getPostsByRole } from "@/lib/services/notionApiService";
 import { PostMetaData } from "@/types/postMetaData";
 import type { GetStaticProps,} from "next";
 import { CurriculumService } from "@/lib/services/CurriculumService";
@@ -14,37 +14,30 @@ import StaticHead from "@/components/head/staticHead";
 
 type Props={
     courseAndPosts: {
-        course: string;
-        posts: PostMetaData[];
+        category: Category;
+        curriculums: PostMetaData[];
     }[];
-    categoryData:Category[]
 }
 
 // getStaticProps関数
 export const getStaticProps: GetStaticProps = async () => {
-    const basicPosts = await CurriculumService.getBasicCurriculum();
-    const basicCourse = await getBasicCourses(basicPosts);
-    const courseAndPosts = await Promise.all(basicCourse.map(async(course)=>{
-        const posts = await getPostsByCourse(course,basicPosts);
+    const basicCategories = await CategoryService.getBasicCategory()
+    const categoryAndCurriculums = await Promise.all(basicCategories.map(async(c)=>{
+        const curriculums = await CurriculumService.getCurriculumByCategory(c.title)
         return {
-            course,
-            posts
+            category:c,
+            curriculums
         }
     }))
-    const allCategory = await CategoryService.getAllCategory()
-    const targetCategory = allCategory.filter((item)=>{
-        return basicCourse.some((item2)=>item2===item.title)
-    })
 
     return {
         props: {
-            courseAndPosts,
-            categoryData:targetCategory
-        },
+            courseAndPosts:categoryAndCurriculums
+        } as Props
     };
 };
 
-export default function BasicCoursePageList({courseAndPosts,categoryData}: Props){
+export default function BasicCoursePageList({courseAndPosts}: Props){
     const [dataByRole,setDataByRole] = useState(courseAndPosts);
     const { userProfile } = useUserProfileStore()
     const [loading,setLoading] = useState(false)
@@ -55,12 +48,12 @@ export default function BasicCoursePageList({courseAndPosts,categoryData}: Props
                 setLoading(true)
                 const usersRole = userProfile?.given_name ?? "体験入部"
                 const dataByRole:{
-                    course: string;
-                    posts: PostMetaData[];
+                    category: Category;
+                    curriculums: PostMetaData[];
                 }[] = [];
                 for(const i of courseAndPosts){
-                    const postsByRole = await getPostsByRole(usersRole,i.posts);
-                    dataByRole.push({course:i.course,posts:postsByRole});
+                    const postsByRole = await getPostsByRole(usersRole,i.curriculums);
+                    dataByRole.push({category:i.category,curriculums:postsByRole});
                 }
                 setDataByRole(dataByRole);
             }finally{
@@ -81,18 +74,12 @@ export default function BasicCoursePageList({courseAndPosts,categoryData}: Props
                         </h1>
                         <section className="grid grid-cols-1 gap-8 px-6">
                             {!loading && dataByRole.map((courseAndPosts, i) => {
-                                if(courseAndPosts.posts.length!==0){
-                                    const target = categoryData.find(
-                                        (item1) => item1.title === courseAndPosts.course
-                                    );
-                                    return (
-                                        <SingleCourse
-                                        course={courseAndPosts.course}
-                                        icon={{ url: target?.iconUrl, type: target?.iconType }}
-                                        key={i}
-                                        />
-                                    );
-                                }
+                                return (
+                                    <SingleCourse
+                                    category={courseAndPosts.category}
+                                    key={i}
+                                    />
+                                );
                             })}
                             {loading && <Loader size={20} />}
                         </section>

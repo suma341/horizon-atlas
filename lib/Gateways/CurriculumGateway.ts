@@ -3,7 +3,6 @@ import { PostMetaData } from "@/types/postMetaData";
 type Curriculum={
     id: string,
     title: string,
-    is_basic_curriculum: boolean,
     visibility: string[],
     category: string,
     tag: string[],
@@ -21,7 +20,7 @@ type TagData={
 
 export class CurriculumGateway{    
     static get = async (match?: Partial<Record<keyof Curriculum, string | string[] | boolean | number>>) => {
-        const res = await fetch("https://raw.githubusercontent.com/Ryukoku-Horizon/atlas-storage2/main/public/curriculums/data.json");
+        const res = await fetch(`${process.env.NEXT_PUBLIC_STORAGE_URL}/curriculums/data.json`);
         if (!res.ok) {
             throw new Error(`HTTP error! status: ${res.status}`);
         }
