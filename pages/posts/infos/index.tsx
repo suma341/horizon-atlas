@@ -1,10 +1,10 @@
 import Layout from "@/components/Layout/Layout";
 import { HOME_NAV, INFO_NAV } from "@/constants/pageNavs";
 import type { GetStaticProps,} from "next";
-import StaticHead from "@/components/head/staticHead";
 import InfoSvc from "@/lib/services/infoSvc";
 import { PageInfo } from "@/types/page";
 import SinglePost from "@/components/Post/SinglePost";
+import DynamicHead from "@/components/head/dynamicHead";
 
 type Props={
     infoPages:PageInfo[]
@@ -22,10 +22,14 @@ export const getStaticProps: GetStaticProps = async () => {
 };
 
 export default function BasicCoursePageList({infoPages}: Props){
-
     return (
         <>
-            <StaticHead />
+            <DynamicHead
+                title="部活情報"
+                firstText="部活情報をまとめたページです"
+                image="https://raw.githubusercontent.com/Ryukoku-Horizon/atlas-storage2/main/public/ogp/infos.png"
+                link="https://ryukoku-horizon.github.io/horizon-atlas/posts/infos"
+            />
             <Layout pageNavs={[HOME_NAV, INFO_NAV]}>
                 <div className="min-h-screen md:flex md:flex-col md:justify-center md:items-center bg-gradient-to-br from-white via-gray-100 to-purple-50 animate-gradient transition-all">
                     <main className="w-full md:max-w-5xl mx-auto text-center">

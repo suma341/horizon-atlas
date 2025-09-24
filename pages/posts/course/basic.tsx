@@ -10,7 +10,7 @@ import { CategoryService } from "@/lib/services/CategoryService";
 import { Category } from "@/types/category";
 import useUserProfileStore from "@/stores/userProfile";
 import Loader from "@/components/loader/loader";
-import StaticHead from "@/components/head/staticHead";
+import DynamicHead from "@/components/head/dynamicHead";
 
 type Props={
     courseAndPosts: {
@@ -65,7 +65,12 @@ export default function BasicCoursePageList({courseAndPosts}: Props){
 
     return (
         <>
-            <StaticHead />
+            <DynamicHead
+                title="基礎班カリキュラム"
+                firstText="基礎班向けにプログラミングを１から学べます"
+                image="https://raw.githubusercontent.com/Ryukoku-Horizon/atlas-storage2/main/public/ogp/basic.png"
+                link="https://ryukoku-horizon.github.io/horizon-atlas/posts/basic"
+            />
             <Layout pageNavs={[HOME_NAV, BASIC_NAV]}>
                 <div className="min-h-screen md:flex md:flex-col md:justify-center md:items-center bg-gradient-to-br from-white via-gray-100 to-purple-50 animate-gradient transition-all">
                     <main className="w-full md:max-w-5xl mx-auto text-center">
