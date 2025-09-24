@@ -4,7 +4,7 @@ import { PostMetaData } from '@/types/postMetaData';
 import { MdBlock } from 'notion-to-md/build/types';
 import MdBlockComponent from '@/components/mdBlocks/mdBlock';
 import { pageNav } from '@/types/pageNav';
-import { BASIC_NAV, HOME_NAV } from '@/constants/pageNavs';
+import { BASIC_NAV, HOME_NAV, INFO_NAV } from '@/constants/pageNavs';
 import Image from 'next/image';
 import Layout from '@/components/Layout/Layout';
 import { CurriculumService } from '@/lib/services/CurriculumService';
@@ -16,6 +16,7 @@ import DynamicHead from '@/components/head/dynamicHead';
 import Loader from '@/components/loader/loader';
 import PageInfoSvc from '@/lib/services/PageInfoSvc';
 import { CategoryService } from '@/lib/services/CategoryService';
+import InfoSvc from '@/lib/services/infoSvc';
 
 type postPath = {
   params: { id:string }
@@ -23,7 +24,7 @@ type postPath = {
 
 type StaticProps = {
   title:string;
-  metadata:PostMetaData;
+  metadata:PostMetaData | "info";
   mdBlocks:MdBlock[];
   pageNavs:pageNav[];
   pageId:string;
@@ -35,8 +36,9 @@ type StaticProps = {
 
 export const getStaticPaths = async () => {
   const allPages = await PageInfoSvc.getAll()
+  const allInfoPages = await InfoSvc.getAll()
 
-  const paths: postPath[] = allPages.map((data) => {
+  const paths: postPath[] = [...allPages,...allInfoPages].map((data) => {
     return { params: { 
       id:data.id 
     }
@@ -51,30 +53,45 @@ export const getStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async ({ params }):Promise<{props:StaticProps}> => {
     const pageId = params?.id as string;
 
-    const pageInfo = await PageInfoSvc.getByPageId(pageId)
+    let pageInfo = await PageInfoSvc.getByPageId(pageId)
+    let isInfo = false
     if(!pageInfo){
-        throw Error(`missing pageInfo in ${pageId}`)
+        pageInfo = await InfoSvc.getById(pageId)
+        isInfo = true
+    }
+    if(!pageInfo){
+      throw new Error(`missing pageinfo in ${pageId}`)
     }
     const { curriculumId } = pageInfo
     const achieve:string[] = [`${pageInfo.title}：`]
     try{
         const mdBlocks =  await PageDataService.getPageDataByPageId(pageId,curriculumId);
         achieve.push("🤍")
-        const singlePost:PostMetaData = await CurriculumService.getCurriculumById(curriculumId);
+        const singlePost = isInfo ? (pageId===curriculumId ? pageInfo : await InfoSvc.getById(curriculumId)) :
+          await CurriculumService.getCurriculumById(curriculumId);
+        if(!singlePost){
+          throw new Error(`missing query in ${pageId}`)
+        }
         achieve.push("🩵")
         const pageNavs:pageNav[] = [HOME_NAV]
-        const noCategorized = singlePost.category===""
-        if(!noCategorized){
-          const category = await CategoryService.getCategoryByName(singlePost.category)
-          if(category){
-            if(category.is_basic_curriculum){
-              pageNavs.push(BASIC_NAV)
+        if(isInfo){
+          pageNavs.push(INFO_NAV)
+          pageNavs.push({ title: singlePost.title, link: `/posts/curriculums/${curriculumId}` })
+        }else{
+          if("category" in singlePost){
+            const noCategorized = singlePost.category===""
+            if(!noCategorized){
+              const category = await CategoryService.getCategoryByName(singlePost.category)
+              if(category){
+                if(category.is_basic_curriculum){
+                  pageNavs.push(BASIC_NAV)
+                }
+                pageNavs.push({title: singlePost.category, link: `/posts/course/${category.id}`})
+              }
             }
-            pageNavs.push({title: singlePost.category, link: `/posts/course/${category.id}`})
+            pageNavs.push({ title: singlePost.title, link: `/posts/curriculums/${curriculumId}` })
           }
         }
-        pageNavs.push({ title: singlePost.title, link: `/posts/curriculums/${curriculumId}` })
-
         let firstText = "";
         try{
             for(const i of mdBlocks){
@@ -92,13 +109,13 @@ export const getStaticProps: GetStaticProps = async ({ params }):Promise<{props:
             throw new Error(`🟥 error in ${pageInfo.title}:${e}`)
         }
         achieve.push("🩷")
-        const childPage = await PageDataService.getPageNavs(pageInfo)
+        const childPage = await PageDataService.getPageNavs(pageInfo,isInfo)
         const pageNavs_ = curriculumId!==pageId ? [...pageNavs, ...childPage.reverse()] : pageNavs
         achieve.push("🟢")
         return {
             props: {
             title:pageInfo.title,
-            metadata: singlePost,
+            metadata: "category" in singlePost ? singlePost : "info",
             mdBlocks,
             pageNavs:pageNavs_,
             pageId,
@@ -123,6 +140,7 @@ const Post =({ metadata, mdBlocks,pageNavs,pageId,title,iconType,iconUrl,coverUr
   useEffect(()=>{
     try{
       setLoad(true)
+      if(metadata==="info") return;
       const usersRole = userProfile?.given_name ?? "体験入部";
       const isVisible = metadata.visibility.some((item)=>item===usersRole)
       if(!isVisible && usersRole!=="幹事長" && usersRole!=="技術部員"){

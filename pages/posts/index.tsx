@@ -1,5 +1,5 @@
 import Layout from "@/components/Layout/Layout";
-import { HOME_NAV } from "@/constants/pageNavs";
+import { HOME_NAV, INFO_NAV } from "@/constants/pageNavs";
 import {  getAllTags, getPostsByRole } from "@/lib/services/notionApiService";
 import { PostMetaData } from "@/types/postMetaData";
 import { GetStaticProps } from "next";
@@ -87,7 +87,7 @@ const PostsPage = ({ allTags,noCaterizedCurriculums,categoryAndCurriculums}: Pro
             <div className="container max-w-3xl mx-auto font-sans pt-24 px-6">
               <main className="mt-16 mb-5 flex flex-col gap-8">
 
-                <section className="mb-12">
+                <section className="mb-4">
                   <Link href={`/posts/course/basic`} className="block group">
                     <section className="relative bg-white/90 backdrop-blur-lg border border-gray-300/50 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[1.01] hover:-translate-y-3">
                       <div className="flex items-center justify-between">
@@ -102,7 +102,21 @@ const PostsPage = ({ allTags,noCaterizedCurriculums,categoryAndCurriculums}: Pro
                     </section>
                   </Link>
                 </section>
-
+                <Link href={INFO_NAV.link}>
+                  <section className='mb-4 rounded-md p-2 shadow-md hover:shadow-none hover:translate-y-1 hover:bg-neutral-50 transition-all duration-200 border'>
+                      <div className='flex w-auto h-9 my-0.5'>
+                          <p className='relative w-8 h-8 m-0 mr-1 bottom-1 text-3xl align-middle'>ℹ️</p>
+                          <h2 className='text-xl font-medium mb-2 line-clamp-1'>
+                              {INFO_NAV.title}
+                          </h2>
+                      </div>
+                      <div className="flex flex-wrap gap-2 mt-0.5">
+                        <span className="text-xs font-medium bg-gray-100 text-gray-600 px-2 py-0.5 rounded-md">
+                          情報
+                        </span>
+                    </div>
+                  </section>
+              </Link>
                 <SearchField searchKeyWord={""} />
                 <Tags allTags={allTags} />
                 {!loading && <div>
@@ -115,7 +129,7 @@ const PostsPage = ({ allTags,noCaterizedCurriculums,categoryAndCurriculums}: Pro
                 {!loading && postsByRole.length!==0 && <div className="mt-5">
                   <p className="font-bold m-2">その他の資料</p>
                   {postsByRole.map((item)=>(
-                    <SinglePost postData={item} key={item.curriculumId} />
+                    <SinglePost postData={{...item,id:item.curriculumId}} key={item.curriculumId} />
                   ))}
                 </div>}
                 {loading && <Loader size={20} />}

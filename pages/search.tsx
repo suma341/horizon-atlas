@@ -49,7 +49,7 @@ export const getStaticProps: GetStaticProps = async () => {
 };
 
 export default function SearchPage({allTags, pages}:Props) {
-  const [matchPosts, setMatchPosts] = useState<PostMetaData[]>(pages);
+  const [matchPosts, setMatchPosts] = useState<(PostMetaData | (PageInfo & PostMetaData))[]>(pages);
   const [currentPage, setCurrentPage] = useState(1);
   const [numberOfPage, setNumberOfPage] = useState(calculatePageNumber(pages));
   const { userProfile } = useUserProfileStore()
@@ -86,7 +86,7 @@ export default function SearchPage({allTags, pages}:Props) {
               <Tags allTags={allTags} />
               <div className="mt-5" />
               {matchPosts.length!==0 && matchPosts.slice(postsPerPage * (currentPage - 1), postsPerPage * currentPage).map((post)=>{
-                return (<SinglePost postData={post} key={post.curriculumId} />)
+                return (<SinglePost postData={{...post,id:"id" in post ? post.id : post.curriculumId}} key={post.curriculumId} />)
               })}
               {matchPosts.length===0 && <div className="text-xl flex items-center justify-center">
                 カリキュラムが見つかりませんでした

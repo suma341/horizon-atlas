@@ -92,7 +92,7 @@ const TagPageList = ({ posts, currentTag,allTags}: Props)=> {
                                 return (
                                     <div key={post.curriculumId}>
                                         <SinglePost
-                                            postData={post}
+                                            postData={{...post,id:post.curriculumId}}
                                         />
                                     </div>
                             )})}

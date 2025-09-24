@@ -4,6 +4,7 @@ import { buildTree, processBlock } from "../pageDataToBlock";
 import { MdBlock } from "notion-to-md/build/types";
 import PageInfoSvc from "./PageInfoSvc";
 import { PageInfo } from "@/types/page";
+import InfoSvc from "./infoSvc";
 
 export class PageDataService{
     static getPageDataByPageId=async(pageId:string,curriculumId:string): Promise<MdBlock[]>=>{
@@ -34,12 +35,12 @@ export class PageDataService{
         return false
     }
 
-    static getPageNavs=async(pageInfo:PageInfo)=>{
+    static getPageNavs=async(pageInfo:PageInfo,info=false)=>{
         if(pageInfo.parentId==="") return []
         let currentPage = pageInfo;
         const pages:pageNav[] = [{link:`/posts/curriculums/${pageInfo.id}`,title:pageInfo.title}];
         while(currentPage.parentId!==pageInfo.curriculumId){
-            const parent = await PageInfoSvc.getByPageId(currentPage.parentId)
+            const parent = info ? await InfoSvc.getById(currentPage.parentId) : await PageInfoSvc.getByPageId(currentPage.parentId)
             if(parent){
                 pages.push({link:`/posts/curriculums/${parent.id}`,title:parent.title})
                 if(parent.parentId==="")break;

@@ -104,7 +104,7 @@ const CoursePage = ({ posts,pageNavs,category }: Props)=> {
                                 return (
                                     <div key={post.curriculumId}>
                                         <SinglePost
-                                        postData={post}
+                                        postData={{...post,id:post.curriculumId}}
                                         />
                                     </div>
                                 )

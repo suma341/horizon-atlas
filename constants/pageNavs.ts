@@ -6,3 +6,4 @@ export const SEARCH_NAV:pageNav = {title:'検索', link:"/search"};
 export const PROGRESS_NAV:pageNav = {title:"カリキュラム進捗度",link:"/user/progress"};
 export const SETTING_NAV:pageNav = {title:"ユーザー設定",link:"/user/setting"};
 export const EDIT_NAV:pageNav = {title:"編集",link:"/user/setting/edit"}
+export const INFO_NAV:pageNav = {title:"部活情報",link:"/posts/infos"}
