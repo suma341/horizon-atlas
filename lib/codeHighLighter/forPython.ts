@@ -102,37 +102,46 @@ export function assignCssForPython(parent: Parent, highlightType: HighlightType 
 
   return Object.assign({}, ...result);
 }
+
 export function highlightPython(text: string): { token: string; type: HighlightType }[] {
-  // 改行を含めて扱う
-  const lines = text.split("\n");
   const results: { token: string; type: HighlightType }[] = [];
 
-  lines.forEach((line, i) => {
-    // コメント開始位置
+  let remaining = text;
+  while (remaining.length > 0) {
+    const newlineIndex = remaining.indexOf("\n");
+    let line: string;
+    if (newlineIndex !== -1) {
+      line = remaining.slice(0, newlineIndex);
+      remaining = remaining.slice(newlineIndex + 1);
+    } else {
+      line = remaining;
+      remaining = "";
+    }
+
+    // コメント判定
     const commentIndex = line.indexOf("#");
     if (commentIndex !== -1) {
-        const codePart = line.slice(0, commentIndex);
-        const commentPart = line.slice(commentIndex);
+      const codePart = line.slice(0, commentIndex);
+      const commentPart = line.slice(commentIndex);
 
-        // コード部分は通常処理
-        results.push(...highlightPythonLine(codePart));
+      // コード部分
+      if (codePart) results.push(...highlightPythonLine(codePart));
 
-        // コメント部分は一括で comment にする（splitしない！）
-        results.push({ token: commentPart, type: "comment" });
-
-        return; // ここで処理を終える
-    }else {
+      // コメント部分
+      results.push({ token: commentPart, type: "comment" });
+    } else {
       results.push(...highlightPythonLine(line));
     }
 
-    // 改行トークンを保持
-    if (i < lines.length - 1) {
+    // 改行を保持
+    if (newlineIndex !== -1) {
       results.push({ token: "\n", type: "none" });
     }
-  });
+  }
 
   return results;
 }
+
 
 function highlightPythonLine(line: string): { token: string; type: HighlightType }[] {
   const tokens = line.split(/(\s+|["'()=:])/).filter(t => t !== "");

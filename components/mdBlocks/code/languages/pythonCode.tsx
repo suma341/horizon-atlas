@@ -7,14 +7,6 @@ type Props = {
   parent: Parent[];
 };
 
-// type Range = { start: number; end: number; parent: Parent };
-
-// function getParentForToken(tokenText: string, startIndex: number, ranges: Range[]): Parent | null {
-//   const endIndex = startIndex + tokenText.length;
-//   const range = ranges.find(r => r.start <= startIndex && endIndex <= r.end);
-//   return range?.parent ?? null;
-// }
-
 export default function PythonCode(props: Props) {
   const { parent } = props;
   const { handleClick } = usePageLink();
