@@ -8,21 +8,24 @@ import InfoSvc from "./infoSvc";
 
 export class PageDataService{
     static getPageDataByPageId=async(pageId:string,curriculumId:string): Promise<MdBlock[]>=>{
-        
         const pageDatas = await PageDataGateway.get(pageId)
         if (pageDatas.length === 0) return [];
         const sortedData = pageDatas.sort((a,b)=>a.order-b.order);
-        const mdBlocks = buildTree(sortedData, pageId);
-        const processedData = await Promise.all(
-            mdBlocks.map(async (block) => {
-                try{
-                    return processBlock(block, mdBlocks,curriculumId);
-                }catch(e){
-                    throw new Error(`error in ${pageId} at ${block}:${e}`)
-                }
-            })
-        );
-        return processedData;
+        try{
+            const mdBlocks = buildTree(sortedData, pageId);
+            const processedData = await Promise.all(
+                mdBlocks.map(async (block) => {
+                    try{
+                        return processBlock(block, mdBlocks,curriculumId);
+                    }catch(e){
+                        throw new Error(`🟥 error in ${pageId} at ${block}:${e}`)
+                    }
+                })
+            );
+            return processedData;
+        }catch(e){
+            throw new Error(`🟥 error in getPageDataByPageId/${pageId}:${e}`)
+        }
     }
 
     static getIsSamePageIdAndCurriculumId=async(pageId:string)=>{

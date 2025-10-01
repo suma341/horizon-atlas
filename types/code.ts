@@ -1,7 +1,7 @@
 import { Parent } from "./Parent"
 
 export type CodeBlock={
-    language:"html",
-    parent:string[],
+    language:string,
+    parent:Parent[],
     caption:Parent[]
 }

@@ -15,16 +15,16 @@ import Loader from "@/components/loader/loader";
 import DynamicHead from "@/components/head/dynamicHead";
 
 type pagePath = {
-    params: { course:string }
-  }
+    params: { categoryId:string }
+}
 
 export const getStaticPaths = async() =>{
     const allCategories = await CategoryService.getAllCategory()
 
     const paramsList: pagePath[] = (
         await Promise.all(
-            allCategories.map(async (course) => {
-                return  { params: { course: course.id } }
+            allCategories.map(async (category) => {
+                return  { params: { categoryId: category.id } }
             })
         )
     );
@@ -40,9 +40,8 @@ type Props={
     category:Category
 }
 
-// getStaticProps関数
 export const getStaticProps: GetStaticProps = async (context) => {
-    const currentId = context.params?.course as string
+    const currentId = context.params?.categoryId as string
     const category = await CategoryService.getCategoryById(currentId)
     if(!category){
         throw new Error(`カテゴリーデータが見つかりません:${currentId}`)

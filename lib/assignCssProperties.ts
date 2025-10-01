@@ -69,7 +69,7 @@ export function assignCss(parent:Parent){
   return properties;
 }
 
-function assignColor(color:string){
+export function assignColor(color:string){
   switch(color){
     case "default":
       return "";

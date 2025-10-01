@@ -17,7 +17,7 @@ export function renderTextWithBreaks(text: string, style: React.CSSProperties, o
     // 残りのテキストを追加
     if (lastIndex < text.length) {
       elements.push(
-        <span key={`line-final`} style={style} onClick={onClick}>
+        <span key={`line-final`} style={{...style}} onClick={onClick}>
           {text.slice(lastIndex)}
         </span>
       );
