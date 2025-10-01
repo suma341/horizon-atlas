@@ -1,34 +1,6 @@
 import { Parent } from "@/types/Parent";
 import { assignColor } from "@/lib/assignCssProperties";
-
-
-// 紫 (構文キーワード)
-const purpleWords = [
-  "def", "class", "return", "import", "from", "as", "lambda",
-  "if", "else", "elif", "not", "for", "in", "while", "try",
-  "except", "finally", "with", "pass", "break", "continue",
-  "yield", "assert", "del", "global", "nonlocal", "raise",
-  "await", "async", "or", "and", "is"
-];
-
-// 黄色 (よく使う組み込み関数)
-const yellowWords = [
-  "print", "input", "str", "int", "float", "list", "dict",
-  "set", "tuple", "len", "range", "open", "type", "dir",
-  "help", "enumerate", "zip", "map", "filter", "sum", "min",
-  "max", "any", "all", "sorted"
-];
-
-// 水色 (定数値)
-const skyWords = [
-  "True", "False", "None"
-];
-
-// 赤 (例外クラス)
-const redWords = [
-  "Exception", "ValueError", "TypeError", "NameError", "IndexError",
-  "KeyError", "ZeroDivisionError", "ImportError", "FileNotFoundError"
-];
+import { pythonKeyWords } from "./keywords/python";
 
 type HighlightType =
   | "keyword"
@@ -40,6 +12,7 @@ type HighlightType =
   | "string"
   | "fstring"
   | "comment"
+  | "number"
   | "none";
 
 export function assignCssForPython(parent: Parent, highlightType: HighlightType = "none") {
@@ -98,6 +71,9 @@ export function assignCssForPython(parent: Parent, highlightType: HighlightType 
     case "comment":
       result.push({ color: "rgb(80, 161, 79)" }); 
       break;
+    case "number":
+      result.push({ color: "rgb(150, 75, 0)" }); // 茶色
+      break;
   }
 
   return Object.assign({}, ...result);
@@ -144,7 +120,7 @@ export function highlightPython(text: string): { token: string; type: HighlightT
 
 
 function highlightPythonLine(line: string): { token: string; type: HighlightType }[] {
-  const tokens = line.split(/(\s+|["'()=:])/).filter(t => t !== "");
+  const tokens = line.split(/(\s+|["'()=:,])/).filter(t => t !== "");
   let highlightNextName: "def" | "class" | "" = "";
   let inString: string | null = null;
   let isFString = false;
@@ -175,7 +151,7 @@ function highlightPythonLine(line: string): { token: string; type: HighlightType
       }
     }
     // def / class キーワード
-    else if (purpleWords.includes(token)) {
+    else if (pythonKeyWords.purpleWords.includes(token)) {
       type = "keyword";
       if (token === "def" || token === "class") {
         highlightNextName = token;
@@ -189,12 +165,15 @@ function highlightPythonLine(line: string): { token: string; type: HighlightType
         highlightNextName = "";
       }
     }
+    else if (/^\d+(\.\d+)?$/.test(token)) {
+      type = "number";
+    }
     // その他
-    else if (yellowWords.includes(token)) {
+    else if (pythonKeyWords.yellowWords.includes(token)) {
       type = "builtin";
-    } else if (skyWords.includes(token)) {
+    } else if (pythonKeyWords.skyWords.includes(token)) {
       type = "boolean";
-    } else if (redWords.includes(token)) {
+    } else if (pythonKeyWords.redWords.includes(token)) {
       type = "exception";
     }
 
