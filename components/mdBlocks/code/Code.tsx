@@ -1,4 +1,3 @@
-import { MdBlock } from 'notion-to-md/build/types';
 import React, { useState } from 'react';
 import { atomOneLight } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 import SyntaxHighlighter from 'react-syntax-highlighter/dist/cjs/default-highlight';
@@ -7,12 +6,16 @@ import { FaCheck } from "react-icons/fa6";
 import { assignCss } from '@/lib/assignCssProperties';
 import { CodeBlock } from '@/types/code';
 import { usePageLink } from '@/hooks/usePagePush';
-import PythonCode from '@/components/mdBlocks/code/languages/pythonCode';
+import PythonCode from '@/components/mdBlocks/code/languages/python';
+import PlainTextCode from './languages/plainText';
+import { MdBlock } from '@/types/MdBlock';
 
 type Props = {
     mdBlock: MdBlock;
     depth: number;
 };
+
+const ImplementedLanguage = ["python","plain text"]
 
 export default function Code(props: Props) {
     const { mdBlock } = props;
@@ -57,7 +60,8 @@ export default function Code(props: Props) {
             </div>
             
             {codeOb.language==="python" && <PythonCode parent={codeOb.parent} />}
-            {codeOb.language!=="python" && (
+            {codeOb.language==="plain text" && <PlainTextCode parent={codeOb.parent} />}
+            {!ImplementedLanguage.includes(codeOb.language) && (
                 <SyntaxHighlighter style={atomOneLight} language={codeOb.language}>
                     {codeContent}
                 </SyntaxHighlighter>

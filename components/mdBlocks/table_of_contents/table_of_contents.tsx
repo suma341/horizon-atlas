@@ -1,4 +1,4 @@
-import { MdBlock } from 'notion-to-md/build/types';
+import { MdBlock } from '@/types/MdBlock';
 import React, { useEffect, useState } from 'react'
 
 type Props = {

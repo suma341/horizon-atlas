@@ -1,10 +1,10 @@
 import { PageData } from "@/types/pageData";
-import { MdBlock } from "notion-to-md/build/types";
 import { findHeadingBlock } from "./findHeadingBlock";
 import SyncedGW from "./Gateways/syncedGW";
 import { PageDataService } from "./services/PageDataService";
 import { ImageBlock, ImageBlock_Size } from "@/types/mdBlocks";
 import { getImageSize } from "./getImageSize";
+import { MdBlock } from "@/types/MdBlock";
 
 export function buildTree(pageData:PageData[], parentId:string):MdBlock[] {
     const mdBlocks:MdBlock[] = pageData

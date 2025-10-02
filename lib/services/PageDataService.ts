@@ -1,10 +1,10 @@
 import { PageDataGateway } from "../Gateways/PageDataGateway";
 import { pageNav } from "@/types/pageNav";
 import { buildTree, processBlock } from "../pageDataToBlock";
-import { MdBlock } from "notion-to-md/build/types";
 import PageInfoSvc from "./PageInfoSvc";
 import { PageInfo } from "@/types/page";
 import InfoSvc from "./infoSvc";
+import { MdBlock } from "@/types/MdBlock";
 
 export class PageDataService{
     static getPageDataByPageId=async(pageId:string,curriculumId:string): Promise<MdBlock[]>=>{

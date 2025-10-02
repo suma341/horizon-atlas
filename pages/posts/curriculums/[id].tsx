@@ -1,7 +1,6 @@
 import { GetStaticProps } from 'next';
 import React, { useEffect, useState } from 'react';
 import { PostMetaData } from '@/types/postMetaData';
-import { MdBlock } from 'notion-to-md/build/types';
 import MdBlockComponent from '@/components/mdBlocks/mdBlock';
 import { pageNav } from '@/types/pageNav';
 import { BASIC_NAV, HOME_NAV, INFO_NAV } from '@/constants/pageNavs';
@@ -17,6 +16,7 @@ import Loader from '@/components/loader/loader';
 import PageInfoSvc from '@/lib/services/PageInfoSvc';
 import { CategoryService } from '@/lib/services/CategoryService';
 import InfoSvc from '@/lib/services/infoSvc';
+import { MdBlock } from '@/types/MdBlock';
 
 type postPath = {
   params: { id:string }

@@ -1,7 +1,7 @@
 import { assignCss } from "@/lib/assignCssProperties";
+import { MdBlock } from "@/types/MdBlock";
 import { Parent } from "@/types/Parent";
 import Link from "next/link";
-import { MdBlock } from "notion-to-md/build/types";
 
 type Props={
     mdBlock:MdBlock;

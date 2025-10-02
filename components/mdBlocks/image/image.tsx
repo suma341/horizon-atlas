@@ -1,8 +1,7 @@
-"use client";
 import { usePageLink } from '@/hooks/usePagePush';
 import { assignCss } from '@/lib/assignCssProperties';
+import { MdBlock } from '@/types/MdBlock';
 import { ImageBlock_Size } from '@/types/mdBlocks';
-import { MdBlock } from 'notion-to-md/build/types';
 import React, { useState } from 'react';
 import { FaExpandAlt } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";

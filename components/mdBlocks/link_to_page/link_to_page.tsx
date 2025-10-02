@@ -1,8 +1,8 @@
 import Link from 'next/link';
-import { MdBlock } from 'notion-to-md/build/types';
 import Image from "next/image"
 import { MdOutlineArrowOutward } from "react-icons/md";
 import { LinkToPageBlock } from '@/types/mdBlocks';
+import { MdBlock } from '@/types/MdBlock';
 
 type Props = {
   mdBlock: MdBlock;

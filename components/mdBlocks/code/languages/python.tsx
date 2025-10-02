@@ -1,7 +1,8 @@
-import { assignCssForPython, highlightPython } from "@/lib/codeHighLighter/forPython";
 import { Parent } from "@/types/Parent";
 import { usePageLink } from "@/hooks/usePagePush";
-import { RenderTextWithBreaks } from "./renderTextWithBreaks";
+import { RenderTextWithBreaks } from "../renderTextWithBreaks";
+import { highlightPython } from "@/lib/codeHighLighter/python/highlight";
+import { assignCssForPython } from "@/lib/codeHighLighter/python/assignCss";
 
 type Props = {
   parent: Parent[];
@@ -12,9 +13,13 @@ export default function PythonCode(props: Props) {
   const { handleClick } = usePageLink();
 
   return (
-    <div style={{ backgroundColor: "rgb(250,250,250)", padding: "0.5rem" }}>
+    <div style={{
+        backgroundColor: "rgb(250,250,250)",
+        padding: "0.5rem",
+        overflowX: "auto",
+        whiteSpace: "pre", // ← pre に統一
+      }}>
       {parent.map((p, index) => {
-        // 各 Parent の plain_text をハイライト
         const tokens = highlightPython(p.plain_text);
 
         return (

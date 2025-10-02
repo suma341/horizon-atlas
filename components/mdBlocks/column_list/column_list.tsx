@@ -1,6 +1,6 @@
-import { MdBlock } from 'notion-to-md/build/types'
 import React from 'react'
 import MdBlockComponent from '../mdBlock';
+import { MdBlock } from '@/types/MdBlock';
 
 type Props ={
     mdBlock:MdBlock;

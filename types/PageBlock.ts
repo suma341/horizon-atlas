@@ -1,8 +1,7 @@
-import { MdBlock } from "notion-to-md/build/types";
+import { MdBlock } from "./MdBlock";
 
 export type PageBlock={
     id:string;
-    // parentPageId:string;
     title:string;
     mdBlocks:MdBlock[];
 }

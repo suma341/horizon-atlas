@@ -1,83 +1,5 @@
-import { Parent } from "@/types/Parent";
-import { assignColor } from "@/lib/assignCssProperties";
-import { pythonKeyWords } from "./keywords/python";
-
-type HighlightType =
-  | "keyword"
-  | "builtin"
-  | "boolean"
-  | "exception"
-  | "functionName"
-  | "className"
-  | "string"
-  | "fstring"
-  | "comment"
-  | "number"
-  | "none";
-
-export function assignCssForPython(parent: Parent, highlightType: HighlightType = "none") {
-  const result: React.CSSProperties[] = [
-    { paddingBottom: "0.1rem", paddingTop: "0.1rem" },
-  ];
-  const attr = parent.annotations;
-  const color = assignColor(attr.color);
-
-  if (color !== "") result.push({ color });
-  if (attr.bold) result.push({ fontWeight: 700 });
-  if (attr.italic) result.push({ fontStyle: "italic" });
-  if (attr.code) {
-    result.push({
-      backgroundColor: "rgb(235, 235, 235)",
-      color: color === "" ? "rgb(244,63,94)" : color,
-      paddingLeft: 4,
-      paddingRight: 4,
-      borderRadius: 4,
-    });
-  }
-  if (attr.underline) result.push({ textDecorationLine: "underline" });
-  if (attr.strikethrough) result.push({ textDecoration: "line-through" });
-  if (parent.href) {
-    result.push(attr.underline ? {} : { textDecorationLine: "underline" });
-    result.push((color !== "" || attr.code) ? {} : { color: "rgb(115 115 115)" });
-    if (parent.href !== "") result.push({ cursor: "pointer" });
-  }
-
-  // --- Python ハイライト ---
-  switch (highlightType) {
-    case "keyword":
-      result.push({ color: "rgb(166, 38, 164)" });
-      break;
-    case "builtin":
-      result.push({ color: "rgb(202, 138, 4)" });
-      break;
-    case "boolean":
-      result.push({ color: "rgb(1, 132, 187)" });
-      break;
-    case "exception":
-      result.push({ color: "rgb(220, 38, 38)" });
-      break;
-    case "functionName":
-      result.push({ color: "rgb(64, 120, 242)" }); 
-      break;
-    case "className":
-      result.push({ color: "rgb(64, 120, 242)"});
-      break;
-    case "string":
-      result.push({ color: "rgb(22, 163, 74)" });
-      break;
-    case "fstring":
-      result.push({ color: "rgb(217, 70, 239)" });
-      break;
-    case "comment":
-      result.push({ color: "rgb(80, 161, 79)" }); 
-      break;
-    case "number":
-      result.push({ color: "rgb(150, 75, 0)" }); // 茶色
-      break;
-  }
-
-  return Object.assign({}, ...result);
-}
+import { HighlightType } from "@/types/highlight";
+import { pythonKeyWords } from "./keywords";
 
 export function highlightPython(text: string): { token: string; type: HighlightType }[] {
   const results: { token: string; type: HighlightType }[] = [];
@@ -118,9 +40,9 @@ export function highlightPython(text: string): { token: string; type: HighlightT
   return results;
 }
 
-
 function highlightPythonLine(line: string): { token: string; type: HighlightType }[] {
-  const tokens = line.split(/(\s+|["'()=:,])/).filter(t => t !== "");
+  // 数字（負の数・小数）もまとめて1トークンにする
+  const tokens = line.split(/(\s+|["'()=:,\[\]])/).filter(t => t !== "");
   let highlightNextName: "def" | "class" | "" = "";
   let inString: string | null = null;
   let isFString = false;
@@ -159,13 +81,13 @@ function highlightPythonLine(line: string): { token: string; type: HighlightType
     }
     // 直後の名前 (関数 or クラス)
     else if (highlightNextName) {
-      // 空白や記号はスキップ
       if (/^[A-Za-z_]\w*$/.test(token)) {
         type = highlightNextName === "def" ? "functionName" : "className";
         highlightNextName = "";
       }
     }
-    else if (/^\d+(\.\d+)?$/.test(token)) {
+    // 数字（負の数や小数も対応）
+    else if (/^-?\d+(\.\d+)?$/.test(token)) {
       type = "number";
     }
     // その他

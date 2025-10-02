@@ -1,10 +1,10 @@
 "use client";
-import { MdBlock } from 'notion-to-md/build/types'
 import React, { ChangeEvent, useEffect, useState } from 'react'
 import { parseMarkdown } from '@/lib/parseMD';
 import { MdTypeAndText } from '@/types/textAndType';
 import { assignCssProperties } from '@/lib/assignCssProperties';
 import MdBlockComponent from '../mdBlock';
+import { MdBlock } from '@/types/MdBlock';
 
 type Props={
     mdBlock:MdBlock;

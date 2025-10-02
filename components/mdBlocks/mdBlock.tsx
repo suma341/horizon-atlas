@@ -1,5 +1,3 @@
-import { MdBlock } from 'notion-to-md/build/types'
-import React from 'react'
 import Paragraph from './paragraph/paragraph';
 import Heading1 from './Heading1/Heading1';
 import Heading2 from './Heading2/Heading2';
@@ -23,6 +21,7 @@ import To_do from './to_do/to_do';
 import Synced_block from './synced_block/synced_block';
 import Table_row from './table_row/table_row';
 import VideoBlock from './video/video';
+import { MdBlock } from '@/types/MdBlock';
 
 type Props ={
     mdBlock:MdBlock;

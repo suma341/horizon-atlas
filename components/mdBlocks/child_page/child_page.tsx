@@ -1,8 +1,7 @@
-"use client";
 import Link from 'next/link';
-import { MdBlock } from 'notion-to-md/build/types';
 import React from 'react';
 import Image from 'next/image';
+import { MdBlock } from '@/types/MdBlock';
 
 type Props = {
   mdBlock: MdBlock;

@@ -1,5 +1,3 @@
-"use client";
-import { MdBlock } from 'notion-to-md/build/types';
 import React from 'react';
 import MdBlockComponent from '../mdBlock';
 import { getColorProperty } from '@/lib/backgroundCorlor';
@@ -9,6 +7,7 @@ import { usePageLink } from '@/hooks/usePagePush';
 import { renderTextWithBreaks } from '../renderTextWithBreaks';
 import Image from 'next/image';
 import { MdOutlineArrowOutward } from 'react-icons/md';
+import { MdBlock } from '@/types/MdBlock';
 
 type Props={
     mdBlock:MdBlock;

@@ -1,5 +1,5 @@
 import { HeadingData } from "@/types/headingData";
-import { MdBlock } from "notion-to-md/build/types";
+import { MdBlock } from "@/types/MdBlock";
 
 type HeadingType ={
     type:number;

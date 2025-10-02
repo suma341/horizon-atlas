@@ -1,8 +1,7 @@
-"use client";
 import Loader from '@/components/loader/loader';
+import { MdBlock } from '@/types/MdBlock';
 import { Parent } from '@/types/Parent';
 import Link from 'next/link';
-import { MdBlock } from 'notion-to-md/build/types';
 import React, { useEffect, useState } from 'react';
 
 type Props = {

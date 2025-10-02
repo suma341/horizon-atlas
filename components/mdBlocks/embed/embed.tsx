@@ -1,6 +1,6 @@
 import Loader from '@/components/loader/loader';
+import { MdBlock } from '@/types/MdBlock';
 import { Parent } from '@/types/Parent';
-import { MdBlock } from 'notion-to-md/build/types';
 import React,{ useEffect, useState,useRef } from 'react'
 
 type Props = {

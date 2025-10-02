@@ -1,7 +1,7 @@
 import { usePageLink } from "@/hooks/usePagePush";
 import { assignCss } from "@/lib/assignCssProperties";
+import { MdBlock } from "@/types/MdBlock";
 import { Parent } from "@/types/Parent";
-import { MdBlock } from "notion-to-md/build/types";
 
 type Props = {
     mdBlock: MdBlock;
