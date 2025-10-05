@@ -1,7 +1,10 @@
 import { HighlightType } from "@/types/highlight";
-import { pythonKeyWords } from "./keywords";
+import { LanguageRules } from "@/types/languageRule";
 
-export function highlightPython(text: string): { token: string; type: HighlightType }[] {
+export function highlightCode(
+  text: string,
+  rules: LanguageRules
+): { token: string; type: HighlightType }[] {
   const results: { token: string; type: HighlightType }[] = [];
 
   let remaining = text;
@@ -16,22 +19,22 @@ export function highlightPython(text: string): { token: string; type: HighlightT
       remaining = "";
     }
 
-    // コメント判定
-    const commentIndex = line.indexOf("#");
+    // コメント判定（複数シンボル対応）
+    const commentIndex = rules.commentSymbols
+      .map((sym) => line.indexOf(sym))
+      .filter((i) => i !== -1)
+      .sort((a, b) => a - b)[0] ?? -1;
+
     if (commentIndex !== -1) {
       const codePart = line.slice(0, commentIndex);
       const commentPart = line.slice(commentIndex);
 
-      // コード部分
-      if (codePart) results.push(...highlightPythonLine(codePart));
-
-      // コメント部分
+      if (codePart) results.push(...highlightLine(codePart, rules));
       results.push({ token: commentPart, type: "comment" });
     } else {
-      results.push(...highlightPythonLine(line));
+      results.push(...highlightLine(line, rules));
     }
 
-    // 改行を保持
     if (newlineIndex !== -1) {
       results.push({ token: "\n", type: "none" });
     }
@@ -40,63 +43,44 @@ export function highlightPython(text: string): { token: string; type: HighlightT
   return results;
 }
 
-function highlightPythonLine(line: string): { token: string; type: HighlightType }[] {
-  // 数字（負の数・小数）もまとめて1トークンにする
-  const tokens = line.split(/(\s+|["'()=:,\[\]])/).filter(t => t !== "");
-  let highlightNextName: "def" | "class" | "" = "";
+function highlightLine(
+  line: string,
+  rules: LanguageRules
+): { token: string; type: HighlightType }[] {
+  const tokens = line.split(/(\s+|["'()=:,\[\]])/).filter((t) => t !== "");
   let inString: string | null = null;
-  let isFString = false;
 
   return tokens.map((token) => {
     let type: HighlightType = "none";
 
-    // f文字列開始
-    if (!inString && /^f["']$/.test(token)) {
-      inString = token[token.length - 1];
-      isFString = true;
-      type = "fstring";
-    }
-    // 通常の文字列開始
-    else if (!inString && /^["']$/.test(token)) {
+    // 文字列
+    if (!inString && /^["']$/.test(token)) {
       inString = token;
-      isFString = false;
       type = "string";
-    }
-    // 文字列内部
-    else if (inString) {
+    } else if (inString) {
       if (token === inString) {
         inString = null;
-        isFString = false;
-        type = isFString ? "fstring" : "string";
-      } else {
-        type = isFString ? "fstring" : "string";
       }
+      type = "string";
     }
-    // def / class キーワード
-    else if (pythonKeyWords.purpleWords.includes(token)) {
-      type = "keyword";
-      if (token === "def" || token === "class") {
-        highlightNextName = token;
-      }
-    }
-    // 直後の名前 (関数 or クラス)
-    else if (highlightNextName) {
-      if (/^[A-Za-z_]\w*$/.test(token)) {
-        type = highlightNextName === "def" ? "functionName" : "className";
-        highlightNextName = "";
-      }
-    }
-    // 数字（負の数や小数も対応）
+    // 数字
     else if (/^-?\d+(\.\d+)?$/.test(token)) {
       type = "number";
     }
-    // その他
-    else if (pythonKeyWords.yellowWords.includes(token)) {
+    // キーワード判定
+    else if (rules.keywords.keyword.includes(token)) {
+      type = "keyword";
+    } else if (rules.keywords.builtin.includes(token)) {
       type = "builtin";
-    } else if (pythonKeyWords.skyWords.includes(token)) {
+    } else if (rules.keywords.boolean.includes(token)) {
       type = "boolean";
-    } else if (pythonKeyWords.redWords.includes(token)) {
+    } else if (rules.keywords.exception.includes(token)) {
       type = "exception";
+    }
+    // 特殊ルール（関数名やクラス名など）
+    else if (rules.specialRules) {
+      const special = rules.specialRules(token, { line, tokens });
+      if (special) type = special;
     }
 
     return { token, type };
