@@ -61,7 +61,7 @@ const PostsPage = ({ allTags,noCaterizedCurriculums,categoryAndCurriculums}: Pro
       async function setData(){
         try{
           setLoading(true)
-          const usersRole = userProfile?.given_name ?? "体験入部"
+          const usersRole = userProfile ? (userProfile.given_name ?? "体験入部") : "ゲスト"
           if(usersRole !=="幹事長" && usersRole !=="技術部員"){
             const postsByRole = await getPostsByRole(usersRole,noCaterizedCurriculums);
             setPostsByRole(postsByRole);
@@ -102,7 +102,7 @@ const PostsPage = ({ allTags,noCaterizedCurriculums,categoryAndCurriculums}: Pro
                     </section>
                   </Link>
                 </section>
-                <Link href={INFO_NAV.link}>
+                {userProfile && <Link href={INFO_NAV.link}>
                   <section className='mb-4 rounded-md p-2 shadow-md hover:shadow-none hover:translate-y-1 hover:bg-neutral-50 transition-all duration-200 border'>
                       <div className='flex w-auto h-9 my-0.5'>
                           <p className='relative w-8 h-8 m-0 mr-1 bottom-1 text-3xl align-middle'>ℹ️</p>
@@ -116,7 +116,7 @@ const PostsPage = ({ allTags,noCaterizedCurriculums,categoryAndCurriculums}: Pro
                         </span>
                     </div>
                   </section>
-              </Link>
+              </Link>}
                 <SearchField searchKeyWord={""} />
                 <Tags allTags={allTags} />
                 {!loading && <div>

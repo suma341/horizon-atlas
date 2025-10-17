@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import useUserProfileStore from "@/stores/userProfile";
 import Link from "next/link";
 import StaticHead from "@/components/head/staticHead";
+import LoginModal from "@/components/loginModal/loginModal";
 
 type Progress={
   category: string;
@@ -54,7 +55,8 @@ export default function Progress() {
       <>
         <StaticHead />
         <Layout pageNavs={[HOME_NAV,SETTING_NAV,PROGRESS_NAV]}>
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br px-4">
+            {!userProfile && <LoginModal />}
+            {userProfile && <div className="min-h-screen flex items-center justify-center bg-gradient-to-br px-4">
                 <div className="w-full max-w-md text-white bg-purple-900 border-purple-700 shadow-xl rounded-2xl">
                     <div className="p-8 text-center">
                     <motion.div
@@ -65,11 +67,11 @@ export default function Progress() {
                         <h1 className="text-2xl font-semibold mb-2">
                           進捗が読み込めませんでした
                         </h1>
-                        {(userProfile?.studentNum && userProfile.studentNum!=="") && <p>
+                        {(userProfile.studentNum && userProfile.studentNum!=="") && <p>
                           学籍番号は合っていますか？：{userProfile.studentNum}<br />
                           違う場合は<Link href={"/user/setting/edit"} className="underline">こちら</Link>から設定し直してください。<br />
                         </p>}
-                        {(!userProfile?.studentNum || userProfile.studentNum==="") && <p>
+                        {(!userProfile.studentNum || userProfile.studentNum==="") && <p>
                           学籍番号が設定されていません。<br />
                           <Link href={"/user/setting/edit"} className="underline">こちら</Link>から設定してください
                           </p>}
@@ -79,7 +81,7 @@ export default function Progress() {
                     </motion.div>
                     </div>
                 </div>
-            </div>
+            </div>}
         </Layout>
       </>
     )

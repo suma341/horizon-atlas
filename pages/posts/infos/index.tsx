@@ -5,6 +5,8 @@ import InfoSvc from "@/lib/services/infoSvc";
 import { PageInfo } from "@/types/page";
 import SinglePost from "@/components/Post/SinglePost";
 import DynamicHead from "@/components/head/dynamicHead";
+import useUserProfileStore from "@/stores/userProfile";
+import LoginModal from "@/components/loginModal/loginModal";
 
 type Props={
     infoPages:PageInfo[]
@@ -23,6 +25,8 @@ export const getStaticProps: GetStaticProps = async () => {
 };
 
 export default function BasicCoursePageList({infoPages}: Props){
+    const { userProfile } = useUserProfileStore()
+
     return (
         <>
             <DynamicHead
@@ -32,7 +36,8 @@ export default function BasicCoursePageList({infoPages}: Props){
                 link="https://ryukoku-horizon.github.io/horizon-atlas/posts/infos"
             />
             <Layout pageNavs={[HOME_NAV, INFO_NAV]}>
-                <div className="min-h-screen md:flex md:flex-col md:justify-center md:items-center bg-gradient-to-br from-white via-gray-100 to-purple-50 animate-gradient transition-all">
+                {!userProfile && <LoginModal />}
+                {userProfile && <div className="min-h-screen md:flex md:flex-col md:justify-center md:items-center bg-gradient-to-br from-white via-gray-100 to-purple-50 animate-gradient transition-all">
                     <main className="w-full md:max-w-5xl mx-auto text-center">
                         <h1 className="text-4xl font-extrabold bg-gradient-to-r from-indigo-500 to-purple-600 text-transparent bg-clip-text tracking-wide mb-16">
                             部活情報
@@ -48,7 +53,7 @@ export default function BasicCoursePageList({infoPages}: Props){
                             })}
                         </section>
                     </main>
-                </div>
+                </div>}
             </Layout>
         </>
 

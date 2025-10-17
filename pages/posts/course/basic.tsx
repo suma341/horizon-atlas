@@ -46,7 +46,7 @@ export default function BasicCoursePageList({courseAndPosts}: Props){
         async function setData(){
             try{
                 setLoading(true)
-                const usersRole = userProfile?.given_name ?? "体験入部"
+                const usersRole = userProfile ? (userProfile.given_name ?? "体験入部") : "ゲスト"
                 const dataByRole:{
                     category: Category;
                     curriculums: PostMetaData[];
@@ -78,7 +78,7 @@ export default function BasicCoursePageList({courseAndPosts}: Props){
                             基礎班カリキュラム
                         </h1>
                         <section className="grid grid-cols-1 gap-8 px-6">
-                            {!loading && dataByRole.map((courseAndPosts, i) => {
+                            {!loading && dataByRole.filter((d)=>d.curriculums.length).map((courseAndPosts, i) => {
                                 return (
                                     <SingleCourse
                                     category={courseAndPosts.category}

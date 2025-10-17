@@ -70,7 +70,7 @@ const TagPageList = ({ posts, currentTag,allTags}: Props)=> {
         async function setData(){
             try{
                 setLoading(true)
-                const usersRole = userProfile?.given_name ?? "体験入部"
+                const usersRole = userProfile ? (userProfile.given_name ?? "体験入部") : "ゲスト"
                 const postsByRole = await getPostsByRole(usersRole,posts);
                 setMatchPosts(postsByRole);
             }finally{

@@ -7,6 +7,7 @@ import Header from '@/components/top/header';
 import SignInButton from '@/components/LoginButton/SignInButton';
 import StaticHead from '@/components/head/staticHead';
 import PageInfoSvc from '@/lib/services/PageInfoSvc';
+import { useRouter } from 'next/router';
 
 type Props = {
   pageNum:number;
@@ -23,6 +24,8 @@ export const getStaticProps: GetStaticProps = async () => {
 };
 
 export default function Home({pageNum}:Props) {
+  const router = useRouter()
+
   return (
     <div className="min-h-screen text-gray-900 diagonal-bg">
       <StaticHead />
@@ -57,8 +60,13 @@ export default function Home({pageNum}:Props) {
           </motion.h2>
 
           <p className="text-lg mt-4 max-w-2xl">プログラミング部Horizonで使用する学習資料を簡単に閲覧、検索できます。</p>
-          <div className="mt-8 flex justify-center">
-            <SignInButton  />
+          <div className='m-4 gap-4 flex flex-col'>
+            <div className="mt-8 flex justify-center">
+              <SignInButton  />
+            </div>
+            <button onClick={()=>{router.push("/posts")}} className="px-6 py-2 bg-gray-400 text-white font-medium rounded-lg hover:bg-gray-500 active:bg-gray-600 transition">
+              ゲストで始める
+            </button>
           </div>
           <div className='mt-2 text-sm text-gray-50'>⚠️Horizonサーバーのメンバーアカウントのみログインできます</div>
         </section>

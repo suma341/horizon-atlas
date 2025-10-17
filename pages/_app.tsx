@@ -7,7 +7,6 @@ import { auth } from "@/lib/fireabase";
 import { fetchUser } from "@/lib/fireStore";
 import { useRouter } from "next/router";
 import Loader from "@/components/loader/loader";
-import LoginModal from "@/components/loginModal/loginModal";
 
 function App({ Component, pageProps }:AppProps) {
   const {logout,loading:authLoading} = useFirebaseUser();
@@ -68,15 +67,6 @@ function App({ Component, pageProps }:AppProps) {
         </div>
       </div>
     )
-  }
-
-  if(!authLoading && !auth.currentUser){
-    return (<>
-      <LoginModal /> 
-      <div className="opacity-0 z-0">
-        <Component {...pageProps} /> 
-      </div>
-    </>)
   }
 
   return (

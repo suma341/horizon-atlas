@@ -58,7 +58,7 @@ export default function SearchPage({allTags, pages}:Props) {
 
   useEffect(()=>{
     async function setData(){
-      const usersRole = userProfile?.given_name ?? "体験入部"
+      const usersRole = userProfile ? (userProfile?.given_name ?? "体験入部") : "ゲスト"
       const postsByRole = await getPostsByRole(usersRole,pages);
       setMatchPosts(postsByRole);
       if(query!==undefined){

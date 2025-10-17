@@ -1,5 +1,5 @@
 import { GetStaticProps } from 'next';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { PostMetaData } from '@/types/postMetaData';
 import MdBlockComponent from '@/components/mdBlocks/mdBlock';
 import { pageNav } from '@/types/pageNav';
@@ -17,6 +17,7 @@ import PageInfoSvc from '@/lib/services/PageInfoSvc';
 import { CategoryService } from '@/lib/services/CategoryService';
 import InfoSvc from '@/lib/services/infoSvc';
 import { MdBlock } from '@/types/MdBlock';
+import useCheckRole from '@/hooks/useCheckUserProfile';
 
 type postPath = {
   params: { id:string }
@@ -134,33 +135,20 @@ export const getStaticProps: GetStaticProps = async ({ params }):Promise<{props:
 
 const Post =({ metadata, mdBlocks,pageNavs,pageId,title,iconType,iconUrl,coverUrl,firstText}: StaticProps) => {
   const { userProfile } = useUserProfileStore();
-  const [notVisible,setNotVisible] = useState(false);
-  const [load,setLoad] = useState(false)
+
+  const {notVisible,roleChecking} = useCheckRole(metadata==="info" ? metadata : metadata.visibility)
 
   useEffect(()=>{
-    try{
-      setLoad(true)
-      if(metadata==="info") return;
-      const usersRole = userProfile?.given_name ?? "体験入部";
-      const isVisible = metadata.visibility.some((item)=>item===usersRole)
-      if(!isVisible && usersRole!=="幹事長" && usersRole!=="技術部員"){
-        setNotVisible(true)
-      }else{
-        setNotVisible(false)
-      }
-    }finally{
-      setLoad(false)
-      if (typeof window !== "undefined" && window.location.hash) {
-        const id = window.location.hash.substring(1); // "#" を除去
-        const element = document.getElementById(id);
-        if (element) {
-          setTimeout(() => {
-            element.scrollIntoView({ behavior: "smooth" });
-          }, 100); 
-        }
+    if (typeof window !== "undefined" && window.location.hash) {
+      const id = window.location.hash.substring(1); // "#" を除去
+      const element = document.getElementById(id);
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: "smooth" });
+        }, 100); 
       }
     }
-  },[userProfile?.given_name])
+  },[userProfile])
 
   return (
     <>
@@ -183,20 +171,20 @@ const Post =({ metadata, mdBlocks,pageNavs,pageId,title,iconType,iconUrl,coverUr
           </div>
           <div className='border-b mt-2'></div>
           <div className='mt-4 font-medium'>
-            {!load && <div key={pageId}>
+            {!roleChecking && <div key={pageId}>
               {mdBlocks.map((mdBlock)=>{
                   return (
                     <MdBlockComponent mdBlock={mdBlock} depth={0} key={mdBlock.blockId} />
                   )
               })}
             </div>}
-            {load && <Loader size={80} />}
+            {roleChecking && <Loader size={80} />}
           </div>
         </section>
       </div>}
       {notVisible && <MessageBoard 
         title='このページは制限されています' 
-        message={`${userProfile?.given_name || "体験入部"}のユーザーはこのページを見ることを制限されています。ロールを更新するには再度ログインしてください。`}
+        message={`${userProfile ? (userProfile?.given_name || "体験入部") : "ゲスト"}ユーザーはこのページを見ることを制限されています。ロールを更新するには再度ログインしてください。`}
         link='/posts'
         linkLabel='戻る'
       />}

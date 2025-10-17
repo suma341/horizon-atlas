@@ -1,5 +1,6 @@
 import StaticHead from "@/components/head/staticHead";
 import Layout from "@/components/Layout/Layout"
+import LoginModal from "@/components/loginModal/loginModal";
 import { EDIT_NAV, HOME_NAV, SETTING_NAV } from "@/constants/pageNavs"
 import { saveStudentNumber } from "@/lib/fireStore";
 import useUserProfileStore from "@/stores/userProfile";
@@ -40,7 +41,8 @@ const UserSettingEdit=()=>{
         <>  
             <StaticHead />
             <Layout pageNavs={[HOME_NAV,SETTING_NAV,EDIT_NAV]}>
-                <div className="min-h-screen w-full pt-24 px-5 items-center flex flex-col">
+                {!userProfile && <LoginModal />}
+                {userProfile && <div className="min-h-screen w-full pt-24 px-5 items-center flex flex-col">
                     <div className="relative w-full max-w-md">
                         <input
                             type="text"
@@ -100,7 +102,7 @@ const UserSettingEdit=()=>{
                     <div className="w-full max-w-md">
                         <p className="text-red-500 font-bold text-sm">{errMess}</p>
                     </div>
-                </div>
+                </div>}
             </Layout>
         </>
     )
