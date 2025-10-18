@@ -57,7 +57,7 @@ export default function Child_database({ mdBlock }: Props) {
                         return (
                           <td
                             key={prop}
-                            className={`px-3 py-2 ${isLast ? "" : "border-r"}`}
+                            className={`px-3 py-2 text-sm ${isLast ? "" : "border-r"}`}
                           >
                             {propData.title
                               .map((t) => t.plain_text)
@@ -68,7 +68,7 @@ export default function Child_database({ mdBlock }: Props) {
                         return (
                           <td
                             key={prop}
-                            className={`px-3 py-2 ${isLast ? "" : "border-r"}`}
+                            className={`px-3 py-2 text-sm ${isLast ? "" : "border-r"}`}
                           >
                             {propData.rich_text
                               .map((t) => t.plain_text)
@@ -81,7 +81,7 @@ export default function Child_database({ mdBlock }: Props) {
                         return (
                           <td
                             key={prop}
-                            className={`px-3 py-2 ${isLast ? "" : "border-r"}`}
+                            className={`px-3 py-2 text-sm ${isLast ? "" : "border-r"}`}
                           >
                             {year}年{month}月{day}日
                             {propData.date.end
@@ -93,7 +93,7 @@ export default function Child_database({ mdBlock }: Props) {
                         return (
                           <td
                             key={prop}
-                            className={`px-3 py-2 ${isLast ? "" : "border-r"}`}
+                            className={`px-3 py-2 text-sm ${isLast ? "" : "border-r"}`}
                           >
                             <span className="px-2 py-1 rounded-full text-xs font-medium">
                               {propData.select.name}
