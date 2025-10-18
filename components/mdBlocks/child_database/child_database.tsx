@@ -46,7 +46,7 @@ export default function Child_database({ mdBlock }: Props) {
               .map((row) => (
                 <tr key={row.id} className="hover:bg-gray-50 border-t border-b">
                   {block.database_data.properties.map((prop, i) => {
-                    const propData = (row.properties as any)[prop];
+                    const propData = (row.properties)[prop];
                     if (!propData)
                       return <td key={prop} className="px-3 py-2" />;
                     const isLast =
@@ -60,7 +60,7 @@ export default function Child_database({ mdBlock }: Props) {
                             className={`px-3 py-2 ${isLast ? "" : "border-r"}`}
                           >
                             {propData.title
-                              .map((t: any) => t.plain_text)
+                              .map((t) => t.plain_text)
                               .join("")}
                           </td>
                         );
@@ -71,7 +71,7 @@ export default function Child_database({ mdBlock }: Props) {
                             className={`px-3 py-2 ${isLast ? "" : "border-r"}`}
                           >
                             {propData.rich_text
-                              .map((t: any) => t.plain_text)
+                              .map((t) => t.plain_text)
                               .join("")}
                           </td>
                         );
@@ -107,7 +107,7 @@ export default function Child_database({ mdBlock }: Props) {
                             className={`px-3 py-2 ${isLast ? "" : "border-r"}`}
                           >
                             <div className="flex items-center space-x-2">
-                              {propData.people.map((p: any) => (
+                              {propData.people.map((p) => (
                                 <div
                                   key={p.id}
                                   className="flex items-center space-x-1"
