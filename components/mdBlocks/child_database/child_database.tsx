@@ -18,7 +18,7 @@ export default function Child_database({ mdBlock }: Props) {
     block.database_data.title.map((t) => t.plain_text).join("") || "Untitled";
 
   return (
-    <div className="p-6 bg-white" id={blockId}>
+    <div className="bg-white" id={blockId}>
       <h2 className="text-xl font-semibold mb-4">{title}</h2>
 
       {/* ✅ 横スクロール対応ラッパー */}
