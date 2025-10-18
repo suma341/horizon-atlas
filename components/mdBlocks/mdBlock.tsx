@@ -22,6 +22,7 @@ import Synced_block from './synced_block/synced_block';
 import Table_row from './table_row/table_row';
 import VideoBlock from './video/video';
 import { MdBlock } from '@/types/MdBlock';
+import Child_database from './child_database/child_database';
 
 type Props ={
     mdBlock:MdBlock;
@@ -78,6 +79,8 @@ export default function MdBlockComponent(props:Props) {
         return <Table_row mdBlock={mdBlock} />
     }else if(mdBlock.type==="video"){
         return <VideoBlock mdBlock={mdBlock} depth={depth} />
+    }else if(mdBlock.type==="child_database"){
+        return <Child_database mdBlock={mdBlock} />
     }
     return;
 }
