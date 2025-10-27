@@ -8,6 +8,7 @@ import SignInButton from '@/components/LoginButton/SignInButton';
 import StaticHead from '@/components/head/staticHead';
 import PageInfoSvc from '@/lib/services/PageInfoSvc';
 import { useRouter } from 'next/router';
+import useFirebaseUser from '@/hooks/useFirebaseUser';
 
 type Props = {
   pageNum:number;
@@ -25,6 +26,7 @@ export const getStaticProps: GetStaticProps = async () => {
 
 export default function Home({pageNum}:Props) {
   const router = useRouter()
+  const {user} = useFirebaseUser()
 
   return (
     <div className="min-h-screen text-gray-900 diagonal-bg">
@@ -64,9 +66,9 @@ export default function Home({pageNum}:Props) {
             <div className="mt-8 flex justify-center">
               <SignInButton  />
             </div>
-            <button onClick={()=>{router.push("/posts")}} className="px-6 py-2 bg-gray-400 text-white font-medium rounded-lg hover:bg-gray-500 active:bg-gray-600 transition">
-              ゲストで始める
-            </button>
+            {!user && <button onClick={()=>{router.push("/posts")}} className="px-6 py-2 bg-gray-400 text-white font-medium rounded-lg hover:bg-gray-500 active:bg-gray-600 transition">
+              ゲストモード
+            </button>}
           </div>
           <div className='mt-2 text-sm text-gray-50'>⚠️Horizonサーバーのメンバーアカウントのみログインできます</div>
         </section>

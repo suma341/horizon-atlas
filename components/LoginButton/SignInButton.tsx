@@ -1,5 +1,4 @@
 import useFirebaseUser from "@/hooks/useFirebaseUser";
-import { auth } from "@/lib/fireabase";
 import { useRouter } from "next/router";
 
 const SignInButton=()=>{
@@ -28,12 +27,11 @@ const SignInButton=()=>{
               <img src="/horizon-atlas/discord_logo.png" alt="discord" className="w-5 h-5 mr-2" />
               Discordでログイン
             </button>}
-            {auth.currentUser && <button
+            {user && <button
             className="flex items-center justify-center border border-gray-300
             bg-purple-700 hover:bg-purple-800 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition duration-300 transform hover:scale-105"
               onClick={() =>router.push("/posts")}>
-              <img src="/horizon-atlas/discord_logo.png" alt="discord" className="w-5 h-5 mr-2" />
-              Discordでログイン
+              スタート
             </button>}
         </div>
       );
