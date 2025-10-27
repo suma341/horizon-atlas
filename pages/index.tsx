@@ -70,7 +70,7 @@ export default function Home({pageNum}:Props) {
               ゲストモード
             </button>}
           </div>
-          <div className='mt-2 text-sm text-gray-50'>⚠️Horizonサーバーのメンバーアカウントのみログインできます</div>
+          {!user && <div className='mt-2 text-sm text-gray-50'>⚠️Horizonサーバーのメンバーアカウントのみログインできます</div>}
         </section>
         <About />
         <Curriculums pageNum={pageNum} />

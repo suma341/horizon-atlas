@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import useUserProfileStore from "@/stores/userProfile";
 import Loader from "@/components/loader/loader";
 import StaticHead from "@/components/head/staticHead";
+import useFirebaseUser from "@/hooks/useFirebaseUser";
 
 type Props = {
   categoryAndCurriculums:{

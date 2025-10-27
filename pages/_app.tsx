@@ -18,7 +18,6 @@ function App({ Component, pageProps }:AppProps) {
     const checkUser=async()=>{
       try{
         setLoading(true)
-        if(!router.asPath.startsWith("/posts") && !router.asPath.startsWith("/user")) return;
         if (user) {
           if(!userProfile){
             const user_ = await fetchUser(user.uid);
