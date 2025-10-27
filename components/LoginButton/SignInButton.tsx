@@ -1,8 +1,13 @@
-import useFirebaseUser from "@/hooks/useFirebaseUser";
+import { User } from "firebase/auth";
 import { useRouter } from "next/router";
+import Loader from "../loader/loader";
 
-const SignInButton=()=>{
-    const { user } = useFirebaseUser()
+type Props={
+  user:User | null;
+  loading:boolean
+}
+
+const SignInButton=({user,loading}:Props)=>{
     const router = useRouter()
 
     const handleSignIn=()=>{
@@ -17,7 +22,8 @@ const SignInButton=()=>{
 
     return (
         <div className="">
-            {!user && <button
+          {loading && <Loader size={30} />}
+            {(!user && !loading) && <button
             className="flex items-center justify-center border border-gray-300
             bg-purple-700 hover:bg-purple-800 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition duration-300 transform hover:scale-105"
               onClick={() =>{

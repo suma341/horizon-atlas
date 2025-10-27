@@ -26,7 +26,7 @@ export const getStaticProps: GetStaticProps = async () => {
 
 export default function Home({pageNum}:Props) {
   const router = useRouter()
-  const {user} = useFirebaseUser()
+  const {user,loading} = useFirebaseUser()
 
   return (
     <div className="min-h-screen text-gray-900 diagonal-bg">
@@ -64,13 +64,13 @@ export default function Home({pageNum}:Props) {
           <p className="text-lg mt-4 max-w-2xl">プログラミング部Horizonで使用する学習資料を簡単に閲覧、検索できます。</p>
           <div className='m-4 gap-4 flex flex-col'>
             <div className="mt-8 flex justify-center">
-              <SignInButton  />
+              <SignInButton user={user} loading={loading} />
             </div>
-            {!user && <button onClick={()=>{router.push("/posts")}} className="px-6 py-2 bg-gray-400 text-white font-medium rounded-lg hover:bg-gray-500 active:bg-gray-600 transition">
+            {(!user && !loading) && <button onClick={()=>{router.push("/posts")}} className="px-6 py-2 bg-gray-400 text-white font-medium rounded-lg hover:bg-gray-500 active:bg-gray-600 transition">
               ゲストモード
             </button>}
           </div>
-          {!user && <div className='mt-2 text-sm text-gray-50'>⚠️Horizonサーバーのメンバーアカウントのみログインできます</div>}
+          {(!user && !loading) && <div className='mt-2 text-sm text-gray-50'>⚠️Horizonサーバーのメンバーアカウントのみログインできます</div>}
         </section>
         <About />
         <Curriculums pageNum={pageNum} />
