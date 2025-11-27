@@ -10,6 +10,9 @@ export default class UserDataSvc{
 
     static get=async(user_id:string):Promise<null | Profile>=>{
         const profile = await UserDataGW.get(user_id)
+        if(typeof profile==="undefined"){
+            return null
+        }
         if(profile){
             return profile
         }
