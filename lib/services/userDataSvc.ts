@@ -14,6 +14,9 @@ export default class UserDataSvc{
             return profile
         }
         const profileFromFireStore = await fetchUser(user_id)
+        if(profileFromFireStore){
+            await UserDataGW.save(profileFromFireStore)
+        }
         return profileFromFireStore
     }
 }
