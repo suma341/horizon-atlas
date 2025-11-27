@@ -2,7 +2,7 @@ import StaticHead from "@/components/head/staticHead";
 import Layout from "@/components/Layout/Layout"
 import LoginModal from "@/components/loginModal/loginModal";
 import { EDIT_NAV, HOME_NAV, SETTING_NAV } from "@/constants/pageNavs"
-import { saveStudentNumber } from "@/lib/fireStore";
+import UserDataSvc from "@/lib/services/userDataSvc";
 import useUserProfileStore from "@/stores/userProfile";
 import { CheckCircle, XCircle } from "lucide-react";
 import { useRouter } from "next/router";
@@ -25,7 +25,7 @@ const UserSettingEdit=()=>{
             setErrMess("ユーザープロフィールの読み取りに失敗しました。しばらくしてからもう一度試してください。")
             return;
         }
-        await saveStudentNumber(studentNum,userProfile);
+        await UserDataSvc.save({...userProfile,studentNum});
         setUserProfile({...userProfile,studentNum})
         router.push("/user/setting")
     }

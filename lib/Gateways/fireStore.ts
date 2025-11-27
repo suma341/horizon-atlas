@@ -1,5 +1,5 @@
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { auth, db } from "./fireabase"
+import { auth, db } from "../fireabase"
 import { Profile } from "@/types/profile";
 
 export const saveUserProfile = async (profile:Profile) => {
@@ -18,13 +18,6 @@ export const saveUserProfile = async (profile:Profile) => {
   }
   await setDoc(userDocRef, {...profile,studentNum:""});
 };
-
-export const saveStudentNumber =async(studentNum:string,profile:Profile)=>{
-    const user = auth.currentUser;
-    if(!user) return;
-    const userDocRef = doc(db,"users",user.uid)
-    await setDoc(userDocRef,{...profile,studentNum})
-}
 
 export async function fetchUser(uid: string) {
   const docRef = doc(db, "users", uid);

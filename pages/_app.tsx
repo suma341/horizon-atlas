@@ -3,9 +3,9 @@ import "@/styles/globals.css";
 import { useEffect, useState } from "react";
 import useFirebaseUser from "@/hooks/useFirebaseUser";
 import useUserProfileStore from "@/stores/userProfile";
-import { fetchUser } from "@/lib/fireStore";
 import { useRouter } from "next/router";
 import Loader from "@/components/loader/loader";
+import UserDataSvc from "@/lib/services/userDataSvc";
 
 function App({ Component, pageProps }:AppProps) {
   const {logout,loading:authLoading,user} = useFirebaseUser();
@@ -20,7 +20,7 @@ function App({ Component, pageProps }:AppProps) {
         setLoading(true)
         if (user) {
           if(!userProfile){
-            const user_ = await fetchUser(user.uid);
+            const user_ = await UserDataSvc.get(user.uid);
             if(user_){
               setUserProfile(user_)
             }else{

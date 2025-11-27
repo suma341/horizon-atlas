@@ -4,9 +4,9 @@ import useFirebaseUser from "@/hooks/useFirebaseUser";
 import { useRouter } from "next/router";
 import { auth } from "@/lib/fireabase";
 import { Profile } from "@/types/profile";
-import { fetchUser, saveUserProfile } from "@/lib/fireStore";
 import useUserProfileStore from "@/stores/userProfile";
 import MessageBoard from "@/components/messageBoard/messageBoard";
+import UserDataSvc from "@/lib/services/userDataSvc";
 
 const Callback = () => {
   const { loginWithCustomToken, user, logout,loading } = useFirebaseUser();
@@ -34,7 +34,7 @@ const Callback = () => {
       try{
         if (auth.currentUser) {
           if(!userProfile){
-            const user = await fetchUser(auth.currentUser.uid);
+            const user = await UserDataSvc.get(auth.currentUser.uid)
             if(user){
               setUserProfile(user)
             }else{
@@ -110,7 +110,7 @@ const Callback = () => {
               }
               if(auth.currentUser){
                 setUserProfile(profile)
-                await saveUserProfile(profile)
+                await UserDataSvc.save(profile)
               }
             }
           }

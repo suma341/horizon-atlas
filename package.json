@@ -16,6 +16,7 @@
     "dotenv": "^16.4.7",
     "firebase": "^11.6.1",
     "framer-motion": "^12.4.7",
+    "idb": "^8.0.3",
     "image-size": "^2.0.2",
     "jsdom": "^26.1.0",
     "lucide-react": "^0.477.0",
