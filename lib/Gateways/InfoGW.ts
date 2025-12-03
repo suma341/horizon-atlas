@@ -2,7 +2,7 @@ import { PageInfo } from "@/types/page";
 
 export default class InfoGW{
     static get = async (match?: Partial<Record<keyof PageInfo, string | number>>) => {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_STORAGE_URL}/info/pageInfos/data.json`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_STORAGE_URL}/infos/data.json`);
         if (!res.ok) {
             throw new Error(`HTTP error! status: ${res.status}`);
         }

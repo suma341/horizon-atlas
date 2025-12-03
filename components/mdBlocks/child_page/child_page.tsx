@@ -2,6 +2,7 @@ import Link from 'next/link';
 import React from 'react';
 import Image from 'next/image';
 import { MdBlock } from '@/types/MdBlock';
+import { typeAssertio } from '@/lib/typeAssertion';
 
 type Props = {
   mdBlock: MdBlock;
@@ -16,9 +17,10 @@ type data={
 
 
 export default function ChildPage(props: Props) {
-  const { mdBlock } = props;
+  try{
+    const { mdBlock } = props;
   const pageId = mdBlock.blockId;
-  const data:data = JSON.parse(mdBlock.parent)
+  const data = typeAssertio<data>(mdBlock.parent as Record<string, string | number | boolean>, mdBlock.type)
   const title = data.parent.split("## ")[1]
 
   const newPath = `/posts/curriculums/${pageId}`; 
@@ -34,4 +36,7 @@ export default function ChildPage(props: Props) {
         </div>
       </Link>
   );
+  }catch(e){
+    throw new Error(`error in childPage error: ${e}`)
+  }
 }

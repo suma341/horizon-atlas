@@ -2,6 +2,7 @@ import { usePageLink } from "@/hooks/usePagePush";
 import { assignCss } from "@/lib/assignCssProperties";
 import { MdBlock } from "@/types/MdBlock";
 import { Parent } from "@/types/Parent";
+import { typeAssertio } from '@/lib/typeAssertion';
 
 type Props = {
     mdBlock: MdBlock;
@@ -14,8 +15,9 @@ type VideoData ={
 }
 
 const VideoBlock=(props:Props)=>{
-    const {mdBlock} = props
-    const data:VideoData = JSON.parse(mdBlock.parent)
+    try{
+        const {mdBlock} = props
+    const data = typeAssertio<VideoData>(mdBlock.parent as Record<string, string | number | boolean>, mdBlock.type)
 
     const { handleClick } = usePageLink()
 
@@ -35,6 +37,9 @@ const VideoBlock=(props:Props)=>{
             </p>
         </div>
     )
+    }catch(e){
+        throw new Error(`error in video: ${e}`)
+    }
 }
 
 export default VideoBlock;

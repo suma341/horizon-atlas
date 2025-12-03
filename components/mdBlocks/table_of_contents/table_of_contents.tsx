@@ -1,5 +1,6 @@
 import { MdBlock } from '@/types/MdBlock';
 import React, { useEffect, useState } from 'react'
+import { typeAssertio } from '@/lib/typeAssertion';
 
 type Props = {
     mdBlock: MdBlock;
@@ -12,9 +13,10 @@ type Props = {
 }
 
 function Table_of_contents({mdBlock}:Props) {
-    const [headingList,setHeadingList]=useState<HeadingType[]>([])
+    try{
+        const [headingList,setHeadingList]=useState<HeadingType[]>([])
     useEffect(()=>{
-        const heading:HeadingType[] = (JSON.parse(mdBlock.parent)).headingList;
+        const heading = typeAssertio<HeadingType[]>(mdBlock.parent as Record<string, string | number | boolean>, mdBlock.type)
         setHeadingList(heading)
     },[mdBlock])
 
@@ -46,6 +48,9 @@ function Table_of_contents({mdBlock}:Props) {
         })}
     </div>
   )
+    }catch(e){
+        throw new Error(`error in table_of_contents: ${e}`)
+    }
 }
 
 export default Table_of_contents;

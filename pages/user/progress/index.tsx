@@ -23,21 +23,41 @@ export default function Progress() {
   const [cannotLoad, setCannotLoad] = useState(false);
   const { userProfile } = useUserProfileStore()
 
+  const getProgressKey=(studentNum:string)=>{
+    return `atlas_progress_data-${studentNum}`
+  }
+
+  const getFromLocalStorage=(studentNum:string)=>{
+    const localItem = localStorage.getItem(getProgressKey(studentNum))
+    if(localItem){
+      try{
+        const data = JSON.parse(localItem)
+        return data
+      }catch{
+        return null
+      }
+    }
+    return null
+  }
+
   useEffect(() => {
     async function setData() {
       try{
-        if (userProfile) {
+        if (userProfile && userProfile.studentNum) {
           setLoading(true);
-          if(userProfile.studentNum){
-            const data = await getUserProgress(userProfile.studentNum);
-            if(data===null || data.length===0){
-              setCannotLoad(true)
-            }else{
-              setProgress(data)
-            }
+          const localItem = getFromLocalStorage(userProfile.studentNum)
+          if(localItem){
+            setProgress(localItem)
+            return;
           }
-        }
-        if(!userProfile || !userProfile.studentNum){
+          const data = await getUserProgress(userProfile.studentNum);
+          if(data===null || data.length===0){
+            setCannotLoad(true)
+          }else{
+            setProgress(data)
+            localStorage.setItem(getProgressKey(userProfile.studentNum),JSON.stringify(data))
+          }
+        }else{
           setCannotLoad(true)
         }
       }catch(e){

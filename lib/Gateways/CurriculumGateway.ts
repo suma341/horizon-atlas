@@ -12,12 +12,6 @@ type Curriculum={
     order: number
 }
 
-type TagData={
-    id: string
-    name: string;
-    color: string;
-}
-
 export class CurriculumGateway{    
     static get = async (match?: Partial<Record<keyof Curriculum, string | string[] | boolean | number>>) => {
         const res = await fetch(`${process.env.NEXT_PUBLIC_STORAGE_URL}/curriculums/data.json`);
@@ -45,10 +39,4 @@ export class CurriculumGateway{
         })
         return result
     };
-
-    static getAllTag=async()=>{
-        const res = await fetch("https://ryukoku-horizon.github.io/atlas-storage/tags/data.json");
-        const data:TagData[] = await res.json()
-        return data.map(d=>d.name)
-    }
 }

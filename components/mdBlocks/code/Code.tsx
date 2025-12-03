@@ -9,6 +9,7 @@ import { usePageLink } from '@/hooks/usePagePush';
 import PythonCode from '@/components/mdBlocks/code/languages/python';
 import PlainTextCode from './languages/plainText';
 import { MdBlock } from '@/types/MdBlock';
+import { typeAssertio } from '@/lib/typeAssertion';
 
 type Props = {
     mdBlock: MdBlock;
@@ -18,15 +19,16 @@ type Props = {
 const ImplementedLanguage = ["python","plain text"]
 
 export default function Code(props: Props) {
-    const { mdBlock } = props;
+    try{
+        const { mdBlock } = props;
     const [copied, setCopied] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
     const { handleClick } = usePageLink()
 
-    const codeOb:CodeBlock = JSON.parse(mdBlock.parent)
-    const codeContent = codeOb.parent.map((t)=>{
+    const codeOb = typeAssertio<CodeBlock>(mdBlock.parent as Record<string, string | number | boolean>, mdBlock.type)
+    const codeContent = Array.isArray(codeOb) ? codeOb.parent.map((t)=>{
         return t.plain_text
-    }).join("").replace(/\n$/, '').replace(/\t/g, '  ')
+    }).join("").replace(/\n$/, '').replace(/\t/g, '  ') : ""
 
     const handleCopy = async () => {
         try {
@@ -79,4 +81,7 @@ export default function Code(props: Props) {
             </p>
         </div>
     );
+    }catch(e){
+        throw new Error(`error in code error: ${e}`)
+    }
 }

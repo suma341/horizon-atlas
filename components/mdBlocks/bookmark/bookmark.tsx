@@ -1,3 +1,4 @@
+import { typeAssertio } from '@/lib/typeAssertion';
 import { MdBlock } from '@/types/MdBlock';
 import { Parent } from '@/types/Parent';
 import Image from 'next/image';
@@ -19,9 +20,11 @@ type BookmarkData ={
   }
 }
 
+
 export default function Bookmark(props: Props) {
   const { mdBlock } = props;
-  const data:BookmarkData = JSON.parse(mdBlock.parent);
+  try{
+    const data = typeAssertio<BookmarkData>(mdBlock.parent as Record<string, string | number | boolean>, mdBlock.type)
 
     return (
       <div className="my-2 rounded-sm border-2 border-neutral-200 hover:bg-neutral-100" id={mdBlock.blockId}>
@@ -48,4 +51,7 @@ export default function Bookmark(props: Props) {
       </Link>
     </div>
     )
+  }catch(e){
+    throw new Error(`error in bookmark error: ${e}`)
+  }
 }

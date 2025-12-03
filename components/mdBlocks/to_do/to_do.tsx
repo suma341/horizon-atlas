@@ -12,9 +12,11 @@ type Props={
 }
 
 export default function To_do(props:Props) {
-    const {mdBlock,depth} = props;
+    try{
+        const {mdBlock,depth} = props;
     const [checked, setChecked] = useState(false);
     const [mdTypeAndTextList,setMd]=useState<MdTypeAndText[]>([]);
+
     useEffect(()=>{
         const inputData:MdTypeAndText = {
             text: mdBlock.parent.slice(6),
@@ -50,4 +52,7 @@ export default function To_do(props:Props) {
             ))}
         </div>
     )
+    }catch(e){
+        throw new Error(`error in to_do: ${e}`)
+    }
 }

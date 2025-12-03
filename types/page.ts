@@ -3,7 +3,7 @@ export type PageInfo={
     title: string
     iconType:string
     iconUrl: string
-    coverUrl: string
+    cover: string
     id: string
     order: number
     parentId: string

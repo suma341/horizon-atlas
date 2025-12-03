@@ -1,4 +1,5 @@
 export function renderTextWithBreaks(text: string, style: React.CSSProperties, onClick?: () => void) {
+  try{
     const elements: React.ReactNode[] = [];
     let lastIndex = 0;
     const matches = [...text.matchAll(/\n/g)];
@@ -24,4 +25,7 @@ export function renderTextWithBreaks(text: string, style: React.CSSProperties, o
     }
   
     return elements;
+  }catch(e){
+    throw new Error(`error in renderTextWithBreaks: ${e}`)
+  }
 }

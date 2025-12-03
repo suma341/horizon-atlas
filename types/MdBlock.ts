@@ -1,6 +1,6 @@
 export type MdBlock={
     children:MdBlock[];
-    parent:string;
+    parent:Record<string,any> | string;
     type:string;
     blockId:string;
 }

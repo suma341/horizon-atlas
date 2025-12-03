@@ -60,7 +60,7 @@ export type DatabaseBlock={
             "plain_text": string,
             "href": null | string
         }[],
-        properties:string[],
+        properties:Record<string,object>,
         is_inline:boolean
     },
     query_data:{

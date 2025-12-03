@@ -2,18 +2,18 @@ import { PageData } from "@/types/pageData";
 type BlockData={
     curriculumId:string
     parentId: string
-    data: string
-    blockId: string
+    data: Record<string,string | number | boolean> | string
+    id: string
     type: string
     pageId: string
-    i: number
+    order: number
 }
 
 export default class SyncedGW{
-    static get = async (match?: Partial<Record<keyof BlockData, string>>) => {
+    static get = async (match?: Partial<Record<keyof BlockData, string>>):Promise<PageData[]> => {
         const res = await fetch(`${process.env.NEXT_PUBLIC_STORAGE_URL}/synced/data.json`);
         if (!res.ok) {
-            throw new Error(`HTTP error! status: ${res.status}`);
+            throw new Error(`error in SyncedGW/get status: ${res.status}, text: ${await res.text()}`);
         }
         let data: BlockData[] = await res.json();
 
@@ -27,7 +27,7 @@ export default class SyncedGW{
             }
         }   
         return data.map(d=>{
-            return {...d,order:d.i} as PageData
+            return {...d,blockId:d.id}  as PageData
         })
     };
 }

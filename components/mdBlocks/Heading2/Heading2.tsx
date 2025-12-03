@@ -5,6 +5,7 @@ import { getColorProperty } from '@/lib/backgroundCorlor';
 import { assignCss } from '@/lib/assignCssProperties';
 import { usePageLink } from '@/hooks/usePagePush';
 import { MdBlock } from '@/types/MdBlock';
+import { typeAssertio } from '@/lib/typeAssertion';
 
 type Props={
     mdBlock:MdBlock
@@ -12,9 +13,10 @@ type Props={
 }
 
 export default function Heading2(props:Props) {
-    const {mdBlock,depth} = props;
+    try{
+        const {mdBlock,depth} = props;
     const [isOpen, setIsOpen] = useState(false);
-    const data:HeadingData = JSON.parse(mdBlock.parent)
+    const data = typeAssertio<HeadingData>(mdBlock.parent as Record<string, string | number | boolean>, mdBlock.type)
     const colorProperty = getColorProperty(data.color);
     
     const { handleClick } = usePageLink()
@@ -49,4 +51,7 @@ export default function Heading2(props:Props) {
             ))}
         </div>
     )
+    }catch(e){
+        throw new Error(`error in heading2 error: ${e}`)
+    }
 }

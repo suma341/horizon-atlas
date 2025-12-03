@@ -7,60 +7,69 @@ import { getImageSize } from "./getImageSize";
 import { MdBlock } from "@/types/MdBlock";
 
 export function buildTree(pageData:PageData[], parentId:string):MdBlock[] {
-    const mdBlocks:MdBlock[] = pageData
-        .filter(item => item.parentId === parentId)
-        .map(item =>{
-            return({
-                blockId: item.blockId,
-                type: item.type,
-                parent: item.data,
-                children: buildTree(pageData, item.blockId) 
-        })});
-    return mdBlocks;
+    try{
+        const mdBlocks:MdBlock[] = pageData
+            .filter(item => item.parentId === parentId)
+            .map(item =>{
+                return({
+                    blockId: item.blockId,
+                    type: item.type,
+                    parent: item.data,
+                    children: buildTree(pageData, item.blockId) 
+            })});
+        return mdBlocks;
+    }catch(e){
+        throw new Error(`error in buildTree: ${e}`)
+    }
 }
 
 export async function processBlock(block:MdBlock,mdBlocks:MdBlock[],curriculumId:string):Promise<MdBlock>{
     if(block.type==="table_of_contents"){
-        const headingList = findHeadingBlock(mdBlocks);
-        const stringfyData = JSON.stringify({headingList});
-        return {
-            ...block,
-            parent:stringfyData,
-            children: block.children.length===0 ? [] :
-                await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks,curriculumId)))
-        }
-    }else if(block.type==="synced_block"){
-        const data = block.parent;
-        if(data==="original"){
+        try{
+            const headingList = findHeadingBlock(mdBlocks);
             return {
                 ...block,
+                parent:headingList,
                 children: block.children.length===0 ? [] :
-                        await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks,curriculumId)))
-            };
-        }else{
-            const pageData = await SyncedGW.get({"blockId":data})
-            const original = pageData[0]
-            if(original){
-                const mdBlocks = await PageDataService.getPageDataByPageId(original.pageId,original.curriculumId)
-                const target = mdBlocks.find(m=>m.blockId===original.blockId)
-                if(target){
-                    return {
-                        ...target,
-                        children:target.children.length===0 ? [] :
-                        await Promise.all(target.children.map(async(child)=>await processBlock(child,mdBlocks,original.curriculumId)))
+                    await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks,curriculumId)))
+            }
+        }catch(e){
+            throw new Error(`error in processBlock table_of_contents: ${e}`)
+        }
+    }else if(block.type==="synced_block" && typeof block.parent==="string"){
+        try{
+            const data = block.parent;
+            if(data!=="original" ){
+                const pageData = await SyncedGW.get({"id":data})
+                const original = pageData[0]
+                if(original){
+                    const mdBlocks = await PageDataService.getPageDataByPageId(original.pageId,original.curriculumId)
+                    const target = mdBlocks.find(m=>m.blockId===original.blockId)
+                    if(target){
+                        return {
+                            ...target,
+                            children:target.children.length===0 ? [] :
+                            await Promise.all(target.children.map(async(child)=>await processBlock(child,mdBlocks,original.curriculumId)))
+                        }
                     }
                 }
             }
+        }catch(e){
+            throw new Error(`error in processBlock synced_block: ${e}`)
         }
-    }else if(block.type==="image"){
-        const data:ImageBlock = JSON.parse(block.parent)
-        const size = await getImageSize(data.url)
-        const addSizeData:ImageBlock_Size = {...data,...size}
-        return {
-            ...block,
-            parent:JSON.stringify(addSizeData),
-            children: block.children.length===0 ? [] :
-                await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks,curriculumId)))
+    }else if(block.type==="image" && typeof block.parent=="object" && block.parent.url!==""){
+        try{
+            const data = block.parent as ImageBlock
+            const size = await getImageSize(data.url)
+            const addSizeData:ImageBlock_Size = {...data,...size}
+            return {
+                ...block,
+                parent:JSON.stringify(addSizeData),
+                children: block.children.length===0 ? [] :
+                    await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks,curriculumId)))
+            }
+        }catch(e){
+            throw new Error(`error in processBlock image: ${e}`)
         }
     }
     return {

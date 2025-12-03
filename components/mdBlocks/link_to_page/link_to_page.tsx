@@ -3,21 +3,16 @@ import Image from "next/image"
 import { MdOutlineArrowOutward } from "react-icons/md";
 import { LinkToPageBlock } from '@/types/mdBlocks';
 import { MdBlock } from '@/types/MdBlock';
+import { typeAssertio } from '@/lib/typeAssertion';
 
 type Props = {
   mdBlock: MdBlock;
 };
 
-const parseLinkToPage=(s:string)=>{
-    if(typeof s!=="string")return s as LinkToPageBlock
-    else{
-      return JSON.parse(s)
-    }
-}
-
 export default function Link_to_page(props: Props) {
-  const { mdBlock } = props;
-  const pageToLinkBlock:LinkToPageBlock = parseLinkToPage(mdBlock.parent)
+  try{
+    const { mdBlock } = props;
+  const pageToLinkBlock = typeAssertio<LinkToPageBlock>(mdBlock.parent as Record<string, string | number | boolean>, mdBlock.type)
 
   return (
     <Link href={pageToLinkBlock.link} target='_brank' rel="noopener noreferrer" 
@@ -34,4 +29,7 @@ export default function Link_to_page(props: Props) {
       </span>
     </Link>
   );
+  }catch(e){
+    throw new Error(`error in link_to_page error: ${e}`)
+  }
 }

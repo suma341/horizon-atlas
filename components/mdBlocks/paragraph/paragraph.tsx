@@ -8,6 +8,7 @@ import { renderTextWithBreaks } from '../renderTextWithBreaks';
 import Image from 'next/image';
 import { MdOutlineArrowOutward } from 'react-icons/md';
 import { MdBlock } from '@/types/MdBlock';
+import { typeAssertio } from '@/lib/typeAssertion';
 
 type Props={
     mdBlock:MdBlock;
@@ -15,8 +16,9 @@ type Props={
 }
 
 export default function Paragraph(props:Props){
-    const {mdBlock,depth} = props;
-    const textData:ParagraphData = JSON.parse(mdBlock.parent)
+    try{
+        const {mdBlock,depth} = props;
+    const textData = typeAssertio<ParagraphData>(mdBlock.parent as Record<string, string | number | boolean>, mdBlock.type)
     const colorProperty = getColorProperty(textData.color);
 
     const { handleClick } = usePageLink()
@@ -53,4 +55,7 @@ export default function Paragraph(props:Props){
             })}
         </div>
     )
+    }catch(e){
+        throw new Error(`error in Paragraph error: ${e}`)
+    }
 }

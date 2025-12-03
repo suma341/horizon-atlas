@@ -6,6 +6,7 @@ import { assignCss } from '@/lib/assignCssProperties';
 import { usePageLink } from '@/hooks/usePagePush';
 import { renderTextWithBreaks } from '../renderTextWithBreaks';
 import { MdBlock } from '@/types/MdBlock';
+import { typeAssertio } from '@/lib/typeAssertion';
 
 type Props={
     mdBlock:MdBlock;
@@ -13,9 +14,11 @@ type Props={
 }
 
 export default function ToggleBlock(props:Props) {
-    const {mdBlock,depth} = props;
+    try{
+        const {mdBlock,depth} = props;
     const [isOpen, setIsOpen] = useState(false);
-    const textData:ParagraphData = JSON.parse(mdBlock.parent)
+    const textData = typeAssertio<ParagraphData>(mdBlock.parent as Record<string, string | number | boolean>, mdBlock.type)
+    
     const colorProperty = getColorProperty(textData.color);
 
     const { handleClick } = usePageLink()
@@ -44,5 +47,8 @@ export default function ToggleBlock(props:Props) {
             ))}
         </div>
     )
+    }catch(e){
+        throw new Error(`error in Toggle: ${e}`)
+    }
 }
 

@@ -1,19 +1,16 @@
 import { DatabaseBlock } from "@/types/databaseBlock";
 import { MdBlock } from "@/types/MdBlock";
+import { typeAssertio } from '@/lib/typeAssertion';
 
 type Props = {
   mdBlock: MdBlock;
 };
 
-const parseParent = (parent: string): DatabaseBlock => {
-  if (typeof parent === "string") return JSON.parse(parent);
-  else return parent;
-};
-
 export default function Child_database({ mdBlock }: Props) {
-  const { parent, blockId } = mdBlock;
+  try{
+    const { parent, blockId } = mdBlock;
   if (parent === "_") return;
-  const block = parseParent(parent);
+  const block = typeAssertio<DatabaseBlock>(mdBlock.parent as Record<string, string | number | boolean>, mdBlock.type)
   const title =
     block.database_data.title.map((t) => t.plain_text).join("") || "Untitled";
 
@@ -26,9 +23,7 @@ export default function Child_database({ mdBlock }: Props) {
         <table className="min-w-max border-collapse">
           <thead>
             <tr>
-              {block.database_data.properties
-                .slice() // reverseで直接破壊しないようにコピー
-                .reverse()
+              {Object.keys(block.database_data.properties)
                 .map((prop) => (
                   <th
                     key={prop}
@@ -45,12 +40,12 @@ export default function Child_database({ mdBlock }: Props) {
               .reverse()
               .map((row) => (
                 <tr key={row.id} className="hover:bg-gray-50 border-t border-b">
-                  {block.database_data.properties.map((prop, i) => {
+                  {Object.keys(block.database_data.properties).map((prop, i) => {
                     const propData = (row.properties)[prop];
                     if (!propData)
                       return <td key={prop} className="px-3 py-2" />;
                     const isLast =
-                      block.database_data.properties.length - 1 === i;
+                      Object.keys(block.database_data.properties).map.length - 1 === i;
 
                     switch (propData.type) {
                       case "title":
@@ -138,4 +133,8 @@ export default function Child_database({ mdBlock }: Props) {
       </div>
     </div>
   );
+  }catch(e){
+    console.log("mdBlock.parent",mdBlock.parent)
+    throw new Error(`error in child_database error: ${e}`)
+  }
 }
