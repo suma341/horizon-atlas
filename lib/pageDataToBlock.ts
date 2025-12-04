@@ -61,10 +61,18 @@ export async function processBlock(block:MdBlock,mdBlocks:MdBlock[],curriculumId
         try{
             const data = block.parent as ImageBlock
             const size = await getImageSize(data.url)
+            if(!size){
+                return {
+                ...block,
+                    parent:data,
+                    children: block.children.length===0 ? [] :
+                        await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks,curriculumId)))
+                }
+            }
             const addSizeData:ImageBlock_Size = {...data,...size}
             return {
                 ...block,
-                parent:JSON.stringify(addSizeData),
+                parent:addSizeData,
                 children: block.children.length===0 ? [] :
                     await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks,curriculumId)))
             }

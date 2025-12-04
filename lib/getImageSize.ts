@@ -7,7 +7,8 @@ export const getImageSize = async(url: string)=> {
             // remote
             const res = await fetch(url);
             if (!res.ok) {
-                throw new Error(`Failed to fetch image: ${res.statusText}`);
+                console.log(`Failed to fetch image: ${res.statusText}`);
+                return undefined
             }
             const arrayBuffer = await res.arrayBuffer();
             const buffer = Buffer.from(arrayBuffer);

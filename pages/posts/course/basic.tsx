@@ -78,7 +78,7 @@ export default function BasicCoursePageList({courseAndPosts}: Props){
                             基礎班カリキュラム
                         </h1>
                         <section className="grid grid-cols-1 gap-8 px-6">
-                            {!loading && dataByRole.filter((d)=>d.curriculums.length).map((courseAndPosts, i) => {
+                            {!loading && dataByRole.filter((d)=>d.curriculums.length).sort((a,b)=>a.category.order - b.category.order).map((courseAndPosts, i) => {
                                 return (
                                     <SingleCourse
                                     category={courseAndPosts.category}

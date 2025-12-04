@@ -4,6 +4,7 @@ export type Category={
     description: string
     iconUrl:string
     iconType: string
-    cover: string
+    coverUrl: string
     is_basic_curriculum:boolean;
+    order:number;
 }

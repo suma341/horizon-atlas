@@ -120,7 +120,7 @@ const PostsPage = ({ allTags,noCaterizedCurriculums,categoryAndCurriculums}: Pro
                 <SearchField searchKeyWord={""} />
                 <Tags allTags={allTags} />
                 {!loading && <div>
-                  {courseByRole.map((item,i)=>{
+                  {courseByRole.sort((a,b)=>a.category.order - b.category.order).map((item,i)=>{
                       return (
                         <SingleCourse key={i} category={item.category} />
                       )
