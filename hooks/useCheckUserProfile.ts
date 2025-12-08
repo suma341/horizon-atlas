@@ -26,7 +26,6 @@ const useCheckRole=(visibility:string[] | "info")=>{
                 }
             }finally{
                 setRoleChecking(false)
-                setNotVisible(false)
             }
         }
         checkRole()

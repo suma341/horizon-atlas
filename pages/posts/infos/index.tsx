@@ -15,11 +15,10 @@ type Props={
 // getStaticProps関数
 export const getStaticProps: GetStaticProps = async () => {
     const infoPages = await InfoSvc.getAll()
-    const parentPages = infoPages.filter((p)=>p.curriculumId===p.id)
 
     return {
         props: {
-            infoPages:parentPages
+            infoPages:infoPages
         } as Props
     };
 };
