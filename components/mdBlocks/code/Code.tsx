@@ -1,22 +1,17 @@
 import React, { useState } from 'react';
-import { atomOneLight } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
-import SyntaxHighlighter from 'react-syntax-highlighter/dist/cjs/default-highlight';
 import { LuCopy } from "react-icons/lu";
 import { FaCheck } from "react-icons/fa6";
 import { assignCss } from '@/lib/assignCssProperties';
 import { CodeBlock } from '@/types/code';
 import { usePageLink } from '@/hooks/usePagePush';
-import PythonCode from '@/components/mdBlocks/code/languages/python';
-import PlainTextCode from './languages/plainText';
 import { MdBlock } from '@/types/MdBlock';
 import { typeAssertio } from '@/lib/typeAssertion';
+import * as CB from './codeBlock';
 
 type Props = {
     mdBlock: MdBlock;
     depth: number;
 };
-
-const ImplementedLanguage = ["python","plain text"]
 
 export default function Code(props: Props) {
     try{
@@ -61,13 +56,7 @@ export default function Code(props: Props) {
                 </button>
             </div>
             
-            {codeOb.language==="python" && <PythonCode parent={codeOb.parent} />}
-            {codeOb.language==="plain text" && <PlainTextCode parent={codeOb.parent} />}
-            {!ImplementedLanguage.includes(codeOb.language) && (
-                <SyntaxHighlighter style={atomOneLight} language={codeOb.language}>
-                    {codeContent}
-                </SyntaxHighlighter>
-            )}
+            <CB.default parents={codeOb.parent} language={codeOb.language} />
             <p className='text-sm m-0 text-neutral-600' style={{width: "fit-content", textAlign: "left"}}>
                 {codeOb.caption.map((text)=>{
                     const style = assignCss(text)

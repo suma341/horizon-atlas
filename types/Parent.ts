@@ -1,17 +1,19 @@
 export type Parent={
-    annotations:{
-        bold:boolean;
-        italic:boolean;
-        strikethrough:boolean;
-        underline:boolean;
-        code:boolean;
-        color:string;
-    };
+    annotations:Annotations;
     plain_text:string;
     href:string | null;
     scroll:string | undefined;
     mention?:LinkMntion | PageMention | PageMentionProcessed
 };
+
+export type Annotations={
+    bold:boolean;
+    italic:boolean;
+    strikethrough:boolean;
+    underline:boolean;
+    code:boolean;
+    color:string;
+}
 
 type LinkMntion={
     type:"link_mention"
@@ -20,7 +22,7 @@ type LinkMntion={
         title:string,
         icon_url?:string,
         description:string,
-        link_provider:string, //作者
+        link_provider:string,
         thumbnail_url:string
     }
 }

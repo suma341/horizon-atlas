@@ -1,5 +1,6 @@
 import { Parent } from "@/types/Parent";
 import { MdTypeAndText } from "@/types/textAndType";
+import { CSSProperties } from "react";
 
 
 export function assignCssProperties(mdTypeAndText:MdTypeAndText){
@@ -29,7 +30,7 @@ export function assignCssProperties(mdTypeAndText:MdTypeAndText){
   return properties;
 }
 
-export function assignCss(parent:Parent){
+export function assignCss(parent:Parent): CSSProperties{
   const result:React.CSSProperties[] = [{paddingBottom:"0.125rem",paddingTop:"0.125rem"}];
   const attritube = parent.annotations
   const color = assignColor(attritube.color)
