@@ -36,26 +36,28 @@ export async function processBlock(block:MdBlock,mdBlocks:MdBlock[],curriculumId
         }catch(e){
             throw new Error(`error in processBlock table_of_contents: ${e}`)
         }
-    }else if(block.type==="synced_block" && typeof block.parent==="string"){
-        try{
-            const data = block.parent;
-            if(data!=="original" ){
-                const pageData = await SyncedGW.get({"id":data})
-                const original = pageData[0]
-                if(original){
-                    const mdBlocks = await PageDataService.getPageDataByPageId(original.pageId,original.curriculumId)
-                    const target = mdBlocks.find(m=>m.blockId===original.blockId)
-                    if(target){
-                        return {
-                            ...target,
-                            children:target.children.length===0 ? [] :
-                            await Promise.all(target.children.map(async(child)=>await processBlock(child,mdBlocks,original.curriculumId)))
+    }else if(block.type==="synced_block"){
+        if(typeof block.parent==="string"){
+            try{
+                const data = block.parent.replaceAll("-","");
+                if(data!=="original" ){
+                    const pageData = await SyncedGW.get({"id":data})
+                    const original = pageData[0]
+                    if(original){
+                        const mdBlocks = await PageDataService.getPageDataByPageId(original.pageId,original.curriculumId)
+                        const target = mdBlocks.find(m=>m.blockId===original.blockId)
+                        if(target){
+                            return {
+                                ...target,
+                                children:target.children.length===0 ? [] :
+                                await Promise.all(target.children.map(async(child)=>await processBlock(child,mdBlocks,original.curriculumId)))
+                            }
                         }
                     }
                 }
+            }catch(e){
+                throw new Error(`error in processBlock synced_block: ${e}`)
             }
-        }catch(e){
-            throw new Error(`error in processBlock synced_block: ${e}`)
         }
     }else if(block.type==="image" && typeof block.parent=="object" && block.parent.url!==""){
         try{
