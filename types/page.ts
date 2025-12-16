@@ -7,6 +7,7 @@ export type PageInfo={
     id: string
     order: number
     parentId: string
+    type:"curriculum" | "info" | "answer"
 }
 
 // export type PostMetaData = {

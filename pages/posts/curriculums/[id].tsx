@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { PostMetaData } from '@/types/postMetaData';
 import MdBlockComponent from '@/components/mdBlocks/mdBlock';
 import { pageNav } from '@/types/pageNav';
-import { BASIC_NAV, HOME_NAV, INFO_NAV } from '@/constants/pageNavs';
+import { ANSWER_NAV, BASIC_NAV, HOME_NAV, INFO_NAV } from '@/constants/pageNavs';
 import Image from 'next/image';
 import Layout from '@/components/Layout/Layout';
 import { CurriculumService } from '@/lib/services/CurriculumService';
@@ -19,6 +19,7 @@ import InfoSvc from '@/lib/services/infoSvc';
 import { MdBlock } from '@/types/MdBlock';
 import useCheckRole from '@/hooks/useCheckUserProfile';
 import AnswerSvc from '@/lib/services/answerSvc';
+import CantLoadProgress from '@/components/cantLoadProgress/cantLoadProgress';
 
 type postPath = {
   params: { id:string }
@@ -34,6 +35,7 @@ type StaticProps = {
   iconUrl:string;
   coverUrl:string;
   firstText:string;
+  resourceType:ResourceType
 };
 
 type ResourceType = "curriculum" | "info" | "answer"
@@ -63,14 +65,7 @@ export const getStaticProps: GetStaticProps = async ({ params }):Promise<{props:
     const { curriculumId } = pageInfo
     const achieve:string[] = [`${pageInfo.title}：`]
     const isBasePage = curriculumId == pageId
-    let resourceType:ResourceType
-    const infodata =  await InfoSvc.getById(curriculumId)
-    if(infodata!=null)resourceType= "info"
-    else {
-      const answerdata = await AnswerSvc.getById(curriculumId)
-      if(answerdata!=null) resourceType="answer"
-      else resourceType = "curriculum"
-    }
+    const resourceType:ResourceType = pageInfo.type
     try{
         const mdBlocks =  await PageDataService.getPageDataByPageId(pageId,curriculumId);
         achieve.push("🤍")
@@ -86,6 +81,7 @@ export const getStaticProps: GetStaticProps = async ({ params }):Promise<{props:
           pageNavs.push(INFO_NAV)
           pageNavs.push({ title: singlePost.title, link: `/posts/curriculums/${curriculumId}` })
         }else if(resourceType=="answer"){
+          pageNavs.push(ANSWER_NAV)
           pageNavs.push({ title: singlePost.title, link: `/posts/curriculums/${curriculumId}` })
         }else{
           if("category" in singlePost){
@@ -132,7 +128,8 @@ export const getStaticProps: GetStaticProps = async ({ params }):Promise<{props:
             iconUrl:pageInfo.iconUrl,
             iconType:pageInfo.iconType,
             coverUrl:pageInfo.cover,
-            firstText
+            firstText,
+            resourceType
             },
         };
     }catch(e){
@@ -142,9 +139,9 @@ export const getStaticProps: GetStaticProps = async ({ params }):Promise<{props:
     }
 };
 
-const Post =({ metadata, mdBlocks,pageNavs,pageId,title,iconType,iconUrl,coverUrl,firstText}: StaticProps) => {
+const Post =({ metadata, mdBlocks,pageNavs,pageId,title,iconType,iconUrl,coverUrl,firstText,resourceType}: StaticProps) => {
   const { userProfile } = useUserProfileStore();
-  const {notVisible,roleChecking} = useCheckRole(metadata==="info" ? metadata : metadata.visibility)
+  const {notVisible,roleChecking,cannotLoad} = useCheckRole(metadata==="info" ? metadata : metadata.visibility,resourceType,title)
 
   useEffect(()=>{
     if (typeof window !== "undefined" && window.location.hash) {
@@ -190,11 +187,18 @@ const Post =({ metadata, mdBlocks,pageNavs,pageId,title,iconType,iconUrl,coverUr
           </div>
         </section>
       </div>}
-      {notVisible && <MessageBoard 
+      {notVisible && resourceType!=="answer" && <MessageBoard 
         title='このページは制限されています' 
         message={`${userProfile ? (userProfile?.given_name || "体験入部") : "ゲスト"}ユーザーはこのページを見ることを制限されています。ロールを更新するには再度ログインしてください。`}
         link='/posts'
         linkLabel='戻る'
+      />}
+      {notVisible && resourceType==="answer" && cannotLoad && <CantLoadProgress studentNum={userProfile?.studentNum} />}
+      {notVisible && resourceType==="answer" && !cannotLoad && <MessageBoard 
+        title='このページは制限されています' 
+        message={`まだこの問題を提出していないようです。リンクから提出済みの問題を確認できます`}
+        link='/user/progress'
+        linkLabel='進捗を確認'
       />}
     </Layout>
     </>

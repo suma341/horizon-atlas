@@ -4,7 +4,8 @@ import UserIcon from './UserInfo/userIcon';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FaArrowTrendUp } from 'react-icons/fa6';
-import { MdOutlineEmail } from "react-icons/md";
+import { FaInfoCircle } from 'react-icons/fa';
+import { MdOutlineQuestionAnswer } from "react-icons/md";
 import { FaRegUser } from "react-icons/fa";
 import useUserProfileStore from '@/stores/userProfile';
 import { useRouter } from 'next/router';
@@ -42,10 +43,18 @@ export default function Header({setOpenbar}:Props){
                         </Link>
                     </li>
                     <li className="mr-4">
-                        <Link href={'https://docs.google.com/forms/d/e/1FAIpQLScW_wz_h2Yd5ij50k8vH91EPUn_0EenEOJ9M147bcVl8KTQLA/viewform?usp=dialog'} target='_brank' rel="noopener noreferrer">
+                        <Link href={'/posts/answers'}>
                             <div className="text-neutral-400 hover:text-purple-500 flex flex-col items-center text-center">
-                                <MdOutlineEmail size={22} />
-                                <p>改善要請</p>
+                                <MdOutlineQuestionAnswer size={22} />
+                                <p>解答</p>
+                            </div>
+                        </Link>
+                    </li>
+                    <li className="mr-4">
+                        <Link href={'/posts/infos'}>
+                            <div className="text-neutral-400 hover:text-purple-500 flex flex-col items-center text-center">
+                                <FaInfoCircle size={22} />
+                                <p>部活情報</p>
                             </div>
                         </Link>
                     </li>
