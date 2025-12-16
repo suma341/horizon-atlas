@@ -84,7 +84,7 @@ const CoursePage = ({ posts,pageNavs,category }: Props)=> {
             <DynamicHead
                 title={`${pageNavs[1]===BASIC_NAV ? "基礎班カリキュラム/" : ""}${category.title}`}
                 firstText={category.description}
-                image={`https://raw.githubusercontent.com/Ryukoku-Horizon/notion2atlas/main/public/ogp/category/${category.id}.png`}
+                image={`https://raw.githubusercontent.com/Ryukoku-Horizon/notion2atlas/main/public/ogp/${category.id}.png`}
                 link={`https://ryukoku-horizon.github.io/horizon-atlas/${pageNavs[pageNavs.length - 1].link}`}
             />
             <Layout pageNavs={pageNavs}> 
