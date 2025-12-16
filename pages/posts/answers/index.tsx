@@ -49,7 +49,7 @@ export default function AnswersPage({answerPages}: Props){
                 </div>}
                 {userProfile && !loading && 
                 <div className="min-h-screen md:flex md:flex-col md:justify-center md:items-center bg-gradient-to-br from-white via-gray-100 to-purple-50 animate-gradient transition-all">
-                    <main className="w-full md:max-w-5xl mx-auto text-center mt-16">
+                    <main className="w-full md:max-w-5xl mx-auto text-center mt-24 md:mt-12">
                         <h1 className="text-4xl font-extrabold bg-gradient-to-r from-indigo-500 to-purple-600 text-transparent bg-clip-text tracking-wide mb-16">
                             解答ページ
                         </h1>
