@@ -3,10 +3,10 @@ import Link from 'next/link';
 import UserBlock from '../Header/UserInfo/userBlock';
 import { FaArrowTrendUp } from "react-icons/fa6";
 import { PiSignOut } from "react-icons/pi";
-import { MdOutlineEmail } from 'react-icons/md';
+import {  MdOutlineQuestionAnswer } from 'react-icons/md';
 import useFirebaseUser from '@/hooks/useFirebaseUser';
 import useUserProfileStore from '@/stores/userProfile';
-import { FaRegUser } from 'react-icons/fa';
+import { FaInfoCircle, FaRegUser } from 'react-icons/fa';
 
 type Props={
     openbar:boolean;
@@ -70,11 +70,21 @@ function Sidebar({openbar,setOpenbar}:Props) {
                             </Link>
                         </li>
                         <li className='mt-3 hover:bg-neutral-100'>
-                            <Link href={'https://docs.google.com/forms/d/e/1FAIpQLScW_wz_h2Yd5ij50k8vH91EPUn_0EenEOJ9M147bcVl8KTQLA/viewform?usp=dialog'} target='_brank' rel="noopener noreferrer">
+                            <Link href={'/posts/infos'}>
                                 <div className='flex items-center justify-between mr-5 py-2 px-2'>
-                                    <MdOutlineEmail size={25} className='text-neutral-600' />
+                                    <FaInfoCircle size={25} className='text-neutral-600' />
                                     <div className='text-neutral-500 font-bold'>
-                                        改善要請
+                                        部活情報
+                                    </div>
+                                </div>
+                            </Link>
+                        </li>
+                        <li className='mt-3 hover:bg-neutral-100'>
+                            <Link href={'/posts/answers'}>
+                                <div className='flex items-center justify-between mr-5 py-2 px-2'>
+                                    <MdOutlineQuestionAnswer size={25} className='text-neutral-600' />
+                                    <div className='text-neutral-500 font-bold'>
+                                        解答
                                     </div>
                                 </div>
                             </Link>
