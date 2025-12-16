@@ -31,7 +31,7 @@ export default function BasicCoursePageList({infoPages}: Props){
             <DynamicHead
                 title="部活情報"
                 firstText="部活情報をまとめたページです"
-                image="https://raw.githubusercontent.com/Ryukoku-Horizon/atlas-storage2/main/public/ogp/infos.png"
+                image="https://raw.githubusercontent.com/Ryukoku-Horizon/notion2atlas/main/public/ogp/infos.png"
                 link="https://ryukoku-horizon.github.io/horizon-atlas/posts/infos"
             />
             <Layout pageNavs={[HOME_NAV, INFO_NAV]}>

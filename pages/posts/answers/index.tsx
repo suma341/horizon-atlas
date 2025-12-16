@@ -38,7 +38,7 @@ export default function AnswersPage({answerPages}: Props){
             <DynamicHead
                 title="解答ページ"
                 firstText="カリキュラムの解答ページです"
-                image="https://raw.githubusercontent.com/Ryukoku-Horizon/atlas-storage2/main/public/ogp/answers.png"
+                image="https://raw.githubusercontent.com/Ryukoku-Horizon/notion2atlas/main/public/ogp/answers.png"
                 link="https://ryukoku-horizon.github.io/horizon-atlas/posts/answers"
             />
             <Layout pageNavs={[HOME_NAV, ANSWER_NAV]}>

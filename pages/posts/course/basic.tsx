@@ -68,7 +68,7 @@ export default function BasicCoursePageList({courseAndPosts}: Props){
             <DynamicHead
                 title="基礎班カリキュラム"
                 firstText="基礎班向けにプログラミングを１から学べます"
-                image="https://raw.githubusercontent.com/Ryukoku-Horizon/atlas-storage2/main/public/ogp/basic.png"
+                image="https://raw.githubusercontent.com/Ryukoku-Horizon/notion2atlas/main/public/ogp/basic.png"
                 link="https://ryukoku-horizon.github.io/horizon-atlas/posts/basic"
             />
             <Layout pageNavs={[HOME_NAV, BASIC_NAV]}>
