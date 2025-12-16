@@ -12,23 +12,19 @@ const SingleCourse = ({ category }: Props) => {
   return (
     <Link href={`/posts/course/${category.id}`} className="group">
       <section className="translate-y-5 animate-fadeIn mb-4 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-500 ease-out border border-gray-200/70 bg-white/90 hover:bg-gray-100/50 backdrop-blur-xl transform group-hover:scale-105 group-hover:-translate-y-2 group-hover:rotate-1">
-        <div className="flex items-center">
-          {category.iconType === "" && (
+        <div className="flex flex-row items-center justify-start">
+          {(category.iconType === "" || category.iconUrl==="") && 
             <Image
               src={"https://ryukoku-horizon.github.io/horizon-atlas/file_icon.svg"}
               alt={category.title}
-              width={40}
-              height={40}
-              className="w-12 h-12 mr-4 transition-transform duration-500 ease-out group-hover:rotate-12"
+              className="w-12 h-12 m-0 mr-4 duration-500 ease-out group-hover:rotate-12"
             />
-          )}
-          {category.iconType !== "emoji" && category.iconType !== "" && (
+          }
+          {category.iconType !== "emoji" && category.iconType !== "" && category.iconUrl!=="" && (
             <Image
-              src={category.iconUrl ?? "https://ryukoku-horizon.github.io/horizon-atlas/file_icon.svg"}
+              src={category.iconUrl}
               alt={category.title}
-              width={40}
-              height={40}
-              className="w-12 h-12 mr-4 transition-transform duration-500 ease-out group-hover:rotate-12"
+              className="w-12 h-12 m-0 mr-4 duration-500 ease-out group-hover:rotate-12"
             />
           )}
           {category.iconType === "emoji" && (
