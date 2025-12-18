@@ -2,10 +2,10 @@ import MdBlockComponent from '../mdBlock';
 import { getColorProperty } from '@/lib/backgroundCorlor';
 import Image from 'next/image';
 import { CalloutData } from '@/types/callout';
-import { assignCss } from '@/lib/assignCssProperties';
 import { usePageLink } from '@/hooks/usePagePush';
 import { MdBlock } from '@/types/MdBlock';
 import { typeAssertio } from '@/lib/typeAssertion';
+import RenderParent from '../renderParent';
 
 type Props={
     mdBlock:MdBlock
@@ -30,8 +30,7 @@ export default function Callout(props:Props) {
                 <div className='ml-6'>
                     <p>
                         {Array.isArray(data.parent) && data.parent.map((text,i)=>{
-                            const style = assignCss(text)
-                            return (<span style={style} key={i} onClick={()=>handleClick(text.href,text.scroll)}>{text.plain_text}</span>)
+                            return <RenderParent key={i} text={text} i={i} handleClick={()=>handleClick(text.href,text.scroll)} />
                         })}
                     </p>
                     {mdBlock.children.map((child, i)=>(

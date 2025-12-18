@@ -6,6 +6,7 @@ import { getColorProperty } from '@/lib/backgroundCorlor';
 import { usePageLink } from '@/hooks/usePagePush';
 import { MdBlock } from '@/types/MdBlock';
 import { typeAssertio } from '@/lib/typeAssertion';
+import RenderParent from '../renderParent';
 
 type Props={
     mdBlock:MdBlock
@@ -38,8 +39,7 @@ export default function Heading1(props:Props) {
                 </button>
                 <h1 className='font-bold text-3xl' style={colorProperty}>
                     {data.parent.map((text,i)=>{
-                        const style = assignCss(text)
-                        return (<span style={style} key={i} onClick={()=>handleClick(text.href,text.scroll)}>{text.plain_text}</span>)
+                        return <RenderParent key={i} text={text} i={i} handleClick={()=>handleClick(text.href,text.scroll)} />
                     })}
                 </h1>
             </div>}

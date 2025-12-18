@@ -2,7 +2,7 @@ import { PageData } from "@/types/pageData";
 import { findHeadingBlock } from "./findHeadingBlock";
 import SyncedGW from "./Gateways/syncedGW";
 import { PageDataService } from "./services/PageDataService";
-import { ImageBlock, ImageBlock_Size } from "@/types/mdBlocks";
+import { ImageBlock, ImageBlock_Size, LinkToPageBlock } from "@/types/mdBlocks";
 import { getImageSize } from "./getImageSize";
 import { MdBlock } from "@/types/MdBlock";
 
@@ -80,6 +80,18 @@ export async function processBlock(block:MdBlock,mdBlocks:MdBlock[],curriculumId
             }
         }catch(e){
             throw new Error(`error in processBlock image: ${e}`)
+        }
+    }else if(block.type==="link_to_page" && typeof block.parent==="object"){
+        const data = block.parent as LinkToPageBlock
+        const newData:LinkToPageBlock = {
+            ...data,
+            link:data.link.replaceAll("-","")
+        }
+        return {
+            ...block,
+            parent:newData,
+            children: block.children.length===0 ? [] :
+                    await Promise.all(block.children.map(async(child)=>await processBlock(child,mdBlocks,curriculumId)))
         }
     }
     return {

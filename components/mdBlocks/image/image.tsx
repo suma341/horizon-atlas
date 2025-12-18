@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import { FaExpandAlt } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
 import { typeAssertio } from '@/lib/typeAssertion';
+import Image from 'next/image';
 
 type Props = {
     mdBlock: MdBlock;
@@ -40,7 +41,7 @@ export default function ImageBlock(props: Props) {
                         }}
                         onClick={() => setIsOpen(true)} 
                     />}
-                    {isLandscape && <img
+                    {isLandscape && <Image
                     src={data.url}
                     alt={'image_block'}
                     style={ {
@@ -79,19 +80,15 @@ export default function ImageBlock(props: Props) {
                         className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50"
                         onClick={() => setIsOpen(false)} 
                     >
-                        <div
+                        {/* <div
                             className="relative bg-white p-2 rounded-lg"
                             onClick={(e) => e.stopPropagation()} 
-                        >
+                        > */}
                             <div
-                                className="overflow-auto"
-                                style={{
-                                    maxWidth: '90vw',
-                                    maxHeight: '90vh',
-                                    touchAction: 'none', 
-                                }}
+                                className="fixed inset-0 bg-black/80 backdrop-blur-sm
+                                    flex items-center justify-center"
                             >
-                                {isVertical && <img
+                                {/* {isVertical && <Image
                                     src={data.url}
                                     alt="image_block_large"
                                     style={{
@@ -99,17 +96,27 @@ export default function ImageBlock(props: Props) {
                                         height: 'auto'
                                     }}
                                 />}
-                                {isLandscape && <img
+                                {isLandscape && <Image
                                     src={data.url}
                                     alt="image_block_large"
                                     style={{
                                         width: "auto",
                                         height: "90vh"
                                     }}
-                                />}
-                                
+                                />} */}
+                                <Image
+                                    src={data.url}
+                                    alt=""
+                                    className="
+                                    max-w-[90vw]
+                                    max-h-[90vh]
+                                    object-contain
+                                    rounded-md
+                                    shadow-2xl
+                                    "
+                                />
                             </div>
-                        </div>
+                        {/* </div> */}
                         <button
                             className="flex absolute top-5 right-7 text-white rounded-md px-0.5"
                             onClick={() => setIsOpen(false)}
