@@ -1,7 +1,6 @@
-"use client";
-import { MdBlock } from 'notion-to-md/build/types'
 import React from 'react'
 import Table_row from '../table_row/table_row';
+import { MdBlock } from '@/types/MdBlock';
 
 type Props={
     mdBlock:MdBlock;

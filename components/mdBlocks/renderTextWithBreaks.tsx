@@ -1,4 +1,5 @@
 export function renderTextWithBreaks(text: string, style: React.CSSProperties, onClick?: () => void) {
+  try{
     const elements: React.ReactNode[] = [];
     let lastIndex = 0;
     const matches = [...text.matchAll(/\n/g)];
@@ -17,11 +18,14 @@ export function renderTextWithBreaks(text: string, style: React.CSSProperties, o
     // 残りのテキストを追加
     if (lastIndex < text.length) {
       elements.push(
-        <span key={`line-final`} style={style} onClick={onClick}>
+        <span key={`line-final`} style={{...style}} onClick={onClick}>
           {text.slice(lastIndex)}
         </span>
       );
     }
   
     return elements;
+  }catch(e){
+    throw new Error(`error in renderTextWithBreaks: ${e}`)
+  }
 }

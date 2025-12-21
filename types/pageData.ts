@@ -1,8 +1,7 @@
 export type PageData={
-    id:number;
     curriculumId:string;
     blockId:string;
-    data:string;
+    data:Record<string,any>;
     parentId:string;
     type:string;
     pageId:string;

@@ -1,7 +1,8 @@
 import Loader from '@/components/loader/loader';
+import { MdBlock } from '@/types/MdBlock';
 import { Parent } from '@/types/Parent';
-import { MdBlock } from 'notion-to-md/build/types';
 import React,{ useEffect, useState,useRef } from 'react'
+import { typeAssertio } from '@/lib/typeAssertion';
 
 type Props = {
     mdBlock: MdBlock;
@@ -21,10 +22,11 @@ type EmbedData ={
 } 
 
 function EmbedBlock(props: Props) {
-    const {mdBlock} = props;
+    try{
+        const {mdBlock} = props;
     const [appHeight,setAppHeight] = useState("500px");
     const iframeRef = useRef<HTMLIFrameElement>(null);
-    const data:EmbedData = JSON.parse(mdBlock.parent)
+    const data = typeAssertio<EmbedData>(mdBlock.parent as Record<string, string | number | boolean>, mdBlock.type)
     const [sLoad,setSLoad] = useState(false)
 
     useEffect(() => {
@@ -58,5 +60,8 @@ function EmbedBlock(props: Props) {
             />}
         </>}
     </div>)
+    }catch(e){
+        throw new Error(`error in embed error: ${e}`)
+    }
 }
 export default EmbedBlock;

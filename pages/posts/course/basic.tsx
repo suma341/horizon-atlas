@@ -1,7 +1,7 @@
 import Layout from "@/components/Layout/Layout";
 import SingleCourse from "@/components/Post/SingleCourse";
 import { BASIC_NAV, HOME_NAV } from "@/constants/pageNavs";
-import {  getBasicCourses, getPostsByCourse, getPostsByRole } from "@/lib/services/notionApiService";
+import { getPostsByRole } from "@/lib/services/notionApiService";
 import { PostMetaData } from "@/types/postMetaData";
 import type { GetStaticProps,} from "next";
 import { CurriculumService } from "@/lib/services/CurriculumService";
@@ -10,41 +10,34 @@ import { CategoryService } from "@/lib/services/CategoryService";
 import { Category } from "@/types/category";
 import useUserProfileStore from "@/stores/userProfile";
 import Loader from "@/components/loader/loader";
-import StaticHead from "@/components/head/staticHead";
+import DynamicHead from "@/components/head/dynamicHead";
 
 type Props={
     courseAndPosts: {
-        course: string;
-        posts: PostMetaData[];
+        category: Category;
+        curriculums: PostMetaData[];
     }[];
-    categoryData:Category[]
 }
 
 // getStaticProps関数
 export const getStaticProps: GetStaticProps = async () => {
-    const basicPosts = await CurriculumService.getBasicCurriculum();
-    const basicCourse = await getBasicCourses(basicPosts);
-    const courseAndPosts = await Promise.all(basicCourse.map(async(course)=>{
-        const posts = await getPostsByCourse(course,basicPosts);
+    const basicCategories = await CategoryService.getBasicCategory()
+    const categoryAndCurriculums = await Promise.all(basicCategories.map(async(c)=>{
+        const curriculums = await CurriculumService.getCurriculumByCategory(c.title)
         return {
-            course,
-            posts
+            category:c,
+            curriculums
         }
     }))
-    const allCategory = await CategoryService.getAllCategory()
-    const targetCategory = allCategory.filter((item)=>{
-        return basicCourse.some((item2)=>item2===item.title)
-    })
 
     return {
         props: {
-            courseAndPosts,
-            categoryData:targetCategory
-        },
+            courseAndPosts:categoryAndCurriculums
+        } as Props
     };
 };
 
-export default function BasicCoursePageList({courseAndPosts,categoryData}: Props){
+export default function BasicCoursePageList({courseAndPosts}: Props){
     const [dataByRole,setDataByRole] = useState(courseAndPosts);
     const { userProfile } = useUserProfileStore()
     const [loading,setLoading] = useState(false)
@@ -53,14 +46,14 @@ export default function BasicCoursePageList({courseAndPosts,categoryData}: Props
         async function setData(){
             try{
                 setLoading(true)
-                const usersRole = userProfile?.given_name ?? "体験入部"
+                const usersRole = userProfile ? (userProfile.given_name ?? "体験入部") : "ゲスト"
                 const dataByRole:{
-                    course: string;
-                    posts: PostMetaData[];
+                    category: Category;
+                    curriculums: PostMetaData[];
                 }[] = [];
                 for(const i of courseAndPosts){
-                    const postsByRole = await getPostsByRole(usersRole,i.posts);
-                    dataByRole.push({course:i.course,posts:postsByRole});
+                    const postsByRole = await getPostsByRole(usersRole,i.curriculums);
+                    dataByRole.push({category:i.category,curriculums:postsByRole});
                 }
                 setDataByRole(dataByRole);
             }finally{
@@ -72,27 +65,26 @@ export default function BasicCoursePageList({courseAndPosts,categoryData}: Props
 
     return (
         <>
-            <StaticHead />
+            <DynamicHead
+                title="基礎班カリキュラム"
+                firstText="基礎班向けにプログラミングを１から学べます"
+                image="https://raw.githubusercontent.com/Ryukoku-Horizon/notion2atlas/main/public/ogp/basic.png"
+                link="https://ryukoku-horizon.github.io/horizon-atlas/posts/basic"
+            />
             <Layout pageNavs={[HOME_NAV, BASIC_NAV]}>
                 <div className="min-h-screen md:flex md:flex-col md:justify-center md:items-center bg-gradient-to-br from-white via-gray-100 to-purple-50 animate-gradient transition-all">
-                    <main className="w-full md:max-w-5xl mx-auto text-center">
+                    <main className="w-full md:max-w-5xl mx-auto text-center mt-24 md:mt-12">
                         <h1 className="text-4xl font-extrabold bg-gradient-to-r from-indigo-500 to-purple-600 text-transparent bg-clip-text tracking-wide mb-16">
                             基礎班カリキュラム
                         </h1>
                         <section className="grid grid-cols-1 gap-8 px-6">
-                            {!loading && dataByRole.map((courseAndPosts, i) => {
-                                if(courseAndPosts.posts.length!==0){
-                                    const target = categoryData.find(
-                                        (item1) => item1.title === courseAndPosts.course
-                                    );
-                                    return (
-                                        <SingleCourse
-                                        course={courseAndPosts.course}
-                                        icon={{ url: target?.iconUrl, type: target?.iconType }}
-                                        key={i}
-                                        />
-                                    );
-                                }
+                            {!loading && dataByRole.filter((d)=>d.curriculums.length).sort((a,b)=>a.category.order - b.category.order).map((courseAndPosts, i) => {
+                                return (
+                                    <SingleCourse
+                                    category={courseAndPosts.category}
+                                    key={i}
+                                    />
+                                );
                             })}
                             {loading && <Loader size={20} />}
                         </section>

@@ -1,11 +1,11 @@
-"use client";
-import { MdBlock } from 'notion-to-md/build/types'
 import MdBlockComponent from '../mdBlock';
 import { ParagraphData } from '@/types/paragraph';
 import { getColorProperty } from '@/lib/backgroundCorlor';
 import { assignCss } from '@/lib/assignCssProperties';
 import { usePageLink } from '@/hooks/usePagePush';
 import { renderTextWithBreaks } from '../renderTextWithBreaks';
+import { MdBlock } from '@/types/MdBlock';
+import { typeAssertio } from '@/lib/typeAssertion';
 
 type Props={
     mdBlock:MdBlock;
@@ -14,8 +14,9 @@ type Props={
 }
 
 export default function NumberedListItem(props:Props) {
-    const {mdBlock,depth,sameDepth} =props;
-    const textData:ParagraphData = JSON.parse(mdBlock.parent)
+    try{
+        const {mdBlock,depth,sameDepth} =props;
+    const textData = typeAssertio<ParagraphData>(mdBlock.parent as Record<string, string | number | boolean>, mdBlock.type)
     const colorProperty = getColorProperty(textData.color);
 
     const numberDepth = sameDepth ?? 1;
@@ -38,4 +39,7 @@ export default function NumberedListItem(props:Props) {
             )}
         </div>
     )
+    }catch(e){
+        throw new Error(`error in number_list_item: ${e}`)
+    }
 }

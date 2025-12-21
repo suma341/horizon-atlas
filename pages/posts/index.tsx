@@ -1,9 +1,8 @@
 import Layout from "@/components/Layout/Layout";
 import { HOME_NAV } from "@/constants/pageNavs";
-import {  getAllTags, getEitherCourses, getPostsByCourse, getPostsByRole } from "@/lib/services/notionApiService";
+import {  getAllTags, getPostsByRole } from "@/lib/services/notionApiService";
 import { PostMetaData } from "@/types/postMetaData";
 import { GetStaticProps } from "next";
-import SearchField from "@/components/SearchField/SearchField";
 import Tags from "@/components/tag/Tags";
 import { CurriculumService } from "@/lib/services/CurriculumService";
 import Link from "next/link";
@@ -18,68 +17,58 @@ import Loader from "@/components/loader/loader";
 import StaticHead from "@/components/head/staticHead";
 
 type Props = {
-  courseAndPosts:{
-    course: string;
-    posts:PostMetaData[];
-  }[];
-  allTags:string[];
-  targetCategory:Category[];
-  emptyCoursesPosts:PostMetaData[];
+  categoryAndCurriculums:{
+    category: Category;
+    curriculums: PostMetaData[];
+  }[],
+  allTags:string[],
+  noCaterizedCurriculums:PostMetaData[]
 };
 
 export const getStaticProps: GetStaticProps = async () => {
   const allPosts:PostMetaData[] = await CurriculumService.getAllCurriculum();
-  const notBasicCourses = await getEitherCourses(false,allPosts);
-  const removeEmptyCourses = notBasicCourses.filter((course)=>course!=="")
-  const emptyCourses = notBasicCourses.filter((course)=>course==="")
-  const courseAndPosts = await Promise.all(removeEmptyCourses.map(async(course)=>{
-    const posts = await getPostsByCourse(course,allPosts);
+  const noCaterizedCurriculums = await CurriculumService.getCurriculumByCategory("")
+  const notBasicCategories = await CategoryService.getNotBasicCategory()
+  const categoryAndCurriculums = await Promise.all(notBasicCategories.map(async(c)=>{
+    const curriculums = await CurriculumService.getCurriculumByCategory(c.title)
     return {
-        course,
-        posts
+      category:c,
+      curriculums
     }
   }))
-  const emptyCoursesPosts = await Promise.all(emptyCourses.map((async(course)=>{
-    const posts = await getPostsByCourse(course,allPosts);
-    return posts
-  })));
+
   const allTags = await getAllTags(allPosts);
-  const allCategory = await CategoryService.getAllCategory()
-  const targetCategory = allCategory.filter((item)=>{
-    return notBasicCourses.some((item2)=>item2===item.title)
-})
   return {
       props: {
-        courseAndPosts,
+        categoryAndCurriculums,
         allTags,
-        targetCategory,
-        emptyCoursesPosts:emptyCoursesPosts.flat()
-      },
+        noCaterizedCurriculums
+      } as Props,
   };
 };
 
-const PostsPage = ({ allTags,courseAndPosts,targetCategory,emptyCoursesPosts}: Props)=> {
-  const [postsByRole, setPostsByRole] = useState(emptyCoursesPosts);
+const PostsPage = ({ allTags,noCaterizedCurriculums,categoryAndCurriculums}: Props)=> {
+  const [postsByRole, setPostsByRole] = useState(noCaterizedCurriculums);
   const { userProfile } = useUserProfileStore();
   const [courseByRole,setCourseByRole] = useState<{
-    course: string;
-    posts: PostMetaData[];
-  }[]>(courseAndPosts)
+    category: Category;
+    curriculums: PostMetaData[];
+  }[]>(categoryAndCurriculums)
   const [loading,setLoading] = useState(false)
 
   useEffect(()=>{
       async function setData(){
         try{
           setLoading(true)
-          const usersRole = userProfile?.given_name ?? "体験入部"
+          const usersRole = userProfile ? (userProfile.given_name ?? "体験入部") : "ゲスト"
           if(usersRole !=="幹事長" && usersRole !=="技術部員"){
-            const postsByRole = await getPostsByRole(usersRole,emptyCoursesPosts);
+            const postsByRole = await getPostsByRole(usersRole,noCaterizedCurriculums);
             setPostsByRole(postsByRole);
-            const courseByRole = await Promise.all(courseAndPosts.map(async(item)=>{
-              const postsByRole = item.posts.filter((item2)=>item2.visibility.some((item3)=>item3===usersRole))
-              return {posts:postsByRole,course:item.course};
+            const courseByRole = await Promise.all(categoryAndCurriculums.map(async(item)=>{
+              const postsByRole = item.curriculums.filter((item2)=>item2.visibility.some((item3)=>item3===usersRole))
+              return {curriculums:postsByRole,category:item.category};
             }))
-            const filteredCourse = courseByRole.filter((item)=>item.posts.length!==0)
+            const filteredCourse = courseByRole.filter((item)=>item.curriculums.length!==0)
             setCourseByRole(filteredCourse)
           }
         }finally{
@@ -87,7 +76,7 @@ const PostsPage = ({ allTags,courseAndPosts,targetCategory,emptyCoursesPosts}: P
         }
       }
       setData()
-  },[emptyCoursesPosts,userProfile?.given_name])
+  },[noCaterizedCurriculums,userProfile?.given_name])
 
     return (
       <>
@@ -97,7 +86,7 @@ const PostsPage = ({ allTags,courseAndPosts,targetCategory,emptyCoursesPosts}: P
             <div className="container max-w-3xl mx-auto font-sans pt-24 px-6">
               <main className="mt-16 mb-5 flex flex-col gap-8">
 
-                <section className="mb-12">
+                <section className="mb-4">
                   <Link href={`/posts/course/basic`} className="block group">
                     <section className="relative bg-white/90 backdrop-blur-lg border border-gray-300/50 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[1.01] hover:-translate-y-3">
                       <div className="flex items-center justify-between">
@@ -112,26 +101,22 @@ const PostsPage = ({ allTags,courseAndPosts,targetCategory,emptyCoursesPosts}: P
                     </section>
                   </Link>
                 </section>
-
-                <SearchField searchKeyWord={""} />
-                <Tags allTags={allTags} />
+                {loading && <Loader size={20} />}
                 {!loading && <div>
-                  {courseByRole.map((item,i)=>{
-                      const target = targetCategory.find(
-                        (item1) => item1.title === item.course
-                      );
+                  {courseByRole.sort((a,b)=>a.category.order - b.category.order).map((item,i)=>{
                       return (
-                        <SingleCourse key={i} course={item.course} icon={{url:target?.iconUrl,type:target?.iconType}} />
+                        <SingleCourse key={i} category={item.category} />
                       )
                   })}
                 </div>}
+                {/* <SearchField searchKeyWord={""} /> */}
+                <Tags allTags={allTags} />
                 {!loading && postsByRole.length!==0 && <div className="mt-5">
                   <p className="font-bold m-2">その他の資料</p>
                   {postsByRole.map((item)=>(
-                    <SinglePost postData={item} key={item.curriculumId} />
+                    <SinglePost postData={{...item,id:item.curriculumId}} key={item.curriculumId} />
                   ))}
                 </div>}
-                {loading && <Loader size={20} />}
               </main>
             </div>
           </div>

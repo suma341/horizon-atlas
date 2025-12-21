@@ -20,12 +20,13 @@ type pagePath = {
 
 export const getStaticPaths = async() =>{
 
-    const allTags = await CurriculumService.getAllTags();
+    const allPosts:PostMetaData[] = await CurriculumService.getAllCurriculum();
+    const allTags = await getAllTags(allPosts)
 
      const paramsList: pagePath[] = (
         await Promise.all(
-            allTags.map(async (tag: string) => {
-                return { params: { tag: tag } }
+            allTags.map(async (tag) => {
+                return { params: { tag } }
             })
         )
     ).flat();
@@ -44,7 +45,7 @@ type Props ={
 export const getStaticProps: GetStaticProps = async (context) => {
     const allPosts:PostMetaData[] = await CurriculumService.getAllCurriculum();
     const currentTag:string = typeof context.params?.tag == 'string' ? context.params.tag : "";
-    const allTags = await getAllTags(allPosts);
+    const allTags = await getAllTags(allPosts)
     
     const posts:PostMetaData[] = await getPostsByTag(currentTag, allPosts);
     return {
@@ -69,7 +70,7 @@ const TagPageList = ({ posts, currentTag,allTags}: Props)=> {
         async function setData(){
             try{
                 setLoading(true)
-                const usersRole = userProfile?.given_name ?? "体験入部"
+                const usersRole = userProfile ? (userProfile.given_name ?? "体験入部") : "ゲスト"
                 const postsByRole = await getPostsByRole(usersRole,posts);
                 setMatchPosts(postsByRole);
             }finally{
@@ -91,7 +92,7 @@ const TagPageList = ({ posts, currentTag,allTags}: Props)=> {
                                 return (
                                     <div key={post.curriculumId}>
                                         <SinglePost
-                                            postData={post}
+                                            postData={{...post,id:post.curriculumId}}
                                         />
                                     </div>
                             )})}

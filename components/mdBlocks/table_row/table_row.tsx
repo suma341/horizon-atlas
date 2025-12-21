@@ -1,14 +1,16 @@
 import { assignCss } from "@/lib/assignCssProperties";
+import { MdBlock } from "@/types/MdBlock";
 import { Parent } from "@/types/Parent";
 import Link from "next/link";
-import { MdBlock } from "notion-to-md/build/types";
+import { typeAssertio } from '@/lib/typeAssertion';
 
 type Props={
     mdBlock:MdBlock;
 }
 
 const Table_row=({mdBlock}:Props)=>{
-    const cells:Parent[][] = JSON.parse(mdBlock.parent)
+    try{
+        const cells = typeAssertio<Parent[][]>(mdBlock.parent as Record<string, string | number | boolean>, mdBlock.type)
 
     return (
         <tr id={mdBlock.blockId}>
@@ -27,6 +29,9 @@ const Table_row=({mdBlock}:Props)=>{
             })}
         </tr>
     )
+    }catch(e){
+        throw new Error(`error in table_row: ${e}`)
+    }
 }
 
 export default Table_row;

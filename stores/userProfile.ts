@@ -3,7 +3,7 @@ import { create } from "zustand";
 
 type State = {
   userProfile:Profile | null;
-  setUserProfile:(profile:Profile)=>void;
+  setUserProfile:(profile:Profile | null)=>void;
 };
 
 const useUserProfileStore = create<State>((set) => ({

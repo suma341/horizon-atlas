@@ -3,33 +3,31 @@ import { motion } from 'framer-motion';
 import About from '@/components/top/about';
 import Curriculums from '@/components/top/curriculums';
 import { GetStaticProps } from 'next';
-import { CurriculumService } from '@/lib/services/CurriculumService';
-import { PageDataService } from '@/lib/services/PageDataService';
 import Header from '@/components/top/header';
-import { IntroductionService } from '@/lib/services/IntroductionService';
-import { Introduction } from '@/types/introduction';
 import SignInButton from '@/components/LoginButton/SignInButton';
 import StaticHead from '@/components/head/staticHead';
+import PageInfoSvc from '@/lib/services/PageInfoSvc';
+import { useRouter } from 'next/router';
+import useFirebaseUser from '@/hooks/useFirebaseUser';
 
 type Props = {
   pageNum:number;
-  allIntroduction:Introduction[]
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const allCurriculumid:string[] = await CurriculumService.getAllCurriculumId();
-  const allChildId = await PageDataService.getChildPageIds();
-  const pageNum = allCurriculumid.length + allChildId.length;
-  const allIntroduction:Introduction[] = await IntroductionService.getAllIntroduction();
+  const pages = await PageInfoSvc.getAll()
+  const pageNum = pages.length
   return {
     props:{
       pageNum,
-      allIntroduction
-    },
+    } as Props,
   };
 };
 
-export default function Home({pageNum,allIntroduction}:Props) {
+export default function Home({pageNum}:Props) {
+  const router = useRouter()
+  const {user,loading} = useFirebaseUser()
+
   return (
     <div className="min-h-screen text-gray-900 diagonal-bg">
       <StaticHead />
@@ -64,13 +62,18 @@ export default function Home({pageNum,allIntroduction}:Props) {
           </motion.h2>
 
           <p className="text-lg mt-4 max-w-2xl">プログラミング部Horizonで使用する学習資料を簡単に閲覧、検索できます。</p>
-          <div className="mt-8 flex justify-center">
-            <SignInButton  />
+          <div className='m-4 gap-4 flex flex-col'>
+            <div className="mt-8 flex justify-center">
+              <SignInButton user={user} loading={loading} />
+            </div>
+            {(!user && !loading) && <button onClick={()=>{router.push("/posts")}} className="px-6 py-2 bg-gray-400 text-white font-medium rounded-lg hover:bg-gray-500 active:bg-gray-600 transition">
+              ゲストモード
+            </button>}
           </div>
-          <div className='mt-2 text-sm text-gray-50'>⚠️Horizonサーバーのメンバーアカウントのみログインできます</div>
+          {(!user && !loading) && <div className='mt-2 text-sm text-gray-50'>⚠️Horizonサーバーのメンバーアカウントのみログインできます</div>}
         </section>
         <About />
-        <Curriculums pageNum={pageNum} allIntroduction={allIntroduction} />
+        <Curriculums pageNum={pageNum} />
       </main>
 
       <footer className="bg-gray-200 text-gray-700 py-4 text-center">

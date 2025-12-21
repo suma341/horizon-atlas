@@ -1,5 +1,3 @@
-import { MdBlock } from 'notion-to-md/build/types'
-import React from 'react'
 import Paragraph from './paragraph/paragraph';
 import Heading1 from './Heading1/Heading1';
 import Heading2 from './Heading2/Heading2';
@@ -23,6 +21,8 @@ import To_do from './to_do/to_do';
 import Synced_block from './synced_block/synced_block';
 import Table_row from './table_row/table_row';
 import VideoBlock from './video/video';
+import { MdBlock } from '@/types/MdBlock';
+import Child_database from './child_database/child_database';
 
 type Props ={
     mdBlock:MdBlock;
@@ -32,54 +32,59 @@ type Props ={
 
 export default function MdBlockComponent(props:Props) {
     const {mdBlock,depth,sameDepth } = props;
-
-    if(mdBlock.type==='paragraph'){
-      return <Paragraph mdBlock={mdBlock} depth={depth} />
-    }else if(mdBlock.type==='heading_1'){
-        return <Heading1 mdBlock={mdBlock} depth={depth} />
-    }else if(mdBlock.type === 'heading_2'){
-        return <Heading2 mdBlock={mdBlock} depth={depth} />
-    }else if(mdBlock.type==='heading_3'){
-        return <Heading3 mdBlock={mdBlock} depth={depth} />
-    }else if(mdBlock.type==='divider'){
-        return <Divider mdBlock={mdBlock} />
-    }else if(mdBlock.type === 'code'){
-        return <Code mdBlock={mdBlock} depth={depth} />
-    }else if(mdBlock.type==='numbered_list_item'){
-        return <NumberedListItem mdBlock={mdBlock} depth={depth} />
-    }else if(mdBlock.type==='bulleted_list_item'){
-        return <BulletedListItem mdBlock={mdBlock} depth={depth} sameDepth={sameDepth} />
-    }else if(mdBlock.type==='callout'){
-        return <Callout mdBlock={mdBlock} depth={depth} />
-    }else if(mdBlock.type === 'quote'){
-        return <Quote mdBlock={mdBlock} depth={depth} />
-    }else if(mdBlock.type === 'image'){
-        return <ImageBlock mdBlock={mdBlock} />
-    }else if(mdBlock.type==='table'){
-        return <TableBlock mdBlock={mdBlock} depth={depth} />
-    }else if(mdBlock.type==='child_page'){
-        return <ChildPage mdBlock={mdBlock} />
-    }else if(mdBlock.type === 'bookmark'){
-        return <Bookmark mdBlock={mdBlock} depth={depth} />
-    }else if(mdBlock.type === 'toggle'){
-        return <ToggleBlock mdBlock={mdBlock} depth={depth} />
-    }else if(mdBlock.type === 'embed'){
-        return <EmbedBlock mdBlock={mdBlock} depth={depth} />
-    }else if(mdBlock.type==='link_to_page'){
-        return <Link_to_page mdBlock={mdBlock} />
-    }else if(mdBlock.type==='table_of_contents'){
-        return <Table_of_contents mdBlock={mdBlock} />
-    }else if(mdBlock.type==='column_list'){
-        return <Column_list mdBlock={mdBlock} depth={depth} />
-    }else if(mdBlock.type==='to_do'){
-        return <To_do mdBlock={mdBlock} depth={depth} />
-    }else if(mdBlock.type ==="synced_block"){
-        return <Synced_block mdBlock={mdBlock} depth={depth} />
-    }else if(mdBlock.type==="table_row"){
-        return <Table_row mdBlock={mdBlock} />
-    }else if(mdBlock.type==="video"){
-        return <VideoBlock mdBlock={mdBlock} depth={depth} />
+    try{
+        if(mdBlock.type==='paragraph'){
+        return <Paragraph mdBlock={mdBlock} depth={depth} />
+        }else if(mdBlock.type==='heading_1'){
+            return <Heading1 mdBlock={mdBlock} depth={depth} />
+        }else if(mdBlock.type === 'heading_2'){
+            return <Heading2 mdBlock={mdBlock} depth={depth} />
+        }else if(mdBlock.type==='heading_3'){
+            return <Heading3 mdBlock={mdBlock} depth={depth} />
+        }else if(mdBlock.type==='divider'){
+            return <Divider mdBlock={mdBlock} />
+        }else if(mdBlock.type === 'code'){
+            return <Code mdBlock={mdBlock} depth={depth} />
+        }else if(mdBlock.type==='numbered_list_item'){
+            return <NumberedListItem mdBlock={mdBlock} depth={depth} />
+        }else if(mdBlock.type==='bulleted_list_item'){
+            return <BulletedListItem mdBlock={mdBlock} depth={depth} sameDepth={sameDepth} />
+        }else if(mdBlock.type==='callout'){
+            return <Callout mdBlock={mdBlock} depth={depth} />
+        }else if(mdBlock.type === 'quote'){
+            return <Quote mdBlock={mdBlock} depth={depth} />
+        }else if(mdBlock.type === 'image'){
+            return <ImageBlock mdBlock={mdBlock} />
+        }else if(mdBlock.type==='table'){
+            return <TableBlock mdBlock={mdBlock} depth={depth} />
+        }else if(mdBlock.type==='child_page'){
+            return <ChildPage mdBlock={mdBlock} />
+        }else if(mdBlock.type === 'bookmark'){
+            return <Bookmark mdBlock={mdBlock} depth={depth} />
+        }else if(mdBlock.type === 'toggle'){
+            return <ToggleBlock mdBlock={mdBlock} depth={depth} />
+        }else if(mdBlock.type === 'embed'){
+            return <EmbedBlock mdBlock={mdBlock} depth={depth} />
+        }else if(mdBlock.type==='link_to_page'){
+            return <Link_to_page mdBlock={mdBlock} />
+        }else if(mdBlock.type==='table_of_contents'){
+            return <Table_of_contents mdBlock={mdBlock} />
+        }else if(mdBlock.type==='column_list'){
+            return <Column_list mdBlock={mdBlock} depth={depth} />
+        }else if(mdBlock.type==='to_do'){
+            return <To_do mdBlock={mdBlock} depth={depth} />
+        }else if(mdBlock.type ==="synced_block"){
+            return <Synced_block mdBlock={mdBlock} depth={depth} />
+        }else if(mdBlock.type==="table_row"){
+            return <Table_row mdBlock={mdBlock} />
+        }else if(mdBlock.type==="video"){
+            return <VideoBlock mdBlock={mdBlock} depth={depth} />
+        }else if(mdBlock.type==="child_database"){
+            return <Child_database mdBlock={mdBlock} />
+        }
+        return;
+    }catch(e){
+        throw new Error(`error in mdBlock type:${props.mdBlock.type}\n error: ${e}`)
     }
-    return;
 }
 

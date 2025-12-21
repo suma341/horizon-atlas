@@ -1,5 +1,6 @@
 import StaticHead from "@/components/head/staticHead";
 import Layout from "@/components/Layout/Layout"
+import LoginModal from "@/components/loginModal/loginModal";
 import { HOME_NAV, SETTING_NAV } from "@/constants/pageNavs"
 import useUserProfileStore from "@/stores/userProfile";
 import Link from "next/link";
@@ -12,14 +13,15 @@ const UserSetting=()=>{
         <>
             <StaticHead />
             <Layout pageNavs={[HOME_NAV,SETTING_NAV]}>
-                <div className="min-h-screen w-full pt-24 px-5 items-center flex flex-col">
+                {!userProfile && <LoginModal />}
+                {userProfile &&<div className="min-h-screen w-full pt-24 px-5 items-center flex flex-col">
                     <div className="bg-white shadow-xl rounded-2xl p-8 max-w-2xl w-full">
                         <h1 className="text-3xl font-bold my-4">プロフィール</h1>
                         <div className="flex">
                             <div className="flex flex-col items-center text-center basis-1/3">
                                 <img
-                                    src={userProfile?.picture}
-                                    alt={`${userProfile?.name}'s avatar`}
+                                    src={userProfile.picture}
+                                    alt={`${userProfile.name}'s avatar`}
                                     className="w-28 h-28 rounded-full object-cover border-4 border-white shadow-md"
                                 />
                                 <h1 className="mt-4 text-2xl font-semibold text-gray-900">{userProfile?.name}</h1>
@@ -55,7 +57,7 @@ const UserSetting=()=>{
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>}
             </Layout>
         </>
     )

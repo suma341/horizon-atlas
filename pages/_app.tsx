@@ -3,14 +3,12 @@ import "@/styles/globals.css";
 import { useEffect, useState } from "react";
 import useFirebaseUser from "@/hooks/useFirebaseUser";
 import useUserProfileStore from "@/stores/userProfile";
-import { auth } from "@/lib/fireabase";
-import { fetchUser } from "@/lib/fireStore";
 import { useRouter } from "next/router";
 import Loader from "@/components/loader/loader";
-import LoginModal from "@/components/loginModal/loginModal";
+import UserDataSvc from "@/lib/services/userDataSvc";
 
 function App({ Component, pageProps }:AppProps) {
-  const {logout,loading:authLoading} = useFirebaseUser();
+  const {logout,loading:authLoading,user} = useFirebaseUser();
   const { userProfile,setUserProfile } = useUserProfileStore();
   const [loading,setLoading] = useState(false);
   const [dotCount,setDotCount] = useState(0);
@@ -20,12 +18,11 @@ function App({ Component, pageProps }:AppProps) {
     const checkUser=async()=>{
       try{
         setLoading(true)
-        if(!router.asPath.startsWith("/posts") && !router.asPath.startsWith("/user")) return;
-        if (auth.currentUser) {
+        if (user) {
           if(!userProfile){
-            const user = await fetchUser(auth.currentUser.uid);
-            if(user){
-              setUserProfile(user)
+            const user_ = await UserDataSvc.get(user.uid);
+            if(user_){
+              setUserProfile(user_)
             }else{
               logout();
               router.push("/")
@@ -39,7 +36,7 @@ function App({ Component, pageProps }:AppProps) {
       }
     }
     checkUser()
-  },[auth.currentUser,authLoading])
+  },[authLoading,user])
 
   useEffect(() => {
     if(loading || authLoading){
@@ -68,15 +65,6 @@ function App({ Component, pageProps }:AppProps) {
         </div>
       </div>
     )
-  }
-
-  if(!authLoading && !auth.currentUser){
-    return (<>
-      <LoginModal /> 
-      <div className="opacity-0 z-0">
-        <Component {...pageProps} /> 
-      </div>
-    </>)
   }
 
   return (

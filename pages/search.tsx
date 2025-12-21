@@ -14,38 +14,52 @@ import { NUMBER_OF_POSTS_PER_PAGE } from "@/constants/numberOfPage";
 import { CurriculumService } from "@/lib/services/CurriculumService";
 import useUserProfileStore from "@/stores/userProfile";
 import StaticHead from "@/components/head/staticHead";
+import PageInfoSvc from "@/lib/services/PageInfoSvc";
+import { PageInfo } from "@/types/page";
 
 type Props = {
   allTags:string[];
-  posts:PostMetaData[];
+  pages:(PageInfo & PostMetaData)[]
 }
 
 export const getStaticProps: GetStaticProps = async () => {
 
   const allPosts:PostMetaData[] = await CurriculumService.getAllCurriculum();
-
   const allTags:string[] = await getAllTags(allPosts);
+
+  const allPages = await PageInfoSvc.getAll()
+  const pageAndMetadata = allPages.map((p)=>{
+    const metadata = allPosts.find(c=>c.curriculumId===p.curriculumId)!
+    return {
+      ...p,
+      ...metadata,
+      title:p.title,
+      iconType:p.iconType,
+      iconUrl:p.iconUrl
+    }
+  })
 
   return {
     props:{
       allTags,
-      posts:allPosts,
-    },
+      // posts:allPosts,
+      pages:pageAndMetadata
+    } as Props,
   };
 };
 
-export default function SearchPage({allTags, posts}:Props) {
-  const [matchPosts, setMatchPosts] = useState<PostMetaData[]>(posts);
+export default function SearchPage({allTags, pages}:Props) {
+  const [matchPosts, setMatchPosts] = useState<(PostMetaData | (PageInfo & PostMetaData))[]>(pages);
   const [currentPage, setCurrentPage] = useState(1);
-  const [numberOfPage, setNumberOfPage] = useState(calculatePageNumber(posts));
+  const [numberOfPage, setNumberOfPage] = useState(calculatePageNumber(pages));
   const { userProfile } = useUserProfileStore()
   const router = useRouter();
   const query = router.query.search!==undefined ? router.query.search as string : undefined;
 
   useEffect(()=>{
     async function setData(){
-      const usersRole = userProfile?.given_name ?? "体験入部"
-      const postsByRole = await getPostsByRole(usersRole,posts);
+      const usersRole = userProfile ? (userProfile?.given_name ?? "体験入部") : "ゲスト"
+      const postsByRole = await getPostsByRole(usersRole,pages);
       setMatchPosts(postsByRole);
       if(query!==undefined){
         const searchKeyWords = createSearchQuery(query);
@@ -56,7 +70,7 @@ export default function SearchPage({allTags, posts}:Props) {
       }
     }
     setData();
-  },[query,posts,userProfile])
+  },[query,pages,userProfile])
   
   const postsPerPage = NUMBER_OF_POSTS_PER_PAGE;
   
@@ -72,7 +86,7 @@ export default function SearchPage({allTags, posts}:Props) {
               <Tags allTags={allTags} />
               <div className="mt-5" />
               {matchPosts.length!==0 && matchPosts.slice(postsPerPage * (currentPage - 1), postsPerPage * currentPage).map((post)=>{
-                return (<SinglePost postData={post} key={post.curriculumId} />)
+                return (<SinglePost postData={{...post,id:"id" in post ? post.id : post.curriculumId}} key={post.curriculumId} />)
               })}
               {matchPosts.length===0 && <div className="text-xl flex items-center justify-center">
                 カリキュラムが見つかりませんでした

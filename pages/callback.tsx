@@ -4,10 +4,9 @@ import useFirebaseUser from "@/hooks/useFirebaseUser";
 import { useRouter } from "next/router";
 import { auth } from "@/lib/fireabase";
 import { Profile } from "@/types/profile";
-import { fetchUser, saveUserProfile } from "@/lib/fireStore";
 import useUserProfileStore from "@/stores/userProfile";
 import MessageBoard from "@/components/messageBoard/messageBoard";
-import { SUPABASE_ANON_KEY, SUPABASE_URL } from "@/constants/supabaseEnvironmental";
+import UserDataSvc from "@/lib/services/userDataSvc";
 
 const Callback = () => {
   const { loginWithCustomToken, user, logout,loading } = useFirebaseUser();
@@ -35,7 +34,7 @@ const Callback = () => {
       try{
         if (auth.currentUser) {
           if(!userProfile){
-            const user = await fetchUser(auth.currentUser.uid);
+            const user = await UserDataSvc.get(auth.currentUser.uid)
             if(user){
               setUserProfile(user)
             }else{
@@ -62,14 +61,13 @@ const Callback = () => {
               return;
             }
             const redirectUrl = `${process.env.NEXT_PUBLIC_ROOT_PATH}/callback`;
-            const res = await fetch(`${SUPABASE_URL}/functions/v1/auth_discord`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_CLOUDFLARE_URL}/api/login`, {
               method: "POST",
-              headers: { "Content-Type": "application/json","Authorization": `Bearer ${SUPABASE_ANON_KEY}` },
+              headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ code, redirectUrl }),
-              mode: "cors"
-              
             });
             if(!res.ok){
+              console.error(`error:${res.text}`)
               if(trigger<2){
                 setLoadingMess("ログイン中にエラーが起きました。再度ログインを試みます...")
                 setTimeout(()=>{
@@ -81,30 +79,39 @@ const Callback = () => {
               console.error("Error:", res.status, await res.text());
               return;
             }
-            const { firebaseToken,profile }:{firebaseToken:string,profile:Profile} = await res.json();
-            if(profile.profile){
-              try{
-                await loginWithCustomToken(firebaseToken);
-              }catch(e){
-                if(trigger<2){
-                  setLoadingMess("ログイン中にエラーが起きました。再度ログインを試みます...")
-                  setTimeout(()=>{
-                    setTrigger((prev)=>prev+1);
-                  },5000)
-                  return;
-                }else{
-                  console.error(e)
-                  setErrMessage("トークンの保存に失敗しました")
-                  return;
-                }
-              }
-            }else{
-              setErrMessage("HorizonのDiscordサーバーに参加したアカウントのみログインできます")
-              return;
+            const data:{succes:false,data:null | {firebaseToken:string,profile:Profile},error:null | string} = await res.json();
+            if(data.error){
+              console.error(data.error)
             }
-            if(auth.currentUser){
-              setUserProfile(profile)
-              await saveUserProfile(profile)
+            if(data.data!==null){
+              const {firebaseToken,profile} = data.data
+              if(profile.profile){
+                try{
+                  console.log(profile)
+                  await loginWithCustomToken(firebaseToken);
+                  console.log("ログイン成功")
+                }catch(e){
+                  console.error(`error:${e}`)
+                  if(trigger<2){
+                    setLoadingMess("ログイン中にエラーが起きました。再度ログインを試みます...")
+                    setTimeout(()=>{
+                      setTrigger((prev)=>prev+1);
+                    },5000)
+                    return;
+                  }else{
+                    console.error(e)
+                    setErrMessage("トークンの保存に失敗しました")
+                    return;
+                  }
+                }
+              }else{
+                setErrMessage("HorizonのDiscordサーバーに参加したアカウントのみログインできます")
+                return;
+              }
+              if(auth.currentUser){
+                setUserProfile(profile)
+                await UserDataSvc.save(profile)
+              }
             }
           }
         }

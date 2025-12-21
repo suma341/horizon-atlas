@@ -14,8 +14,10 @@ export function usePageLink(){
                 if(scroll){
                     router.push(`${href}#${scroll}`)
                 }else{
-                    if(!href.startsWith("http://") && !href.startsWith("https://")){
+                    if(href.startsWith("/posts/curriculums") || href.startsWith("https://ryukoku-horizon.github.io/horizon-atlas")){
                         router.push(href)
+                    }else if(!href.startsWith("http://") && !href.startsWith("https://")){
+                        return;
                     }else{
                         window.open(href, '_blank')
                     }

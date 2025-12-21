@@ -1,19 +1,23 @@
-import { SUPABASE_ANON_KEY, SUPABASE_URL } from "@/constants/supabaseEnvironmental";
+import { Category } from "@/types/category";
 
 export class CategoryGateway{
-    static getCategory=async(select:string,match?:{[key:string]:string})=>{
-        const res = await fetch(`${SUPABASE_URL}/functions/v1/getCategory`,{
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
-            },
-            body:JSON.stringify({
-                match,
-                select
-            })
-        })
-        const data = await res.json()
-        return data;
-    }
+    static get = async (match?: Partial<Record<keyof Category, string | string[] | boolean | number>>) => {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_STORAGE_URL}/categories/data.json`);
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
+    
+            let data: Category[] = await res.json();
+    
+            if (match) {
+                const keys = Object.keys(match) as (keyof Category)[];
+                for (const key of keys) {
+                    const value = match[key];
+                    if (value !== undefined) {
+                        data = data.filter((d) => d[key] === value);
+                    }
+                }
+            }   
+            return data
+        };
 }

@@ -1,26 +1,42 @@
-import { SUPABASE_ANON_KEY, SUPABASE_URL } from "@/constants/supabaseEnvironmental";
+import { PostMetaData } from "@/types/postMetaData";
 
-type Column="title" | "category" | "is_basic_curriculum" | "visibility" | "tag" | "curriculumId" | "iconType" | "iconUrl" | "coverUrl" | "order" | "*"
+type Curriculum={
+    id: string,
+    title: string,
+    visibility: string[],
+    category: string,
+    tag: string[],
+    iconType: string,
+    iconUrl:string,
+    coverUrl: string,
+    order: number
+}
 
 export class CurriculumGateway{    
-    static get=async(select:Column | Column[],match?:{[key:string]:string})=>{
-        const res = await fetch(`${SUPABASE_URL}/functions/v1/getCurriculumWithSelect`,{
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
-            },
-            body:JSON.stringify({
-                match,
-                select:Array.isArray(select) ? select.join(",") : select
-            })
-        })
-        if(!res.ok){
-            const text = await res.text()
-            console.error("error:",text)
-            throw new Error("error at curriculumGateway")
+    static get = async (match?: Partial<Record<keyof Curriculum, string | string[] | boolean | number>>) => {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_STORAGE_URL}/curriculums/data.json`);
+        if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
         }
-        const data = await res.json()
-        return data;
-    }
+
+        let data: Curriculum[] = await res.json();
+
+        if (match) {
+            const keys = Object.keys(match) as (keyof Curriculum)[];
+            for (const key of keys) {
+                const value = match[key];
+                if (value !== undefined) {
+                    data = data.filter((d) => d[key] === value);
+                }
+            }
+        }   
+        const result = data.map(d=>{
+            return {
+                ...d,
+                curriculumId:d.id,
+                tags:d.tag
+            } as PostMetaData
+        })
+        return result
+    };
 }
