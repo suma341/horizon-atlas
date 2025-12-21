@@ -85,14 +85,18 @@ export const getStaticProps: GetStaticProps = async ({ params }):Promise<{props:
           pageNavs.push({ title: singlePost.title, link: `/posts/curriculums/${curriculumId}` })
         }else{
           if("category" in singlePost){
-            const noCategorized = singlePost.category===""
+            const noCategorized = singlePost.category.length<1
             if(!noCategorized){
-              const category = await CategoryService.getCategoryByName(singlePost.category)
-              if(category){
-                if(category.is_basic_curriculum){
-                  pageNavs.push(BASIC_NAV)
+              for(const cat of singlePost.category){
+                const category = await CategoryService.getCategoryByName(cat)
+                if(category){
+                  if(category.is_basic_curriculum){
+                    pageNavs.push(BASIC_NAV)
+                    pageNavs.push({title: cat, link: `/posts/course/${category.id}?is_basic=true`})
+                  }else{
+                    pageNavs.push({title: cat, link: `/posts/course/${category.id}`})
+                  } 
                 }
-                pageNavs.push({title: singlePost.category, link: `/posts/course/${category.id}`})
               }
             }
             pageNavs.push({ title: singlePost.title, link: `/posts/curriculums/${curriculumId}` })

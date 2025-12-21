@@ -35,8 +35,6 @@ jobs:
         run: npm run build
         env:
           NEXT_PUBLIC_ROOT_PATH: ${{secrets.NEXT_PUBLIC_ROOT_PATH}}
-          # NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY}}
-          # NEXT_PUBLIC_SUPABASE_URL: ${{secrets.NEXT_PUBLIC_SUPABASE_URL}}
           NEXT_PUBLIC_FIREBASE_API_KEY: ${{secrets.NEXT_PUBLIC_FIREBASE_API_KEY}}
           NEXT_PUBLIC_AUTH_DOMAIN: ${{secrets.NEXT_PUBLIC_AUTH_DOMAIN}}
           NEXT_PUBLIC_PROJECT_ID: ${{secrets.NEXT_PUBLIC_PROJECT_ID}}

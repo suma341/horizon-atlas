@@ -8,8 +8,9 @@ export class CurriculumService{
 
     static getCurriculumByCategory=async(category:string)=>{
         // const datas = await CurriculumGateway.getCurriculumByCategory(category);
-        const datas = await CurriculumGateway.get({"category":category})
-        return datas.sort((a,b)=>a.order -b.order);
+        const datas = await CurriculumGateway.get()
+        const targets = datas.filter((d)=>d.category.find((cat)=>cat===category))
+        return targets.sort((a,b)=>a.order -b.order);
     }
 
     static getCurriculumById=async(id:string)=>{

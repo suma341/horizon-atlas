@@ -8,12 +8,12 @@ const StaticHead=()=>{
             <meta name="description" content="HorizonAtlasは、RyukokuHorizonの学習カリキュラムをまとめた部員専用のサービスです。" />
             <meta name="keywords" content="ryukoku,龍谷,プログラミング部,Horizon,HorizonAtlas" />
             <meta property="og:description" content="HorizonAtlasは、RyukokuHorizonの学習カリキュラムをまとめた部員専用のサービスです。" />
-            <meta property="og:image" content="https://raw.githubusercontent.com/Ryukoku-Horizon/atlas-storage2/main/public/ogp/home.png" />
+            <meta property="og:image" content={`${process.env.NEXT_PUBLIC_STORAGE_URL}/ogp/home.png`} />
             <meta property="og:type" content="website" />
             <meta name='twitter:title' content="HorizonAtlas" />
             <meta name='twitter:description' content="HorizonAtlasは、RyukokuHorizonの学習カリキュラムをまとめた部員専用のサービスです。" />
             <meta name='twitter:card' content='summary_large_image' />
-            <meta name="twitter:card" content="https://raw.githubusercontent.com/Ryukoku-Horizon/atlas-storage2/main/public/ogp/home.png" />
+            <meta name="twitter:card" content={`${process.env.NEXT_PUBLIC_STORAGE_URL}/ogp/home.png`} />
             <link rel="icon" href="/horizon-atlas/favicon.ico" />
         </Head>
     )

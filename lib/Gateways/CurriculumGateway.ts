@@ -4,7 +4,7 @@ type Curriculum={
     id: string,
     title: string,
     visibility: string[],
-    category: string,
+    category: string[],
     tag: string[],
     iconType: string,
     iconUrl:string,
