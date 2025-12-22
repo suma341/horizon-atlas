@@ -3,6 +3,7 @@ import React from 'react';
 import Image from 'next/image';
 import { MdBlock } from '@/types/MdBlock';
 import { typeAssertio } from '@/lib/typeAssertion';
+import { useRouter } from 'next/router';
 
 type Props = {
   mdBlock: MdBlock;
@@ -19,11 +20,14 @@ type data={
 export default function ChildPage(props: Props) {
   try{
     const { mdBlock } = props;
-  const pageId = mdBlock.blockId;
-  const data = typeAssertio<data>(mdBlock.parent as Record<string, string | number | boolean>, mdBlock.type)
-  const title = data.parent.split("## ")[1]
+    const pageId = mdBlock.blockId;
+    const router = useRouter()
+    const { category }= router.query as {category : string | undefined};
+    const data = typeAssertio<data>(mdBlock.parent as Record<string, string | number | boolean>, mdBlock.type)
+    const title = data.parent.split("## ")[1]
+    const query = category ? `?category=${category}` : ""
 
-  const newPath = `/posts/curriculums/${pageId}`; 
+    const newPath = `/posts/curriculums/${pageId}${query}`; 
 
   return (
       <Link href={newPath} id={mdBlock.blockId}>

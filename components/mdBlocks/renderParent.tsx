@@ -10,6 +10,7 @@ type Props={
 }
 
 const RenderParent=({text,i,handleClick}:Props)=>{
+
     if(text.mention && text.mention.type==="link_mention" && text.mention.content){
         return (<span className='underline text-slate-700 hover:bg-neutral-200/50 inline-flex cursor-pointer pb-0.5 pt-0.5 t-1' key={`${i}`} onClick={handleClick}>
             {text.mention.content.icon_url && <img src={text.mention.content.icon_url} className='w-5 h-5 m-0 t-0.5 mr-1' />}

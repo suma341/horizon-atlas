@@ -119,8 +119,11 @@ export const getStaticProps: GetStaticProps = async ({ params }):Promise<{props:
             throw new Error(`🟥 error in ${pageInfo.title}:${e}`)
         }
         achieve.push("🩷")
-        const childPage = await PageDataService.getPageNavs(pageInfo,resourceType=="info")
+        const childPage = await PageDataService.getPageNavs(pageInfo,resourceType)
         const pageNavs_ = curriculumId!==pageId ? [...pageNavs, ...childPage.reverse()] : pageNavs
+        if(pageId==="1ada501ef33781ea92d1dcb4d8f60e2a"){
+          console.log("pageNavs_",pageNavs_)
+        }
         achieve.push("🟢")
         return {
             props: {

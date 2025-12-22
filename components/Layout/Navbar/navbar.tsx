@@ -5,6 +5,7 @@ import DetailNav from './detailNav/DetailNav';
 import { IoHomeOutline } from 'react-icons/io5';
 import { useRouter } from 'next/router';
 import { BASIC_NAV } from '@/constants/pageNavs';
+import { useNavs } from '@/hooks/useNavs';
 
 type Props ={
     pageNavs:pageNav[];
@@ -12,46 +13,7 @@ type Props ={
 
 function Navbar(props:Props) {
     const {pageNavs} = props;
-    const router = useRouter();
-    const { category }= router.query as {category : string | undefined};
-    const [navs,setNavs] = useState<pageNav[]>([])
-
-    useEffect(()=>{
-        const categoryNavs:pageNav[] = []
-        for(const nav of pageNavs){
-            if(nav.link.startsWith("/posts/course/") && !nav.link.includes("/posts/course/basic")){
-                categoryNavs.push(nav)
-            }
-        }
-        if(categoryNavs.length<2){
-            setNavs(pageNavs)
-            return;
-        }
-        if(category){
-            const targetCategory = categoryNavs.find((c)=>c.title===category)
-            if(targetCategory){
-                const removeNavs = categoryNavs.filter((c)=>c.title!==targetCategory.title)
-                if(!targetCategory.link.endsWith("?is_basic=true")){
-                    removeNavs.push(BASIC_NAV)
-                }
-                console.log("removeNavs",removeNavs)
-                const filtered = pageNavs.filter((sc)=>!removeNavs.find((rc)=>sc.title===rc.title))
-                console.log("filtered",filtered)
-                setNavs(filtered)
-                return;
-            }
-        }
-        if(categoryNavs[0]){
-            const removeNavs = categoryNavs.filter((c)=>c.title!==categoryNavs[0].title)
-            if(!categoryNavs[0].link.endsWith("?is_basic=true")){
-                removeNavs.push(BASIC_NAV)
-            }
-            const filtered = pageNavs.filter((sc)=>!removeNavs.find((rc)=>sc.title===rc.title))
-            setNavs(filtered)
-            return;
-        }
-        setNavs(pageNavs)
-    },[])
+    const {navs} = useNavs(pageNavs)
 
     return (
         <>
