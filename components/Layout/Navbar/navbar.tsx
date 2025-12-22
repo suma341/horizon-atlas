@@ -1,10 +1,7 @@
 import { pageNav } from '@/types/pageNav';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
 import DetailNav from './detailNav/DetailNav';
 import { IoHomeOutline } from 'react-icons/io5';
-import { useRouter } from 'next/router';
-import { BASIC_NAV } from '@/constants/pageNavs';
 import { useNavs } from '@/hooks/useNavs';
 
 type Props ={
