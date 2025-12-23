@@ -1,11 +1,9 @@
 import { usePageLink } from '@/hooks/usePagePush';
 import { assignCss } from '@/lib/assignCssProperties';
 import { MdBlock } from '@/types/MdBlock';
-import { ImageBlock_Size } from '@/types/mdBlocks';
 import React, { useState } from 'react';
 import { FaExpandAlt } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
-import { typeAssertio } from '@/lib/typeAssertion';
 import Image from 'next/image';
 
 type Props = {
@@ -17,9 +15,9 @@ export default function ImageBlock(props: Props) {
         const { mdBlock } = props;
         const [isOpen, setIsOpen] = useState(false); 
         const [isHovered, setIsHovered] = useState(false);
-        const data = typeAssertio<ImageBlock_Size>(mdBlock.parent as Record<string, string | number | boolean>, mdBlock.type)
-
         const { handleClick } = usePageLink()
+        const data = mdBlock.parent.image;
+        if(!data)return;
 
         const isVertical = data.height > data.width;
         const isLandscape = data.width >= data.height;
@@ -66,7 +64,7 @@ export default function ImageBlock(props: Props) {
                             const style = assignCss(text)
                             return text.plain_text.split("\n").map((line,index)=>{
                                 return (<>
-                                    <span key={index} style={style} onClick={()=>handleClick(text.href,text.scroll)}>{line}</span>
+                                    <span key={index} style={style} onClick={()=>handleClick(text.href,text.scroll,text.is_same_bp)}>{line}</span>
                                     {text.plain_text.split("\n")[1] && <br />}
                                 </>)
                             })})}

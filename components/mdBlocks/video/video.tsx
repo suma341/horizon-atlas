@@ -1,8 +1,7 @@
 import { usePageLink } from "@/hooks/usePagePush";
 import { assignCss } from "@/lib/assignCssProperties";
 import { MdBlock } from "@/types/MdBlock";
-import { Parent } from "@/types/Parent";
-import { typeAssertio } from '@/lib/typeAssertion';
+import { AtlRichTextEntity } from "@/types/pageData";
 
 type Props = {
     mdBlock: MdBlock;
@@ -10,16 +9,16 @@ type Props = {
 };
 
 type VideoData ={
-    parent:Parent[];
+    parent:AtlRichTextEntity[];
     url:string;
 }
 
 const VideoBlock=(props:Props)=>{
     try{
         const {mdBlock} = props
-    const data = typeAssertio<VideoData>(mdBlock.parent as Record<string, string | number | boolean>, mdBlock.type)
-
-    const { handleClick } = usePageLink()
+        const { handleClick } = usePageLink()
+        const data = mdBlock.parent.image as VideoData
+        if(!data)return;
 
     return (
         <div id={mdBlock.blockId} className="flex-col items-center flex">
@@ -29,7 +28,7 @@ const VideoBlock=(props:Props)=>{
                     const style = assignCss(text)
                     return text.plain_text.split("\n").map((line,index)=>{
                         return (<>
-                            <span key={index} style={style} onClick={()=>handleClick(text.href,text.scroll)}>{line}</span>
+                            <span key={index} style={style} onClick={()=>handleClick(text.href,text.scroll,text.is_same_bp)}>{line}</span>
                             {text.plain_text.split("\n")[1] && <br />}
                         </>)
                     })})}

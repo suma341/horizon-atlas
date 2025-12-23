@@ -54,7 +54,7 @@ export const useNavs=(pageNavs:pageNav[])=>{
         setNavs(rewriteLinks)
     },[pageNavs])
 
-    useEffect(()=>{console.log("navs",navs)},[navs.length])
+    useEffect(()=>{},[navs.length])
 
     return {
         navs

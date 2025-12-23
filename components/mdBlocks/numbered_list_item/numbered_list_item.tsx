@@ -1,11 +1,9 @@
 import MdBlockComponent from '../mdBlock';
-import { ParagraphData } from '@/types/paragraph';
 import { getColorProperty } from '@/lib/backgroundCorlor';
 import { assignCss } from '@/lib/assignCssProperties';
 import { usePageLink } from '@/hooks/usePagePush';
 import { renderTextWithBreaks } from '../renderTextWithBreaks';
 import { MdBlock } from '@/types/MdBlock';
-import { typeAssertio } from '@/lib/typeAssertion';
 
 type Props={
     mdBlock:MdBlock;
@@ -16,19 +14,20 @@ type Props={
 export default function NumberedListItem(props:Props) {
     try{
         const {mdBlock,depth,sameDepth} =props;
-    const textData = typeAssertio<ParagraphData>(mdBlock.parent as Record<string, string | number | boolean>, mdBlock.type)
-    const colorProperty = getColorProperty(textData.color);
+        const textData = mdBlock.parent.paragraph
+        const { handleClick } = usePageLink()
+        if(!textData)return;
+        const colorProperty = getColorProperty(textData.color);
 
-    const numberDepth = sameDepth ?? 1;
+        const numberDepth = sameDepth ?? 1;
 
-    const { handleClick } = usePageLink()
     return (
         <div className='my-1.5' id={mdBlock.blockId}>
             <p style={colorProperty}>
                 <span>{numberDepth}.  </span>
                 {textData.parent.map((text)=>{
                     const style = assignCss(text)
-                    return renderTextWithBreaks(text.plain_text,style,()=>handleClick(text.href,text.scroll))
+                    return renderTextWithBreaks(text.plain_text,style,()=>handleClick(text.href,text.scroll,text.is_same_bp))
                 })}
                 {textData.parent.length===0 && <span className='opacity-0' >a</span>}
             </p>

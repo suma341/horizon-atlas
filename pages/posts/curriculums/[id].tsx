@@ -10,7 +10,6 @@ import { CurriculumService } from '@/lib/services/CurriculumService';
 import { PageDataService } from '@/lib/services/PageDataService';
 import useUserProfileStore from '@/stores/userProfile';
 import MessageBoard from '@/components/messageBoard/messageBoard';
-import { ParagraphData } from '@/types/paragraph';
 import DynamicHead from '@/components/head/dynamicHead';
 import Loader from '@/components/loader/loader';
 import PageInfoSvc from '@/lib/services/PageInfoSvc';
@@ -20,6 +19,7 @@ import { MdBlock } from '@/types/MdBlock';
 import useCheckRole from '@/hooks/useCheckUserProfile';
 import AnswerSvc from '@/lib/services/answerSvc';
 import CantLoadProgress from '@/components/cantLoadProgress/cantLoadProgress';
+import { AtlParagraphEntity } from '@/types/pageData';
 
 type postPath = {
   params: { id:string }
@@ -67,7 +67,7 @@ export const getStaticProps: GetStaticProps = async ({ params }):Promise<{props:
     const isBasePage = curriculumId == pageId
     const resourceType:ResourceType = pageInfo.type
     try{
-        const mdBlocks =  await PageDataService.getPageDataByPageId(pageId,curriculumId);
+        const mdBlocks =  await PageDataService.getPageDataByPageId(pageId);
         achieve.push("🤍")
         const singlePost = resourceType=="info" ? (isBasePage ? pageInfo : await InfoSvc.getById(curriculumId)) :
           resourceType=="curriculum" ? await CurriculumService.getCurriculumById(curriculumId) :
@@ -106,7 +106,7 @@ export const getStaticProps: GetStaticProps = async ({ params }):Promise<{props:
         try{
             for(const i of mdBlocks){
                 if(i.type==="paragraph"){
-                    const textData = i.parent as ParagraphData
+                    const textData = i.parent.paragraph as AtlParagraphEntity
                     for(const i2 of textData.parent){
                         firstText = firstText + i2.plain_text
                     }

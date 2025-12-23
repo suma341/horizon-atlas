@@ -1,6 +1,6 @@
 import { PageDataGateway } from "../Gateways/PageDataGateway";
 import { pageNav } from "@/types/pageNav";
-import { buildTree, processBlock } from "../pageDataToBlock";
+import { buildTree } from "../pageDataToBlock";
 import PageInfoSvc from "./PageInfoSvc";
 import { PageInfo } from "@/types/page";
 import InfoSvc from "./infoSvc";
@@ -8,22 +8,13 @@ import { MdBlock } from "@/types/MdBlock";
 import AnswerSvc from "./answerSvc";
 
 export class PageDataService{
-    static getPageDataByPageId=async(pageId:string,curriculumId:string): Promise<MdBlock[]>=>{
+    static getPageDataByPageId=async(pageId:string): Promise<MdBlock[]>=>{
         const pageDatas = await PageDataGateway.get(pageId)
         if (pageDatas.length === 0) return [];
         const sortedData = pageDatas.sort((a,b)=>a.order-b.order);
         try{
             const mdBlocks = buildTree(sortedData, pageId);
-            const processedData = await Promise.all(
-                mdBlocks.map(async (block) => {
-                    try{
-                        return processBlock(block, mdBlocks,curriculumId);
-                    }catch(e){
-                        throw new Error(`🟥 error in ${pageId} at ${block}:${e}`)
-                    }
-                })
-            );
-            return processedData;
+            return mdBlocks;
         }catch(e){
             throw new Error(`🟥 error in getPageDataByPageId/${pageId}:${e}`)
         }

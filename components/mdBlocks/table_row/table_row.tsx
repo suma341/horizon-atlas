@@ -1,8 +1,6 @@
 import { assignCss } from "@/lib/assignCssProperties";
 import { MdBlock } from "@/types/MdBlock";
-import { Parent } from "@/types/Parent";
 import Link from "next/link";
-import { typeAssertio } from '@/lib/typeAssertion';
 
 type Props={
     mdBlock:MdBlock;
@@ -10,7 +8,8 @@ type Props={
 
 const Table_row=({mdBlock}:Props)=>{
     try{
-        const cells = typeAssertio<Parent[][]>(mdBlock.parent as Record<string, string | number | boolean>, mdBlock.type)
+        const cells =mdBlock.parent.table_row
+        if(!cells)return;
 
     return (
         <tr id={mdBlock.blockId}>

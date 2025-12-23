@@ -1,36 +1,7 @@
-import { Parent } from "@/types/Parent";
-import { MdTypeAndText } from "@/types/textAndType";
+import { AtlRichTextEntity } from "@/types/pageData";
 import { CSSProperties } from "react";
 
-
-export function assignCssProperties(mdTypeAndText:MdTypeAndText){
-  const result:React.CSSProperties[] = [];
-  for(const type of mdTypeAndText.type){
-    switch (type) {
-      case "bold":
-        result.push({ fontWeight: 700 });
-      case "italic":
-        result.push({ fontStyle: "italic" });
-        break;
-      case "code":
-        result.push({
-          backgroundColor: "rgb(235, 235, 235)",
-          color: "rgb(244,63,94)",
-          paddingLeft: 4,
-          paddingRight: 4,
-          borderRadius: 4,
-        });
-        break;
-      case "underline":
-        result.push({ textDecorationLine: "underline" });
-        break;
-    }
-  }
-  const properties:React.CSSProperties = Object.assign({},...result);
-  return properties;
-}
-
-export function assignCss(parent:Parent): CSSProperties{
+export function assignCss(parent:AtlRichTextEntity): CSSProperties{
   const result:React.CSSProperties[] = [{paddingBottom:"0.125rem",paddingTop:"0.125rem"}];
   const attritube = parent.annotations
   const color = assignColor(attritube.color)

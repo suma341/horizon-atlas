@@ -1,6 +1,8 @@
+import { AtlBlockEntityData } from "./pageData";
+
 export type MdBlock={
     children:MdBlock[];
-    parent:Record<string,any> | string;
+    parent:AtlBlockEntityData;
     type:string;
     blockId:string;
 }

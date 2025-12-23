@@ -1,6 +1,4 @@
-import { typeAssertio } from '@/lib/typeAssertion';
 import { MdBlock } from '@/types/MdBlock';
-import { Parent } from '@/types/Parent';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -9,22 +7,11 @@ type Props = {
   depth: number;
 };
 
-type BookmarkData ={
-  parent:Parent[];
-  url:string;
-  ogp:{
-    description: string | null;
-    image: string | null;
-    icon: string | null;
-    title: string;
-  }
-}
-
-
 export default function Bookmark(props: Props) {
   const { mdBlock } = props;
   try{
-    const data = typeAssertio<BookmarkData>(mdBlock.parent as Record<string, string | number | boolean>, mdBlock.type)
+    const data = mdBlock.parent.bookmark
+    if(!data)return;
 
     return (
       <div className="my-2 rounded-sm border-2 border-neutral-200 hover:bg-neutral-100" id={mdBlock.blockId}>

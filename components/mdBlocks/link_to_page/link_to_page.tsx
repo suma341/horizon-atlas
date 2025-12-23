@@ -1,9 +1,7 @@
 import Link from 'next/link';
 import Image from "next/image"
 import { MdOutlineArrowOutward } from "react-icons/md";
-import { LinkToPageBlock } from '@/types/mdBlocks';
 import { MdBlock } from '@/types/MdBlock';
-import { typeAssertio } from '@/lib/typeAssertion';
 
 type Props = {
   mdBlock: MdBlock;
@@ -12,7 +10,8 @@ type Props = {
 export default function Link_to_page(props: Props) {
   try{
     const { mdBlock } = props;
-  const pageToLinkBlock = typeAssertio<LinkToPageBlock>(mdBlock.parent as Record<string, string | number | boolean>, mdBlock.type)
+    const pageToLinkBlock = mdBlock.parent.link_to_page
+    if(!pageToLinkBlock)return;
     const isSameDomain = (()=>{
         if(pageToLinkBlock.link.startsWith("/posts/curriculums")){
           return true

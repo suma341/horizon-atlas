@@ -1,11 +1,9 @@
 import { assignCss } from '@/lib/assignCssProperties';
 import React, { useState } from 'react'
 import MdBlockComponent from '../mdBlock';
-import { HeadingData } from '@/types/headingData';
 import { getColorProperty } from '@/lib/backgroundCorlor';
 import { usePageLink } from '@/hooks/usePagePush';
 import { MdBlock } from '@/types/MdBlock';
-import { typeAssertio } from '@/lib/typeAssertion';
 import RenderParent from '../renderParent';
 
 type Props={
@@ -16,18 +14,19 @@ type Props={
 export default function Heading1(props:Props) {
     try{
         const {mdBlock,depth} = props;
-    const [isOpen, setIsOpen] = useState(false);
-    const data = typeAssertio<HeadingData>(mdBlock.parent as Record<string, string | number | boolean>, mdBlock.type)
-    const colorProperty = getColorProperty(data.color);
-
-    const { handleClick } = usePageLink()
+        const [isOpen, setIsOpen] = useState(false);
+        const data = mdBlock.parent.header;
+        const { handleClick } = usePageLink()
+        
+        if(!data)return;
+        const colorProperty = getColorProperty(data.color);
 
     return (
         <div id={mdBlock.blockId} className='mb-2 mt-8'>
             {!data.is_toggleable && <h1 className='font-bold text-3xl' style={colorProperty}>
                 {data.parent.map((text,i)=>{
                     const style = assignCss(text)
-                    return (<span style={style} key={i} onClick={()=>handleClick(text.href,text.scroll)}>{text.plain_text}</span>)
+                    return (<span style={style} key={i} onClick={()=>handleClick(text.href,text.scroll,text.is_same_bp)}>{text.plain_text}</span>)
                 })}
             </h1>}
             {data.is_toggleable && <div className='flex'>
@@ -39,7 +38,7 @@ export default function Heading1(props:Props) {
                 </button>
                 <h1 className='font-bold text-3xl' style={colorProperty}>
                     {data.parent.map((text,i)=>{
-                        return <RenderParent key={i} text={text} i={i} handleClick={()=>handleClick(text.href,text.scroll)} />
+                        return <RenderParent key={i} text={text} i={i} />
                     })}
                 </h1>
             </div>}

@@ -2,10 +2,8 @@ import React, { useState } from 'react';
 import { LuCopy } from "react-icons/lu";
 import { FaCheck } from "react-icons/fa6";
 import { assignCss } from '@/lib/assignCssProperties';
-import { CodeBlock } from '@/types/code';
 import { usePageLink } from '@/hooks/usePagePush';
 import { MdBlock } from '@/types/MdBlock';
-import { typeAssertio } from '@/lib/typeAssertion';
 import * as CB from './codeBlock';
 
 type Props = {
@@ -20,7 +18,8 @@ export default function Code(props: Props) {
     const [isHovered, setIsHovered] = useState(false);
     const { handleClick } = usePageLink()
 
-    const codeOb = typeAssertio<CodeBlock>(mdBlock.parent as Record<string, string | number | boolean>, mdBlock.type)
+    const codeOb = mdBlock.parent.code
+    if(!codeOb)return;
     const codeContent = Array.isArray(codeOb) ? codeOb.parent.map((t)=>{
         return t.plain_text
     }).join("").replace(/\n$/, '').replace(/\t/g, '  ') : ""
@@ -62,7 +61,7 @@ export default function Code(props: Props) {
                     const style = assignCss(text)
                     return text.plain_text.split("\n").map((line,index)=>{
                         return (<>
-                            <span key={index} style={style} onClick={()=>handleClick(text.href,text.scroll)}>{line}</span>
+                            <span key={index} style={style} onClick={()=>handleClick(text.href,text.scroll,text.is_same_bp)}>{line}</span>
                             {text.plain_text.split("\n")[1] && <br />}
                         </>)
                     })})}

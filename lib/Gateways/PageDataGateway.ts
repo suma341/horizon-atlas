@@ -1,13 +1,13 @@
-import { PageData } from "@/types/pageData"
+import { AtlBlockEntityData, PageData } from "@/types/pageData"
 
 type BlockData={
     curriculumId:string
     parentId: string
-    data: Record<string,string | number | boolean> | string
-    id: string
-    type: string
-    pageId: string
-    order: number
+    data: AtlBlockEntityData,
+    id: string,
+    type: string,
+    pageId: string,
+    order: number,
 }
 
 export class PageDataGateway{

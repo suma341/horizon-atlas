@@ -1,10 +1,7 @@
 import MdBlockComponent from '../mdBlock';
 import { getColorProperty } from '@/lib/backgroundCorlor';
 import Image from 'next/image';
-import { CalloutData } from '@/types/callout';
-import { usePageLink } from '@/hooks/usePagePush';
 import { MdBlock } from '@/types/MdBlock';
-import { typeAssertio } from '@/lib/typeAssertion';
 import RenderParent from '../renderParent';
 
 type Props={
@@ -15,11 +12,10 @@ type Props={
 export default function Callout(props:Props) {
     try{
         const {mdBlock,depth} = props;
-        const data = typeAssertio<CalloutData>(mdBlock.parent as Record<string, string | number | boolean>, mdBlock.type)
+        const data = mdBlock.parent.callout
+        if(!data)return;
         const icon = data.icon
         const backgroundColor = getColorProperty(data.color)
-
-        const { handleClick } = usePageLink()
 
         return (
             <div className='p-2 px-3 mb-3 mt-4 rounded relative' id={mdBlock.blockId} style={data.color==="default_background" ? {...backgroundColor,border:"solid rgb(212 212 212) 1px"} : {...backgroundColor}}>
@@ -30,7 +26,7 @@ export default function Callout(props:Props) {
                 <div className='ml-6'>
                     <p>
                         {Array.isArray(data.parent) && data.parent.map((text,i)=>{
-                            return <RenderParent key={i} text={text} i={i} handleClick={()=>handleClick(text.href,text.scroll)} />
+                            return <RenderParent key={i} text={text} i={i} />
                         })}
                     </p>
                     {mdBlock.children.map((child, i)=>(

@@ -1,6 +1,5 @@
 "use client";
 
-import { Parent } from "@/types/Parent";
 import { assignCss } from "@/lib/assignCssProperties";
 import Prism, { Token } from "prismjs";
 import "prismjs/themes/prism.css";
@@ -26,12 +25,13 @@ import "prismjs/components/prism-powershell"
 import { renderTextWithBreaks } from "../renderTextWithBreaks";
 import React from "react";
 import PlainTextCode from "./languages/plainText";
+import { AtlRichTextEntity } from "@/types/pageData";
 
 export default function CodeBlock({
   parents,
   language,
 }: {
-  parents: Parent[];
+  parents: AtlRichTextEntity[];
   language: string;
 }) {
 

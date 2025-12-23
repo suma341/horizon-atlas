@@ -1,6 +1,4 @@
-import { DatabaseBlock } from "@/types/databaseBlock";
 import { MdBlock } from "@/types/MdBlock";
-import { typeAssertio } from '@/lib/typeAssertion';
 
 type Props = {
   mdBlock: MdBlock;
@@ -9,8 +7,8 @@ type Props = {
 export default function Child_database({ mdBlock }: Props) {
   try{
     const { parent, blockId } = mdBlock;
-  if (parent === "_") return;
-  const block = typeAssertio<DatabaseBlock>(mdBlock.parent as Record<string, string | number | boolean>, mdBlock.type)
+  if (!parent.child_database) return;
+  const block = parent.child_database
   const title =
     block.database_data.title.map((t) => t.plain_text).join("") || "Untitled";
 
