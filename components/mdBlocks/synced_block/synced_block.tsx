@@ -1,6 +1,6 @@
 import React from 'react'
-import MdBlockComponent from '../mdBlock';
 import { MdBlock } from '@/types/MdBlock';
+import { RenderChildren } from '../mdBlock';
 
 type Props={
     mdBlock:MdBlock;
@@ -10,9 +10,7 @@ type Props={
 function Synced_block({mdBlock,depth}:Props) {
   return (
     <div id={mdBlock.blockId}>
-        {mdBlock.children.map((child)=>(
-            <MdBlockComponent key={child.blockId} mdBlock={child} depth={depth} />
-        ))}
+        <RenderChildren mdBlocks={mdBlock.children} depth={depth + 1} />
     </div>
   )
 }

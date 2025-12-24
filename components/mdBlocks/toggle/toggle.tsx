@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import MdBlockComponent from '../mdBlock';
 import { getColorProperty } from '@/lib/backgroundCorlor';
 import { MdBlock } from '@/types/MdBlock';
 import RenderParent from '../renderParent';
+import { RenderChildren } from '../mdBlock';
 
 type Props={
     mdBlock:MdBlock;
@@ -35,11 +35,7 @@ export default function ToggleBlock(props:Props) {
                     {textData.parent.length===0 && <span className='opacity-0' >a</span>}
                 </p>
             </div>
-            {isOpen && mdBlock.children.map((child)=>(
-                <div className='ml-4' key={child.blockId}>
-                    <MdBlockComponent mdBlock={child} depth={depth + 1} />
-                </div>
-            ))}
+            {isOpen && <RenderChildren mdBlocks={mdBlock.children} depth={depth + 1} />}
         </div>
     )
     }catch(e){

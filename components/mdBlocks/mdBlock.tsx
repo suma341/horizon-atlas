@@ -26,11 +26,11 @@ import Child_database from './child_database/child_database';
 type Props ={
     mdBlock:MdBlock;
     depth:number;
-    sameDepth?:number;
+    listNumber?:number
 }
 
 export default function MdBlockComponent(props:Props) {
-    const {mdBlock,depth,sameDepth } = props;
+    const {mdBlock,depth,listNumber } = props;
     try{
         if(mdBlock.type==='paragraph'){
         return <Paragraph mdBlock={mdBlock} depth={depth} />
@@ -45,9 +45,9 @@ export default function MdBlockComponent(props:Props) {
         }else if(mdBlock.type === 'code'){
             return <Code mdBlock={mdBlock} depth={depth} />
         }else if(mdBlock.type==='numbered_list_item'){
-            return <NumberedListItem mdBlock={mdBlock} depth={depth} />
+            return <NumberedListItem mdBlock={mdBlock} depth={depth} listNumber={listNumber} />
         }else if(mdBlock.type==='bulleted_list_item'){
-            return <BulletedListItem mdBlock={mdBlock} depth={depth} sameDepth={sameDepth} />
+            return <BulletedListItem mdBlock={mdBlock} depth={depth} />
         }else if(mdBlock.type==='callout'){
             return <Callout mdBlock={mdBlock} depth={depth} />
         }else if(mdBlock.type === 'quote'){
@@ -85,3 +85,45 @@ export default function MdBlockComponent(props:Props) {
     }
 }
 
+export const RenderChildren = ({
+    mdBlocks,
+    depth,
+}: {
+    mdBlocks: MdBlock[];
+    depth: number;
+}) => {
+    let listNumber = 0;
+    let prevWasNumbered = false;
+
+    return (
+        <div style={{ marginLeft: depth * 8 }}>
+            {mdBlocks.map((block) => {
+                if (block.type === "numbered_list_item") {
+                    if (prevWasNumbered) {
+                        listNumber += 1;
+                    } else {
+                        listNumber = 1;
+                        prevWasNumbered = true;
+                    }
+                } else {
+                    // 連続が途切れたらリセット
+                    listNumber = 0;
+                    prevWasNumbered = false;
+                }
+
+                return (
+                    <MdBlockComponent
+                        key={block.blockId}
+                        mdBlock={block}
+                        depth={depth}
+                        listNumber={
+                            block.type === "numbered_list_item"
+                                ? listNumber
+                                : undefined
+                        }
+                    />
+                );
+            })}
+        </div>
+    );
+};

@@ -1,9 +1,9 @@
 "use client";
 import React, { ChangeEvent, useState } from 'react'
-import MdBlockComponent from '../mdBlock';
 import { MdBlock } from '@/types/MdBlock';
 import { getColorProperty } from '@/lib/backgroundCorlor';
 import RenderParent from '../renderParent';
+import { RenderChildren } from '../mdBlock';
 
 type Props={
     mdBlock:MdBlock;
@@ -35,9 +35,7 @@ export default function To_do(props:Props) {
                         {textData.parent.length===0 && <span className='opacity-0' >a</span>}
                     </p>
                 </div>
-                {mdBlock.children.map((child,i)=>(
-                    <MdBlockComponent key={i} mdBlock={child} depth={depth + 1} />
-                ))}
+                <RenderChildren mdBlocks={mdBlock.children} depth={depth + 1} />
             </div>
         )
         }catch(e){

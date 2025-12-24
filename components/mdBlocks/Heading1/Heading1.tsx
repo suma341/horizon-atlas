@@ -1,6 +1,6 @@
 import { assignCss } from '@/lib/assignCssProperties';
 import React, { useState } from 'react'
-import MdBlockComponent from '../mdBlock';
+import { RenderChildren } from '../mdBlock';
 import { getColorProperty } from '@/lib/backgroundCorlor';
 import { usePageLink } from '@/hooks/usePagePush';
 import { MdBlock } from '@/types/MdBlock';
@@ -42,12 +42,7 @@ export default function Heading1(props:Props) {
                     })}
                 </h1>
             </div>}
-            {isOpen && mdBlock.children.map((child,i)=>(
-                <MdBlockComponent key={i} mdBlock={child} depth={depth + 1} />
-            ))}
-            {!data.is_toggleable && mdBlock.children.map((child,i)=>(
-                <MdBlockComponent key={i} mdBlock={child} depth={depth + 1} />
-            ))}
+            {(isOpen || !data.is_toggleable) && <RenderChildren mdBlocks={mdBlock.children} depth={depth + 1} />}
         </div>
     )
     }catch(e){

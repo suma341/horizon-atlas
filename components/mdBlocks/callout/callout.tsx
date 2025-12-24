@@ -1,4 +1,4 @@
-import MdBlockComponent from '../mdBlock';
+import { RenderChildren } from '../mdBlock';
 import { getColorProperty } from '@/lib/backgroundCorlor';
 import Image from 'next/image';
 import { MdBlock } from '@/types/MdBlock';
@@ -29,11 +29,7 @@ export default function Callout(props:Props) {
                             return <RenderParent key={i} text={text} i={i} />
                         })}
                     </p>
-                    {mdBlock.children.map((child, i)=>(
-                        <div className='ml-2 mt-0.5' key={i}>
-                            <MdBlockComponent mdBlock={child} depth={depth +1} />
-                        </div>
-                    ))}
+                    <RenderChildren mdBlocks={mdBlock.children} depth={depth + 1} />
                 </div>
             </div>
         )

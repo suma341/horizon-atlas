@@ -1,7 +1,7 @@
 import { GetStaticProps } from 'next';
 import React, { useEffect } from 'react';
 import { PostMetaData } from '@/types/postMetaData';
-import MdBlockComponent from '@/components/mdBlocks/mdBlock';
+import { RenderChildren } from '@/components/mdBlocks/mdBlock';
 import { pageNav } from '@/types/pageNav';
 import { ANSWER_NAV, BASIC_NAV, HOME_NAV, INFO_NAV } from '@/constants/pageNavs';
 import Image from 'next/image';
@@ -184,11 +184,7 @@ const Post =({ metadata, mdBlocks,pageNavs,pageId,title,iconType,iconUrl,coverUr
           <div className='border-b mt-2'></div>
           <div className='mt-4 font-medium'>
             {!roleChecking && <div key={pageId}>
-              {Array.isArray(mdBlocks) && mdBlocks.map((mdBlock)=>{
-                  return (
-                    <MdBlockComponent mdBlock={mdBlock} depth={0} key={mdBlock.blockId} />
-                  )
-              })}
+              <RenderChildren mdBlocks={mdBlocks} depth={0}  />
             </div>}
             {roleChecking && <Loader size={80} />}
           </div>

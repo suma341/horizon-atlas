@@ -1,8 +1,8 @@
 import React from 'react'
-import MdBlockComponent from '../mdBlock';
 import { getColorProperty } from '@/lib/backgroundCorlor';
 import { MdBlock } from '@/types/MdBlock';
 import RenderParent from '../renderParent';
+import { RenderChildren } from '../mdBlock';
 
 type Props={
     mdBlock:MdBlock;
@@ -25,9 +25,7 @@ export default function Quote(props:Props) {
                 })}
                 {textData.parent.length===0 && <span className='opacity-0' >a</span>}
             </p>
-            {mdBlock.children.map((child,i)=>(
-                <MdBlockComponent key={i} mdBlock={child} depth={depth + 1} />
-            ))}
+            <RenderChildren mdBlocks={mdBlock.children} depth={depth + 1} />
         </div>
     )
     }catch(e){

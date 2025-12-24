@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import MdBlockComponent from '../mdBlock';
+import  { RenderChildren } from '../mdBlock';
 import { getColorProperty } from '@/lib/backgroundCorlor';
 import { assignCss } from '@/lib/assignCssProperties';
 import { usePageLink } from '@/hooks/usePagePush';
@@ -43,12 +43,7 @@ export default function Heading2(props:Props) {
                     })}
                 </h2>
             </div>}
-            {isOpen && mdBlock.children.map((child,i)=>(
-                <MdBlockComponent key={i} mdBlock={child} depth={depth + 1} />
-            ))}
-            {!data.is_toggleable && mdBlock.children.map((child,i)=>(
-                <MdBlockComponent key={i} mdBlock={child} depth={depth + 1} />
-            ))}
+            {(isOpen || !data.is_toggleable) && <RenderChildren mdBlocks={mdBlock.children} depth={depth + 1} />}
         </div>
     )
     }catch(e){
