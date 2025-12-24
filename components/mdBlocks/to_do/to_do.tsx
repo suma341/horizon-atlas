@@ -1,5 +1,5 @@
 "use client";
-import React, { ChangeEvent, useEffect, useState } from 'react'
+import React, { ChangeEvent, useState } from 'react'
 import MdBlockComponent from '../mdBlock';
 import { MdBlock } from '@/types/MdBlock';
 import { getColorProperty } from '@/lib/backgroundCorlor';
@@ -14,13 +14,7 @@ export default function To_do(props:Props) {
     try{
         const {mdBlock,depth} = props;
         const textData = mdBlock.parent.todo
-        const [checked, setChecked] = useState(false); 
-        
-        useEffect(()=>{
-            if(textData){
-                setChecked(textData.checked)
-            }
-        },[textData])
+        const [checked, setChecked] = useState(textData?.checked); 
 
         const handleCheck =(e:ChangeEvent<HTMLInputElement>)=>{
             setChecked(e.target.checked)

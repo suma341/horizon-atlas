@@ -19,7 +19,6 @@ import Table_of_contents from './table_of_contents/table_of_contents';
 import Column_list from './column_list/column_list';
 import To_do from './to_do/to_do';
 import Synced_block from './synced_block/synced_block';
-import Table_row from './table_row/table_row';
 import VideoBlock from './video/video';
 import { MdBlock } from '@/types/MdBlock';
 import Child_database from './child_database/child_database';
@@ -75,8 +74,6 @@ export default function MdBlockComponent(props:Props) {
             return <To_do mdBlock={mdBlock} depth={depth} />
         }else if(mdBlock.type ==="synced_block"){
             return <Synced_block mdBlock={mdBlock} depth={depth} />
-        }else if(mdBlock.type==="table_row"){
-            return <Table_row mdBlock={mdBlock} />
         }else if(mdBlock.type==="video"){
             return <VideoBlock mdBlock={mdBlock} depth={depth} />
         }else if(mdBlock.type==="child_database"){

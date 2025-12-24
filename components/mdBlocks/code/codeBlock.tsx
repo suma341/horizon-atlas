@@ -22,37 +22,51 @@ import "prismjs/components/prism-lua"
 import "prismjs/components/prism-php"
 import "prismjs/components/prism-docker"
 import "prismjs/components/prism-powershell"
+import "prismjs/plugins/line-numbers/prism-line-numbers.css";
+import "prismjs/plugins/line-numbers/prism-line-numbers";
 import { renderTextWithBreaks } from "../renderTextWithBreaks";
-import React from "react";
+import React, { useState } from "react";
 import PlainTextCode from "./languages/plainText";
 import { AtlRichTextEntity } from "@/types/pageData";
+import { FaRegClipboard,FaClipboardCheck } from "react-icons/fa";
 
 export default function CodeBlock({
   parents,
   language,
+  codeContent
 }: {
   parents: AtlRichTextEntity[];
   language: string;
+  codeContent:string
 }) {
+    const [copied, setCopied] = useState(false);
+    const [isHovered,setIsHovered] = useState(false)
 
     if(language=="plain text") return <PlainTextCode parent={parents} />
     const lan = safePrismLanguage(language)
-  // ① Notion のテキストを結合
-  const code = parents.map((p) => p.plain_text).join("");
+    const code = parents.map((p) => p.plain_text).join("");
 
-  // ② Prism でトークン化
+    const handleCopy = async () => {
+      try {
+          await navigator.clipboard.writeText(codeContent);
+          console.log("codeContent",codeContent)
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2000);
+      } catch (error) {
+          console.error('Failed to copy:', error);
+      }
+    };
+
   try{
-    const tokens = Prism.tokenize(code, Prism.languages[lan]);
+    // const tokens = Prism.tokenize(code, Prism.languages[lan]);
 
-  // ③ Notion の style を文字単位配列に変換（あなたの今の構造を利用）
   const notionStyles = parents.flatMap((p) => {
     const style = assignCss(p);
     return [...p.plain_text].map(() => style);
   });
 
-  let index = 0; // どの文字に対して style を当てるか
+  let index = 0; 
 
-  // ④ Prism token + Notion style + 改行を合成して DOM にする
   function renderToken(token:Prism.Token): React.ReactNode {
     if (typeof token === "string") {
       const styled = [...token].map((char) => {
@@ -62,22 +76,91 @@ export default function CodeBlock({
       return <>{styled}</>;
     }
 
-    // token はオブジェクト（keyword / string / operator etc）
     return (
       <span className={`token ${token.type}`} key={index}>
         {Array.isArray(token.content)
-          ? token.content.map((t, i) => <React.Fragment key={i}>{renderToken(t as Token)}</React.Fragment>)
-          : renderToken(token.content as Token)}
+          ? token.content.map((t, i) => <React.Fragment key={i}>{renderToken(t as Prism.Token)}</React.Fragment>)
+          : renderToken(token.content as Prism.Token)}
       </span>
     );
   }
+  const lines = code.split("\n").map((line) => {
+  return {
+    text: line,
+    tokens: Prism.tokenize(line, Prism.languages[lan]),
+  };
+});
+
 
   return (
-    <pre className={`language-${lan}`} style={{marginTop:0,backgroundColor:"rgb(250,250,250)"}}>
-      {tokens.map((token, i) => (
-        <React.Fragment key={i}>{renderToken(token as Token)}</React.Fragment>
-      ))}
-    </pre>
+    <pre
+      className={`
+        language-${lan}
+        relative
+        p-4
+        pl-2
+        overflow-x-auto
+        text-sm
+        leading-relaxed
+        font-mono
+        m-0
+        rounded-br-lg
+        rounded-bl-lg
+      `}
+      style={{backgroundColor: "rgb(250,250,250)"}}
+      onMouseEnter={() => setIsHovered(true)} 
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <span className="absolute top-2 left-3 rounded-md bg-gray-200 px-2 py-0.5 text-[10px] text-gray-600">
+        {language}
+      </span>
+
+      {isHovered && <button
+        onClick={handleCopy}
+        className="
+          absolute
+          top-2
+          right-4
+          px-2
+          py-1
+          text-xs
+        "
+      >
+        {copied ? <FaClipboardCheck size={20} color="#696969" />  :<FaRegClipboard size={20} color="#c0c0c0" />}
+      </button>}
+      <div className="mt-7">
+    {lines.map((line, lineIndex) => (
+      <div
+        key={lineIndex}
+        className="
+            group
+            flex
+            hover:bg-gray-100/70
+            rounded-md
+          "
+        >
+        <span
+          className="
+            select-none
+            shrink-0
+            text-xs
+            text-gray-400
+            cursor-default
+            group-hover:text-gray-600
+            justify-items-center
+            w-6
+            text-right
+            pr-3
+            pt-1.5
+          "
+        >{lineIndex + 1}</span>
+          {line.tokens.map((token, i) => (
+          <React.Fragment key={i}>{renderToken(token as Token)}</React.Fragment>
+        ))}
+      </div>
+    ))}
+    </div>
+</pre>
   );
   }catch{
     console.log("未読み込み:",lan)

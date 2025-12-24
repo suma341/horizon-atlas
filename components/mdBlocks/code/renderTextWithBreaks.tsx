@@ -10,7 +10,7 @@ export function RenderTextWithBreaks(
         ...style,
         fontFamily:
           "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace",
-        whiteSpace: "pre", // ← pre-wrap ではなく pre にする
+        whiteSpace: "pre", 
       }}
       onClick={onClick}
     >
