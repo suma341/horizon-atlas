@@ -7,7 +7,7 @@ type Props={
 
 const CantLoadProgress=({studentNum}:Props)=>{
     return (
-        <div className="w-full max-w-md text-white bg-purple-900 border-purple-700 shadow-xl rounded-2xl">
+        <div className="md:flex md:flex-col w-full align-middle max-w-md text-white bg-purple-900 border-purple-700 shadow-xl rounded-2xl">
             <div className="p-8 text-center">
             <motion.div
                 initial={{ opacity: 0, y: -10 }}

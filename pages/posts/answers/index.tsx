@@ -57,7 +57,9 @@ export default function AnswersPage({answerPages}: Props){
                         <p>提出済みの問題を見るには
                             <Link href="/user/progress" className="text-sky-500 hover:text-sky-700">こちら</Link>
                         から</p>
-                        {cannotLoad && <CantLoadProgress studentNum={userProfile.studentNum} />}
+                        {cannotLoad && <div className="flex items-center justify-center px-4">
+                            <CantLoadProgress studentNum={userProfile.studentNum} />
+                            </div>}
                         {!cannotLoad && <section className="grid grid-cols-1 px-6 mt-8">
                             {answerPages.sort((a,b)=> a.order - b.order).map((page, i) => {
                                 const isAnswered = entity.find((e)=>e.title===page.title && e.value)
