@@ -96,7 +96,7 @@ export const RenderChildren = ({
     let prevWasNumbered = false;
 
     return (
-        <div style={{ marginLeft: depth * 8 }}>
+        <div style={{ marginLeft: depth * 6 }}>
             {mdBlocks.map((block) => {
                 if (block.type === "numbered_list_item") {
                     if (prevWasNumbered) {
