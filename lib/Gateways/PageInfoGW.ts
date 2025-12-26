@@ -1,32 +1,49 @@
 // use server
 import { PageInfo } from "@/types/page";
-
+import { writeFile,readFile} from "fs/promises"
+import { checkFileExist, mkdirTmpIfNotExists } from "../fileController";
 
 export default class PageInfoGW{
     static get = async (match?: Partial<Record<keyof PageInfo, string | number>>) => {
         try{
-            const res = await fetch(`${process.env.NEXT_PUBLIC_STORAGE_URL}/pages/data.json`);
-            if (!res.ok) {
-                console.log(await res.text())
-                throw new Error(`HTTP error! status: ${res.status}`);
-            }
-
-            let data: PageInfo[] = await res.json();
-
-            if (match) {
-                const keys = Object.keys(match) as (keyof PageInfo)[];
-                for (const key of keys) {
-                    const value = match[key];
-                    if (value !== undefined) {
-                        data = data.filter((d) => d[key] === value);
-                    }
+            const exists = await checkFileExist("tmp/page.json")
+            if(!exists){
+                const res = await fetch(`${process.env.NEXT_PUBLIC_STORAGE_URL}/pages/data.json`);
+                if (!res.ok) {
+                    console.log(await res.text())
+                    throw new Error(`HTTP error! status: ${res.status}`);
                 }
-            }   
-            return data
+
+                let data: PageInfo[] = await res.json();
+
+                if (match) {
+                    const keys = Object.keys(match) as (keyof PageInfo)[];
+                    for (const key of keys) {
+                        const value = match[key];
+                        if (value !== undefined) {
+                            data = data.filter((d) => d[key] === value);
+                        }
+                    }
+                }   
+                await mkdirTmpIfNotExists()
+                await writeFile("tmp/page.json",JSON.stringify(data))
+                return data
+            }else{
+                const pagedata = await readFile("tmp/page.json",{encoding:"utf-8"})
+                let data:PageInfo[] = JSON.parse(pagedata)
+                if (match) {
+                    const keys = Object.keys(match) as (keyof PageInfo)[];
+                    for (const key of keys) {
+                        const value = match[key];
+                        if (value !== undefined) {
+                            data = data.filter((d) => d[key] === value);
+                        }
+                    }
+                }   
+                return data
+            }
         }catch(e){
             throw new Error(`Error: ${e}`)
         }
     };
 }
-
-// https://ryukoku-horizon.github.io/atlas-storage/pages/1ada501e-f337-81d0-93c4-cc25006a2031.json
