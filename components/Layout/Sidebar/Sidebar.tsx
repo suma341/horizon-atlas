@@ -7,6 +7,7 @@ import {  MdOutlineQuestionAnswer } from 'react-icons/md';
 import useFirebaseUser from '@/hooks/useFirebaseUser';
 import useUserProfileStore from '@/stores/userProfile';
 import { FaInfoCircle, FaRegUser } from 'react-icons/fa';
+import { ANSWER_NAV, INFO_NAV } from '@/constants/pageNavs';
 
 type Props={
     openbar:boolean;
@@ -70,7 +71,7 @@ function Sidebar({openbar,setOpenbar}:Props) {
                             </Link>
                         </li>
                         <li className='mt-3 hover:bg-neutral-100'>
-                            <Link href={'/posts/infos'}>
+                            <Link href={INFO_NAV.link}>
                                 <div className='flex items-center justify-between mr-5 py-2 px-2'>
                                     <FaInfoCircle size={25} className='text-neutral-600' />
                                     <div className='text-neutral-500 font-bold'>
@@ -80,7 +81,7 @@ function Sidebar({openbar,setOpenbar}:Props) {
                             </Link>
                         </li>
                         <li className='mt-3 hover:bg-neutral-100'>
-                            <Link href={'/posts/answers'}>
+                            <Link href={ANSWER_NAV.link}>
                                 <div className='flex items-center justify-between mr-5 py-2 px-2'>
                                     <MdOutlineQuestionAnswer size={25} className='text-neutral-600' />
                                     <div className='text-neutral-500 font-bold'>

@@ -5,7 +5,7 @@ import Image from 'next/image';
 type Props = {
     postData:{
         title:string,
-        tags?:string[], 
+        tag:string[], 
         id:string,
         iconType:string,
         iconUrl:string
@@ -15,7 +15,7 @@ type Props = {
 }
 
 const SinglePost = (props:Props) => {
-    const {title, tags, id,iconType,iconUrl} = props.postData;
+    const {title, tag, id,iconType,iconUrl} = props.postData;
     const categoryQuery = props.category ? `?category=${props.category}` : ""
 
     return (
@@ -30,12 +30,12 @@ const SinglePost = (props:Props) => {
                     </h2>
                 </div>
                 <div className="flex flex-wrap gap-2 mt-0.5">
-                    {tags && tags.map((tag, i) => (
+                    {tag.map((t, i) => (
                         <span
                             key={i}
                             className="text-xs font-medium bg-gray-100 text-gray-600 px-2 py-0.5 rounded-md"
                         >
-                            {tag}
+                            {t}
                         </span>
                     ))}
                 </div>

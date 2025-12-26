@@ -1,4 +1,5 @@
 import StaticHead from '@/components/head/staticHead';
+import Footer from '@/components/Layout/Footer/Footer';
 import Header from '@/components/top/header'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/router';
@@ -126,6 +127,7 @@ function AboutDetail() {
                     </motion.button>
                 </div>
             </section>
+            <Footer />
         </>
     )
 }

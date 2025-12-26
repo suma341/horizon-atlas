@@ -1,3 +1,4 @@
+// use server
 import { AtlBlockEntityData, PageData } from "@/types/pageData"
 
 type BlockData={

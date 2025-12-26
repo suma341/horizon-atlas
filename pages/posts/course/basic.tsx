@@ -2,20 +2,20 @@ import Layout from "@/components/Layout/Layout";
 import SingleCourse from "@/components/Post/SingleCourse";
 import { BASIC_NAV, HOME_NAV } from "@/constants/pageNavs";
 import { getPostsByRole } from "@/lib/services/notionApiService";
-import { PostMetaData } from "@/types/postMetaData";
 import type { GetStaticProps,} from "next";
-import { CurriculumService } from "@/lib/services/CurriculumService";
 import { useEffect, useState } from "react";
 import { CategoryService } from "@/lib/services/CategoryService";
 import { Category } from "@/types/category";
 import useUserProfileStore from "@/stores/userProfile";
 import Loader from "@/components/loader/loader";
 import DynamicHead from "@/components/head/dynamicHead";
+import { PageInfo } from "@/types/page";
+import PageInfoSvc from "@/lib/services/PageInfoSvc";
 
 type Props={
     courseAndPosts: {
         category: Category;
-        curriculums: PostMetaData[];
+        curriculums: PageInfo[];
     }[];
 }
 
@@ -23,7 +23,7 @@ type Props={
 export const getStaticProps: GetStaticProps = async () => {
     const basicCategories = await CategoryService.getBasicCategory()
     const categoryAndCurriculums = await Promise.all(basicCategories.map(async(c)=>{
-        const curriculums = await CurriculumService.getCurriculumByCategory(c.title)
+        const curriculums = await PageInfoSvc.getCurriculumByCategory(c.title)
         return {
             category:c,
             curriculums
@@ -49,7 +49,7 @@ export default function BasicCoursePageList({courseAndPosts}: Props){
                 const usersRole = userProfile ? (userProfile.given_name ?? "体験入部") : "ゲスト"
                 const dataByRole:{
                     category: Category;
-                    curriculums: PostMetaData[];
+                    curriculums: PageInfo[];
                 }[] = [];
                 for(const i of courseAndPosts){
                     const postsByRole = await getPostsByRole(usersRole,i.curriculums);

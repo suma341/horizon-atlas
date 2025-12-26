@@ -13,7 +13,7 @@ const Footer = () => {
           {/* リンク */}
           <nav className="flex flex-col md:flex-row gap-4 text-sm">
             <Link href="/about" className="hover:text-gray-300">About</Link>
-            <Link href={'https://docs.google.com/forms/d/e/1FAIpQLScW_wz_h2Yd5ij50k8vH91EPUn_0EenEOJ9M147bcVl8KTQLA/viewform?usp=dialog'} target='_brank' rel="noopener noreferrer" className="hover:text-gray-300">改善要請</Link>
+            <Link href="/contact" className="hover:text-gray-300">Contact</Link>
           </nav>
         </div>
 

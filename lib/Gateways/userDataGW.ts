@@ -2,7 +2,7 @@ import { openDB } from "idb";
 import { Profile } from "@/types/profile";
 
 const getDb = () => {
-  if (typeof window === "undefined") return null; // SSRでは使わない
+  if (typeof window === "undefined") return null; 
   return openDB("atlas-db", 1, {
     upgrade(db) {
       if (!db.objectStoreNames.contains("profiles")) {

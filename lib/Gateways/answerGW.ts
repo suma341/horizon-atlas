@@ -1,3 +1,4 @@
+// use server
 import { PageInfo } from "@/types/page";
 
 export default class AnswerGW{

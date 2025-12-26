@@ -66,7 +66,7 @@ export default function AnswersPage({answerPages}: Props){
                                 if(!isAnswered)return null;
                                 return (
                                     <SinglePost
-                                        postData={{...page,tags:["解答"]}}
+                                        postData={{...page}}
                                         key={i}
                                     />
                                 );

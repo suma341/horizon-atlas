@@ -1,3 +1,4 @@
+// use server
 import { Category } from "@/types/category";
 
 export class CategoryGateway{

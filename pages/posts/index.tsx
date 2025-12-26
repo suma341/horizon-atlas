@@ -1,10 +1,8 @@
 import Layout from "@/components/Layout/Layout";
 import { HOME_NAV } from "@/constants/pageNavs";
 import {  getAllTags, getPostsByRole } from "@/lib/services/notionApiService";
-import { PostMetaData } from "@/types/postMetaData";
 import { GetStaticProps } from "next";
 import Tags from "@/components/tag/Tags";
-import { CurriculumService } from "@/lib/services/CurriculumService";
 import Link from "next/link";
 import { BsCompass } from "react-icons/bs";
 import SingleCourse from "@/components/Post/SingleCourse";
@@ -15,22 +13,24 @@ import { useEffect, useState } from "react";
 import useUserProfileStore from "@/stores/userProfile";
 import Loader from "@/components/loader/loader";
 import StaticHead from "@/components/head/staticHead";
+import { PageInfo } from "@/types/page";
+import PageInfoSvc from "@/lib/services/PageInfoSvc";
 
 type Props = {
   categoryAndCurriculums:{
     category: Category;
-    curriculums: PostMetaData[];
+    curriculums: PageInfo[];
   }[],
   allTags:string[],
-  noCaterizedCurriculums:PostMetaData[]
+  noCaterizedCurriculums:PageInfo[]
 };
 
 export const getStaticProps: GetStaticProps = async () => {
-  const allPosts:PostMetaData[] = await CurriculumService.getAllCurriculum();
-  const noCaterizedCurriculums = await CurriculumService.getCurriculumByCategory("")
+  const allPosts:PageInfo[] = await PageInfoSvc.getBaseCurriculum()
+  const noCaterizedCurriculums = await PageInfoSvc.getCurriculumByCategory("")
   const notBasicCategories = await CategoryService.getNotBasicCategory()
-  const categoryAndCurriculums = await Promise.all(notBasicCategories.map(async(c)=>{
-    const curriculums = await CurriculumService.getCurriculumByCategory(c.title)
+  const categoryAndCurriculums = await Promise.all(notBasicCategories.filter((c)=>c.id!=="info" && c.id!=="answer").map(async(c)=>{
+    const curriculums = await PageInfoSvc.getCurriculumByCategory(c.title)
     return {
       category:c,
       curriculums
@@ -52,7 +52,7 @@ const PostsPage = ({ allTags,noCaterizedCurriculums,categoryAndCurriculums}: Pro
   const { userProfile } = useUserProfileStore();
   const [courseByRole,setCourseByRole] = useState<{
     category: Category;
-    curriculums: PostMetaData[];
+    curriculums: PageInfo[];
   }[]>(categoryAndCurriculums)
   const [loading,setLoading] = useState(false)
 

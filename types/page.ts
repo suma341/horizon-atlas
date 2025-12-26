@@ -11,7 +11,10 @@ export type PageInfo={
     ogp:{
         first_text:string;
         image_path:string;
-    }
+    },
+    visibility:string[];
+    tag:string[];
+    category:[];
 }
 
 // export type PostMetaData = {

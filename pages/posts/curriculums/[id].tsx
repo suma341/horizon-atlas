@@ -2,10 +2,9 @@ import { GetStaticProps } from 'next';
 import React, { useEffect } from 'react';
 import { RenderChildren } from '@/components/mdBlocks/mdBlock';
 import { pageNav } from '@/types/pageNav';
-import { ANSWER_NAV, BASIC_NAV, HOME_NAV, INFO_NAV } from '@/constants/pageNavs';
+import { ANSWER_NAV, BASIC_NAV, HOME_NAV } from '@/constants/pageNavs';
 import Image from 'next/image';
 import Layout from '@/components/Layout/Layout';
-import { CurriculumService } from '@/lib/services/CurriculumService';
 import { PageDataService } from '@/lib/services/PageDataService';
 import useUserProfileStore from '@/stores/userProfile';
 import MessageBoard from '@/components/messageBoard/messageBoard';
@@ -13,10 +12,8 @@ import DynamicHead from '@/components/head/dynamicHead';
 import Loader from '@/components/loader/loader';
 import PageInfoSvc from '@/lib/services/PageInfoSvc';
 import { CategoryService } from '@/lib/services/CategoryService';
-import InfoSvc from '@/lib/services/infoSvc';
 import { MdBlock } from '@/types/MdBlock';
 import useCheckRole from '@/hooks/useCheckUserProfile';
-import AnswerSvc from '@/lib/services/answerSvc';
 import CantLoadProgress from '@/components/cantLoadProgress/cantLoadProgress';
 import PageCover from '@/components/pageCover';
 
@@ -65,62 +62,41 @@ export const getStaticProps: GetStaticProps = async ({ params }):Promise<{props:
     const { curriculumId } = pageInfo
     const achieve:string[] = [`${pageInfo.title}：`]
     const isBasePage = curriculumId === pageId
-    if(isBasePage)console.log("1",isBasePage)
     const resourceType:ResourceType = pageInfo.type
     try{
         const mdBlocks =  await PageDataService.getPageDataByPageId(pageId);
         achieve.push("🤍")
-        const basePage = resourceType=="info" ? (isBasePage ? pageInfo : await InfoSvc.getById(curriculumId)) :
-          resourceType=="curriculum" ?  await CurriculumService.getCurriculumById(curriculumId) :
-          (isBasePage ? pageInfo : await AnswerSvc.getById(curriculumId))
+        const basePage = isBasePage ? pageInfo : await PageInfoSvc.getByPageId(curriculumId)
         if(!basePage){
           console.log(`missing query in curriculums/[id]/getStaticProps ${pageId}`)
           throw new Error(`missing query in curriculums/[id]/getStaticProps ${pageId}`)
         }
         achieve.push("🩵")
         const pageNavs:pageNav[] = [HOME_NAV]
-        if(resourceType=="info"){
-          pageNavs.push(INFO_NAV)
-          pageNavs.push({ title: basePage.title, link: `/posts/curriculums/${curriculumId}` })
-        }else if(resourceType=="answer"){
-          pageNavs.push(ANSWER_NAV)
-          pageNavs.push({ title: basePage.title, link: `/posts/curriculums/${curriculumId}` })
-        }else{
-          if(isBasePage){
-            console.log("2",isBasePage)
-            console.log('"category" in basePage',"category" in basePage)
-            if("category" in basePage){
-              console.log(basePage.category)
-            }else{
-              console.log("basePage",basePage)
+        for(const cat of pageInfo.category){
+          if(cat==="解答"){
+            pageNavs.push(ANSWER_NAV)
+          }else{
+            const category = await CategoryService.getCategoryByName(cat)
+            if(category){
+              if(category.is_basic_curriculum){
+                pageNavs.push(BASIC_NAV)
+                pageNavs.push({title: cat, link: `/posts/course/${category.id}?is_basic=true`})
+              }else{
+                pageNavs.push({title: cat, link: `/posts/course/${category.id}`})
+              } 
             }
-          }
-          if("category" in basePage){
-            const noCategorized = basePage.category.length<1
-            if(!noCategorized){
-              for(const cat of basePage.category){
-                const category = await CategoryService.getCategoryByName(cat)
-                if(category){
-                  if(category.is_basic_curriculum){
-                    pageNavs.push(BASIC_NAV)
-                    pageNavs.push({title: cat, link: `/posts/course/${category.id}?is_basic=true`})
-                  }else{
-                    pageNavs.push({title: cat, link: `/posts/course/${category.id}`})
-                  } 
-                }
-              }
-            }
-            pageNavs.push({ title: basePage.title, link: `/posts/curriculums/${curriculumId}` })
           }
         }
+        pageNavs.push({ title: basePage.title, link: `/posts/curriculums/${curriculumId}` })
         achieve.push("🩷")
-        const childPage = await PageDataService.getPageNavs(pageInfo,resourceType)
+        const childPage = await PageDataService.getPageNavs(pageInfo)
         const pageNavs_ = curriculumId!==pageId ? [...pageNavs, ...childPage.reverse()] : pageNavs
         achieve.push("🟢")
         return {
             props: {
               title:pageInfo.title,
-              visibility:"visibility" in basePage ? basePage.visibility : ["基礎班","発展班"] ,
+              visibility:pageInfo.visibility ,
               mdBlocks,
               pageNavs:pageNavs_,
               pageId,
