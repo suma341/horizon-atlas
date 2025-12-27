@@ -18,7 +18,8 @@ const Footer = () => {
         </div>
 
         <p className="mt-8 text-xs text-gray-400">
-          © 2025 Ryukoku Horizon
+          © 2025 Ryukoku Horizon{"\n"}
+          Built & maintained by suma341
         </p>
       </div>
     </footer>
