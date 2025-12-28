@@ -32,4 +32,9 @@ export default class PageInfoSvc{
         })
         return target.sort((a,b)=>a.order -b.order);
     }
+
+    static getAnswerPages=async()=>{
+        const pages = await PageInfoGW.get({type:"answer"})
+        return pages
+    }
 }

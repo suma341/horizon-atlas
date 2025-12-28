@@ -5,19 +5,19 @@ import { PageInfo } from "@/types/page";
 import SinglePost from "@/components/Post/SinglePost";
 import DynamicHead from "@/components/head/dynamicHead";
 import LoginModal from "@/components/loginModal/loginModal";
-import AnswerSvc from "@/lib/services/answerSvc";
 import useProgress from "@/hooks/useProgress";
 import Loader from "@/components/loader/loader";
 import { useEffect } from "react";
 import Link from "next/link";
 import CantLoadProgress from "@/components/cantLoadProgress/cantLoadProgress";
+import PageInfoSvc from "@/lib/services/PageInfoSvc";
 
 type Props={
     answerPages:PageInfo[]
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-    const answerPages = await AnswerSvc.getAll()
+    const answerPages = await PageInfoSvc.getAnswerPages()
 
     return {
         props: {
