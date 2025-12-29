@@ -1,6 +1,6 @@
 // use server
 import { AtlBlockEntityData, PageData } from "@/types/pageData"
-import { decodeJson } from "../decodeJson";
+import { loadAndDecodeJson } from "../decodeJson";
 
 type BlockData={
     curriculumId:string
@@ -34,7 +34,7 @@ export class PageDataGateway{
             throw new Error(`error in PageDataGateway/get status: ${status} text: ${await res.text()}`);
         }
         const txtData = await res.text()
-        const blockDatas = await decodeJson<BlockData[]>(txtData)
+        const blockDatas = await loadAndDecodeJson<BlockData[]>(txtData)
         let data:BlockData[] = blockDatas
 
         if (match) {

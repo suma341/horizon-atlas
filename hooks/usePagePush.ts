@@ -1,5 +1,6 @@
 // use_client
 import { useRouter } from "next/router";
+import { useCallback } from "react";
 
 export function usePageLink(){
     const router = useRouter()
@@ -18,7 +19,7 @@ export function usePageLink(){
         },1600)
     };
 
-    const handleClick =(href?:string | null, scroll?:string,is_same_bp?:boolean)=>{
+    const handleClick =useCallback((href?:string | null, scroll?:string,is_same_bp?:boolean)=>{
         if(href && href!==""){
             if(router.asPath===href){
                 if(scroll){
@@ -47,7 +48,7 @@ export function usePageLink(){
                 }
             }
         }
-    }
+    },[category])
 
     return {handleClick}
 }

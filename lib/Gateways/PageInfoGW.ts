@@ -2,7 +2,7 @@
 import { PageInfo } from "@/types/page";
 import { writeFile,readFile} from "fs/promises"
 import { checkFileExist, mkdirTmpIfNotExists } from "../fileController";
-import { decodeJson } from "../decodeJson";
+import { loadAndDecodeJson } from "../decodeJson";
 
 export default class PageInfoGW{
     static get = async (match?: Partial<Record<keyof PageInfo, string | number>>) => {
@@ -17,7 +17,7 @@ export default class PageInfoGW{
                 const txtData = await res.text();
 
                 await mkdirTmpIfNotExists()
-                const pagedata = await decodeJson<PageInfo[]>(txtData)
+                const pagedata = await loadAndDecodeJson<PageInfo[]>(txtData)
                 await writeFile("tmp/page.json",JSON.stringify(pagedata))
                 let data = pagedata
                 if (match) {

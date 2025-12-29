@@ -2,7 +2,7 @@
 import { Category } from "@/types/category";
 import { checkFileExist, mkdirTmpIfNotExists } from "../fileController";
 import { readFile, writeFile } from "fs/promises";
-import { decodeJson } from "../decodeJson";
+import { loadAndDecodeJson } from "../decodeJson";
 
 export class CategoryGateway{
     static get = async (match?: Partial<Record<keyof Category, string | string[] | boolean | number>>) => {
@@ -15,7 +15,7 @@ export class CategoryGateway{
             }
 
             const txtData = await res.text();
-            const pagedata = await decodeJson<Category[]>(txtData)
+            const pagedata = await loadAndDecodeJson<Category[]>(txtData)
             let data = pagedata
 
             if (match) {

@@ -45,6 +45,7 @@ jobs:
           NEXT_PUBLIC_DISCORD_CLIENT_ID: ${{secrets.NEXT_PUBLIC_DISCORD_CLIENT_ID}}
           NEXT_PUBLIC_CLOUDFLARE_URL: ${{secrets.NEXT_PUBLIC_CLOUDFLARE_URL}}
           NEXT_PUBLIC_STORAGE_URL: ${{secrets.NEXT_PUBLIC_STORAGE_URL}}
+          ENC_KEY: ${{secrets.ENC_KEY}}
 
       - name: gh-pages ブランチにデプロイ
         uses: peaceiris/actions-gh-pages@v4
