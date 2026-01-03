@@ -29,15 +29,17 @@ export function usePageLink(){
                 if(scroll){
                     if(category && is_same_bp){
                         const query = `?category=${category}`
-                        router.push(`${href}#${scroll}${query}`)
+                        router.push(`${href}${query}#${scroll}`)
                         return;
+                    }else{
+                        router.push(`${href}#${scroll}`)
                     }
-                    router.push(`${href}#${scroll}`)
                 }else{
                     if(href.startsWith("/posts/curriculums") || href.startsWith("https://ryukoku-horizon.github.io/horizon-atlas")){
                         if(category && is_same_bp){
                             const query = `?category=${category}`
                             router.push(`${href}${query}`)
+                            return;
                         }
                         router.push(`${href}`)
                     }else if(!href.startsWith("http://") && !href.startsWith("https://")){
