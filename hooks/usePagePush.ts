@@ -1,10 +1,25 @@
-import { scrollToSection } from "@/lib/scrollToSection";
+// use_client
 import { useRouter } from "next/router";
+import { useCallback } from "react";
 
 export function usePageLink(){
     const router = useRouter()
+    const {category} = router.query as {category: string | undefined}
 
-    const handleClick =(href:string | null, scroll:string | undefined)=>{
+    const scrollToSection = (targetId: string) => {
+        const element = document.getElementById(targetId);
+        if (element) {
+            const yOffset = -100; 
+            const y = element.getBoundingClientRect().top + window.scrollY + yOffset;
+            window.scrollTo({ top: y, behavior: "smooth" });
+        }
+        element?.classList.add("highlight")
+        setTimeout(()=>{
+            element?.classList.remove("highlight");
+        },1600)
+    };
+
+    const handleClick =useCallback((href?:string | null, scroll?:string,is_same_bp?:boolean)=>{
         if(href && href!==""){
             if(router.asPath===href){
                 if(scroll){
@@ -12,10 +27,19 @@ export function usePageLink(){
                 }
             }else{
                 if(scroll){
+                    if(category && is_same_bp){
+                        const query = `?category=${category}`
+                        router.push(`${href}#${scroll}${query}`)
+                        return;
+                    }
                     router.push(`${href}#${scroll}`)
                 }else{
                     if(href.startsWith("/posts/curriculums") || href.startsWith("https://ryukoku-horizon.github.io/horizon-atlas")){
-                        router.push(href)
+                        if(category && is_same_bp){
+                            const query = `?category=${category}`
+                            router.push(`${href}${query}`)
+                        }
+                        router.push(`${href}`)
                     }else if(!href.startsWith("http://") && !href.startsWith("https://")){
                         return;
                     }else{
@@ -24,7 +48,7 @@ export function usePageLink(){
                 }
             }
         }
-    }
+    },[category])
 
     return {handleClick}
 }

@@ -1,8 +1,7 @@
 import { NUMBER_OF_POSTS_PER_PAGE } from "@/constants/numberOfPage";
 import { PageInfo } from "@/types/page";
-import { PostMetaData } from "@/types/postMetaData";
 
-export const calculatePageNumber = (posts:PostMetaData[]) => {
+export const calculatePageNumber = (posts:PageInfo[]) => {
     const pageNumber = 
         (posts.length % NUMBER_OF_POSTS_PER_PAGE) != 0 ?
         Math.trunc(posts.length / NUMBER_OF_POSTS_PER_PAGE) + 1 :
@@ -11,14 +10,14 @@ export const calculatePageNumber = (posts:PostMetaData[]) => {
     return pageNumber;
 }
 
-export const getPostsByTag=async(tagName:string, allPosts:PostMetaData[])=>{
-    const posts:PostMetaData[] = allPosts.filter((post)=> {
-        return post.tags.find((tag:string)=>tag.toLowerCase()==tagName.toLowerCase())
+export const getPostsByTag=async(tagName:string, allPosts:PageInfo[])=>{
+    const posts:PageInfo[] = allPosts.filter((post)=> {
+        return post.tag.find((tag:string)=>tag.toLowerCase()==tagName.toLowerCase())
     });
     return posts;
 }
 
-export const getPostsByRole=async(roleName:string,pageAndMetadata:(PostMetaData & PageInfo)[] | PostMetaData[])=>{
+export const getPostsByRole=async(roleName:string,pageAndMetadata:PageInfo[])=>{
     if(roleName==="幹事長" || roleName==="技術部員"){
         return pageAndMetadata
     }
@@ -28,10 +27,10 @@ export const getPostsByRole=async(roleName:string,pageAndMetadata:(PostMetaData 
     return posts;
 }
 
-export const getAllTags = async(allPosts:PostMetaData[])=>{
+export const getAllTags = async(allPosts:PageInfo[])=>{
     
     const allTagsDuplicationList = allPosts.flatMap((post)=>{
-        return post.tags;
+        return post.tag;
     })
     const set = new Set(allTagsDuplicationList);
     const allTags = Array.from(set);

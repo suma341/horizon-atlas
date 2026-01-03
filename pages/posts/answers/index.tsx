@@ -5,19 +5,19 @@ import { PageInfo } from "@/types/page";
 import SinglePost from "@/components/Post/SinglePost";
 import DynamicHead from "@/components/head/dynamicHead";
 import LoginModal from "@/components/loginModal/loginModal";
-import AnswerSvc from "@/lib/services/answerSvc";
 import useProgress from "@/hooks/useProgress";
 import Loader from "@/components/loader/loader";
 import { useEffect } from "react";
 import Link from "next/link";
 import CantLoadProgress from "@/components/cantLoadProgress/cantLoadProgress";
+import PageInfoSvc from "@/lib/services/PageInfoSvc";
 
 type Props={
     answerPages:PageInfo[]
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-    const answerPages = await AnswerSvc.getAll()
+    const answerPages = await PageInfoSvc.getAnswerPages()
 
     return {
         props: {
@@ -38,7 +38,7 @@ export default function AnswersPage({answerPages}: Props){
             <DynamicHead
                 title="解答ページ"
                 firstText="カリキュラムの解答ページです"
-                image="https://raw.githubusercontent.com/Ryukoku-Horizon/notion2atlas/main/public/ogp/answers.png"
+                image={`${process.env.NEXT_PUBLIC_STORAGE_URL}/ogp/answers.png`}
                 link="https://ryukoku-horizon.github.io/horizon-atlas/posts/answers"
             />
             <Layout pageNavs={[HOME_NAV, ANSWER_NAV]}>
@@ -57,14 +57,16 @@ export default function AnswersPage({answerPages}: Props){
                         <p>提出済みの問題を見るには
                             <Link href="/user/progress" className="text-sky-500 hover:text-sky-700">こちら</Link>
                         から</p>
-                        {cannotLoad && <CantLoadProgress studentNum={userProfile.studentNum} />}
+                        {cannotLoad && <div className="flex items-center justify-center px-4">
+                            <CantLoadProgress studentNum={userProfile.studentNum} />
+                            </div>}
                         {!cannotLoad && <section className="grid grid-cols-1 px-6 mt-8">
                             {answerPages.sort((a,b)=> a.order - b.order).map((page, i) => {
                                 const isAnswered = entity.find((e)=>e.title===page.title && e.value)
                                 if(!isAnswered)return null;
                                 return (
                                     <SinglePost
-                                        postData={{...page,tags:["解答"]}}
+                                        postData={{...page}}
                                         key={i}
                                     />
                                 );

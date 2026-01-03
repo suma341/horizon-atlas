@@ -1,18 +1,18 @@
 import type { GetStaticProps } from "next";
 import SinglePost from "@/components/Post/SinglePost";
-import { PostMetaData } from "@/types/postMetaData";
 import { getPostsByRole } from "@/lib/services/notionApiService";
 import { BASIC_NAV, HOME_NAV } from "@/constants/pageNavs";
 import { pageNav } from "@/types/pageNav";
 import Layout from "@/components/Layout/Layout";
 import { useEffect, useState } from "react";
-import { CurriculumService } from "@/lib/services/CurriculumService";
 import { CategoryService } from "@/lib/services/CategoryService";
 import { Category } from "@/types/category";
 import Image from "next/image";
 import useUserProfileStore from "@/stores/userProfile";
 import Loader from "@/components/loader/loader";
 import DynamicHead from "@/components/head/dynamicHead";
+import { PageInfo } from "@/types/page";
+import PageInfoSvc from "@/lib/services/PageInfoSvc";
 
 type pagePath = {
     params: { categoryId:string }
@@ -23,7 +23,7 @@ export const getStaticPaths = async() =>{
 
     const paramsList: pagePath[] = (
         await Promise.all(
-            allCategories.map(async (category) => {
+            allCategories.filter((c)=>c.id!=="answer").map(async (category) => {
                 return  { params: { categoryId: category.id } }
             })
         )
@@ -35,7 +35,7 @@ export const getStaticPaths = async() =>{
   }
 
 type Props={
-    posts:PostMetaData[];
+    posts:PageInfo[];
     pageNavs:pageNav[];
     category:Category
 }
@@ -46,7 +46,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     if(!category){
         throw new Error(`カテゴリーデータが見つかりません:${currentId}`)
     }
-    const posts = await CurriculumService.getCurriculumByCategory(category.title);
+    const posts = await PageInfoSvc.getCurriculumByCategory(category.title);
 
     const currentNav:pageNav = {title:category.title,link:`/posts/course/${currentId}`};
     const pageNavs = category.is_basic_curriculum ? [HOME_NAV,BASIC_NAV,currentNav] :[HOME_NAV,currentNav];
@@ -84,7 +84,7 @@ const CoursePage = ({ posts,pageNavs,category }: Props)=> {
             <DynamicHead
                 title={`${pageNavs[1]===BASIC_NAV ? "基礎班カリキュラム/" : ""}${category.title}`}
                 firstText={category.description}
-                image={`https://raw.githubusercontent.com/Ryukoku-Horizon/notion2atlas/main/public/ogp/${category.id}.png`}
+                image={`${process.env.NEXT_PUBLIC_STORAGE_URL}/ogp/${category.id}.png`}
                 link={`https://ryukoku-horizon.github.io/horizon-atlas/${pageNavs[pageNavs.length - 1].link}`}
             />
             <Layout pageNavs={pageNavs}> 
@@ -104,6 +104,7 @@ const CoursePage = ({ posts,pageNavs,category }: Props)=> {
                                     <div key={post.curriculumId}>
                                         <SinglePost
                                         postData={{...post,id:post.curriculumId}}
+                                        category={category.title}
                                         />
                                     </div>
                                 )

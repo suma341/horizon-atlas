@@ -3,11 +3,18 @@ export type PageInfo={
     title: string
     iconType:string
     iconUrl: string
-    cover: string
+    coverUrl: string
     id: string
     order: number
     parentId: string
     type:"curriculum" | "info" | "answer"
+    ogp:{
+        first_text:string;
+        image_path:string;
+    },
+    visibility:string[];
+    tag:string[];
+    category:[];
 }
 
 // export type PostMetaData = {
@@ -20,4 +27,4 @@ export type PageInfo={
 //   iconUrl:string;
 //   coverUrl:string;
 //   order: number;
-// };
+// }

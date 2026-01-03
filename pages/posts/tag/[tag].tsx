@@ -1,6 +1,5 @@
 import type { GetStaticProps } from "next";
 import SinglePost from "@/components/Post/SinglePost";
-import { PostMetaData } from "@/types/postMetaData";
 import Pagenation from "@/components/pagenation/Pagenation";
 import { calculatePageNumber, getAllTags, getPostsByRole, getPostsByTag } from "@/lib/services/notionApiService";
 import { HOME_NAV } from "@/constants/pageNavs";
@@ -9,10 +8,11 @@ import Layout from "@/components/Layout/Layout";
 import Tags from "@/components/tag/Tags";
 import { useEffect, useState } from "react";
 import { NUMBER_OF_POSTS_PER_PAGE } from "@/constants/numberOfPage";
-import { CurriculumService } from "@/lib/services/CurriculumService";
 import useUserProfileStore from "@/stores/userProfile";
 import Loader from "@/components/loader/loader";
 import StaticHead from "@/components/head/staticHead";
+import { PageInfo } from "@/types/page";
+import PageInfoSvc from "@/lib/services/PageInfoSvc";
 
 type pagePath = {
     params: { tag:string }
@@ -20,34 +20,34 @@ type pagePath = {
 
 export const getStaticPaths = async() =>{
 
-    const allPosts:PostMetaData[] = await CurriculumService.getAllCurriculum();
+    const allPosts:PageInfo[] = await PageInfoSvc.getBaseCurriculum()
     const allTags = await getAllTags(allPosts)
 
      const paramsList: pagePath[] = (
         await Promise.all(
-            allTags.map(async (tag) => {
+            allTags.filter((t)=>t!=="解答").map(async (tag) => {
                 return { params: { tag } }
             })
         )
     ).flat();
     return {
         paths:paramsList,
-        fallback: "blocking",
+        fallback: false,
     }
   }
 
 type Props ={
-    posts:PostMetaData[];
+    posts:PageInfo[];
     currentTag:string;
     allTags:string[];
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-    const allPosts:PostMetaData[] = await CurriculumService.getAllCurriculum();
+    const allPosts:PageInfo[] = await PageInfoSvc.getBaseCurriculum()
     const currentTag:string = typeof context.params?.tag == 'string' ? context.params.tag : "";
-    const allTags = await getAllTags(allPosts)
+    const allTags = (await getAllTags(allPosts)).filter((t)=>t!=="解答")
     
-    const posts:PostMetaData[] = await getPostsByTag(currentTag, allPosts);
+    const posts:PageInfo[] = await getPostsByTag(currentTag, allPosts.filter((p)=>p.type!=="answer"));
     return {
         props: {
           posts,
@@ -60,7 +60,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 const TagPageList = ({ posts, currentTag,allTags}: Props)=> {
     const tagSearchNav:pageNav = {title:`タグ検索：${currentTag}`,link:`/posts/tag/${currentTag}`};
     const [currentPage, setCurrentPage] = useState(1);
-    const [matchPosts, setMatchPosts] = useState<PostMetaData[]>(posts);
+    const [matchPosts, setMatchPosts] = useState<PageInfo[]>(posts);
     const numberOfPages = calculatePageNumber(posts);
     const postsPerPage = NUMBER_OF_POSTS_PER_PAGE;
     const { userProfile } = useUserProfileStore();

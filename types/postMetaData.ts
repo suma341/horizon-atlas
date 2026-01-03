@@ -2,7 +2,7 @@ export type PostMetaData = {
   title: string;
   tags:string[];
   curriculumId:string;
-  category:string;
+  category:string[];
   visibility:string[];
   iconType:string;
   iconUrl:string;

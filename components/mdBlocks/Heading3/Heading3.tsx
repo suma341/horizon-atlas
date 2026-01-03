@@ -1,12 +1,10 @@
 import { assignCss } from '@/lib/assignCssProperties';
 import React, { useState } from 'react'
-import MdBlockComponent from '../mdBlock';
-import { HeadingData } from '@/types/headingData';
 import { getColorProperty } from '@/lib/backgroundCorlor';
 import { usePageLink } from '@/hooks/usePagePush';
 import { MdBlock } from '@/types/MdBlock';
-import { typeAssertio } from '@/lib/typeAssertion';
 import RenderParent from '../renderParent';
+import { RenderChildren } from '../mdBlock';
 
 type Props={
     mdBlock:MdBlock
@@ -17,17 +15,18 @@ export default function Heading3(props:Props) {
     try{
         const {mdBlock,depth} = props;
     const [isOpen, setIsOpen] = useState(false);
-    const data = typeAssertio<HeadingData>(mdBlock.parent as Record<string, string | number | boolean>, mdBlock.type)
-    const colorProperty = getColorProperty(data.color);
-
+    const data = mdBlock.parent.header;
     const { handleClick } = usePageLink()
+    
+    if(!data)return;
+    const colorProperty = getColorProperty(data.color);
     
     return (
         <div id={mdBlock.blockId} className='mb-2 mt-4'>
             {mdBlock.children.length===0 && <h3 className='font-bold text-xl' style={colorProperty}>
                 {data.parent.map((text,i)=>{
                     const style = assignCss(text)
-                    return (<span style={style} key={i} onClick={()=>handleClick(text.href,text.scroll)}>{text.plain_text}</span>)
+                    return (<span style={style} key={i} onClick={()=>handleClick(text.href,text.scroll,text.is_same_bp)}>{text.plain_text}</span>)
                 })}
             </h3>}
             {mdBlock.children.length !==0 && <div className='flex'>
@@ -39,16 +38,11 @@ export default function Heading3(props:Props) {
                 </button>
                 <h3 className='font-bold text-xl' style={colorProperty}>
                     {data.parent.map((text,i)=>{
-                        return <RenderParent key={i} text={text} i={i} handleClick={()=>handleClick(text.href,text.scroll)} />
+                        return <RenderParent key={i} text={text} i={i} />
                     })}  
                 </h3>
             </div>}
-            {isOpen && mdBlock.children.map((child,i)=>(
-                <MdBlockComponent key={i} mdBlock={child} depth={depth + 1} />
-            ))}
-            {!data.is_toggleable && mdBlock.children.map((child,i)=>(
-                <MdBlockComponent key={i} mdBlock={child} depth={depth + 1} />
-            ))}
+            {(isOpen || !data.is_toggleable) && <RenderChildren mdBlocks={mdBlock.children} depth={depth + 1} />}
         </div>
     )
     }catch(e){

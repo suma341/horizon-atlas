@@ -9,6 +9,7 @@ import StaticHead from '@/components/head/staticHead';
 import PageInfoSvc from '@/lib/services/PageInfoSvc';
 import { useRouter } from 'next/router';
 import useFirebaseUser from '@/hooks/useFirebaseUser';
+import Footer from '@/components/Layout/Footer/Footer';
 
 type Props = {
   pageNum:number;
@@ -76,9 +77,7 @@ export default function Home({pageNum}:Props) {
         <Curriculums pageNum={pageNum} />
       </main>
 
-      <footer className="bg-gray-200 text-gray-700 py-4 text-center">
-        <p className="text-sm">&copy; 2025 Ryukoku Horizon</p>
-      </footer>
+      <Footer />
     </div>
   );
 }

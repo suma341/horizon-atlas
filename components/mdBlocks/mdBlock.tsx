@@ -19,7 +19,6 @@ import Table_of_contents from './table_of_contents/table_of_contents';
 import Column_list from './column_list/column_list';
 import To_do from './to_do/to_do';
 import Synced_block from './synced_block/synced_block';
-import Table_row from './table_row/table_row';
 import VideoBlock from './video/video';
 import { MdBlock } from '@/types/MdBlock';
 import Child_database from './child_database/child_database';
@@ -27,11 +26,11 @@ import Child_database from './child_database/child_database';
 type Props ={
     mdBlock:MdBlock;
     depth:number;
-    sameDepth?:number;
+    listNumber?:number
 }
 
 export default function MdBlockComponent(props:Props) {
-    const {mdBlock,depth,sameDepth } = props;
+    const {mdBlock,depth,listNumber } = props;
     try{
         if(mdBlock.type==='paragraph'){
         return <Paragraph mdBlock={mdBlock} depth={depth} />
@@ -46,9 +45,9 @@ export default function MdBlockComponent(props:Props) {
         }else if(mdBlock.type === 'code'){
             return <Code mdBlock={mdBlock} depth={depth} />
         }else if(mdBlock.type==='numbered_list_item'){
-            return <NumberedListItem mdBlock={mdBlock} depth={depth} />
+            return <NumberedListItem mdBlock={mdBlock} depth={depth} listNumber={listNumber} />
         }else if(mdBlock.type==='bulleted_list_item'){
-            return <BulletedListItem mdBlock={mdBlock} depth={depth} sameDepth={sameDepth} />
+            return <BulletedListItem mdBlock={mdBlock} depth={depth} />
         }else if(mdBlock.type==='callout'){
             return <Callout mdBlock={mdBlock} depth={depth} />
         }else if(mdBlock.type === 'quote'){
@@ -75,8 +74,6 @@ export default function MdBlockComponent(props:Props) {
             return <To_do mdBlock={mdBlock} depth={depth} />
         }else if(mdBlock.type ==="synced_block"){
             return <Synced_block mdBlock={mdBlock} depth={depth} />
-        }else if(mdBlock.type==="table_row"){
-            return <Table_row mdBlock={mdBlock} />
         }else if(mdBlock.type==="video"){
             return <VideoBlock mdBlock={mdBlock} depth={depth} />
         }else if(mdBlock.type==="child_database"){
@@ -88,3 +85,45 @@ export default function MdBlockComponent(props:Props) {
     }
 }
 
+export const RenderChildren = ({
+    mdBlocks,
+    depth,
+}: {
+    mdBlocks: MdBlock[];
+    depth: number;
+}) => {
+    let listNumber = 0;
+    let prevWasNumbered = false;
+
+    return (
+        <div style={{ marginLeft: depth * 6 }}>
+            {mdBlocks.map((block) => {
+                if (block.type === "numbered_list_item") {
+                    if (prevWasNumbered) {
+                        listNumber += 1;
+                    } else {
+                        listNumber = 1;
+                        prevWasNumbered = true;
+                    }
+                } else {
+                    // 連続が途切れたらリセット
+                    listNumber = 0;
+                    prevWasNumbered = false;
+                }
+
+                return (
+                    <MdBlockComponent
+                        key={block.blockId}
+                        mdBlock={block}
+                        depth={depth}
+                        listNumber={
+                            block.type === "numbered_list_item"
+                                ? listNumber
+                                : undefined
+                        }
+                    />
+                );
+            })}
+        </div>
+    );
+};

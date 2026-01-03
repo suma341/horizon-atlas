@@ -1,11 +1,9 @@
 import React, { useState } from 'react'
-import MdBlockComponent from '../mdBlock';
-import { HeadingData } from '@/types/headingData';
+import  { RenderChildren } from '../mdBlock';
 import { getColorProperty } from '@/lib/backgroundCorlor';
 import { assignCss } from '@/lib/assignCssProperties';
 import { usePageLink } from '@/hooks/usePagePush';
 import { MdBlock } from '@/types/MdBlock';
-import { typeAssertio } from '@/lib/typeAssertion';
 import RenderParent from '../renderParent';
 
 type Props={
@@ -16,18 +14,20 @@ type Props={
 export default function Heading2(props:Props) {
     try{
         const {mdBlock,depth} = props;
-    const [isOpen, setIsOpen] = useState(false);
-    const data = typeAssertio<HeadingData>(mdBlock.parent as Record<string, string | number | boolean>, mdBlock.type)
-    const colorProperty = getColorProperty(data.color);
+        const [isOpen, setIsOpen] = useState(false);
+        const data = mdBlock.parent.header;
+        const { handleClick } = usePageLink()
+        
+        if(!data)return;
+        const colorProperty = getColorProperty(data.color);
     
-    const { handleClick } = usePageLink()
     
     return (
         <div id={mdBlock.blockId} className='mb-2 mt-6'>
              {!data.is_toggleable && <h2 className='font-bold text-2xl' style={colorProperty}>
                 {data.parent.map((text,i)=>{
                     const style = assignCss(text)
-                    return (<span style={style} key={i} onClick={()=>handleClick(text.href,text.scroll)}>{text.plain_text}</span>)
+                    return (<span style={style} key={i} onClick={()=>handleClick(text.href,text.scroll,text.is_same_bp)}>{text.plain_text}</span>)
                 })}
             </h2>}
             {data.is_toggleable && <div className='flex'>
@@ -39,16 +39,11 @@ export default function Heading2(props:Props) {
                 </button>
                 <h2 className='font-bold text-2xl' style={colorProperty}>
                     {data.parent.map((text,i)=>{
-                        return <RenderParent key={i} text={text} i={i} handleClick={()=>handleClick(text.href,text.scroll)} />
+                        return <RenderParent key={i} text={text} i={i} />
                     })}
                 </h2>
             </div>}
-            {isOpen && mdBlock.children.map((child,i)=>(
-                <MdBlockComponent key={i} mdBlock={child} depth={depth + 1} />
-            ))}
-            {!data.is_toggleable && mdBlock.children.map((child,i)=>(
-                <MdBlockComponent key={i} mdBlock={child} depth={depth + 1} />
-            ))}
+            {(isOpen || !data.is_toggleable) && <RenderChildren mdBlocks={mdBlock.children} depth={depth + 1} />}
         </div>
     )
     }catch(e){

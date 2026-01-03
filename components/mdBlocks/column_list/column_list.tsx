@@ -1,5 +1,5 @@
 import React from 'react'
-import MdBlockComponent from '../mdBlock';
+import { RenderChildren } from '../mdBlock';
 import { MdBlock } from '@/types/MdBlock';
 
 type Props ={
@@ -15,9 +15,7 @@ function Column_list({mdBlock,depth}:Props) {
         <div className='md:flex md:gap-3' id={mdBlock.blockId}>
             {Array.isArray(columns) && columns.map((column,i)=>(
                 <div key={i} className='md:flex-1'>
-                    {column.children.map((child,j)=>(
-                        <MdBlockComponent mdBlock={child} depth={depth} key={j} />
-                    ))}
+                    <RenderChildren mdBlocks={column.children} depth={depth + 1} />
                 </div>
             ))}
         </div>

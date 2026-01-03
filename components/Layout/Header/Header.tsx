@@ -9,6 +9,7 @@ import { MdOutlineQuestionAnswer } from "react-icons/md";
 import { FaRegUser } from "react-icons/fa";
 import useUserProfileStore from '@/stores/userProfile';
 import { useRouter } from 'next/router';
+import { ANSWER_NAV, INFO_NAV } from '@/constants/pageNavs';
 
 type Props={
     setOpenbar:React.Dispatch<React.SetStateAction<boolean>>;
@@ -43,7 +44,7 @@ export default function Header({setOpenbar}:Props){
                         </Link>
                     </li>
                     <li className="mr-4">
-                        <Link href={'/posts/answers'}>
+                        <Link href={ANSWER_NAV.link}>
                             <div className="text-neutral-400 hover:text-purple-500 flex flex-col items-center text-center">
                                 <MdOutlineQuestionAnswer size={22} />
                                 <p>解答</p>
@@ -51,7 +52,7 @@ export default function Header({setOpenbar}:Props){
                         </Link>
                     </li>
                     <li className="mr-4">
-                        <Link href={'/posts/infos'}>
+                        <Link href={INFO_NAV.link}>
                             <div className="text-neutral-400 hover:text-purple-500 flex flex-col items-center text-center">
                                 <FaInfoCircle size={22} />
                                 <p>部活情報</p>

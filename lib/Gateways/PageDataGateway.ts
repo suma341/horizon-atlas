@@ -1,13 +1,15 @@
-import { PageData } from "@/types/pageData"
+// use server
+import { AtlBlockEntityData, PageData } from "@/types/pageData"
+import { loadAndDecodeJson } from "../decodeJson";
 
 type BlockData={
     curriculumId:string
     parentId: string
-    data: Record<string,string | number | boolean> | string
-    id: string
-    type: string
-    pageId: string
-    order: number
+    data: AtlBlockEntityData,
+    id: string,
+    type: string,
+    pageId: string,
+    order: number,
 }
 
 export class PageDataGateway{
@@ -15,7 +17,7 @@ export class PageDataGateway{
         if(!pageId){
             throw new Error("missing pageId in PageDataGateway/get")
         }
-        const res = await fetch(`${process.env.NEXT_PUBLIC_STORAGE_URL}/pageData/${pageId}.json`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_STORAGE_URL}/pageData/${pageId}.dat`);
         if (!res.ok) {
             const status = res.status
             if(status===404){
@@ -31,8 +33,9 @@ export class PageDataGateway{
             console.error(`error in /pageData/${pageId}.json`)
             throw new Error(`error in PageDataGateway/get status: ${status} text: ${await res.text()}`);
         }
-
-        let data:BlockData[] = await res.json();
+        const txtData = await res.text()
+        const blockDatas = await loadAndDecodeJson<BlockData[]>(txtData)
+        let data:BlockData[] = blockDatas
 
         if (match) {
             const keys = Object.keys(match) as (keyof BlockData)[];

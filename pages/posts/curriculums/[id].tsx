@@ -1,25 +1,21 @@
 import { GetStaticProps } from 'next';
 import React, { useEffect } from 'react';
-import { PostMetaData } from '@/types/postMetaData';
-import MdBlockComponent from '@/components/mdBlocks/mdBlock';
+import { RenderChildren } from '@/components/mdBlocks/mdBlock';
 import { pageNav } from '@/types/pageNav';
-import { ANSWER_NAV, BASIC_NAV, HOME_NAV, INFO_NAV } from '@/constants/pageNavs';
+import { ANSWER_NAV, BASIC_NAV, HOME_NAV } from '@/constants/pageNavs';
 import Image from 'next/image';
 import Layout from '@/components/Layout/Layout';
-import { CurriculumService } from '@/lib/services/CurriculumService';
 import { PageDataService } from '@/lib/services/PageDataService';
 import useUserProfileStore from '@/stores/userProfile';
 import MessageBoard from '@/components/messageBoard/messageBoard';
-import { ParagraphData } from '@/types/paragraph';
 import DynamicHead from '@/components/head/dynamicHead';
 import Loader from '@/components/loader/loader';
 import PageInfoSvc from '@/lib/services/PageInfoSvc';
 import { CategoryService } from '@/lib/services/CategoryService';
-import InfoSvc from '@/lib/services/infoSvc';
 import { MdBlock } from '@/types/MdBlock';
 import useCheckRole from '@/hooks/useCheckUserProfile';
-import AnswerSvc from '@/lib/services/answerSvc';
 import CantLoadProgress from '@/components/cantLoadProgress/cantLoadProgress';
+import PageCover from '@/components/pageCover';
 
 type postPath = {
   params: { id:string }
@@ -27,7 +23,6 @@ type postPath = {
 
 type StaticProps = {
   title:string;
-  metadata:PostMetaData | "info";
   mdBlocks:MdBlock[];
   pageNavs:pageNav[];
   pageId:string;
@@ -35,7 +30,9 @@ type StaticProps = {
   iconUrl:string;
   coverUrl:string;
   firstText:string;
-  resourceType:ResourceType
+  ogpImagePath:string;
+  resourceType:ResourceType;
+  visibility:string[]
 };
 
 type ResourceType = "curriculum" | "info" | "answer"
@@ -51,7 +48,7 @@ export const getStaticPaths = async () => {
   });
   return {
     paths,
-    fallback: "blocking",
+    fallback: false,
   };
 };
 
@@ -64,72 +61,51 @@ export const getStaticProps: GetStaticProps = async ({ params }):Promise<{props:
     }
     const { curriculumId } = pageInfo
     const achieve:string[] = [`${pageInfo.title}：`]
-    const isBasePage = curriculumId == pageId
+    const isBasePage = curriculumId === pageId
     const resourceType:ResourceType = pageInfo.type
     try{
-        const mdBlocks =  await PageDataService.getPageDataByPageId(pageId,curriculumId);
+        const mdBlocks =  await PageDataService.getPageDataByPageId(pageId);
         achieve.push("🤍")
-        const singlePost = resourceType=="info" ? (isBasePage ? pageInfo : await InfoSvc.getById(curriculumId)) :
-          resourceType=="curriculum" ? await CurriculumService.getCurriculumById(curriculumId) :
-          await AnswerSvc.getById(curriculumId)
-        if(!singlePost){
+        const basePage = isBasePage ? pageInfo : await PageInfoSvc.getByPageId(curriculumId)
+        if(!basePage){
+          console.log(`missing query in curriculums/[id]/getStaticProps ${pageId}`)
           throw new Error(`missing query in curriculums/[id]/getStaticProps ${pageId}`)
         }
         achieve.push("🩵")
         const pageNavs:pageNav[] = [HOME_NAV]
-        if(resourceType=="info"){
-          pageNavs.push(INFO_NAV)
-          pageNavs.push({ title: singlePost.title, link: `/posts/curriculums/${curriculumId}` })
-        }else if(resourceType=="answer"){
-          pageNavs.push(ANSWER_NAV)
-          pageNavs.push({ title: singlePost.title, link: `/posts/curriculums/${curriculumId}` })
-        }else{
-          if("category" in singlePost){
-            const noCategorized = singlePost.category===""
-            if(!noCategorized){
-              const category = await CategoryService.getCategoryByName(singlePost.category)
-              if(category){
-                if(category.is_basic_curriculum){
-                  pageNavs.push(BASIC_NAV)
-                }
-                pageNavs.push({title: singlePost.category, link: `/posts/course/${category.id}`})
-              }
+        for(const cat of pageInfo.category){
+          if(cat==="解答"){
+            pageNavs.push(ANSWER_NAV)
+          }else{
+            const category = await CategoryService.getCategoryByName(cat)
+            if(category){
+              if(category.is_basic_curriculum){
+                pageNavs.push(BASIC_NAV)
+                pageNavs.push({title: cat, link: `/posts/course/${category.id}?is_basic=true`})
+              }else{
+                pageNavs.push({title: cat, link: `/posts/course/${category.id}`})
+              } 
             }
-            pageNavs.push({ title: singlePost.title, link: `/posts/curriculums/${curriculumId}` })
           }
         }
-        let firstText = "";
-        try{
-            for(const i of mdBlocks){
-                if(i.type==="paragraph"){
-                    const textData = i.parent as ParagraphData
-                    for(const i2 of textData.parent){
-                        firstText = firstText + i2.plain_text
-                    }
-                    if(firstText.length>12){
-                        break;
-                    }
-                }
-            }
-        }catch(e){
-            throw new Error(`🟥 error in ${pageInfo.title}:${e}`)
-        }
+        pageNavs.push({ title: basePage.title, link: `/posts/curriculums/${curriculumId}` })
         achieve.push("🩷")
-        const childPage = await PageDataService.getPageNavs(pageInfo,resourceType=="info")
+        const childPage = await PageDataService.getPageNavs(pageInfo)
         const pageNavs_ = curriculumId!==pageId ? [...pageNavs, ...childPage.reverse()] : pageNavs
         achieve.push("🟢")
         return {
             props: {
-            title:pageInfo.title,
-            metadata: "category" in singlePost ? singlePost : "info",
-            mdBlocks,
-            pageNavs:pageNavs_,
-            pageId,
-            iconUrl:pageInfo.iconUrl,
-            iconType:pageInfo.iconType,
-            coverUrl:pageInfo.cover,
-            firstText,
-            resourceType
+              title:pageInfo.title,
+              visibility:pageInfo.visibility ,
+              mdBlocks,
+              pageNavs:pageNavs_,
+              pageId,
+              iconUrl:pageInfo.iconUrl,
+              iconType:pageInfo.iconType,
+              coverUrl:pageInfo.coverUrl,
+              firstText:pageInfo.ogp.first_text,
+              ogpImagePath:pageInfo.ogp.image_path,
+              resourceType
             },
         };
     }catch(e){
@@ -139,9 +115,9 @@ export const getStaticProps: GetStaticProps = async ({ params }):Promise<{props:
     }
 };
 
-const Post =({ metadata, mdBlocks,pageNavs,pageId,title,iconType,iconUrl,coverUrl,firstText,resourceType}: StaticProps) => {
+const Post =({ visibility, mdBlocks,pageNavs,pageId,title,iconType,iconUrl,coverUrl,firstText,resourceType,ogpImagePath}: StaticProps) => {
   const { userProfile } = useUserProfileStore();
-  const {notVisible,roleChecking,cannotLoad} = useCheckRole(metadata==="info" ? metadata : metadata.visibility,resourceType,title)
+  const {notVisible,roleChecking,cannotLoad} = useCheckRole(visibility,resourceType,title)
 
   useEffect(()=>{
     if (typeof window !== "undefined" && window.location.hash) {
@@ -161,27 +137,20 @@ const Post =({ metadata, mdBlocks,pageNavs,pageId,title,iconType,iconUrl,coverUr
         title={title}
         firstText={firstText}
         link={`https://ryukoku-horizon.github.io/horizon-atlas/${pageNavs[pageNavs.length - 1].link}`}
-        image={`${process.env.NEXT_PUBLIC_STORAGE_URL}/ogp/${pageId}.png`}
+        image={ogpImagePath}
       />
       <Layout pageNavs={pageNavs}>
       {!notVisible && <div className='pt-20 pb-8 min-h-screen md:flex md:flex-col md:justify-center md:items-center '>
       {coverUrl && coverUrl!=="" && <Image src={coverUrl} alt={''} width={120} height={120} className='h-56 top-0' style={{width:"100vw"}} />}
         <section className='bg-white pb-10 md:max-w-4xl md:min-w-[670px] px-2' style={coverUrl!=="" ? {} : {paddingTop:"4rem"}}>
           <div>
-          {iconType==="" && <Image src={"/horizon-atlas/file_icon.svg"} alt={''} width={20} height={20} className='relative w-20 h-20 m-0' style={coverUrl!=="" ? {top:"-40px",left:"20px"} : {marginBottom:"1.25rem"}} />}
-          {iconType !== "emoji" && iconType!=="custom_emoji" && iconType!=="" && <Image src={iconUrl} alt={''} width={20} height={20} className='relative w-20 h-20 m-0' style={coverUrl!=="" ? {top:"-40px",left:"20px"} : {marginBottom:"1.25rem"}} />}
-          {iconType==="custom_emoji" && <img src={iconUrl} alt={''} className='relative w-20 h-20 m-0' style={coverUrl!=="" ? {top:"-40px",left:"20px"} : {marginBottom:"1.25rem"}} />}
-          {iconType === "emoji" && <p className='relative w-14 h-14 text-7xl' style={coverUrl!=="" ? {top:"-40px",left:"20px"} : {marginBottom:"1.25rem"}}>{iconUrl}</p>}
+            <PageCover iconType={iconType} iconUrl={iconUrl} coverUrl={coverUrl} />
             <h2 className='w-full text-3xl font-bold'>{title}</h2>
           </div>
           <div className='border-b mt-2'></div>
           <div className='mt-4 font-medium'>
             {!roleChecking && <div key={pageId}>
-              {Array.isArray(mdBlocks) && mdBlocks.map((mdBlock)=>{
-                  return (
-                    <MdBlockComponent mdBlock={mdBlock} depth={0} key={mdBlock.blockId} />
-                  )
-              })}
+              <RenderChildren mdBlocks={mdBlocks} depth={0}  />
             </div>}
             {roleChecking && <Loader size={80} />}
           </div>
