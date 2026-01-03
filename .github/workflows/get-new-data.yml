@@ -1,0 +1,23 @@
+name: run notion2atlas
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+
+      - name: Node.js をセットアップ
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: notion2atlas実行
+        run: node ./scripts/runNotion2Atlas.js
+        env:
+          NOTION2ATLAS_GH_PAT: ${{secrets.NOTION2ATLAS_GH_PAT}}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
