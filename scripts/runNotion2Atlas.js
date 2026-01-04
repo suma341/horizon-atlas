@@ -16,7 +16,7 @@ async function notifyDiscord(message) {
   });
 }
 
-const token = process.env.NOTION2ATLAS_GH_PAT;
+const token = process.env.ATLAS_STORAGE_GH_PAT;
 
 const res = await fetch(
   "https://api.github.com/repos/suma341/notion2atlas/actions/workflows/update_repo.yml/dispatches",

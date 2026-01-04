@@ -1,4 +1,4 @@
-name: run notion2atlas
+name: update storage
 
 on:
   workflow_dispatch:
@@ -16,8 +16,8 @@ jobs:
         with:
           node-version: 18
 
-      - name: notion2atlas実行
+      - name: update storage
         run: node ./scripts/runNotion2Atlas.js
         env:
-          NOTION2ATLAS_GH_PAT: ${{secrets.NOTION2ATLAS_GH_PAT}}
+          ATLAS_STORAGE_GH_PAT: ${{secrets.ATLAS_STORAGE_GH_PAT}}
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
