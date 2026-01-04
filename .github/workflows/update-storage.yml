@@ -17,7 +17,7 @@ jobs:
           node-version: 18
 
       - name: update storage
-        run: node ./scripts/runNotion2Atlas.js
+        run: node ./scripts/updateStorage.js
         env:
           ATLAS_STORAGE_GH_PAT: ${{secrets.ATLAS_STORAGE_GH_PAT}}
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}

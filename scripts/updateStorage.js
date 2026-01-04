@@ -16,10 +16,11 @@ async function notifyDiscord(message) {
   });
 }
 
-const token = process.env.ATLAS_STORAGE_GH_PAT;
+(async()=>{
+  const token = process.env.ATLAS_STORAGE_GH_PAT;
 
 const res = await fetch(
-  "https://api.github.com/repos/suma341/notion2atlas/actions/workflows/update_repo.yml/dispatches",
+  "https://api.github.com/repos/Ryukoku-Horizon/atlas-storage/actions/workflows/update-data.yml/dispatches",
   {
     method: "POST",
     headers: {
@@ -42,3 +43,4 @@ if (!res.ok) {
 }
 
 console.log("workflow dispatched");
+})()
