@@ -1,12 +1,11 @@
 import { getUserProgressEntity, progressEntitiesToModels, ProgressEntity, ProgressModel, StorageEntity } from "@/lib/services/DriveService"
-import useUserProfileStore from "@/stores/userProfile"
+import { Profile } from "@/types/profile";
 import { useEffect, useState } from "react"
 
-const useProgress=()=>{
+const useProgress=(userProfile:Profile | null)=>{
   const [progress, setProgress] = useState<ProgressModel[]>([]);
   const [loading, setLoading] = useState(false);
   const [cannotLoad, setCannotLoad] = useState(false);
-  const { userProfile } = useUserProfileStore()
   const [entity,setEntity] = useState<ProgressEntity[]>([])
 
   const getProgressKey=(studentNum:string)=>{
@@ -74,7 +73,6 @@ const useProgress=()=>{
     progress,
     loading,
     cannotLoad,
-    userProfile,
     entity
   }
 }

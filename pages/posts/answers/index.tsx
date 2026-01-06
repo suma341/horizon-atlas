@@ -2,15 +2,11 @@ import Layout from "@/components/Layout/Layout";
 import { ANSWER_NAV, HOME_NAV } from "@/constants/pageNavs";
 import type { GetStaticProps,} from "next";
 import { PageInfo } from "@/types/page";
-import SinglePost from "@/components/Post/SinglePost";
 import DynamicHead from "@/components/head/dynamicHead";
-import LoginModal from "@/components/loginModal/loginModal";
-import useProgress from "@/hooks/useProgress";
 import Loader from "@/components/loader/loader";
-import { useEffect } from "react";
-import Link from "next/link";
-import CantLoadProgress from "@/components/cantLoadProgress/cantLoadProgress";
 import PageInfoSvc from "@/lib/services/PageInfoSvc";
+import { useAuth } from "@/hooks/useAuth";
+import { AnswerMain } from "@/components/pageComponents/answerMain";
 
 type Props={
     answerPages:PageInfo[]
@@ -27,11 +23,8 @@ export const getStaticProps: GetStaticProps = async () => {
 };
 
 export default function AnswersPage({answerPages}: Props){
-    const {userProfile,entity,loading,cannotLoad} = useProgress()
-
-    useEffect(()=>{
-        console.log(entity)
-    },[entity])
+    const {loading,dotCount,userProfile}= useAuth()
+    const dot = ".".repeat(dotCount)
 
     return (
         <>
@@ -42,37 +35,13 @@ export default function AnswersPage({answerPages}: Props){
                 link="https://ryukoku-horizon.github.io/horizon-atlas/posts/answers"
             />
             <Layout pageNavs={[HOME_NAV, ANSWER_NAV]}>
-                {!userProfile && <LoginModal />} 
-                {loading && <div className="mt-16 h-full w-full align-middle justify-center p-16">
-                    <Loader size={60} />    
-                    <p className="font-bold text-gray-500">進捗を読み込み中...</p>
-                </div>}
-                {userProfile && !loading && 
-                <div className="min-h-screen md:flex md:flex-col md:justify-center md:items-center bg-gradient-to-br from-white via-gray-100 to-purple-50 animate-gradient transition-all">
-                    <main className="w-full md:max-w-5xl mx-auto text-center mt-24 md:mt-12">
-                        <h1 className="text-4xl font-extrabold bg-gradient-to-r from-indigo-500 to-purple-600 text-transparent bg-clip-text tracking-wide mb-16">
-                            解答ページ
-                        </h1>
-                        <p className="mt-8">提出した問題の解答のみ閲覧できます。※一部の問題の解答が用意できていない場合があります。</p>
-                        <p>提出済みの問題を見るには
-                            <Link href="/user/progress" className="text-sky-500 hover:text-sky-700">こちら</Link>
-                        から</p>
-                        {cannotLoad && <div className="flex items-center justify-center px-4">
-                            <CantLoadProgress studentNum={userProfile.studentNum} />
-                            </div>}
-                        {!cannotLoad && <section className="grid grid-cols-1 px-6 mt-8">
-                            {answerPages.sort((a,b)=> a.order - b.order).map((page, i) => {
-                                const isAnswered = entity.find((e)=>e.title===page.title && e.value)
-                                if(!isAnswered)return null;
-                                return (
-                                    <SinglePost
-                                        postData={{...page}}
-                                        key={i}
-                                    />
-                                );
-                            })}
-                        </section>}
-                    </main>
+                {!loading && <AnswerMain
+                    answerPages={answerPages}
+                    userProfile={userProfile}
+                />}
+                {loading && <div className="flex flex-col items-center gap-4 mt-5 flex-1 justify-center">
+                    <Loader size={80} />
+                    <p className="text-xl font-semibold text-gray-700">読み込み中{dot}</p>
                 </div>}
             </Layout>
         </>

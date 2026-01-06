@@ -1,16 +1,14 @@
 import Layout from "@/components/Layout/Layout";
-import SingleCourse from "@/components/Post/SingleCourse";
 import { BASIC_NAV, HOME_NAV } from "@/constants/pageNavs";
-import { getPostsByRole } from "@/lib/services/notionApiService";
 import type { GetStaticProps,} from "next";
-import { useEffect, useState } from "react";
 import { CategoryService } from "@/lib/services/CategoryService";
 import { Category } from "@/types/category";
-import useUserProfileStore from "@/stores/userProfile";
 import Loader from "@/components/loader/loader";
 import DynamicHead from "@/components/head/dynamicHead";
 import { PageInfo } from "@/types/page";
 import PageInfoSvc from "@/lib/services/PageInfoSvc";
+import { BasicMain } from "@/components/pageComponents/basicMain";
+import { useAuth } from "@/hooks/useAuth";
 
 type Props={
     courseAndPosts: {
@@ -19,7 +17,6 @@ type Props={
     }[];
 }
 
-// getStaticProps関数
 export const getStaticProps: GetStaticProps = async () => {
     const basicCategories = await CategoryService.getBasicCategory()
     const categoryAndCurriculums = await Promise.all(basicCategories.map(async(c)=>{
@@ -38,30 +35,8 @@ export const getStaticProps: GetStaticProps = async () => {
 };
 
 export default function BasicCoursePageList({courseAndPosts}: Props){
-    const [dataByRole,setDataByRole] = useState(courseAndPosts);
-    const { userProfile } = useUserProfileStore()
-    const [loading,setLoading] = useState(false)
-
-    useEffect(()=>{
-        async function setData(){
-            try{
-                setLoading(true)
-                const usersRole = userProfile ? (userProfile.given_name ?? "体験入部") : "ゲスト"
-                const dataByRole:{
-                    category: Category;
-                    curriculums: PageInfo[];
-                }[] = [];
-                for(const i of courseAndPosts){
-                    const postsByRole = await getPostsByRole(usersRole,i.curriculums);
-                    dataByRole.push({category:i.category,curriculums:postsByRole});
-                }
-                setDataByRole(dataByRole);
-            }finally{
-                setLoading(false)
-            }
-        }
-        setData();
-    },[courseAndPosts,userProfile])
+    const {userProfile,loading,dotCount} = useAuth()
+    const dot = ".".repeat(dotCount)
 
     return (
         <>
@@ -72,24 +47,14 @@ export default function BasicCoursePageList({courseAndPosts}: Props){
                 link="https://ryukoku-horizon.github.io/horizon-atlas/posts/basic"
             />
             <Layout pageNavs={[HOME_NAV, BASIC_NAV]}>
-                <div className="min-h-screen md:flex md:flex-col md:justify-center md:items-center bg-gradient-to-br from-white via-gray-100 to-purple-50 animate-gradient transition-all">
-                    <main className="w-full md:max-w-5xl mx-auto text-center mt-24 md:mt-12">
-                        <h1 className="text-4xl font-extrabold bg-gradient-to-r from-indigo-500 to-purple-600 text-transparent bg-clip-text tracking-wide mb-16">
-                            基礎班カリキュラム
-                        </h1>
-                        <section className="grid grid-cols-1 gap-8 px-6">
-                            {!loading && dataByRole.filter((d)=>d.curriculums.length).sort((a,b)=>a.category.order - b.category.order).map((courseAndPosts, i) => {
-                                return (
-                                    <SingleCourse
-                                    category={courseAndPosts.category}
-                                    key={i}
-                                    />
-                                );
-                            })}
-                            {loading && <Loader size={20} />}
-                        </section>
-                    </main>
-                </div>
+                {!loading && <BasicMain
+                    courseAndPosts={courseAndPosts}
+                    userProfile={userProfile}
+                />}
+                {loading &&<div className="flex flex-col items-center gap-4 mt-5 flex-1 justify-center">
+                    <Loader size={80} />
+                    <p className="text-xl font-semibold text-gray-700">読み込み中{dot}</p>
+                </div>}
             </Layout>
         </>
 

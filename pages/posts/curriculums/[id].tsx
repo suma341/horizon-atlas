@@ -1,21 +1,15 @@
 import { GetStaticProps } from 'next';
-import React, { useEffect } from 'react';
-import { RenderChildren } from '@/components/mdBlocks/mdBlock';
 import { pageNav } from '@/types/pageNav';
 import { ANSWER_NAV, BASIC_NAV, HOME_NAV } from '@/constants/pageNavs';
-import Image from 'next/image';
 import Layout from '@/components/Layout/Layout';
 import { PageDataService } from '@/lib/services/PageDataService';
-import useUserProfileStore from '@/stores/userProfile';
-import MessageBoard from '@/components/messageBoard/messageBoard';
 import DynamicHead from '@/components/head/dynamicHead';
 import Loader from '@/components/loader/loader';
 import PageInfoSvc from '@/lib/services/PageInfoSvc';
 import { CategoryService } from '@/lib/services/CategoryService';
 import { MdBlock } from '@/types/MdBlock';
-import useCheckRole from '@/hooks/useCheckUserProfile';
-import CantLoadProgress from '@/components/cantLoadProgress/cantLoadProgress';
-import PageCover from '@/components/pageCover';
+import { useAuth } from '@/hooks/useAuth';
+import { CurriculumMain } from '@/components/pageComponents/curriculumMain';
 
 type postPath = {
   params: { id:string }
@@ -116,20 +110,8 @@ export const getStaticProps: GetStaticProps = async ({ params }):Promise<{props:
 };
 
 const Post =({ visibility, mdBlocks,pageNavs,pageId,title,iconType,iconUrl,coverUrl,firstText,resourceType,ogpImagePath}: StaticProps) => {
-  const { userProfile } = useUserProfileStore();
-  const {notVisible,roleChecking,cannotLoad} = useCheckRole(visibility,resourceType,title)
-
-  useEffect(()=>{
-    if (typeof window !== "undefined" && window.location.hash) {
-      const id = window.location.hash.substring(1); 
-      const element = document.getElementById(id);
-      if (element) {
-        setTimeout(() => {
-          element.scrollIntoView({ behavior: "smooth" });
-        }, 100); 
-      }
-    }
-  },[userProfile])
+  const {loading,dotCount,userProfile} = useAuth()
+  const dot = ".".repeat(dotCount)
 
   return (
     <>
@@ -140,35 +122,21 @@ const Post =({ visibility, mdBlocks,pageNavs,pageId,title,iconType,iconUrl,cover
         image={ogpImagePath}
       />
       <Layout pageNavs={pageNavs}>
-      {!notVisible && <div className='pt-20 pb-8 min-h-screen md:flex md:flex-col md:justify-center md:items-center '>
-      {coverUrl && coverUrl!=="" && <Image src={coverUrl} alt={''} width={120} height={120} className='h-56 top-0' style={{width:"100vw"}} />}
-        <section className='bg-white pb-10 md:max-w-4xl md:min-w-[670px] px-2' style={coverUrl!=="" ? {} : {paddingTop:"4rem"}}>
-          <div>
-            <PageCover iconType={iconType} iconUrl={iconUrl} coverUrl={coverUrl} />
-            <h2 className='w-full text-3xl font-bold'>{title}</h2>
-          </div>
-          <div className='border-b mt-2'></div>
-          <div className='mt-4 font-medium'>
-            {!roleChecking && <div key={pageId}>
-              <RenderChildren mdBlocks={mdBlocks} depth={0}  />
-            </div>}
-            {roleChecking && <Loader size={80} />}
-          </div>
-        </section>
-      </div>}
-      {notVisible && resourceType!=="answer" && <MessageBoard 
-        title='このページは制限されています' 
-        message={`${userProfile ? (userProfile?.given_name || "体験入部") : "ゲスト"}ユーザーはこのページを見ることを制限されています。ロールを更新するには再度ログインしてください。`}
-        link='/posts'
-        linkLabel='戻る'
-      />}
-      {notVisible && resourceType==="answer" && cannotLoad && <CantLoadProgress studentNum={userProfile?.studentNum} />}
-      {notVisible && resourceType==="answer" && !cannotLoad && <MessageBoard 
-        title='このページは制限されています' 
-        message={`まだこの問題を提出していないようです。リンクから提出済みの問題を確認できます`}
-        link='/user/progress'
-        linkLabel='進捗を確認'
-      />}
+        {!loading && <CurriculumMain
+          visibility={visibility}
+          mdBlocks={mdBlocks}
+          pageId={pageId}
+          iconType={iconType}
+          iconUrl={iconUrl}
+          coverUrl={coverUrl}
+          resourceType={resourceType}
+          userProfile={userProfile}
+          title={title}
+        />}
+        {loading && <div className="flex flex-col items-center gap-4 mt-5 flex-1 justify-center">
+            <Loader size={80} />
+            <p className="text-xl font-semibold text-gray-700">読み込み中{dot}</p>
+          </div>}
     </Layout>
     </>
   )

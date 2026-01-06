@@ -21,10 +21,10 @@ export default class UserDataGW{
     await db.put("profiles", profile );
   };
 
-  static get = async (user_id:string): Promise<Profile | null | undefined> => {
+  static get = async (user_id:string): Promise<Profile | null> => {
     const db = await getDb();
     if(!db){
-      return undefined
+      return null
     }
     const result = await db.get("profiles", user_id);
     return result ?? null;
