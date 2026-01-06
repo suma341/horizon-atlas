@@ -10,7 +10,7 @@ async function notifyDiscord(message) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      username: "GitHub Actions",
+      username: "HorizonAtlas",
       content: message,
     }),
   });
@@ -35,12 +35,20 @@ const res = await fetch(
 if (!res.ok) {
   const text = await res.text();
   await notifyDiscord(`
-      horizon-atlasからnotion2atlasのworkflow実行に失敗しました
-      期限切れの可能性があるので、確認しましょう
-      error: ${text}
+      ## 【緊急】
+      horizon-atlasからupdate-data workflow実行に失敗しました
+      ATLAS_STORAGE_GH_PATが期限切れの可能性があります。確認して、必要なら期限を更新してください
     `)
   console.error(text)
 }
+// const date = new Date()
+// if(date.getMonth() % 4===0 && date.getDate()===1){
+  await notifyDiscord(`
+    ## 【定期】
+    ATLAS_STORAGE_GH_PATの期限を更新してください。
+    方法についてはこちら→[pat更新の方法](https://www.notion.so/pat-2e0a501ef33780e7be6cef8a86802f2f)
+  `)
+// }
 
 console.log("workflow dispatched");
 })()
