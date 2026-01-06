@@ -41,14 +41,14 @@ if (!res.ok) {
     `)
   console.error(text)
 }
-// const date = new Date()
-// if(date.getMonth() % 4===0 && date.getDate()===1){
+const date = new Date()
+if(date.getMonth() % 4===0 && date.getDate()===1){
   await notifyDiscord(`
     ## 【定期】
     ATLAS_STORAGE_GH_PATの期限を更新してください。
     方法についてはこちら→[pat更新の方法](https://www.notion.so/pat-2e0a501ef33780e7be6cef8a86802f2f)
   `)
-// }
+}
 
 console.log("workflow dispatched");
 })()
