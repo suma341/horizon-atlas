@@ -14,9 +14,14 @@ const Footer = () => {
           </nav>
         </div>
 
-        <p className="mt-8 text-xs text-gray-400">
-          © 2025 Ryukoku Horizon<br />
-          Built & maintained by suma341
+        <p className="mt-8 flex flex-col md:flex-row md:justify-between text-xs text-gray-400">
+          <span>
+            © 2025 Ryukoku Horizon<br />
+            Built & maintained by suma341
+          </span>
+          <span className="mt-2 md:mt-0">
+            v1.0.0
+          </span>
         </p>
       </div>
     </footer>
