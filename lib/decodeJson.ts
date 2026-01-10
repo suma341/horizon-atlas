@@ -1,25 +1,3 @@
-// // use server
-// import { gunzip } from "zlib";
-// import { promisify } from "util";
-
-// const gunzipAsync = promisify(gunzip);
-
-// export async function decodeJson<T>(encoded: string): Promise<T> {
-//     const jsonStr = await gzipBase64Decode(encoded);
-//     return unmarshalJsonStr<T>(jsonStr);
-// }
-
-// function unmarshalJsonStr<T>(jsonStr: string): T {
-//     return JSON.parse(jsonStr) as T;
-// }
-
-// async function gzipBase64Decode(encoded: string): Promise<string> {
-//     const compressed = Buffer.from(encoded, "base64");
-//     const decodedBuffer = await gunzipAsync(compressed);
-
-//     return decodedBuffer.toString("utf-8");
-// }
-
 import { createDecipheriv } from "crypto";
 import { gunzipSync } from "zlib";
 
@@ -39,7 +17,6 @@ function decryptAESGCM(ciphertext: Buffer, key: Buffer): Buffer {
     throw new Error("key must be 32 bytes (AES-256)");
   }
 
-  // Go の gcm.NonceSize() は通常 12 bytes
   const nonceSize = 12;
   if (ciphertext.length < nonceSize) {
     throw new Error("ciphertext too short");
@@ -48,7 +25,6 @@ function decryptAESGCM(ciphertext: Buffer, key: Buffer): Buffer {
   const nonce = ciphertext.subarray(0, nonceSize);
   const encrypted = ciphertext.subarray(nonceSize);
 
-  // Node.js では authTag を最後から 16 bytes 取り出す
   const authTag = encrypted.subarray(encrypted.length - 16);
   const data = encrypted.subarray(0, encrypted.length - 16);
 

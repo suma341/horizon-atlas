@@ -1,7 +1,5 @@
 name: build and Deploy Next.js
 
-# ビルドとデプロイをする
-
 on:
   workflow_dispatch:
   push:

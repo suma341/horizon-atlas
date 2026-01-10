@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Github } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -8,9 +9,22 @@ const Footer = () => {
           <div className="text-2xl font-bold">
             HorizonAtlas
           </div>
-          <nav className="flex flex-col md:flex-row gap-4 text-sm">
+
+          <nav className="flex flex-col md:flex-row items-center gap-4 text-sm">
             <Link href="/about" className="hover:text-gray-300">About</Link>
             <Link href="/contact" className="hover:text-gray-300">Contact</Link>
+            <Link href="/qna" className="hover:text-gray-300">QnA</Link>
+
+            {/* GitHub */}
+            <a
+              href="https://github.com/suma341/horizon-atlas"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gray-400 hover:text-white transition"
+              aria-label="GitHub"
+            >
+              <Github size={18} />
+            </a>
           </nav>
         </div>
 
@@ -20,13 +34,12 @@ const Footer = () => {
             Built & maintained by suma341
           </span>
           <span className="mt-2 md:mt-0">
-            v1.0.0
+            version 1.0.0
           </span>
         </p>
       </div>
     </footer>
   );
 };
-
 
 export default Footer;
