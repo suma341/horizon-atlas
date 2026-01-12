@@ -12,11 +12,9 @@ const Footer = () => {
 
           <nav className="flex flex-col md:flex-row items-center gap-4 text-sm">
             <Link href="/about" className="hover:text-gray-300">About</Link>
-            <Link href="/contact" className="hover:text-gray-300">Contact</Link>
             <Link href="/qna" className="hover:text-gray-300">QnA</Link>
 
-            {/* GitHub */}
-            <a
+            <Link
               href="https://github.com/suma341/horizon-atlas"
               target="_blank"
               rel="noopener noreferrer"
@@ -24,7 +22,7 @@ const Footer = () => {
               aria-label="GitHub"
             >
               <Github size={18} />
-            </a>
+            </Link>
           </nav>
         </div>
 
