@@ -85,7 +85,7 @@ export const HomeMain=({userProfile,categoryAndCurriculums,noCaterizedCurriculum
                     <SinglePost postData={{...item,id:item.curriculumId}} key={item.curriculumId} />
                   ))}
                 </div>}
-                <ImprovementRequest />
+                {userProfile && <ImprovementRequest />}
               </main>
             </div>
           </div>
@@ -105,6 +105,7 @@ export const ImprovementRequest = () => {
             <p className="text-sm text-purple-800">
               内容の誤りや分かりにくい点があれば、お気軽にお知らせください。
             </p>
+            <p className="text-sm text-purple-800">（大学アカウントのみアクセスできます）</p>
           </div>
         </div>
 
