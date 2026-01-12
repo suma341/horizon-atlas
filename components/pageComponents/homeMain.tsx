@@ -85,8 +85,37 @@ export const HomeMain=({userProfile,categoryAndCurriculums,noCaterizedCurriculum
                     <SinglePost postData={{...item,id:item.curriculumId}} key={item.curriculumId} />
                   ))}
                 </div>}
+                <ImprovementRequest />
               </main>
             </div>
           </div>
     )
 }
+
+export const ImprovementRequest = () => {
+  return (
+    <div className="mt-10 rounded-xl border border-purple-200 bg-purple-50 p-5">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-start gap-3">
+          <span className="text-2xl">💡</span>
+          <div>
+            <p className="font-semibold text-purple-900">
+              カリキュラムの改善にご協力ください
+            </p>
+            <p className="text-sm text-purple-800">
+              内容の誤りや分かりにくい点があれば、お気軽にお知らせください。
+            </p>
+          </div>
+        </div>
+
+        <Link
+          href={"https://docs.google.com/forms/d/e/1FAIpQLScW_wz_h2Yd5ij50k8vH91EPUn_0EenEOJ9M147bcVl8KTQLA/viewform?usp=dialog"}
+          target="_blank"
+          className="inline-flex items-center justify-center rounded-lg bg-purple-600 px-4 py-2 text-sm font-medium text-white hover:bg-purple-700 transition"
+        >
+          改善要請はこちら
+        </Link>
+      </div>
+    </div>
+  );
+};
