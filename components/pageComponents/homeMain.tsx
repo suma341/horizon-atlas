@@ -94,7 +94,7 @@ export const HomeMain=({userProfile,categoryAndCurriculums,noCaterizedCurriculum
 
 export const ImprovementRequest = () => {
   return (
-    <div className="mt-10 rounded-xl border border-purple-200 bg-purple-50 p-5">
+    <div className="mt-2 rounded-xl border border-purple-200 bg-purple-50 p-5">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-start gap-3">
           <span className="text-2xl">💡</span>
