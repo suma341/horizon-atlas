@@ -14,7 +14,7 @@ const StaticHead=()=>{
             <meta name='twitter:title' content="HorizonAtlas" />
             <meta name='twitter:description' content="HorizonAtlasは、RyukokuHorizonの学習カリキュラムをまとめた部員専用のサービスです。" />
             <meta name="twitter:card" content="summary_large_image" />
-            <meta name="twitter:card" content={`https://ryukoku-horizon.github.io/horizon-atlas/app_image.png`} />
+            <meta name="twitter:card" content="https://ryukoku-horizon.github.io/horizon-atlas/app_image.png" />
             <link rel="icon" href="https://ryukoku-horizon.github.io/horizon-atlas/favicon.ico" />
         </Head>
     )
