@@ -19,7 +19,7 @@ const DynamicHead=({title,firstText,image,link}:Props)=>{
             <meta property="og:url" content={link} />
             <meta property='og:type' content='website' />
             <meta property='og:site_name' content="HorizonAtlas" />
-            <meta name='twitter:card' content='summary_large_image' />
+            <meta name="twitter:card" content="summary_large_image" />
             <meta name='twitter:title' content={title} />
             <meta name='twitter:description' content={firstText} />
             <meta name='twitter:image' content={image} />
