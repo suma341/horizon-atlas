@@ -11,7 +11,7 @@ const DynamicHead=({title,firstText,image,link}:Props)=>{
     return (
         <Head>
             <title>{title}</title>
-            <link rel="icon" href="/horizon-atlas/favicon.ico" />
+            <link rel="icon" href="https://ryukoku-horizon.github.io/horizon-atlas/favicon.ico" />
             <meta name='description' content='HorizonAtlasは、学習カリキュラムをまとめたHorizon部員専用のサービスです。' />
             <meta property="og:title" content={title} />
             <meta property="og:description" content={firstText} />
