@@ -1,8 +1,8 @@
 import React from 'react'
-import Image from "next/image";
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import { Logo } from '../logo/logo';
 
 function Header() {
     const router = useRouter();
@@ -18,7 +18,7 @@ function Header() {
         <header className="bg-neutral-50 text-white py-4 min-h-14">
             <div className="container mx-auto flex justify-between items-center px-4">
             <Link href={'/'}>
-                <Image src={'/horizon-atlas/logo_.png'} alt={''} width={32} height={16} className='w-32 top-[-20px] h-auto absolute left-0' />
+                <Logo />
             </Link>
             {router.pathname==="/" && <nav className="hidden md:flex space-x-6">
                 {['about', 'curriculums'].map((section) => (

@@ -11,6 +11,7 @@ import { useRouter } from 'next/router';
 import useFirebaseUser from '@/hooks/useFirebaseUser';
 import Footer from '@/components/Layout/Footer/Footer';
 import { VersionGW } from '@/lib/Gateways/VersionGW';
+import Image from 'next/image';
 
 type Props = {
   pageNum:number;
@@ -57,14 +58,20 @@ export default function Home({pageNum,v}:Props) {
                 {char}
               </motion.span>
             ))}
-            <motion.span 
+            <motion.div
               className="text-white"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1, delay: 1 }}
             >
-              HorizonAtlas
-            </motion.span>
+              <Image
+                src='/horizon-atlas/logo_.png'
+                width={80}
+                height={80}
+                className='w-96 h-auto'
+                alt=''
+              />
+              </motion.div>
           </motion.h2>
 
           <p className="text-lg mt-4 max-w-2xl">プログラミング部Horizonで使用する学習資料を簡単に閲覧、検索できます。</p>
