@@ -7,22 +7,26 @@ import Loader from "@/components/loader/loader";
 import PageInfoSvc from "@/lib/services/PageInfoSvc";
 import { useAuth } from "@/hooks/useAuth";
 import { AnswerMain } from "@/components/pageComponents/answerMain";
+import { VersionGW } from "@/lib/Gateways/VersionGW";
 
 type Props={
     answerPages:PageInfo[]
+    v:string
 }
 
 export const getStaticProps: GetStaticProps = async () => {
     const answerPages = await PageInfoSvc.getAnswerPages()
+    const v = await VersionGW.get()
 
     return {
         props: {
-            answerPages:answerPages
+            answerPages:answerPages,
+            v
         } as Props
     };
 };
 
-export default function AnswersPage({answerPages}: Props){
+export default function AnswersPage({answerPages,v}: Props){
     const {loading,dotCount,userProfile}= useAuth()
     const dot = ".".repeat(dotCount)
 
@@ -34,7 +38,7 @@ export default function AnswersPage({answerPages}: Props){
                 image={`${process.env.NEXT_PUBLIC_STORAGE_URL}/ogp/answers.png`}
                 link="https://ryukoku-horizon.github.io/horizon-atlas/posts/answers"
             />
-            <Layout pageNavs={[HOME_NAV, ANSWER_NAV]}>
+            <Layout pageNavs={[HOME_NAV, ANSWER_NAV]} version={v} >
                 {!loading && <AnswerMain
                     answerPages={answerPages}
                     userProfile={userProfile}

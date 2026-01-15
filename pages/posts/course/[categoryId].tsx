@@ -10,6 +10,7 @@ import { PageInfo } from "@/types/page";
 import PageInfoSvc from "@/lib/services/PageInfoSvc";
 import { useAuth } from "@/hooks/useAuth";
 import { CategoryMain } from "@/components/pageComponents/categoryMain";
+import { VersionGW } from "@/lib/Gateways/VersionGW";
 
 type pagePath = {
     params: { categoryId:string }
@@ -35,6 +36,7 @@ type Props={
     posts:PageInfo[];
     pageNavs:pageNav[];
     category:Category
+    v:string
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
@@ -48,16 +50,19 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const currentNav:pageNav = {title:category.title,link:`/posts/course/${currentId}`};
     const pageNavs = category.is_basic_curriculum ? [HOME_NAV,BASIC_NAV,currentNav] :[HOME_NAV,currentNav];
 
+    const v = await VersionGW.get()
+
     return {
         props: {
           posts,
           pageNavs,
-          category
+          category,
+          v
         } as Props
     };
 };
 
-const CoursePage = ({ posts,pageNavs,category }: Props)=> {
+const CoursePage = ({ posts,pageNavs,category,v }: Props)=> {
     const {userProfile,loading,dotCount} = useAuth()
     const dot = ".".repeat(dotCount)
 
@@ -69,7 +74,7 @@ const CoursePage = ({ posts,pageNavs,category }: Props)=> {
                 image={`${process.env.NEXT_PUBLIC_STORAGE_URL}/ogp/${category.id}.png`}
                 link={`https://ryukoku-horizon.github.io/horizon-atlas/${pageNavs[pageNavs.length - 1].link}`}
             />
-            <Layout pageNavs={pageNavs}> 
+            <Layout pageNavs={pageNavs} version={v}> 
                 {!loading && <CategoryMain
                     posts={posts}
                     userProfile={userProfile}

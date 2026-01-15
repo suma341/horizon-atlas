@@ -10,6 +10,7 @@ import { CategoryService } from '@/lib/services/CategoryService';
 import { MdBlock } from '@/types/MdBlock';
 import { useAuth } from '@/hooks/useAuth';
 import { CurriculumMain } from '@/components/pageComponents/curriculumMain';
+import { VersionGW } from '@/lib/Gateways/VersionGW';
 
 type postPath = {
   params: { id:string }
@@ -27,6 +28,7 @@ type StaticProps = {
   ogpImagePath:string;
   resourceType:ResourceType;
   visibility:string[]
+  v:string
 };
 
 type ResourceType = "curriculum" | "info" | "answer"
@@ -86,6 +88,7 @@ export const getStaticProps: GetStaticProps = async ({ params }):Promise<{props:
         achieve.push("🩷")
         const childPage = await PageDataService.getPageNavs(pageInfo)
         const pageNavs_ = curriculumId!==pageId ? [...pageNavs, ...childPage.reverse()] : pageNavs
+        const v = await VersionGW.get()
         achieve.push("🟢")
         return {
             props: {
@@ -99,7 +102,8 @@ export const getStaticProps: GetStaticProps = async ({ params }):Promise<{props:
               coverUrl:pageInfo.coverUrl,
               firstText:pageInfo.ogp.first_text,
               ogpImagePath:pageInfo.ogp.image_path,
-              resourceType
+              resourceType,
+              v
             },
         };
     }catch(e){
@@ -109,7 +113,7 @@ export const getStaticProps: GetStaticProps = async ({ params }):Promise<{props:
     }
 };
 
-const Post =({ visibility, mdBlocks,pageNavs,pageId,title,iconType,iconUrl,coverUrl,firstText,resourceType,ogpImagePath}: StaticProps) => {
+const Post =({ visibility, mdBlocks,pageNavs,pageId,title,iconType,iconUrl,coverUrl,firstText,resourceType,ogpImagePath,v}: StaticProps) => {
   const {loading,dotCount,userProfile} = useAuth()
   const dot = ".".repeat(dotCount)
 
@@ -121,7 +125,7 @@ const Post =({ visibility, mdBlocks,pageNavs,pageId,title,iconType,iconUrl,cover
         link={`https://ryukoku-horizon.github.io/horizon-atlas/${pageNavs[pageNavs.length - 1].link}`}
         image={ogpImagePath}
       />
-      <Layout pageNavs={pageNavs}>
+      <Layout pageNavs={pageNavs} version={v}>
         {!loading && <CurriculumMain
           visibility={visibility}
           mdBlocks={mdBlocks}

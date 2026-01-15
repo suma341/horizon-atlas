@@ -2,13 +2,25 @@ import StaticHead from "@/components/head/staticHead";
 import Layout from "@/components/Layout/Layout"
 import LoginModal from "@/components/loginModal/loginModal";
 import { EDIT_NAV, HOME_NAV, SETTING_NAV } from "@/constants/pageNavs"
+import { VersionGW } from "@/lib/Gateways/VersionGW";
 import UserDataSvc from "@/lib/services/userDataSvc";
 import useUserProfileStore from "@/stores/userProfile";
 import { CheckCircle, XCircle } from "lucide-react";
+import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-const UserSettingEdit=()=>{
+export const getStaticProps: GetStaticProps = async () => {
+    const v = await VersionGW.get()
+
+    return {
+        props: {
+          v
+        },
+    };
+};
+
+const UserSettingEdit=({v}:{v:string})=>{
     const [isFocused, setIsFocused] = useState(false);
     const [studentNum,setStudentNum] = useState("");
     const {userProfile,setUserProfile} = useUserProfileStore()
@@ -40,7 +52,7 @@ const UserSettingEdit=()=>{
     return (
         <>  
             <StaticHead />
-            <Layout pageNavs={[HOME_NAV,SETTING_NAV,EDIT_NAV]}>
+            <Layout pageNavs={[HOME_NAV,SETTING_NAV,EDIT_NAV]} version={v} >
                 {!userProfile && <LoginModal />}
                 {userProfile && <div className="min-h-screen w-full pt-24 px-5 items-center flex flex-col">
                     <div className="relative w-full max-w-md">

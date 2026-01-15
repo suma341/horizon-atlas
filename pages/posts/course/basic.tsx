@@ -9,12 +9,14 @@ import { PageInfo } from "@/types/page";
 import PageInfoSvc from "@/lib/services/PageInfoSvc";
 import { BasicMain } from "@/components/pageComponents/basicMain";
 import { useAuth } from "@/hooks/useAuth";
+import { VersionGW } from "@/lib/Gateways/VersionGW";
 
 type Props={
     courseAndPosts: {
         category: Category;
         curriculums: PageInfo[];
     }[];
+    v:string
 }
 
 export const getStaticProps: GetStaticProps = async () => {
@@ -26,15 +28,17 @@ export const getStaticProps: GetStaticProps = async () => {
             curriculums
         }
     }))
+    const v = await VersionGW.get()
 
     return {
         props: {
-            courseAndPosts:categoryAndCurriculums
+            courseAndPosts:categoryAndCurriculums,
+            v
         } as Props
     };
 };
 
-export default function BasicCoursePageList({courseAndPosts}: Props){
+export default function BasicCoursePageList({courseAndPosts,v}: Props){
     const {userProfile,loading,dotCount} = useAuth()
     const dot = ".".repeat(dotCount)
 
@@ -46,7 +50,7 @@ export default function BasicCoursePageList({courseAndPosts}: Props){
                 image={`${process.env.NEXT_PUBLIC_STORAGE_URL}/ogp/basic.png`}
                 link="https://ryukoku-horizon.github.io/horizon-atlas/posts/basic"
             />
-            <Layout pageNavs={[HOME_NAV, BASIC_NAV]}>
+            <Layout pageNavs={[HOME_NAV, BASIC_NAV]} version={v}>
                 {!loading && <BasicMain
                     courseAndPosts={courseAndPosts}
                     userProfile={userProfile}

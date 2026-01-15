@@ -10,6 +10,7 @@ import { PageInfo } from "@/types/page";
 import PageInfoSvc from "@/lib/services/PageInfoSvc";
 import { useAuth } from "@/hooks/useAuth";
 import { HomeMain } from "@/components/pageComponents/homeMain";
+import { VersionGW } from "@/lib/Gateways/VersionGW";
 
 type Props = {
   categoryAndCurriculums:{
@@ -18,6 +19,7 @@ type Props = {
   }[],
   allTags:string[],
   noCaterizedCurriculums:PageInfo[]
+  v:string
 };
 
 export const getStaticProps: GetStaticProps = async () => {
@@ -33,23 +35,26 @@ export const getStaticProps: GetStaticProps = async () => {
   }))
 
   const allTags = await getAllTags(allPosts);
+  const v = await VersionGW.get()
+
   return {
       props: {
         categoryAndCurriculums,
         allTags,
-        noCaterizedCurriculums
+        noCaterizedCurriculums,
+        v
       } as Props,
   };
 };
 
-const PostsPage = ({ allTags,noCaterizedCurriculums,categoryAndCurriculums}: Props)=> {
+const PostsPage = ({ allTags,noCaterizedCurriculums,categoryAndCurriculums,v}: Props)=> {
   const {dotCount,loading,userProfile} = useAuth()
   const dot = ".".repeat(dotCount)
 
     return (
       <>
         <StaticHead />
-        <Layout pageNavs={[HOME_NAV]}>  
+        <Layout pageNavs={[HOME_NAV]} version={v}>  
           {!loading && <HomeMain
             userProfile={userProfile}
             allTags={allTags}

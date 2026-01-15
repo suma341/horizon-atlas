@@ -8,6 +8,9 @@ const getDb = () => {
       if (!db.objectStoreNames.contains("profiles")) {
         db.createObjectStore("profiles", { keyPath: "user_id" });
       }
+      if(!db.objectStoreNames.contains("v-expire")){
+        db.createObjectStore("v-expire",{keyPath: "user_id"})
+      }
     },
   });
 };
@@ -37,4 +40,23 @@ export default class UserDataGW{
     }
     await db.delete("profiles", user_id);
   };
+}
+
+export class VersionExpireGW{
+  static get=async(user_id:string)=>{
+    const db = await getDb();
+    if(!db){
+      return null
+    }
+    const result = await db.get("v-expire",user_id);
+    return result ?? null
+  }
+
+  static save=async(v_expire:string)=>{
+    const db = await getDb();
+    if(!db){
+      return;
+    }
+    await db.put("v-expire", v_expire );
+  }
 }

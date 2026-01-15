@@ -9,9 +9,10 @@ import Sidebar from "./Sidebar/Sidebar";
 type LayoutProps = {
   children: ReactNode;
   pageNavs: pageNav[];
+  version:string
 };
 
-const Layout: React.FC<LayoutProps> = ({ children, pageNavs }) => {
+const Layout: React.FC<LayoutProps> = ({ children, pageNavs,version }) => {
   const [isVisible, setIsVisible] = useState(true); 
   const [lastScrollY, setLastScrollY] = useState(0); 
   const [openbar, setOpenbar] = useState(false);
@@ -52,7 +53,7 @@ const Layout: React.FC<LayoutProps> = ({ children, pageNavs }) => {
           {children}
           <div className="h-5"></div>
         </div>
-        <Footer />
+        <Footer version={version} />
       </div>
     
     );

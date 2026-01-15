@@ -9,6 +9,7 @@ import { PageInfo } from "@/types/page";
 import PageInfoSvc from "@/lib/services/PageInfoSvc";
 import { TagMain } from "@/components/pageComponents/tagMain";
 import { useAuth } from "@/hooks/useAuth";
+import { VersionGW } from "@/lib/Gateways/VersionGW";
 
 type pagePath = {
     params: { tag:string }
@@ -36,6 +37,7 @@ type Props ={
     posts:PageInfo[];
     currentTag:string;
     allTags:string[];
+    v:string
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
@@ -44,16 +46,19 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const allTags = (await getAllTags(allPosts)).filter((t)=>t!=="解答")
     
     const posts:PageInfo[] = await getPostsByTag(currentTag, allPosts.filter((p)=>p.type!=="answer"));
+    const v = await VersionGW.get()
+
     return {
         props: {
           posts,
           allTags,
           currentTag,
+          v
         },
     };
 };
 
-const TagPageList = ({ posts, currentTag,allTags}: Props)=> {
+const TagPageList = ({ posts, currentTag,allTags,v}: Props)=> {
     const tagSearchNav:pageNav = {title:`タグ検索：${currentTag}`,link:`/posts/tag/${currentTag}`};
     const {loading,userProfile,dotCount} = useAuth()
     const dot = ".".repeat(dotCount)
@@ -61,7 +66,7 @@ const TagPageList = ({ posts, currentTag,allTags}: Props)=> {
     return (
         <>
             <StaticHead />
-            <Layout pageNavs={[HOME_NAV,tagSearchNav]}>
+            <Layout pageNavs={[HOME_NAV,tagSearchNav]} version={v}>
                 {!loading && <TagMain
                     userProfile={userProfile}
                     posts={posts}

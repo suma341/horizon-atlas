@@ -1,10 +1,22 @@
 import StaticHead from '@/components/head/staticHead';
 import Footer from '@/components/Layout/Footer/Footer';
 import Header from '@/components/top/header'
+import { VersionGW } from '@/lib/Gateways/VersionGW';
 import { motion, AnimatePresence } from 'framer-motion'
+import { GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
 
-function AboutDetail() {
+export const getStaticProps: GetStaticProps = async () => {
+  const v = await VersionGW.get()
+
+  return {
+    props:{
+      v
+    } 
+  };
+};
+
+function AboutDetail({v}:{v:string}) {
     const router = useRouter();
     return (
         <>
@@ -127,7 +139,7 @@ function AboutDetail() {
                     </motion.button>
                 </div>
             </section>
-            <Footer />
+            <Footer version={v} />
         </>
     )
 }

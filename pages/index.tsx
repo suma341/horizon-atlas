@@ -10,22 +10,27 @@ import PageInfoSvc from '@/lib/services/PageInfoSvc';
 import { useRouter } from 'next/router';
 import useFirebaseUser from '@/hooks/useFirebaseUser';
 import Footer from '@/components/Layout/Footer/Footer';
+import { VersionGW } from '@/lib/Gateways/VersionGW';
 
 type Props = {
   pageNum:number;
+  v:string
 }
 
 export const getStaticProps: GetStaticProps = async () => {
   const pages = await PageInfoSvc.getAll()
   const pageNum = pages.length
+  const v = await VersionGW.get()
+
   return {
     props:{
       pageNum,
+      v
     } as Props,
   };
 };
 
-export default function Home({pageNum}:Props) {
+export default function Home({pageNum,v}:Props) {
   const router = useRouter()
   const {user,loading} = useFirebaseUser()
 
@@ -77,7 +82,7 @@ export default function Home({pageNum}:Props) {
         <Curriculums pageNum={pageNum} />
       </main>
 
-      <Footer />
+      <Footer version={v} />
     </div>
   );
 }

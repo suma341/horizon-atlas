@@ -1,5 +1,7 @@
 import Header from "@/components/about/header";
 import Footer from "@/components/Layout/Footer/Footer";
+import { VersionGW } from "@/lib/Gateways/VersionGW";
+import { GetStaticProps } from "next";
 import { useState } from "react";
 
 const qnaList = [
@@ -22,6 +24,16 @@ const qnaList = [
     answer: "はい、スマートフォン・タブレットにも対応しています。",
   },
 ];
+
+export const getStaticProps: GetStaticProps = async () => {
+  const v = await VersionGW.get()
+
+  return {
+    props:{
+      v
+    } 
+  };
+};
 
 function renderTextWithLinks(text: string) {
   const regex = /\[([^\]]+)\]\(([^)]+)\)/g;
@@ -54,7 +66,7 @@ function renderTextWithLinks(text: string) {
   return parts;
 }
 
-export default function QnAPage() {
+export default function QnAPage({v}:{v:string}) {
 
   return (
     <>
@@ -72,7 +84,7 @@ export default function QnAPage() {
                 </div>
             </div>
         </div>
-        <Footer />
+        <Footer version={v} />
     </>
   );
 }
