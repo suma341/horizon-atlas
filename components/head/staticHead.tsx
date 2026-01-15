@@ -11,7 +11,8 @@ const StaticHead=()=>{
             <meta property="og:image" content={`https://ryukoku-horizon.github.io/horizon-atlas/app_image.png`} />
             <meta property="og:type" content="website" />
             <meta property='og:site_name' content="HorizonAtlas" />
-            <meta name="twitter:card" content="summary_large_image" />            
+            <meta name="twitter:card" content="summary_large_image" />
+            <link rel="icon" href="https://ryukoku-horizon.github.io/horizon-atlas/favicon.ico" />            
         </Head>
     )
 }
