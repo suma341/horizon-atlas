@@ -58,7 +58,6 @@ export default function CodeBlock({
     };
 
   try{
-    // const tokens = Prism.tokenize(code, Prism.languages[lan]);
 
   const notionStyles = parents.flatMap((p) => {
     const style = assignCss(p);

@@ -12,11 +12,35 @@ export default function PlainTextCode(props: Props) {
   const { handleClick } = usePageLink();
 
   return (
-    <div style={{ backgroundColor: "rgb(250,250,250)", padding: "0.5rem" }}>
-      {parent.map((p) => {
+    <pre
+      className="
+        overflow-x-auto
+        text-sm
+        font-mono
+        leading-relaxed
+        rounded-b-lg
+        m-0
+      "
+      style={{
+        backgroundColor: "rgb(250,250,250)",
+        padding: "0.5rem",
+        maxWidth: "100%",
+        whiteSpace: "pre", // ← 折り返さず横スクロール
+      }}
+    >
+      {parent.map((p, i) => {
         const style = assignCss(p);
-        return RenderTextWithBreaks(p.plain_text,style,()=>handleClick(p.href,p.scroll,p.is_same_bp))
+        return (
+          <span key={i}>
+            {RenderTextWithBreaks(
+              p.plain_text,
+              style,
+              () => handleClick(p.href, p.scroll, p.is_same_bp)
+            )}
+          </span>
+        );
       })}
-    </div>
+    </pre>
   );
 }
+
