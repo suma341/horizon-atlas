@@ -20,19 +20,3 @@ HorizonAtlas は、龍谷大学プログラミング部 Horizon の学習カリ�
 
 ## 🛠 使用技術
 Next.js
-
-## 🚀 始め方
-- ビルド
-```
-npm run build
-```
-
-- 起動
-```
-npm start
-```
-
-- アクセス
-```
-http://localhost:3000/horizon-atlas
-```
